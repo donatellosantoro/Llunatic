@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><mode version="2.4">
+    <name unique="output"/>
+    <kind type="view"/>
+    <state type="joined"/>
+    <constraints>
+        <path orientation="vertical" number="1" weight="0.25"/>
+    </constraints>
+    <bounds x="152" y="612" width="610" height="180"/>
+    <frame state="0"/>    
+    <empty-behavior permanent="true"/>
+</mode>

@@ -1,0 +1,5 @@
+T_Employee(Charlie, 1978, 32000)
+T_Employee(Melanie, 1990, N_100)
+T_Employee(Bob, 1977, 37000)
+T_Employee(Jack, N_102, N_103)
+T_Employee(Paul, 1978, 29000.5)

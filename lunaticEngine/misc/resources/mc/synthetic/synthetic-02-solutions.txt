@@ -1,0 +1,117 @@
+R(A, B, C)
+e1 A -> B (a = a1)
+e2 C -> A
+
+r
+a1 b1 c1
+a1 b2 c2
+a2 b3 c1
+|
+--r.e1f
+| a1 *b2 c1
+| a1 b2 c2
+| a2 b3 c1
+|  |
+|  --r.e1f.e2f OK 1
+|  |  *a2 *b2 c1
+|  |  a1 b2 c2
+|  |  a2 b3 c1
+|  |
+|  --r.e1f.e2b1 OK 2
+|  |  a2 *b2 L(c1)
+|  |  a1 b2 c2
+|  |  a2 b3 c1
+|  |
+|  --r.e1f.e2b2 OK 3
+|     a2 *b2 c1
+|     a1 b2 c2
+|     a2 b3 L(c1)
+|
+--r.e1b1
+|  L(a1) b1 c1
+|  a1 b2 c2
+|  a2 b3 c1
+|  |
+|  --r.e1b1.e2f OK 4
+|  |   L(a1, a2) b1 c1
+|  |   a1 b2 c2
+|  |   L(a1,a2) b3 c1
+|  |
+|  --r.e1b1.e2b1 OK 5
+|  |   L(a1) b1 L(c1)
+|  |   a1 b2 c2
+|  |   a2 b3 c1
+|  |
+|  --r.e1b1.e2b2 OK 6
+|      L(a1) b1 c1
+|      a1 b2 c2
+|      a2 b3 L(c1)
+|
+--r.e1b2
+|  a1 b2 c1
+|  L(a1) b2 c2
+|  a2 b3 c1
+|  |
+|  --r.e1b2.e2f OK 7
+|  |  *a2 b2 c1
+|  |  L(a1) b2 c2
+|  |  a2 b3 c1
+|  |
+|  --r.e1b2.e2b1 OK 8
+|  |  a1 b2 L(c1)
+|  |  L(a1) b2 c2
+|  |  a2 b3 c1
+|  |
+|  --r.e1b2.e2f OK 9
+|     a1 b2 c1
+|     L(a1) b2 c2
+|     a2 b3 L(c1)
+|
+|
+--r.e2f OK 10
+| *a2 b1 c1
+| a1 b2 c2
+| a2 b3 c1
+|
+|
+--r.e2b1
+|  a1 b1 L(c1)
+|  a1 b2 c2
+|  a2 b3 c1
+|  | 
+|  -- r.e2b1.e1f OK --> 2
+|  |   a1 *b2 L(c1)
+|  |   a1 b2 c2
+|  |   a2 b3 c1
+|  | 
+|  -- r.e2b1.e1b1 OK --> 5
+|  |   L(a1) b1 L(c1)
+|  |   a1 b2 c2
+|  |   a2 b3 c1
+|  | 
+|  -- r.e2b1.e1b2 OK --> 8
+|  |   a1 b1 L(c1)
+|  |   L(a1) b2 c2
+|  |   a2 b3 c1
+|
+|
+--r.e2b2
+   a1 b1 c1
+   a1 b2 c2
+   a2 b3 L(c1)
+   | 
+   -- r.e2b1.e1f OK --> 3
+   |   a1 *b2 c1
+   |   a1 b2 c2
+   |   a2 b3 L(c1)
+   |
+   -- r.e2b1.e1b1 OK --> 6
+   |   L(a1) b1 c1
+   |   a1 b2 c2
+   |   a2 b3 L(c1)
+   |
+   -- r.e2b1.e1b1 OK --> 9
+       a1 b1 c1
+       L(a1) b2 c2
+       a2 b3 L(c1)
+

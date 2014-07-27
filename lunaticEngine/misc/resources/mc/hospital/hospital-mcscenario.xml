@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+h(provN, name, addr1, city, state, zip, phone, condition, code, mName, stateAvg)
+INSTANCE:
+h(provN: "10018", name: "CALLAHAN", addr1: "17 UNIV", city: "BIRMINGHAM", state: "AL", zip: "35233", phone: "2053", condition: "Surgx", code: "SCIP-CARD-2", mName: "surg1", stateAvg: "ALSCIP-CARD-2")
+h(provN: "10018", name: "CALLAHAN", addr1: "17 UNIV", city: "BIRMINGHAM", state: "AL", zip: "35233", phone: "2053", condition: "Surg", code: "SCIP-INF-1", mName: "surg2", stateAvg: "ALSCIP-INF-1")
+h(provN: "10018", name: "CALLAHAN", addr1: "17 UNIV", city: "BIRMINGHAM", state: "AL", zip: "35233", phone: "2053", condition: "Surg", code: "SCIP-INF-2", mName: "surg3", stateAvg: "ALSCIP-INF-2")
+h(provN: "10018", name: "CALLAHAN", addr1: "17 UNIV", city: "BIRMINGHAM", state: "AL", zip: "35233", phone: "2053", condition: "Surg", code: "SCIP-INF-3", mName: "surg4", stateAvg: "ALSCIP-INF-3")
+h(provN: "10018", name: "CALLAHAN", addr1: "17 UNIV", city: "BIRMINGHAM", state: "AL", zip: "35233", phone: "2053", condition: "Surg", code: "SCIP-INF-4", mName: "surg5", stateAvg: "ALSCIP-INF-4")
+h(provN: "10018", name: "CALLAHAN", addr1: "17 UNIV", city: "BxRMxNGHAM", state: "AL", zip: "35233", phone: "2053", condition: "Surg", code: "SCIP-INF-6", mName: "surg6", stateAvg: "ALSCIP-INF-6")
+h(provN: "10018", name: "CALLAHAN", addr1: "17 UNIV", city: "BIRMINGHAM", state: "AL", zip: "35233", phone: "2053", condition: "Surg", code: "SCIP-VTE-1", mName: "surg7", stateAvg: "ALSCIP-VTE-1")
+h(provN: "10018", name: "CALLAHAN", addr1: "17 UNxV", city: "BIRMINGHAM", state: "AL", zip: "35660", phone: "2053", condition: "Suxg", code: "SCIP-VTE-2", mName: "surg8", stateAvg: "ALSCIP-VTE-2")
+h(provN: "10019", name: "HELEN", addr1: "13 SOUTH", city: "SHEFFIELD", state: "AL", zip: "35660", phone: "2563", condition: "Heart", code: "AMI-1", mName: "surg9", stateAvg: "xLxMI-1")
+h(provN: "10019", name: "HELEN", addr1: "13 SOUTH", city: "SHEFFIELD", state: "AL", zip: "35660", phone: "25x3", condition: "Hearx", code: "AMI-2", mName: "surg10", stateAvg: "ALAMI-2")
+//h(provN: "10019", name: "HELEN", addr1: "13 SOUTH", city: "SHEXFIELD", state: "AL", zip: "35233", phone: "2563", condition: "Heart", code: "AMI-2", mName: "surg10", stateAvg: "ALAMI-2")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+//FD_0:Zip Code->City
+h(provN: $provN1, name: $name1, addr1: $addr11, city: $city1, state: $state1, zip: $zip, phone: $phone1, condition: $condition1, code: $code1, mName: $mName1, stateAvg: $stateAvg1),
+h(provN: $provN2, name: $name2, addr1: $addr12, city: $city2, state: $state2, zip: $zip, phone: $phone2, condition: $condition2, code: $code2, mName: $mName2, stateAvg: $stateAvg2)
+ -> $city1 == $city2.
+
+//FD_1:Zip Code->State
+h(provN: $provN1, name: $name1, addr1: $addr11, city: $city1, state: $state1, zip: $zip, phone: $phone1, condition: $condition1, code: $code1, mName: $mName1, stateAvg: $stateAvg1),
+h(provN: $provN2, name: $name2, addr1: $addr12, city: $city2, state: $state2, zip: $zip, phone: $phone2, condition: $condition2, code: $code2, mName: $mName2, stateAvg: $stateAvg2)
+ -> $state1 == $state2.
+
+//FD_2:Phone Number->Zip Code
+h(provN: $provN1, name: $name1, addr1: $addr11, city: $city1, state: $state1, zip: $zip1, phone: $phone, condition: $condition1, code: $code1, mName: $mName1, stateAvg: $stateAvg1),
+h(provN: $provN2, name: $name2, addr1: $addr12, city: $city2, state: $state2, zip: $zip2, phone: $phone, condition: $condition2, code: $code2, mName: $mName2, stateAvg: $stateAvg2)
+ -> $zip1 == $zip2.
+
+//FD_3:Phone Number->City
+h(provN: $provN1, name: $name1, addr1: $addr11, city: $city1, state: $state1, zip: $zip1, phone: $phone, condition: $condition1, code: $code1, mName: $mName1, stateAvg: $stateAvg1),
+h(provN: $provN2, name: $name2, addr1: $addr12, city: $city2, state: $state2, zip: $zip2, phone: $phone, condition: $condition2, code: $code2, mName: $mName2, stateAvg: $stateAvg2)
+ -> $city1 == $city2.
+
+//FD_4:Phone Number->State
+h(provN: $provN1, name: $name1, addr1: $addr11, city: $city1, state: $state1, zip: $zip1, phone: $phone, condition: $condition1, code: $code1, mName: $mName1, stateAvg: $stateAvg1),
+h(provN: $provN2, name: $name2, addr1: $addr12, city: $city2, state: $state2, zip: $zip2, phone: $phone, condition: $condition2, code: $code2, mName: $mName2, stateAvg: $stateAvg2)
+ -> $state1 == $state2.
+
+//FD_5:Measure Code->Measure Name
+h(provN: $provN1, name: $name1, addr1: $addr11, city: $city1, state: $state1, zip: $zip1, phone: $phone1, condition: $condition1, code: $code, mName: $mName1, stateAvg: $stateAvg1),
+h(provN: $provN2, name: $name2, addr1: $addr12, city: $city2, state: $state2, zip: $zip2, phone: $phone2, condition: $condition2, code: $code, mName: $mName2, stateAvg: $stateAvg2)
+ -> $mName1 == $mName2.
+
+//FD_6:Measure Code->Condition
+h(provN: $provN1, name: $name1, addr1: $addr11, city: $city1, state: $state1, zip: $zip1, phone: $phone1, condition: $condition1, code: $code, mName: $mName1, stateAvg: $stateAvg1),
+h(provN: $provN2, name: $name2, addr1: $addr12, city: $city2, state: $state2, zip: $zip2, phone: $phone2, condition: $condition2, code: $code, mName: $mName2, stateAvg: $stateAvg2)
+ -> $condition1 == $condition2.
+
+//FD_7:Provider Number,Measure Code->Stateavg
+h(provN: $provN, name: $name1, addr1: $addr11, city: $city1, state: $state1, zip: $zip1, phone: $phone1, condition: $condition1, code: $code, mName: $mName1, stateAvg: $stateAvg1),
+h(provN: $provN, name: $name2, addr1: $addr12, city: $city2, state: $state2, zip: $zip2, phone: $phone2, condition: $condition2, code: $code, mName: $mName2, stateAvg: $stateAvg2)
+ -> $stateAvg1 == $stateAvg2.
+
+//FD_X:name->addr1
+h(provN: $provN1, name: $name, addr1: $addr11, city: $city1, state: $state1, zip: $zip1, phone: $phone1, condition: $condition1, code: $code1, mName: $mName1, stateAvg: $stateAvg1),
+h(provN: $provN2, name: $name, addr1: $addr12, city: $city2, state: $state2, zip: $zip2, phone: $phone2, condition: $condition2, code: $code2, mName: $mName2, stateAvg: $stateAvg2)
+ -> $addr11 == $addr12.
+
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+R(a, b)
+S(a, b)
+T(a, b)
+INSTANCE:
+R(a: "1", b: "3")
+R(a: "2", b: "3")
+R(a: "5", b: "5")
+S(a: "3", b: "4")
+S(a: "2", b: "4")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtTGDs:
+//ORIGINAL
+R(a: $x, b: $y) -> S(a: $y, b: $z).
+//V1
+//R(a: $x, b: $y) -> S(a: $x, b: $N), T(a: $N, b: $x).
+//V2
+//R(a: $x, b: $y) -> S(a: $x, b: $N), S(a: $N, b: $y).
+ExtEGDs:
+//S(a: $y1, b: $x), S(a: $y2, b: $x) -> $y1 == $y2.
+S(a: $y1, b: $x), S(a: $y2, b: $x), R(a: $z1, b:$y1), R(a: $z2, b:$y2) -> $y1 == $y2.
+S(a: $y1, b: $x), S(a: $y2, b: $x), R(a: $z1, b:$y1) and not exists(R(a: $z2, b:$y2)) -> $y1 == $y2.
+//S(a: $y1, b: $x), S(a: $y2, b: $x), R(a: $z2, b:$y2) and not exists(R(a: $z1, b:$y1)) -> $y1 == $y2.
+S(a: $y1, b: $x), S(a: $y2, b: $x) and not exists(R(a: $z1, b:$y1)) and not exists(R(a: $z2, b:$y2)) -> $y1 == $y2.
+]]>
+  </dependencies>
+  <partialOrder/>
+  <configuration>
+  	<useCellGroupsForTGDs>true</useCellGroupsForTGDs>
+  </configuration>
+</scenario>
+

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+NYSE(symbol, name)
+PublicCompany(name, city)
+PublicGrant(company, investigator, amount)
+NSFGrantee(id, name)
+NSFGrant(company, amount)
+INSTANCE:
+NYSE(symbol: "GOOG",   name: "Google")
+NYSE(symbol: "YHOO",   name: "Yahoo")
+NYSE(symbol: "IBM",   name: "I.B.M.")
+PublicCompany(name: "I.B.M.",   city: "NY")
+PublicCompany(name: "Adobe",   city: "SJ")
+PublicGrant(company: "I.B.M.",   investigator: "Mike B.",   amount: "25000")
+PublicGrant(company: "Adobe",   investigator: "Anne C.",   amount: "50000")
+NSFGrantee(id: "23",   name: "Yahoo")
+NSFGrantee(id: "25",   name: "Adobe")
+NSFGrant(company: "23",   amount: "18000")
+NSFGrant(company: "25",   amount: "50000")
+]]>
+    </generate>
+  </source>
+  <target>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+Company(id, name)
+Grant(amount, company)
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+STTGDs:
+NYSE(symbol: $x1934, name: $x1935)
+  and not exists  (
+        NSFGrantee(id: $x1940, name: $x1935)
+  )
+  and not exists  (
+        PublicCompany(name: $x1, city: $x1936), 
+        PublicGrant(company: $x1, investigator: $x1937, amount: $x1938), $x1 == $x1935
+  ) 
+  -> 
+        Company(id: $Y1942, name: $x1935).
+
+NSFGrantee(id: $x1943, name: $x1944) -> 
+        Company(id: $x1943, name: $x1944).
+
+NSFGrant(amount: $x1945, company: $x1946) -> 
+        Grant(amount: $x1945, company: $x1946).
+
+PublicCompany(name: $x1950, city: $x1947), 
+PublicGrant(company: $x1950, investigator: $x1948, amount: $x1949)
+  and not exists  (
+        NSFGrantee(id: $x1951, name: $x1950), 
+        NSFGrant(amount: $x1949, company: $x1951)
+  ) -> 
+        Company(id: $Y1955, name: $x1950), 
+        Grant(amount: $x1949, company: $Y1955).
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

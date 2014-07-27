@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:employees_egd</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+
+create table employeesource (
+  name varchar(50),
+  age varchar(50),
+  salary varchar(50)
+) with oids;
+
+insert into employeesource values ('Charlie', '1978', '32000');
+insert into employeesource values ('Paul', '1978', NULL);
+insert into employeesource values ('Paul', '1979', NULL);
+insert into employeesource values ('Bob', '1977', NULL);
+insert into employeesource values ('Paul', NULL, '29000.5');
+insert into employeesource values ('Bob', NULL, '37000');
+insert into employeesource values ('Melanie', '1990', NULL);
+insert into employeesource values ('Jack', NULL, NULL);
+]]>
+    </init-db>
+  </source>
+  <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:employees_egd</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table employee (
+  name varchar(50),
+  age varchar(50),
+  salary varchar(50)
+) with oids;
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+STTGDs:
+employeesource(name: $n, age: $a, salary: $s), $n != "Paul", {isNotNull($a)}, {isNotNull($s)}  -> employee(name: $n, age: $a, salary: $s).
+employeesource(name: $n, age: $a, salary: #NULL#), $n != "Paul", {isNotNull($a)} -> employee(name: $n, age: $a, salary: $N).
+employeesource(name: $n, age: #NULL#, salary: $s), $n != "Paul", {isNotNull($s)} -> employee(name: $n, age: $N, salary: $s).
+employeesource(name: $n, age: #NULL#, salary: #NULL#), $n != "Paul" -> employee(name: $n, age: $N1, salary: $N2).
+employeesource(name: $n, age: $a, salary: $s), $n == "Paul", {isNull($a)} -> employee(name: $n, age: $N, salary: $s).
+employeesource(name: $n, age: $a, salary: $s), $n == "Paul", {isNotNull($a)}, $a == "1978" -> employee(name: $n, age: $a, salary: $N).
+EGDs:
+//employee(name: $n, age: $a, salary: $s), employee(name: $n, age: $a1, salary: $s1) -> $a == $a1, $s == $s1.
+employee(name: $n, age: $a, salary: $s), employee(name: $n, age: $a1, salary: $s1) -> $a == $a1.
+employee(name: $n, age: $a, salary: $s), employee(name: $n, age: $a1, salary: $s1) -> $s == $s1.
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Menu">
+        <file name="BuildProject_hidden"/>
+    </folder>
+    <folder name="Services">
+        <folder name="AutoupdateType">
+            <file name="it_unibas_lunatic_gui_update_center.instance">
+                <attr name="displayName" bundlevalue="it.unibas.lunatic.gui.Bundle#Services/AutoupdateType/it_unibas_lunatic_gui_update_center.instance"/>
+                <attr name="enabled" boolvalue="true"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
+                <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
+                <attr name="url" bundlevalue="it.unibas.lunatic.gui.Bundle#it_unibas_lunatic_gui_update_center"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Modes">
+            <folder name="bottomSlidingMode">
+                <file name="ScenarioDepsTopComponent.wstcref" url="ScenarioDepsTopComponentWstcref_1.xml"/>
+                <file name="StepDepsTopComponent.wstcref" url="StepDepsTopComponentWstcref_1.xml"/>
+                <file name="output.wstcref" url="outputWstcref.xml"/>
+            </folder>
+            <file name="bottomSlidingSide.wsmode" url="bottomSlidingSideWsmode.xml"/>
+            <folder name="editor">
+                <file name="CellGroupTopComponent.wstcref" url="CellGroupTopComponentWstcref_1.xml"/>
+            </folder>
+            <file name="editor.wsmode" url="editorWsmode.xml"/>
+            <file name="explorer.wsmode" url="explorerWsmode.xml"/>
+            <folder name="leftSlidingSide">
+                <file name="favorites.wstcref" url="favoritesWstcref.xml"/>
+            </folder>
+            <file name="leftSlidingSide.wsmode" url="leftSlidingSideWsmode.xml"/>
+            <file name="navigator.wsmode" url="navigatorWsmode.xml"/>
+            <file name="output.wsmode" url="outputWsmode.xml"/>
+            <folder name="preview">
+                <file name="ScenarioDepsTopComponent.wstcref_hidden"/>
+                <file name="StepDepsTopComponent.wstcref_hidden"/>
+            </folder>
+            <file name="preview.wsmode" url="previewWsmode.xml"/>
+            <folder name="project">
+                <file name="ScenarioTopComponent.wstcref" url="ScenarioTopComponentWstcref_1.xml"/>
+            </folder>
+            <file name="project.wsmode" url="projectWsmode.xml"/>
+            <folder name="properties">
+                <file name="properties.wstcref" url="propertiesWstcref.xml"/>
+            </folder>
+            <file name="properties.wsmode" url="propertiesWsmode.xml"/>
+            <file name="rightSlidingSide.wsmode" url="rightSlidingSideWsmode.xml"/>
+            <file name="topSlidingSide.wsmode" url="topSlidingSideWsmode.xml"/>
+        </folder>
+    </folder>
+</filesystem>

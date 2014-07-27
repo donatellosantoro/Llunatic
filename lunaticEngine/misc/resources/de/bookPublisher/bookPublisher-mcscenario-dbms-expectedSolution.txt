@@ -1,0 +1,7 @@
+bookset(The Da Vinci Code, N_102)
+bookset(The Hobbit, 245)
+bookset(The Catcher in the Rye, 901)
+bookset(The Lord of the Rings, N_1)
+publisherset(245, Ballantine)
+publisherset(901, Lb Books)
+publisherset(N_1, Houghton)

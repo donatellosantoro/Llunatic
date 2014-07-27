@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+consttable1(cc)
+consttable2(cc, ac, city)
+INSTANCE:
+consttable1(cc: "44")
+consttable2(cc: "44", ac: "131", city: "EDI")
+]]>
+    </generate>
+  </source>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+cust(cc, ac, name, street, city, zip)
+INSTANCE:
+cust(cc: "44", ac: "131", name: "Mike", street: "Mayfield", city: "NYC", zip: "EH4 8LE")
+cust(cc: "44", ac: "131", name: "Rick", street: "Crichton", city: "NYC", zip: "EH4 8LE")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+cust(cc: $cc, ac: $ac1, name: $name1, street: $street1, city: $city1, zip: $zip), 
+ cust(cc: $cc, ac: $ac2, name: $name2, street: $street2, city: $city2, zip: $zip),
+ consttable1(cc: $cc) -> $street1 == $street2.
+
+cust(cc: $cc, ac: $ac, name: $name1, street: $street1, city: $city1, zip: $zip1), 
+consttable2(cc: $cc, ac: $ac, city: $city2) -> $city1 == $city2.
+]]>
+  </dependencies>
+  <partialOrder>
+    <type>Script</type>
+    <script>
+      <partialOrder-script>masterDataPartialOrder.js</partialOrder-script>
+    </script>
+  </partialOrder>
+</scenario>
+

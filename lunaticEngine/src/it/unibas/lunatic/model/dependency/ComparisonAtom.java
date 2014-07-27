@@ -1,0 +1,43 @@
+package it.unibas.lunatic.model.dependency;
+
+import it.unibas.lunatic.model.expressions.Expression;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ComparisonAtom implements IFormulaAtom {
+    
+    private IFormula formula;
+    private Expression expression;
+    private List<FormulaVariable> variables = new ArrayList<FormulaVariable>();
+
+    public ComparisonAtom(IFormula formula, Expression expression) {
+        this.formula = formula;
+        this.expression = expression;
+    }
+
+    public Expression getExpression() {
+        return expression;
+    }
+
+    public IFormula getFormula() {
+        return formula;
+    }
+
+    public void setFormula(IFormula formula) {
+        this.formula = formula;
+    }
+    
+    public void addVariable(FormulaVariable variable) {
+        this.variables.add(variable);
+    }
+
+    public List<FormulaVariable> getVariables() {
+        return this.variables;
+    }
+
+    @Override
+    public String toString() {
+        return this.expression.toString();
+    }
+    
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="bookPublisher-source.xsd">
+  <IBDBookSet>
+    <IBDBook>
+      <title>The Hobbit</title>
+    </IBDBook>
+    <IBDBook>
+      <title>The Da Vinci Code</title>
+    </IBDBook>
+    <IBDBook>
+      <title>The Lord of the Rings</title>
+    </IBDBook>
+  </IBDBookSet>
+  <LOCSet>
+    <LOC>
+      <title>The Lord of the Rings</title>
+      <publisher>Houghton</publisher>
+    </LOC>
+    <LOC>
+      <title>The Catcher in the Rye</title>
+      <publisher>Lb Books</publisher>
+    </LOC>
+  </LOCSet>
+  <IBLBookSet>
+    <IBLBook>
+      <title>The Hobbit</title>
+      <pubId>245</pubId>
+    </IBLBook>
+    <IBLBook>
+      <title>The Catcher in the Rye</title>
+      <pubId>901</pubId>
+    </IBLBook>
+  </IBLBookSet>
+  <IBLPublisherSet>
+    <IBLPublisher>
+      <id>245</id>
+      <name>Ballantine</name>
+    </IBLPublisher>
+    <IBLPublisher>
+      <id>901</id>
+      <name>Lb Books</name>
+    </IBLPublisher>
+  </IBLPublisherSet>  
+</source>

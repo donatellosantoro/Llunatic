@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+S_Employee(name, age, salary)
+INSTANCE:
+S_Employee(name: "Charlie", age: 1978, salary: 32000)
+S_Employee(name: "Paul", age: 1978, salary: #NULL#)
+S_Employee(name: "Paul", age: 1979, salary: #NULL#)
+S_Employee(name: "Bob", age: 1977, salary: #NULL#)
+S_Employee(name: "Paul", age: #NULL#, salary: 29000.5)
+S_Employee(name: "Bob", age: #NULL#, salary: 37000)
+S_Employee(name: "Melanie", age: 1990, salary: #NULL#)
+S_Employee(name: "Jack", age: #NULL#, salary: #NULL#)
+]]>
+    </generate>
+  </source>
+  <target>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+T_Employee(name, age, salary)
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+STTGDs:
+S_Employee(name: $n, age: $a, salary: $s), $n != "Paul", {isNotNull($a)}, {isNotNull($s)}  -> T_Employee(name: $n, age: $a, salary: $s).
+S_Employee(name: $n, age: $a, salary: #NULL#), $n != "Paul", {isNotNull($a)} -> T_Employee(name: $n, age: $a, salary: $N).
+S_Employee(name: $n, age: #NULL#, salary: $s), $n != "Paul", {isNotNull($s)} -> T_Employee(name: $n, age: $N, salary: $s).
+S_Employee(name: $n, age: #NULL#, salary: #NULL#), $n != "Paul" -> T_Employee(name: $n, age: $N1, salary: $N2).
+S_Employee(name: $n, age: $a, salary: $s), $n == "Paul", {isNull($a)} -> T_Employee(name: $n, age: $N, salary: $s).
+S_Employee(name: $n, age: $a, salary: $s), $n == "Paul", {isNotNull($a)}, $a == "1978" -> T_Employee(name: $n, age: $a, salary: $N).
+DCs:
+S_Employee(name: $n, age: $a, salary: $s), S_Employee(name: $n, age: $a1, salary: $s1), {isNotNull($n)}, $a != $a1 -> #fail.
+S_Employee(name: $n, age: $a, salary: $s), S_Employee(name: $n, age: $a1, salary: $s1), {isNotNull($n)}, $s != $s1 -> #fail.
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

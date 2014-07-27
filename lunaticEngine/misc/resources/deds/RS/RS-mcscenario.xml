@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <source>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+SourceR(a, b, c)
+SourceS(a, b)
+INSTANCE:
+SourceR(a: "a" , b: "a", c: "b")
+SourceR(a: "b" , b: "b", c: "c")
+SourceR(a: "c" , b: "b", c: "d")
+SourceS(a: "a" , b: "b")
+]]>
+        </generate>
+    </source>
+    <target>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+R(a, b, c)
+S(a, b)
+T(a, b)
+//V(a, b, c)
+]]>
+        </generate>
+    </target>
+    <dependencies>
+<![CDATA[
+STTGDs:
+SourceR(a: $a, b: $b, c: $c) -> R(a: $a, b: $b, c: $c).
+SourceS(a: $a, b: $b) -> S(a: $a, b: $b).
+DED-ExtTGDs:
+R(a: $a, b: $b, c: $c) -> [T(a: $a, b: $b)] | [S(a: $a, b: $c)].
+//DED-EGDs:
+//V(a: $a, b: $b, c: $c), V(a: $a, b: $b1, c: $c1) -> [$b == $b1, $c == $c1].
+//V(a: $a, b: $b, c: $c), V(a: $a, b: $b1, c: $c1) -> [$b == $b1] | [$c == $c1].
+DCs:
+T(a: $a, b: $b) -> #fail.
+]]>
+    </dependencies>
+</scenario>

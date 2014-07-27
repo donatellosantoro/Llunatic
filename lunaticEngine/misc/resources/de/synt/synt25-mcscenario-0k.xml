@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>XML</type>
+    <xml>
+      <xml-schema>25-source.xsd</xml-schema>
+      <xml-instance>25-source-instance.xml</xml-instance>
+    </xml>
+  </source>
+  <target>
+    <type>XML</type>
+    <xml>
+      <xml-schema>25-target.xsd</xml-schema>
+      <xml-instance />
+    </xml>
+  </target>
+  <dependencies>
+<![CDATA[
+STTGDs:
+Rule_v13_v8_2073370132: 
+    touch_mr0comp1Set(cheese_mr0comp1attr0: $x138, branch_mr0comp1joinattr0: $x139, branch_mr0comp1joinattr0ref0: $x140) -> 
+        t_reveal_vp0t_v2Set(attention_vp_v2: $x138).
+
+Rule_v14_v1_232877884: 
+    society_mr0comp2Set(compare_mr0comp2attr0: $x141, branch_mr0comp2joinattr0ref1: $x142) ->  
+        t_art_mr0Set(measure_mr0comp0attr0: $Y143, cheese_mr0comp1attr0: $Y144, compare_mr0comp2attr0: $x141, branch_mr0comp0joinattr0: $Y145, branch_mr0comp1joinattr0: $Y146, oven_vp0joinattref: $Y147, narrow_vp0joinatt: $Y148, account_vp2joinattref: $Y149, future_vp2joinatt: $Y150).
+
+Rule_v15_v9_1682286239: 
+    great_mr1comp0Set(board_mr1comp0attr0: $x151, wrong_mr1comp0joinattr0: $x152) -> 
+        t_expansion_vp1t_v2Set(place_vp_v2: $x151).
+
+Rule_v16_v10_1936471130: 
+    affect_mr1comp1Set(different_mr1comp1attr0: $x153, wrong_mr1comp1joinattr0: $x154, wrong_mr1comp1joinattr0ref0: $x155) -> 
+        t_twist_v_v2Set(indicate_v_v2: $x153).
+
+Rule_v17_v7_128432361: 
+    society_mr1comp2Set(warn_mr1comp2attr0: $x156, wrong_mr1comp2joinattr0: $x157, wrong_mr1comp2joinattr0ref1: $x158)
+      and not exists (//Rule_v17v18_v7_1188230278 subsumes Rule_v17_v7_128432361 - CQWN_796028284
+            society_mr1comp2Set(warn_mr1comp2attr0: $x159, wrong_mr1comp2joinattr0: $x162, wrong_mr1comp2joinattr0ref1: $x158), 
+            tail_mr1comp3Set(red_mr1comp3attr0: $x161, wrong_mr1comp3joinattr0ref2: $x162)
+      ) ->  
+        t_past_m_v2Set(work_mr2comp0att_v2: $Y163, blue_mr2comp1att_v2: $x158, report_mr2comp2attr_v2: $Y164, night_mr2comp0joinatt_v2: $Y165, night_mr2comp1joinattr_v2: $Y166, chin_vp2joinattr_v2: $Y167).
+
+Rule_v18_v7_1078723417: 
+    tail_mr1comp3Set(red_mr1comp3attr0: $x168, wrong_mr1comp3joinattr0ref2: $x169)
+      and not exists (//Rule_v17v18_v7_1188230278 subsumes Rule_v18_v7_1078723417 - CQWN_796028284
+            society_mr1comp2Set(warn_mr1comp2attr0: $x170, wrong_mr1comp2joinattr0: $x173, wrong_mr1comp2joinattr0ref1: $x171), 
+            tail_mr1comp3Set(red_mr1comp3attr0: $x168, wrong_mr1comp3joinattr0ref2: $x173)
+      )
+      and not exists (//Rule_v20v19v21_v7_954460687 subsumes Rule_v18_v7_1078723417 - CQWN_1901986696
+            wheel_mr2comp0Set(work_mr2comp0attr0: $x168, night_mr2comp0joinattr0: $x177), 
+            letter_mr2comp1Set(blue_mr2comp1attr0: $x174, night_mr2comp1joinattr0: $x178, night_mr2comp1joinattr0ref0: $x177), 
+            describe_mr2comp2Set(report_mr2comp2attr0: $x176, night_mr2comp2joinattr0ref1: $x178)
+      ) ->  
+        t_past_m_v2Set(work_mr2comp0att_v2: $x168, blue_mr2comp1att_v2: $Y179, report_mr2comp2attr_v2: $Y180, night_mr2comp0joinatt_v2: $Y181, night_mr2comp1joinattr_v2: $Y182, chin_vp2joinattr_v2: $Y183).
+
+Rule_v19_v7_11582442: 
+    wheel_mr2comp0Set(work_mr2comp0attr0: $x184, night_mr2comp0joinattr0: $x185)
+      and not exists (//Rule_v17v18_v7_1188230278 subsumes Rule_v19_v7_11582442 - CQWN_796028284
+            society_mr1comp2Set(warn_mr1comp2attr0: $x186, wrong_mr1comp2joinattr0: $x189, wrong_mr1comp2joinattr0ref1: $x187), 
+            tail_mr1comp3Set(red_mr1comp3attr0: $x184, wrong_mr1comp3joinattr0ref2: $x189)
+      )
+      and not exists(
+            wheel_mr2comp0Set(work_mr2comp0attr0: $x184, night_mr2comp0joinattr0: $x193), 
+            letter_mr2comp1Set(blue_mr2comp1attr0: $x190, night_mr2comp1joinattr0: $x194, night_mr2comp1joinattr0ref0: $x193), 
+            describe_mr2comp2Set(report_mr2comp2attr0: $x192, night_mr2comp2joinattr0ref1: $x194)
+      ) ->  
+        t_past_m_v2Set(work_mr2comp0att_v2: $x184, blue_mr2comp1att_v2: $Y195, report_mr2comp2attr_v2: $Y196, night_mr2comp0joinatt_v2: $Y197, night_mr2comp1joinattr_v2: $Y198, chin_vp2joinattr_v2: $Y199).
+
+Rule_v22_v4_1116484296: 
+    find_vp0Set(attention_vp0a0: $x200) -> 
+        t_reveal_vp0tt2Set(attention_vp0a0: $x200).
+
+Rule_v23_v5_1767081320: 
+    rest_vp1Set(place_vp1a0: $x201) -> 
+        t_expansion_vp1tt0Set(place_vp1a0: $x201).
+
+Rule_v24_v6_1816524754: 
+    pipe_vp2Set(indicate_vp2a0: $x202) -> 
+        t_twist_vp2tt3Set(indicate_vp2a0: $x202).
+
+Rule_v11_v0_47678508: 
+    test_co0nl0ce0Set(nut_co0nl1ae0: $x203) ->  
+        t_test_co0nl0ce0Set(nut_co0nl1ae0: $x203, oven_vp0joinatt: $Y204, account_vp2joinatt: $x203).
+
+Rule_v12_v0_1077665229: 
+    slope_mr0comp0Set(measure_mr0comp0attr0: $x205, branch_mr0comp0joinattr0: $x206) ->  
+        t_test_co0nl0ce0Set(nut_co0nl1ae0: $x205, oven_vp0joinatt: $x206, account_vp2joinatt: $Y207).
+
+Rule_v12_v1_1133480676: 
+    slope_mr0comp0Set(measure_mr0comp0attr0: $x208, branch_mr0comp0joinattr0: $x209) ->  
+        t_art_mr0Set(measure_mr0comp0attr0: $x208, cheese_mr0comp1attr0: $Y210, compare_mr0comp2attr0: $Y211, branch_mr0comp0joinattr0: $x209, branch_mr0comp1joinattr0: $Y212, oven_vp0joinattref: $Y213, narrow_vp0joinatt: $Y214, account_vp2joinattref: $Y215, future_vp2joinatt: $Y216).
+
+Rule_v13_v1_506514220: 
+    touch_mr0comp1Set(cheese_mr0comp1attr0: $x217, branch_mr0comp1joinattr0: $x218, branch_mr0comp1joinattr0ref0: $x219) ->  
+        t_art_mr0Set(measure_mr0comp0attr0: $Y220, cheese_mr0comp1attr0: $x217, compare_mr0comp2attr0: $Y221, branch_mr0comp0joinattr0: $Y222, branch_mr0comp1joinattr0: $x218, oven_vp0joinattref: $Y223, narrow_vp0joinatt: $Y224, account_vp2joinattref: $Y225, future_vp2joinatt: $Y226).
+
+Rule_v13_v2_984469310: 
+    touch_mr0comp1Set(cheese_mr0comp1attr0: $x227, branch_mr0comp1joinattr0: $x228, branch_mr0comp1joinattr0ref0: $x229) ->  
+        t_demand_mr1Set(board_mr1comp0attr0: $x228, different_mr1comp1attr0: $Y230, warn_mr1comp2attr0: $Y231, red_mr1comp3attr0: $Y232, wrong_mr1comp0joinattr0: $Y233, wrong_mr1comp1joinattr0: $Y234, wrong_mr1comp2joinattr0: $Y235, narrow_vp0joinattref: $Y236, future_vp2joinattref: $x229, chin_vp2joinatt: $Y237).
+
+Rule_v15_v2_731687786: 
+    great_mr1comp0Set(board_mr1comp0attr0: $x238, wrong_mr1comp0joinattr0: $x239)
+      and not exists (//Rule_v15v16_v2_2025630710 subsumes Rule_v15_v2_731687786 - CQWN_496499940
+            great_mr1comp0Set(board_mr1comp0attr0: $x238, wrong_mr1comp0joinattr0: $x239), 
+            affect_mr1comp1Set(different_mr1comp1attr0: $x241, wrong_mr1comp1joinattr0: $x242, wrong_mr1comp1joinattr0ref0: $x239)
+      ) ->  
+        t_demand_mr1Set(board_mr1comp0attr0: $x238, different_mr1comp1attr0: $Y244, warn_mr1comp2attr0: $Y245, red_mr1comp3attr0: $Y246, wrong_mr1comp0joinattr0: $x239, wrong_mr1comp1joinattr0: $Y247, wrong_mr1comp2joinattr0: $Y248, narrow_vp0joinattref: $Y249, future_vp2joinattref: $Y250, chin_vp2joinatt: $Y251).
+
+Rule_v16_v2_1040690070: 
+    affect_mr1comp1Set(different_mr1comp1attr0: $x252, wrong_mr1comp1joinattr0: $x253, wrong_mr1comp1joinattr0ref0: $x254)
+      and not exists (//Rule_v15v16_v2_2025630710 subsumes Rule_v16_v2_1040690070 - CQWN_496499940
+            great_mr1comp0Set(board_mr1comp0attr0: $x255, wrong_mr1comp0joinattr0: $x258), 
+            affect_mr1comp1Set(different_mr1comp1attr0: $x252, wrong_mr1comp1joinattr0: $x253, wrong_mr1comp1joinattr0ref0: $x258)
+      ) ->  
+        t_demand_mr1Set(board_mr1comp0attr0: $Y259, different_mr1comp1attr0: $x252, warn_mr1comp2attr0: $Y260, red_mr1comp3attr0: $Y261, wrong_mr1comp0joinattr0: $Y262, wrong_mr1comp1joinattr0: $x253, wrong_mr1comp2joinattr0: $Y263, narrow_vp0joinattref: $Y264, future_vp2joinattref: $Y265, chin_vp2joinatt: $Y266).
+
+Rule_v19_v3_872733602: 
+    wheel_mr2comp0Set(work_mr2comp0attr0: $x267, night_mr2comp0joinattr0: $x268)
+      and not exists (//Rule_v20v19v21_v3_439122300 subsumes Rule_v19_v3_872733602 - CQWN_1901986696
+            wheel_mr2comp0Set(work_mr2comp0attr0: $x267, night_mr2comp0joinattr0: $x268), 
+            letter_mr2comp1Set(blue_mr2comp1attr0: $x269, night_mr2comp1joinattr0: $x273, night_mr2comp1joinattr0ref0: $x268), 
+            describe_mr2comp2Set(report_mr2comp2attr0: $x271, night_mr2comp2joinattr0ref1: $x273)
+      ) ->  
+        t_past_mr2Set(work_mr2comp0attr0: $x267, blue_mr2comp1attr0: $Y274, report_mr2comp2attr0: $Y275, night_mr2comp0joinattr0: $x268, night_mr2comp1joinattr0: $Y276, chin_vp2joinattref: $Y277).
+
+Rule_v17v18_v7_1188230278: 
+    society_mr1comp2Set(warn_mr1comp2attr0: $x278, wrong_mr1comp2joinattr0: $x281, wrong_mr1comp2joinattr0ref1: $x279), 
+    tail_mr1comp3Set(red_mr1comp3attr0: $x280, wrong_mr1comp3joinattr0ref2: $x281) ->  
+        t_past_m_v2Set(work_mr2comp0att_v2: $x280, blue_mr2comp1att_v2: $x279, report_mr2comp2attr_v2: $Y282, night_mr2comp0joinatt_v2: $Y283, night_mr2comp1joinattr_v2: $Y284, chin_vp2joinattr_v2: $Y285).
+
+Rule_v20v19v21_v7_954460687: 
+    wheel_mr2comp0Set(work_mr2comp0attr0: $x287, night_mr2comp0joinattr0: $x289), 
+    letter_mr2comp1Set(blue_mr2comp1attr0: $x286, night_mr2comp1joinattr0: $x290, night_mr2comp1joinattr0ref0: $x289), 
+    describe_mr2comp2Set(report_mr2comp2attr0: $x288, night_mr2comp2joinattr0ref1: $x290) ->  
+        t_past_m_v2Set(work_mr2comp0att_v2: $x287, blue_mr2comp1att_v2: $Y291, report_mr2comp2attr_v2: $x286, night_mr2comp0joinatt_v2: $Y292, night_mr2comp1joinattr_v2: $Y293, chin_vp2joinattr_v2: $Y294).
+
+Rule_v15v16_v2_2025630710: 
+    great_mr1comp0Set(board_mr1comp0attr0: $x295, wrong_mr1comp0joinattr0: $x298), 
+    affect_mr1comp1Set(different_mr1comp1attr0: $x296, wrong_mr1comp1joinattr0: $x297, wrong_mr1comp1joinattr0ref0: $x298) ->  
+        t_demand_mr1Set(board_mr1comp0attr0: $x295, different_mr1comp1attr0: $x296, warn_mr1comp2attr0: $Y299, red_mr1comp3attr0: $Y300, wrong_mr1comp0joinattr0: $x298, wrong_mr1comp1joinattr0: $x297, wrong_mr1comp2joinattr0: $Y301, narrow_vp0joinattref: $Y302, future_vp2joinattref: $Y303, chin_vp2joinatt: $Y304).
+
+Rule_v20v19v21_v3_439122300: 
+    wheel_mr2comp0Set(work_mr2comp0attr0: $x306, night_mr2comp0joinattr0: $x308), 
+    letter_mr2comp1Set(blue_mr2comp1attr0: $x305, night_mr2comp1joinattr0: $x309, night_mr2comp1joinattr0ref0: $x308), 
+    describe_mr2comp2Set(report_mr2comp2attr0: $x307, night_mr2comp2joinattr0ref1: $x309) ->  
+        t_past_mr2Set(work_mr2comp0attr0: $x306, blue_mr2comp1attr0: $x305, report_mr2comp2attr0: $x307, night_mr2comp0joinattr0: $x308, night_mr2comp1joinattr0: $x309, chin_vp2joinattref: $Y310).
+
+EGDs:
+t_test_co0nl0ce0Set(nut_co0nl1ae0: $x203, oven_vp0joinatt: $Y204a, account_vp2joinatt: $x203a),
+t_test_co0nl0ce0Set(nut_co0nl1ae0: $x203, oven_vp0joinatt: $Y204b, account_vp2joinatt: $x203b) -> $Y204a == $Y204b.
+
+t_test_co0nl0ce0Set(nut_co0nl1ae0: $x203, oven_vp0joinatt: $Y204a, account_vp2joinatt: $x203a),
+t_test_co0nl0ce0Set(nut_co0nl1ae0: $x203, oven_vp0joinatt: $Y204b, account_vp2joinatt: $x203b) -> $x203a == $x203b.
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

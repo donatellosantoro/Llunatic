@@ -1,0 +1,25 @@
+#prescription
+rxid,patient,npiref
+P1,J. Doe,_L407
+P3,M. White,5556
+P1,J. Doe,_L407
+P2,W. Smith,5555
+
+#doctor
+npi,name,hospital,email
+_L407,_L411,Sacred Hearth,chase@sh.com
+_L16,G. House,PPTH,house@ppth.com
+5556,_SKt0-N1(5556),_SKt0-N2(5556),_SKt0-N3(5556)
+_L407,_L411,Sacred Hearth,chase@sh.com
+5555,_SKt0-N1(5555),_SKt0-N2(5555),_SKt0-N3(5555)
+_L16,G. House,PPTH,house@ppth.com
+
+#prescription_join_doctor
+rxid,patient,npiref,npi,name,hospital,email
+P3,M. White,5556,5556,_SKt0-N1(5556),_SKt0-N2(5556),_SKt0-N3(5556)
+P1,J. Doe,_L407,_L407,_L411,Sacred Hearth,chase@sh.com
+P1,J. Doe,_L407,_L407,_L411,Sacred Hearth,chase@sh.com
+P1,J. Doe,_L407,_L407,_L411,Sacred Hearth,chase@sh.com
+P1,J. Doe,_L407,_L407,_L411,Sacred Hearth,chase@sh.com
+P2,W. Smith,5555,5555,_SKt0-N1(5555),_SKt0-N2(5555),_SKt0-N3(5555)
+

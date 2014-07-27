@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d %-5p %c %n%m%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="file" class="ch.qos.logback.core.FileAppender">
+    <Append>false</Append>
+    <File>${user.home}/Temp/logLunatic.txt</File>
+    <encoder>
+      <pattern>%m%n</pattern>
+    </encoder>
+  </appender>  
+  <root level="INFO">
+    <appender-ref ref="stdout"/>
+    <!--<appender-ref ref="file"/>-->
+  </root>
+  <!--     TEST     -->
+  <!--<logger name="it.unibas.lunatic.test" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.test.BatchTest" level="DEBUG"/>-->
+  <!--     MODELLO     -->
+  <!--<logger name="it.unibas.lunatic.model.extendedegdanalysis.operators.AnalyzeDependencies" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.model.chasemc.partialorder.AbstractPartialOrder" level="DEBUG"/>-->
+  <!--     OTHERS     -->
+  <!--<logger name="it.unibas.lunatic.ScriptUtility" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.test.comparator.instances.CompareInstances" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.persistence.relational.QueryStatManager" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.persistence.relational.QueryManager" level="TRACE"/>-->
+  <!--<logger name="it.unibas.lunatic.model.chase.ChaseStats" level="DEBUG"/>-->
+  <logger name="com.mchange" level="WARN"/>
+  
+</configuration>

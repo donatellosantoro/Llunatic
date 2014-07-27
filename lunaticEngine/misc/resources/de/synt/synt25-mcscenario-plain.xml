@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+test_co0nl0ce0Set(nut_co0nl1ae0)
+slope_mr0comp0Set(measure_mr0comp0attr0,branch_mr0comp0joinattr0)
+touch_mr0comp1Set(cheese_mr0comp1attr0,branch_mr0comp1joinattr0,branch_mr0comp1joinattr0ref0)
+society_mr0comp2Set(compare_mr0comp2attr0,branch_mr0comp2joinattr0ref1)
+great_mr1comp0Set(board_mr1comp0attr0,wrong_mr1comp0joinattr0)
+affect_mr1comp1Set(different_mr1comp1attr0,wrong_mr1comp1joinattr0,wrong_mr1comp1joinattr0ref0)
+society_mr1comp2Set(warn_mr1comp2attr0,wrong_mr1comp2joinattr0,wrong_mr1comp2joinattr0ref1)
+tail_mr1comp3Set(red_mr1comp3attr0,wrong_mr1comp3joinattr0ref2)
+wheel_mr2comp0Set(work_mr2comp0attr0,night_mr2comp0joinattr0)
+letter_mr2comp1Set(blue_mr2comp1attr0,night_mr2comp1joinattr0,night_mr2comp1joinattr0ref0)
+describe_mr2comp2Set(report_mr2comp2attr0,night_mr2comp2joinattr0ref1)
+find_vp0Set(attention_vp0a0)
+rest_vp1Set(place_vp1a0)
+pipe_vp2Set(indicate_vp2a0)
+]]>
+    </generate>
+  </source>
+  <target>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+t_test_co0nl0ce0Set(nut_co0nl1ae0, oven_vp0joinatt, account_vp2joinatt)
+t_art_mr0Set(measure_mr0comp0attr0, cheese_mr0comp1attr0, compare_mr0comp2attr0, branch_mr0comp0joinattr0, branch_mr0comp1joinattr0, oven_vp0joinattref, narrow_vp0joinatt, account_vp2joinattref, future_vp2joinatt)
+t_demand_mr1Set(board_mr1comp0attr0, different_mr1comp1attr0, warn_mr1comp2attr0, red_mr1comp3attr0, wrong_mr1comp0joinattr0, wrong_mr1comp1joinattr0, wrong_mr1comp2joinattr0, narrow_vp0joinattref, future_vp2joinattref, chin_vp2joinatt)
+t_past_mr2Set(work_mr2comp0attr0, blue_mr2comp1attr0, report_mr2comp2attr0, night_mr2comp0joinattr0, night_mr2comp1joinattr0, chin_vp2joinattref)
+t_reveal_vp0tt2Set(attention_vp0a0)
+t_expansion_vp1tt0Set(place_vp1a0)
+t_twist_vp2tt3Set(indicate_vp2a0)
+t_past_m_v2Set(work_mr2comp0att_v2, blue_mr2comp1att_v2, report_mr2comp2attr_v2, night_mr2comp0joinatt_v2, night_mr2comp1joinattr_v2, chin_vp2joinattr_v2)
+t_reveal_vp0t_v2Set(attention_vp_v2)
+t_expansion_vp1t_v2Set(place_vp_v2)
+t_twist_v_v2Set(indicate_v_v2)
+]]>
+    </generate>
+  </target>
+  <!--dependencies>
+<![CDATA[
+STTGDs:
+IBDBookSet(title: $t) -> BookSet(title: $t, pubId: $N).
+IBLBookSet(title: $t, pubId: $i) -> BookSet(title: $t, pubId: $i).
+IBLPublisherSet(id: $i, name: $n) -> PublisherSet(id: $i, name: $n).
+LOCSet(title: $t, publisher: $p) -> PublisherSet(id: $N, name: $p), BookSet(title: $t, pubId: $N).
+]]>
+  </dependencies-->
+  <partialOrder/>
+</scenario>
+

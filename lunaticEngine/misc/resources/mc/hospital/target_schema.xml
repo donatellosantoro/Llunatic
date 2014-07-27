@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<init-db>
+  <![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table hospital(
+  oid serial,
+  providerNumber varchar(50),
+  hospitalName varchar(50), 
+  address1 varchar(50), 
+  address2 varchar(50), 
+  address3 varchar(50), 
+  city varchar(50), 
+  state varchar(50), 
+  zip varchar(50), 
+  country varchar(50), 
+  phone varchar(50), 
+  hospitalType varchar(50), 
+  hospitalOwner varchar(50), 
+  emergencyService varchar(50), 
+  condition varchar(50), 
+  measureCode varchar(50), 
+  measureName varchar(200), 
+  score varchar(50), 
+  sample varchar(50), 
+  stateAvg varchar(50)
+);
+]]>
+</init-db>

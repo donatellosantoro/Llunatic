@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: it.unibas.lunatic.core
+OpenIDE-Module-Localizing-Bundle: it/unibas/lunatic/core/Bundle.properties
+OpenIDE-Module-Specification-Version: 0.1.3
+AutoUpdate-Essential-Module: true

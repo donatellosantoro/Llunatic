@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+r(a, b, conf, c)
+INSTANCE:
+r(a: "1", b: "x",  conf: "0.9", c: "10")
+r(a: "1", b: "y",  conf: "0.0", c: "2")
+r(a: "10", b: "y", conf: "0.5", c: "2")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+fd1: r(a: $a, b: $b1,  conf: $conf1, c: $c1),
+r(a: $a, b: $b2,  conf: $conf2, c: $c2) 
+    -> $b1 == $b2.
+
+fd2: r(a: $a1, b: $b1,  conf: $conf1, c: $c),
+r(a: $a2, b: $b2,  conf: $conf2, c: $c) 
+    -> $b1 == $b2.
+]]>
+  </dependencies>
+  <orderingAttributes>
+    <orderingAttribute>
+      <attribute>r.b</attribute>
+      <associatedAttribute>r.conf</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+    </orderingAttribute>  
+  </orderingAttributes>
+  <costManager>
+      <type>Standard</type>
+      <doPermutations>false</doPermutations>
+      <doBackward>false</doBackward>
+  </costManager>
+</scenario>
+

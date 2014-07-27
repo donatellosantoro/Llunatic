@@ -1,0 +1,573 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>Llunatic Chase Engine</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html --> 
+<meta name="src" content="readMe.tex"> 
+<meta name="date" content="2014-03-04 17:42:00"> 
+<link rel="stylesheet" type="text/css" href="readMe.css"> 
+</head><body 
+>
+   <div class="maketitle">
+
+
+
+<h2 class="titleHead">Llunatic Chase Engine</h2>
+<div class="author" > <span 
+class="cmr-12x-x-120">Dipartimento di Matematica, Informatica ed Economia</span>
+<br />        <span 
+class="cmr-12x-x-120">Universit</span><span 
+class="cmr-12x-x-120">à della Basilicata &#8211; Potenza, Italy</span>
+<br />    <span 
+class="cmtt-12x-x-120">http://www.db.unibas.it/projects/llunatic</span>
+<br />                           <span 
+class="cmcsc-10x-x-109"><span 
+class="small-caps">v</span><span 
+class="small-caps">e</span><span 
+class="small-caps">r</span><span 
+class="small-caps">s</span><span 
+class="small-caps">i</span><span 
+class="small-caps">o</span><span 
+class="small-caps">n</span> 1.0 </span></div><br />
+<div class="date" ><span 
+class="cmr-12x-x-120">March 4, 2014</span></div>
+   </div>
+   <h3 class="likesectionHead"><a 
+ name="x1-1000"></a>Contents</h3>
+   <div class="tableofcontents">
+   <span class="sectionToc" >1 <a 
+href="#x1-20001" id="QQ2-1-2">Overview</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >1.1 <a 
+href="#x1-30001.1" id="QQ2-1-3">Description</a></span>
+<br />   <span class="sectionToc" >2 <a 
+href="#x1-40002" id="QQ2-1-5">Specification Example</a></span>
+<br />   <span class="sectionToc" >3 <a 
+href="#x1-50003" id="QQ2-1-6">Graphical User Interface and Main Functionalities</a></span>
+<br />   <span class="sectionToc" >4 <a 
+href="#x1-60004" id="QQ2-1-9">Advanced Features</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >4.1 <a 
+href="#x1-70004.1" id="QQ2-1-10">User Interaction</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >4.2 <a 
+href="#x1-80004.2" id="QQ2-1-11">Partial Order with JS</a></span>
+<br />   <span class="sectionToc" >5 <a 
+href="#x1-90005" id="QQ2-1-12">Appendix</a></span>
+   </div>
+<!--l. 46--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ name="x1-20001"></a>Overview</h3>
+
+<!--l. 47--><p class="noindent" >This document describes <span 
+class="cmcsc-10x-x-120">L<span 
+class="small-caps">l</span><span 
+class="small-caps">u</span><span 
+class="small-caps">n</span><span 
+class="small-caps">a</span><span 
+class="small-caps">t</span><span 
+class="small-caps">i</span><span 
+class="small-caps">c</span></span>, a <span 
+class="cmti-12">scalable, general purpose chase</span>
+<span 
+class="cmti-12">engine </span>developed at the Università della Basilicata by the group lead
+by Prof. Giansalvatore Mecca. <span 
+class="cmcsc-10x-x-120">L<span 
+class="small-caps">l</span><span 
+class="small-caps">u</span><span 
+class="small-caps">n</span><span 
+class="small-caps">a</span><span 
+class="small-caps">t</span><span 
+class="small-caps">i</span><span 
+class="small-caps">c</span> </span>supports data management
+problems where there is the need to exchange and clean data. In particular,
+given a declarative specification of the desired rules (possibly including a
+transformation between a source schema and a target one), <span 
+class="cmcsc-10x-x-120">L<span 
+class="small-caps">l</span><span 
+class="small-caps">u</span><span 
+class="small-caps">n</span><span 
+class="small-caps">a</span><span 
+class="small-caps">t</span><span 
+class="small-caps">i</span><span 
+class="small-caps">c</span></span>
+enforces them over the provided datasets with the semantics described in
+<span class="cite">[<a 
+href="#XGeerts2014">2</a>]</span>.
+<!--l. 49--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">1.1   </span> <a 
+ name="x1-30001.1"></a>Description</h4>
+<!--l. 50--><p class="noindent" >The <span 
+class="cmcsc-10x-x-120">L<span 
+class="small-caps">l</span><span 
+class="small-caps">u</span><span 
+class="small-caps">n</span><span 
+class="small-caps">a</span><span 
+class="small-caps">t</span><span 
+class="small-caps">i</span><span 
+class="small-caps">c</span> </span>system has been developed in Java using the NetBeans Platform
+as a basis for the graphical user interface. The system architecture is shown in
+Figure<span 
+class="cmmi-12">&#x00A0;</span><a 
+href="#x1-30011">1<!--tex4ht:ref: fig:architecture --></a>.
+<!--l. 52--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+<a 
+ name="x1-30011"></a>
+
+<div class="center" 
+>
+<!--l. 54--><p class="noindent" >
+
+<!--l. 55--><p class="noindent" ><img 
+src="images/architecture.png" alt="Architecture of Llunatic"  
+>
+<br /> <div class="caption" 
+><span class="id">Figure&#x00A0;1: </span><span  
+class="content"><span 
+class="cmr-10x-x-109">Architecture of Llunatic.</span></span></div><!--tex4ht:label?: x1-30011 -->
+</div>
+
+<!--l. 60--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 63--><p class="indent" >   <span 
+class="cmcsc-10x-x-120">L<span 
+class="small-caps">l</span><span 
+class="small-caps">u</span><span 
+class="small-caps">n</span><span 
+class="small-caps">a</span><span 
+class="small-caps">t</span><span 
+class="small-caps">i</span><span 
+class="small-caps">c</span></span>&#x00A0;supports three kinds of scenarios:
+      <ul class="itemize1">
+      <li class="itemize"><span 
+class="cmbx-12">Type 1: schema-mapping scenarios </span>in the spirit of data exchange
+      literature, with one or more source databases, and a target database
+      that is related to the sources by a set of schema mappings; integrity
+      constraints  can  be  imposed  over  the  target;  given  a  set  of  source
+      instances, the goal is to generate a valid instance of the target according
+      to the mappings.
+      </li>
+      <li class="itemize"><span 
+class="cmbx-12">Type  2:  data  repairing  scenarios </span>in  the  spirit  of  data  quality
+      literature,  with  one  target  database,  possibly  multiple  <span 
+class="cmti-12">authoritative</span>
+      source tables with highly curated data, used to model the so called
+      <span 
+class="cmti-12">master-data</span>, and a set of data-quality rules over the target; these may
+      include functional dependencies, conditional functional dependencies,
+      editing rules, but also inclusion dependencies and conditional inclusion
+      dependencies; here, we are given an instance of the target that is dirty
+      with respect to the constraints, and want to generate a clean instance.
+      </li>
+      <li class="itemize"><span 
+class="cmbx-12">Type  3:  mapping  and  cleaning  scenarios</span>,  that  combine  and
+      generalize  the  two  above;  here  we  have  multiple  sources  that  may
+      include master-data, one target, a set of mappings that relate the target
+      to the sources, and a rich set of data quality constraints over the target.
+      Examples of such scenarios are in <span class="cite">[<a 
+href="#XGeerts2014">2</a>]</span>.</li></ul>
+<!--l. 76--><p class="indent" >   The above scenarios can be expressed by users in a <span 
+class="cmbx-12">scenario specification </span>by
+using an XML file. The file describes several inputs, as described next. The file
+mentioned in the following are available in the <span 
+class="cmtt-12">examples </span>folder. The complete list
+of options and parameters are reported in Section <a 
+href="#x1-90005">5<!--tex4ht:ref: sec:options --></a>.
+      <dl class="description"><dt class="description">
+<span 
+class="cmbx-12">Data</span> </dt><dd 
+class="description">Datasets        can        be        defined        in        the        xml
+      file (e.g., <span 
+class="cmtt-12">treatments-poset-mcscenario</span>) or can be loaded from an
+      existing DBMS (e.g., <span 
+class="cmtt-12">treatments-poset-dbms-mcscenario</span>). Master
+      data are always defined as sources. Constants used in the dependencies
+      are  also  represented  in  the  sources  as  master  data,  as  detailed  in
+
+      <span class="cite">[<a 
+href="#XGeerts2013">1</a>]</span> (e.g., <span 
+class="cmcsc-10x-x-120"><span 
+class="small-caps">c</span><span 
+class="small-caps">o</span><span 
+class="small-caps">n</span><span 
+class="small-caps">s</span><span 
+class="small-caps">t</span><span 
+class="small-caps">t</span><span 
+class="small-caps">a</span><span 
+class="small-caps">b</span><span 
+class="small-caps">l</span><span 
+class="small-caps">e</span><span 
+class="small-caps">c</span><span 
+class="small-caps">f</span>1 </span>in <span 
+class="cmtt-12">treatments-poset-mcscenario</span>). Target
+      data may contain data or be empty, but a target schema must always
+      be provided as it contains the results of the process.
+      </dd><dt class="description">
+<span 
+class="cmbx-12">Dependencies</span> </dt><dd 
+class="description">Target rules, such as data quality constraints, and source to
+      target transformations are defined as logical expressions in the xml file.
+      Supported formalisms are extended egds <span class="cite">[<a 
+href="#XGeerts2013">1</a>]</span> and extended tgds <span class="cite">[<a 
+href="#XGeerts2014">2</a>]</span>.
+      </dd><dt class="description">
+<span 
+class="cmbx-12">Partial Order</span> </dt><dd 
+class="description">In the xml file is possible to specify ordering attributes <span class="cite">[<a 
+href="#XGeerts2013">1</a>]</span>
+      (e.g., attribute <span 
+class="cmtt-12">customers.phone </span>in the treatments scenario).</dd></dl>
+<!--l. 84--><p class="indent" >   The scenario specification is then handled by the tool, which produces
+solutions for it. The number of alternative solutions and the interaction with the
+users are defined by using the cost and the user manager, respectively.
+      <dl class="description"><dt class="description">
+<span 
+class="cmbx-12">Cost Manager</span> </dt><dd 
+class="description">
+      <!--l. 89--><p class="noindent" >It defines how to prune the chase tree and discard partial solutions
+      along the process to limit the size of the output. The pruning is helpful
+      both for scalability and for readability, as it reduces the solutions space
+      and favor users consumption. Each cost manager is defined by a type
+      and a set of configuration values.
+           <dl class="description"><dt class="description">
+      <span 
+class="cmbx-12">Standard</span> </dt><dd 
+class="description">It is the default cost manager. As it that keeps all solutions,
+           it should be used for small scenarios only.
+           </dd><dt class="description">
+      <span 
+class="cmbx-12">Forward-only (FO)</span> </dt><dd 
+class="description">It  accepts  only  forward  repairs  and  discards
+           nodes that contain backward ones. Use false for <span 
+class="cmti-12">doBackward</span>.
+           </dd><dt class="description">
+      <span 
+class="cmbx-12">Frequency (FR)</span> </dt><dd 
+class="description">It uses the frequency of values for an attribute to
+           decide  whether  to  forward  or  backward  chase:  values  that  are
+           similar to the most frequent one are forward chased, the others
+           are backward chased. In order to choose whenever two strings
+           are similar, a strategy has to be defined, using two configuration
+           attributes: <span 
+class="cmti-12">similarityStrategy</span>, one of the similarity metrics provided by <a href="http://sourceforge.net/projects/simmetrics/">SimMetrics</a> (default is Levenshtein);
+           and <span 
+class="cmti-12">similarityThreshold</span>, a value between 0.0 and 1.0 (default 0.8).
+           A frequency cost manager is defined by a Frequency Partial Order
+           and a Similarity Cost Manager. A complete example is in the
+           scenario <span 
+class="cmtt-12">person-fr-sp-mcscenario.xml</span>.</dd></dl>
+      <!--l. 111--><p class="noindent" >Standard, Forward-only and Frequency cost manager can be further
+      customized by defining the maximum size of the chase tree: it accepts new
+      branches in the chase tree as long as the number of leaves is less than
+      the maximum size. There are two parameters to bound the chase
+      tree size: <span 
+class="cmti-12">chaseBranchingThreshold </span>and <span 
+class="cmti-12">potentialSolutionsThreshold</span>.
+      The difference between them is that the former considers all leaves,
+      instead the latter discards from the counting duplicate and invalid
+      leaves.
+      </dd><dt class="description">
+<span 
+class="cmbx-12">User Manager</span> </dt><dd 
+class="description">It is used to decide when the chase should be stopped to request
+      user input. Beside the standard one that never stops for user interaction,
+      there are several strategies supported: (<span 
+class="cmmi-12">i</span>) <span 
+class="cmti-12">Interactive </span>stops the chase and
+      asks for inputs after each new node is added to the tree; (<span 
+class="cmmi-12">ii</span>) <span 
+class="cmti-12">AfterLLUN</span>
+      only stops for nodes that contain LLUNS; (<span 
+class="cmmi-12">iii</span>) <span 
+class="cmti-12">AfterFork </span>stops the chase
+      every time for than one child is created.</dd></dl>
+   <h3 class="sectionHead"><span class="titlemark">2   </span> <a 
+ name="x1-40002"></a>Specification Example</h3>
+<!--l. 123--><p class="noindent" >We now look in detail at the mapping and cleaning example in
+<span 
+class="cmtt-12">treatments-poset-mcscenario</span>.
+<!--l. 125--><p class="indent" >   The <span 
+class="cmtt-12">source </span>element specifies the schema to generate with a simple DTD-like
+syntax, followed by the instance. For an example with disk based execution (data
+loaded from a db) we refer the user to <span 
+class="cmtt-12">treatments-poset-dbms-mcscenario</span>,
+where information for access-configuration are required. In these examples, there
+are two source tables for two target CFDs (e.g., <span 
+class="cmtt-12">consttablecf1 </span>for <span 
+class="cmtt-12">cfd1</span>) and
+only one tuple in the master data.
+<!--l. 127--><p class="indent" >   The <span 
+class="cmtt-12">target </span>element specifies the target schema and its existing instance.
+<!--l. 129--><p class="indent" >   The <span 
+class="cmtt-12">dependencies </span>element contains all the constraints of interest: the ones
+over the target schema (<span 
+class="cmtt-12">ExtTGDs </span>and <span 
+class="cmtt-12">EGDs</span>) to express the cleaning, and the
+
+source to target tgds to express the mapping (<span 
+class="cmtt-12">STTGDs</span>). Notice how CFDs are
+defined by using the source tables storing their constants.
+<!--l. 133--><p class="indent" >   Finally, the <span 
+class="cmtt-12">orderingAttributes </span>element contains two examples of attributes
+that are used in the partial order. When there is a problem for a phone, the
+correct preference is dictated by the values in <span 
+class="cmtt-12">cfphone</span>. Similarly, for conflicts over
+salary, decisions can be taken by looking at the date (a recent salary is more likely
+to be correct).
+<!--l. 136--><p class="indent" >   For this example default options are used for several parameters. For an
+example of how to set the cost manager and the configuration, we refer the reader
+to <span 
+class="cmtt-12">treatments-usermanager-mcscenario</span>. For an example of how to set
+the partial order and a different example of cost manager, we refer to
+<span 
+class="cmtt-12">person-fr-sp-mcscenario</span>. For an example of user manager, we refer to
+<span 
+class="cmtt-12">doctors-usermanager-mcscenario</span>.
+<!--l. 140--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">3   </span> <a 
+ name="x1-50003"></a>Graphical User Interface and Main Functionalities</h3>
+<!--l. 142--><p class="noindent" ><hr class="figure"><div class="figure" 
+>
+
+<a 
+ name="x1-50012"></a>
+
+<div class="center" 
+>
+<!--l. 143--><p class="noindent" >
+
+<!--l. 144--><p class="noindent" ><img 
+src="images/gui.png" alt="Screenshot of Llunatic GUI"  
+>
+<br /> <div class="caption" 
+><span class="id">Figure&#x00A0;2: </span><span  
+class="content">Screenshot of Llunatic GUI</span></div><!--tex4ht:label?: x1-50012 -->
+</div>
+
+<!--l. 147--><p class="noindent" ></div><hr class="endfigure">
+<!--l. 149--><p class="indent" >   Figure<span 
+class="cmmi-12">&#x00A0;</span><a 
+href="#x1-50012">2<!--tex4ht:ref: fig:gui --></a> depicts the main working screen for the system. The central panel
+opens a tab to show the content for an object (relation, cell group, or dependency)
+when it is double clicked from any of the other panels. The <span 
+class="cmti-12">Property </span>panel on the
+right shows information about the metadata of the objects when they are
+selected.
+<!--l. 151--><p class="indent" >   The button bar at the top contains four sections. The first section
+from the left has the basic operations to load and save a scenario.
+The second part contains undo and redo operations. The third part
+controls the chase with a button for complete execution and a button for
+step-by-step (Step by step is useful in two cases: (i) chase stopped because of the user manager, (ii) chase completed, but user changed a LLUN to a constant, thus triggering a new violation).
+The last button shows the results of the chase (cleaning result panel).
+<!--l. 157--><p class="indent" >   On the left side, the <span 
+class="cmti-12">Cleaning result </span>panel exposes all the solutions computed.
+Different icons are used for different nodes of the tree as follows.
+   <div class="table">
+
+<!--l. 160--><p class="indent" >   <a 
+ name="x1-50031"></a><hr class="float"><div class="float" 
+>
+
+<br /> <div class="caption" 
+><span class="id">Table&#x00A0;1: </span><span  
+class="content">Legend for the nodes in the tree.</span></div><!--tex4ht:label?: x1-50031 -->
+<div class="tabular"> <table id="TBL-2" class="tabular" 
+cellspacing="0" cellpadding="0" rules="groups" 
+><colgroup id="TBL-2-1g"><col 
+id="TBL-2-1"></colgroup><colgroup id="TBL-2-2g"><col 
+id="TBL-2-2"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-1-"><td  style="white-space:nowrap; text-align:center;" id="TBL-2-1-1"  
+class="td11"><img 
+src="images/icons/cs-solution.png" alt="PIC"  
+></td><td  style="white-space:nowrap; text-align:center;" id="TBL-2-1-2"  
+class="td11">     solution that contains LLUNS.        </td></tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-2-"><td  style="white-space:nowrap; text-align:center;" id="TBL-2-2-1"  
+class="td11"> <img 
+src="images/icons/cs-solution-ground.png" alt="PIC"  
+> </td><td  style="white-space:nowrap; text-align:center;" id="TBL-2-2-2"  
+class="td11">ground solution: it contains only constants.</td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-3-"><td  style="white-space:nowrap; text-align:center;" id="TBL-2-3-1"  
+class="td11"><img 
+src="images/icons/cs-user.png" alt="PIC"  
+> </td><td  style="white-space:nowrap; text-align:center;" id="TBL-2-3-2"  
+class="td11">        node added by the user.             </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-4-"><td  style="white-space:nowrap; text-align:center;" id="TBL-2-4-1"  
+class="td11"><img 
+src="images/icons/cs-intermediate.png" alt="PIC"  
+> </td><td  style="white-space:nowrap; text-align:center;" id="TBL-2-4-2"  
+class="td11">          intermediate node.                </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-5-"><td  style="white-space:nowrap; text-align:center;" id="TBL-2-5-1"  
+class="td11"><img 
+src="images/icons/cs-invalid.png" alt="PIC"  
+> </td><td  style="white-space:nowrap; text-align:center;" id="TBL-2-5-2"  
+class="td11">             invalid node.                    </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-6-"><td  style="white-space:nowrap; text-align:center;" id="TBL-2-6-1"  
+class="td11"><img 
+src="images/icons/cs-duplicate.png" alt="PIC"  
+> </td><td  style="white-space:nowrap; text-align:center;" id="TBL-2-6-2"  
+class="td11">            duplicate node.                  </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-7-"><td  style="white-space:nowrap; text-align:center;" id="TBL-2-7-1"  
+class="td11">    </td></tr></table></div>
+
+   </div><hr class="endfloat" />
+   </div>
+<!--l. 182--><p class="indent" >   There are two visualizations for the results, the chase tree or the list of
+solutions. Once a node of the tree is selected, the <span 
+class="cmti-12">Step cell groups </span>panels provides
+the information about the cells groups that have been modified in the step. At the
+bottom of the panel, nodes can be filtered by ground values/LLUNS (value filter,
+left) and by values that have changed or not (category filter, right). By
+double clicking a value in the cell group, its details are shown in the central
+panel.
+<!--l. 184--><p class="indent" >   At the bottom, the <span 
+class="cmti-12">Dependencies </span>panel shows/hides the rules for the current
+scenario. Double clicking a dependency opens a visual representation of the rule in
+the central panel.
+<!--l. 186--><p class="indent" >   On the right side, the first panel from the top contains the information about
+the <span 
+class="cmti-12">Scenario</span>, including the relations involved at the source and the target side. A
+single click on the scenario name shows its properties in the panel below: partial
+orders, cost managers, and other parameters. Double clicking a relation opens it in
+the central panel.
+   <h3 class="sectionHead"><span class="titlemark">4   </span> <a 
+ name="x1-60004"></a>Advanced Features</h3>
+<!--l. 250--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">4.1   </span> <a 
+ name="x1-70004.1"></a>User Interaction</h4>
+<!--l. 251--><p class="noindent" >The system implements user interaction to resolve LLUNS. To use this feature,
+users can right-click on a node in the tree, and then choose &#8220;Add User Node&#8221; so
+that they are able to edit cell groups with LLUN values. Once a LLUN is changed
+to a constant, all its occurrences are changed. By right clicking on a node,
+users can also invalidate chase trees: following executions will discard the
+node and its children. The level of interaction is defined via the User
+Manager.
+<!--l. 254--><p class="indent" >   One of the sample scenarios (doctors) uses a step-by-step user manager, which
+waits for user&#8217;s inputs after each LLUN is generated. Therefore users needs to
+progress the chase step-by-step.
+
+<!--l. 256--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">4.2   </span> <a 
+ name="x1-80004.2"></a>Partial Order with JS</h4>
+<!--l. 257--><p class="noindent" >It is also possible to specify a custom JavaScript implementation of a partial order
+as part of the scenario, and implement it procedurally within the JavaScript code
+(e.g., <span 
+class="cmtt-12">treatmentsPartialOrder.js</span>).
+<!--l. 259--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">5   </span> <a 
+ name="x1-90005"></a>Appendix</h3>
+<!--l. 261--><p class="noindent" >Complete list of options for the configuration file.
+      <ul class="itemize1">
+      <li class="itemize">
+
+      <div class="verbatim" id="verbatim-1">
+      &#x003C;configuration&#x003E;
+      &#x00A0;<br />removeDuplicates:&#x00A0;(boolean)
+      &#x00A0;<br />checkGroundSolutions:&#x00A0;(boolean)
+</div>
+      <!--l. 269--><p class="nopar" >
+
+      <div class="verbatim" id="verbatim-2">
+      &#x003C;costManager&#x003E;
+      &#x00A0;<br />type:&#x00A0;(string).&#x00A0;Valid&#x00A0;values
+      &#x00A0;<br />&#x00A0;&#x00A0;-&#x00A0;Standard&#x00A0;(default)
+      &#x00A0;<br />&#x00A0;&#x00A0;-&#x00A0;Similarity
+      &#x00A0;<br />similarityStrategy:&#x00A0;(string)
+      &#x00A0;<br />similarityThreshold:&#x00A0;(double)
+      &#x00A0;<br />doBackward:&#x00A0;(boolean)
+      &#x00A0;<br />chaseBranchingThreshold:&#x00A0;(int)
+      &#x00A0;<br />potentialSolutionsThreshold:&#x00A0;(int)
+</div>
+      <!--l. 281--><p class="nopar" >
+
+      <div class="verbatim" id="verbatim-3">
+      &#x003C;userManager&#x003E;
+      &#x00A0;<br />type:&#x00A0;(string)
+      &#x00A0;<br />&#x00A0;&#x00A0;-&#x00A0;Standard&#x00A0;(default)
+      &#x00A0;<br />&#x00A0;&#x00A0;-&#x00A0;Interactive
+      &#x00A0;<br />&#x00A0;&#x00A0;-&#x00A0;AfterFork
+      &#x00A0;<br />&#x00A0;&#x00A0;-&#x00A0;AfterLLUN
+</div>
+      <!--l. 290--><p class="nopar" >
+
+      <div class="verbatim" id="verbatim-4">
+      &#x003C;partialOrder&#x003E;
+      &#x00A0;<br />type:&#x00A0;(string)
+      &#x00A0;<br />&#x00A0;&#x00A0;-&#x00A0;Standard&#x00A0;(default)
+      &#x00A0;<br />&#x00A0;&#x00A0;-&#x00A0;Frequency
+</div>
+      <!--l. 297--><p class="nopar" >
+
+      <div class="verbatim" id="verbatim-5">
+      &#x003C;scriptPartialOrder&#x003E;
+      &#x00A0;<br />script:&#x00A0;(string)&#x00A0;javascript&#x00A0;file&#x00A0;path
+</div>
+      <!--l. 302--><p class="nopar" >
+
+      <div class="verbatim" id="verbatim-6">
+      &#x003C;orderingAttributes&#x003E;
+      &#x00A0;<br />orderingAttribute
+      &#x00A0;<br />&#x00A0;&#x00A0;attribute:&#x00A0;(string)
+      &#x00A0;<br />&#x00A0;&#x00A0;associatedAttribute:&#x00A0;(string)
+      &#x00A0;<br />&#x00A0;&#x00A0;valueComparator
+      &#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;@sort:&#x00A0;DESC/ASC
+      &#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;-&#x00A0;&#x003C;floatComparator/&#x003E;
+      &#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;-&#x00A0;&#x003C;dateComparator/&#x003E;
+</div>
+      <!--l. 313--><p class="nopar" >
+      </li></ul>
+<!--l. 318--><p class="indent" >   Ordering attribute example:
+
+   <div class="verbatim" id="verbatim-7">
+&#x00A0;&#x00A0;&#x003C;orderingAttribute&#x003E;
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x003C;attribute&#x003E;doctor.spec&#x003C;/attribute&#x003E;
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x003C;associatedAttribute&#x003E;doctor.conf&#x003C;/associatedAttribute&#x003E;
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x003C;valueComparator&#x00A0;sort="DESC"&#x003E;
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x003C;floatComparator/&#x003E;
+&#x00A0;<br />&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x003C;/valueComparator&#x003E;
+&#x00A0;<br />&#x00A0;&#x00A0;&#x003C;/orderingAttribute&#x003E;
+</div>
+<!--l. 327--><p class="nopar" >
+<!--l. 1--><p class="noindent" >
+   <h3 class="likesectionHead"><a 
+ name="x1-100005"></a>References</h3>
+<!--l. 1--><p class="noindent" >
+   <div class="thebibliography">
+   <p class="bibitem" ><span class="biblabel">
+ [1]<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ name="XGeerts2013"></a>F.&#x00A0;Geerts, G.&#x00A0;Mecca, P.&#x00A0;Papotti, and D.&#x00A0;Santoro.  The <span 
+class="cmcsc-10x-x-120">L<span 
+class="small-caps">l</span><span 
+class="small-caps">u</span><span 
+class="small-caps">n</span><span 
+class="small-caps">a</span><span 
+class="small-caps">t</span><span 
+class="small-caps">i</span><span 
+class="small-caps">c</span></span>
+   Data-Cleaning Framework. <span 
+class="cmti-12">PVLDB</span>, 6(10), 2013.
+   </p>
+   <p class="bibitem" ><span class="biblabel">
+ [2]<span class="bibsp">&#x00A0;&#x00A0;&#x00A0;</span></span><a 
+ name="XGeerts2014"></a>F.&#x00A0;Geerts,  G.&#x00A0;Mecca,  P.&#x00A0;Papotti,  and  D.&#x00A0;Santoro.   Mapping  and
+   Cleaning. In <span 
+class="cmti-12">ICDE</span>, 2014.
+</p>
+   </div>
+    
+</body></html> 
+
+
+

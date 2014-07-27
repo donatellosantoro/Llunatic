@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:companies</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+
+CREATE TABLE nsfgrant (
+    company text NOT NULL,
+    amount text
+) with oids;
+
+CREATE TABLE nsfgrantee (
+    name text,
+    id text NOT NULL
+) with oids;
+
+CREATE TABLE nyse (
+    symbol text NOT NULL,
+    name text
+) with oids;
+
+CREATE TABLE publiccompany (
+    name text NOT NULL,
+    city text
+) with oids;
+
+CREATE TABLE publicgrant (
+    company text NOT NULL,
+    investigator text,
+    amount text
+) with oids;
+
+ALTER TABLE ONLY nsfgrant
+    ADD CONSTRAINT nsf_grant_pkey PRIMARY KEY (company);
+
+ALTER TABLE ONLY nsfgrantee
+    ADD CONSTRAINT nsf_grantee_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY nyse
+    ADD CONSTRAINT nyse_pkey PRIMARY KEY (symbol);
+
+ALTER TABLE ONLY publiccompany
+    ADD CONSTRAINT public_company_pkey PRIMARY KEY (name);
+
+ALTER TABLE ONLY publicgrant
+    ADD CONSTRAINT publicgrant_pkey PRIMARY KEY (company);
+
+ALTER TABLE ONLY publicgrant
+    ADD CONSTRAINT public_grant_company_fkey FOREIGN KEY (company) REFERENCES publiccompany(name);
+
+INSERT INTO nsfgrant (company, amount) VALUES (23, '18000');
+INSERT INTO nsfgrant (company, amount) VALUES (25, '50000');
+
+INSERT INTO nsfgrantee (name, id) VALUES ('Yahoo!', 23);
+INSERT INTO nsfgrantee (name, id) VALUES ('Adobe', 25);
+
+INSERT INTO nyse (symbol, name) VALUES ('GOOG', 'Google');
+INSERT INTO nyse (symbol, name) VALUES ('YHOO', 'Yahoo!');
+INSERT INTO nyse (symbol, name) VALUES ('IBM', 'I.B.M.');
+
+INSERT INTO publiccompany (name, city) VALUES ('I.B.M.', 'NY');
+INSERT INTO publiccompany (name, city) VALUES ('Adobe', 'SJ');
+
+INSERT INTO publicgrant (company, investigator, amount) VALUES ('Adobe', 'Anne C.', '50000');
+INSERT INTO publicgrant (company, investigator, amount) VALUES ('I.B.M.', 'Mike B.', '25000');
+]]>
+    </init-db>
+  </source>
+  <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:companies</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+CREATE TABLE company (
+    id text NOT NULL,
+    name text
+) with oids;
+
+CREATE TABLE "grant" (
+    amount text,
+    company text
+) with oids;
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+STTGDs:
+nyse(symbol: $x1934, name: $x1935)
+  and not exists  (
+        nsfgrantee(id: $x1940, name: $x1935)
+  )
+  and not exists  (
+        publiccompany(name: $x1, city: $x1936), 
+        publicgrant(company: $x1, investigator: $x1937, amount: $x1938), $x1 == $x1935
+  ) 
+  -> 
+        company(id: $Y1942, name: $x1935).
+
+nsfgrantee(id: $x1943, name: $x1944) -> 
+        company(id: $x1943, name: $x1944).
+
+nsfgrant(amount: $x1945, company: $x1946) -> 
+        grant(amount: $x1945, company: $x1946).
+
+publiccompany(name: $x1950, city: $x1947), 
+publicgrant(company: $x1950, investigator: $x1948, amount: $x1949)
+  and not exists  (
+        nsfgrantee(id: $x1951, name: $x1950), 
+        nsfgrant(amount: $x1949, company: $x1951)
+  ) -> 
+        company(id: $Y1955, name: $x1950), 
+        grant(amount: $x1949, company: $Y1955).
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

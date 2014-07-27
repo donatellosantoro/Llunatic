@@ -1,0 +1,116 @@
+7.city,FLORENCE;,FLORENCE
+7.state,AL;,AL
+7.condition,Pneumonia;,Pneumonia
+7.measurecode,PN-38;,PN-3B
+10.condition,HeartFailiure,Heart Failure
+18.providernumber,1005,10005
+22.condition,HeartFailure,Heart Failure
+26.condition,HeartAttack,Heart Attack
+28.city,DOIHAN,DOTHAN
+31.city,CIRCLE;;;DOTHAN,DOTHAN
+31.condition,Surgical infection Prevention,Surgical Infection Prevention
+37.city,DOTHAN;,DOTHAN
+37.state,AL;,AL
+37.condition,Heart Attack;,Heart Attack
+37.measurecode,AMI-8A;,AMI-8A
+38.city,1108 ROSS CLARK CIRCLE...,DOTHAN
+38.state,DOTHAN,AL
+40.condition,HeartFailure,Heart Failure
+42.city,NORTHWEST...HARTSELLE,HARTSELLE
+44.providernumber,1009,10009
+45.providernumber,100008,10008
+45.city,LUVERNEL,LUVERNE
+46.stateavg,AL_VTE-1,AL_SCIP-VTE-1
+48.providernumber,1008,10008
+48.stateavg,AL_SCIP_INF-4,AL_SCIP-INF-4
+50.city,LUVERNE;,LUVERNE
+50.state,AL;,AL
+50.condition,Surgical Infection Prevention;,Surgical Infection Prevention
+50.measurecode,SCIP-INF-2;,SCIP-INF-2
+52.city,LUVERNE;,LUVERNE
+52.state,AL;,AL
+52.measurecode,PN-7;,PN-7
+54.city,SHEFFIELD;,SHEFFIELD
+54.state,AL;,AL
+54.condition,Heart Attack;,Heart Attack
+54.measurecode,AMI-7A;,AMI-7A
+56.city,LIVERNE,LUVERNE
+57.condition,HeartFailure,Heart Failure
+60.measurecode,SCIP-NIF-2,SCIP-INF-2
+65.state,Al;,AL
+75.condition,Surgical Infection,Surgical Infection Prevention
+75.measurecode,pREVENTION;SCIP-VTE-2,SCIP-VTE-2
+76.providernumber,1006,10006
+76.city,FLORENCE;AL;,FLORENCE
+76.state,,AL
+76.phone,,2567688400
+76.condition,,Surgical Infection Prevention
+76.measurecode,,SCIP-VTE-1
+79.phone,2567688,2567688400
+81.condition,SURGICAL INFECTION PREVENTION,Surgical Infection Prevention
+92.stateavg,AL-HF-2,AL_HF-2
+95.condition,Heart attack,Heart Attack
+95.stateavg,AL-AMI-7A,AL_AMI-7A
+97.state,35631,AL
+101.measurecode,SCOP-CARD-2,SCIP-CARD-2
+102.condition,Pineumonia,Pneumonia
+103.providernumber,1008,10008
+106.city,LYVERNE,LUVERNE
+114.condition,HEART ATTACK,Heart Attack
+115.condition,HEART ATTACK,Heart Attack
+116.condition,heart attack,Heart Attack
+118.city,LUYERNE,LUVERNE
+118.measurecode,AM-1,AMI-1
+120.stateavg,AL_SCIP_VTE-1,AL_SCIP-VTE-1
+123.measurecode,SCIP INF 3,SCIP-INF-3
+123.stateavg,AL SCIP INF 3,AL_SCIP-INF-3
+124.phone,334493354,3344933541
+125.providernumber,1007,10007
+125.condition,Surgical infection Prevention,Surgical Infection Prevention
+129.condition,PNEUMONIA,Pneumonia
+133.city,OPP;,OPP
+133.state,AL;,AL
+133.phone,3344944541,3344933541
+136.phone,334493541,3344933541
+144.condition,HEART ATTACK,Heart Attack
+145.measurecode,AMI_3,AMI-3
+147.providernumber,1001,10011
+148.condition,Surgical Infection,Surgical Infection Prevention
+148.measurecode,Prevention,SCIP-VTE-2
+158.condition,PNEUMONIA,Pneumonia
+163.condition,Hear Failure,Heart Failure
+164.condition,Hear Failure,Heart Failure
+168.condition,HeartAttack,Heart Attack
+170.stateavg,patients AL_AMI-4,AL_AMI-4
+174.condition,Surgical infection,Surgical Infection Prevention
+175.city,Hartselle,HARTSELLE
+176.city,Hartselle,HARTSELLE
+177.city,Hartselle,HARTSELLE
+183.city,Hartselle,HARTSELLE
+185.city,201 PINE STREET,HARTSELLE
+185.state,NORTHWEST;;;HARTSELLE,AL
+187.condition,Pnuumonia,Pneumonia
+188.city,Hartselle,HARTSELLE
+192.stateavg,AL-HF-1,AL_HF-1
+197.condition,HEART ATTACK,Heart Attack
+203.phone,334335337,3343353374
+208.condition,HeartAttack,Heart Attack
+210.city,ALBASTER,ALABASTER
+210.condition,HeartAttack,Heart Attack
+211.stateavg,AL_SCIP_VTE-2,AL_SCIP-VTE-2
+214.measurecode,SCIF-INF-4,SCIP-INF-4
+229.condition,HeartAttack,Heart Attack
+230.city,thomasville,THOMASVILLE
+230.condition,Heart attack,Heart Attack
+231.condition,HeartAttack,Heart Attack
+235.condition,Hear Attack,Heart Attack
+237.stateavg,AL_SCITP-VTE-1,AL_SCIP-VTE-1
+243.condition,Surgical Prevention,Surgical Infection Prevention
+245.city,FORT,FORT PAYNE
+245.state,PAYNE,AL
+247.city,FORT,FORT PAYNE
+247.state,PAYNE,AL
+257.condition,Hear Attack,Heart Attack
+258.condition,Hear Attack,Heart Attack
+259.condition,HeartAttack,Heart Attack
+263.stateavg,AL_SCIP_INF-6,AL_SCIP-INF-6

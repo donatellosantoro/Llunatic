@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<expenseDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="expenseDB.xsd">
+  <companies>
+    <company>
+      <companyId>1</companyId>
+      <companyName>Microsoft</companyName>
+      <city>Seattle</city>
+    </company>
+    <company>
+      <companyId>2</companyId>
+      <companyName>IBM</companyName>
+      <city>New York</city>
+    </company>
+    <company>
+      <companyId>3</companyId>
+      <companyName>Apple</companyName>
+      <city>Cupertino</city>
+    </company>
+  </companies>
+  <projects>
+    <project>
+      <projectName>SQL Server</projectName>
+      <year>1980</year>
+    </project>
+    <project>
+      <projectName>DB2</projectName>
+      <year>1980</year>
+    </project>
+    <project>
+      <projectName>Clio</projectName>
+      <year>2000</year>
+    </project>
+  </projects>
+  <grants>
+    <grant>
+      <principalInvestigator>Peter Parker</principalInvestigator>
+      <amount>1000.0</amount>
+      <sponsorId>5</sponsorId>
+      <projectRef>SQL Server</projectRef>
+      <grantee>1</grantee>
+    </grant>
+    <grant>
+      <principalInvestigator>Frank Castle</principalInvestigator>
+      <amount>5000.0</amount>
+      <sponsorId>6</sponsorId>
+      <projectRef>DB2</projectRef>
+      <grantee>2</grantee>
+    </grant>
+    <grant>
+      <principalInvestigator>Tony Stark</principalInvestigator>
+      <amount>NULL</amount>
+      <sponsorId>7</sponsorId>
+      <projectRef>Clio</projectRef>
+      <grantee>2</grantee>
+    </grant>
+    <grant>
+      <principalInvestigator>Bruce Banner</principalInvestigator>
+      <amount>5000</amount>
+      <sponsorId>6</sponsorId>
+      <projectRef>NULL</projectRef>
+      <grantee>1</grantee>
+    </grant>
+  </grants>
+</expenseDB>

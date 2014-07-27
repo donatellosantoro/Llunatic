@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source/>
+  <target>
+    <type>XML</type>
+    <xml>
+      <xml-schema>expenseDB.xsd</xml-schema>
+      <xml-instance>expenseDB-instance.xml</xml-instance>
+    </xml>
+  </target>
+  <dependencies/>
+  <partialOrder/>
+</scenario>
+
