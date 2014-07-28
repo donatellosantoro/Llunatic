@@ -1,17 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.scenario;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.dependency.DED;
 import java.util.List;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class DepCounter {
 
     public int getNumber(Scenario scenario) {
@@ -19,7 +11,7 @@ public class DepCounter {
         deps += count(scenario.getDEDEGDs());
         deps += count(scenario.getDEDextTGDs());
 //        deps += count(scenario.getDEDstTGDs());
-        deps += scenario.getDTGDs().size();
+        deps += scenario.getDCs().size();
         deps += scenario.getEGDs().size();
         deps += scenario.getExtEGDs().size();
         deps += scenario.getExtTGDs().size();

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package it.unibas.lunatic.gui.node.dependencies;
 
@@ -10,10 +6,6 @@ import java.util.List;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 class DepListChildFactory extends ChildFactory<Dependency> {
     
     private final List<Dependency> depList;

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.cellgroup;
 
 import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
@@ -11,10 +7,6 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Children;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class StepCellGroupsRootNode extends AbstractNode {
 
     private final ChildFactory factory;

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.db;
 
 import it.unibas.lunatic.gui.IViewManager;
@@ -10,10 +6,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
-/**
- *
- * @author Antonio Galotta
- */
 @ServiceProvider(service = TableWindowManager.class)
 public class TableWindowManager {
 

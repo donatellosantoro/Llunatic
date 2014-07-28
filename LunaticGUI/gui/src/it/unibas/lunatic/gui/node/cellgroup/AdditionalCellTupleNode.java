@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.cellgroup;
 
 import it.unibas.lunatic.model.database.AttributeRef;
@@ -9,10 +5,6 @@ import it.unibas.lunatic.model.database.Cell;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 
-/**
- *
- * @author Antonio Galotta
- */
 class AdditionalCellTupleNode extends AbstractNode {
     
     private final StepCellGroupNode stepCellGroupNode;

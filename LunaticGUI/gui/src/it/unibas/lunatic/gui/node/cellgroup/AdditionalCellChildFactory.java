@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.cellgroup;
 
-import it.unibas.lunatic.model.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.database.AttributeRef;
 import java.util.List;
 import org.apache.commons.logging.Log;
@@ -12,10 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class AdditionalCellChildFactory extends ChildFactory<AttributeRef> {
 
     private final StepCellGroupNode stepCellGroupNode;

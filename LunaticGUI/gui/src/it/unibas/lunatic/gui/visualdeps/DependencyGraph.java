@@ -1,16 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps;
 
 import javax.swing.JComponent;
 import org.netbeans.api.visual.widget.Scene;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class DependencyGraph {
 
     private final JComponent sceneView;

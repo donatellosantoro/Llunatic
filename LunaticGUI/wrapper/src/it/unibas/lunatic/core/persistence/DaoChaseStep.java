@@ -1,22 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.core.persistence;
 
 import it.unibas.lunatic.core.GenerateModifiedCells;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.core.GenerateModifiedCells;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.chasemc.operators.dbms.SQLRunQuery;
-import it.unibas.lunatic.model.chasemc.operators.mainmemory.MainMemoryRunQuery;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
+import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery;
+import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryRunQuery;
 import java.io.IOException;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class DaoChaseStep {
 
     private IRunQuery mmRunQuery = new MainMemoryRunQuery();

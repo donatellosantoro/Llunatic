@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.action.cellgroups;
 
 import it.unibas.lunatic.IApplication;
@@ -11,7 +7,7 @@ import it.unibas.lunatic.core.CellGroupHelper;
 import it.unibas.lunatic.gui.model.LoadedScenario;
 import it.unibas.lunatic.core.StepCellGroups;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import org.openide.util.Lookup;
 
 public final class RetrieveCellGroupsAction {

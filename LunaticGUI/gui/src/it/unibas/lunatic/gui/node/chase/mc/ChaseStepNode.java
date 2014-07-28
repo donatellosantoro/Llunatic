@@ -4,7 +4,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.core.StepCellGroups;
 import it.unibas.lunatic.gui.node.dependencies.StepDepRootNode;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import javax.swing.Action;
@@ -14,10 +14,6 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.nodes.Sheet;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ChaseStepNode extends AbstractNode implements IChaseTreeNode {
 
     public static final String PROP_INVALID_STEP = "invalid";

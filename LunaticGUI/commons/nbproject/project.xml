@@ -25,9 +25,24 @@
             </module-dependencies>
             <public-packages>
                 <package>com.google.common.annotations</package>
+                <package>com.google.common.base</package>
+                <package>com.google.common.base.internal</package>
+                <package>com.google.common.cache</package>
                 <package>com.google.common.collect</package>
+                <package>com.google.common.eventbus</package>
+                <package>com.google.common.hash</package>
+                <package>com.google.common.io</package>
+                <package>com.google.common.math</package>
+                <package>com.google.common.net</package>
+                <package>com.google.common.primitives</package>
+                <package>com.google.common.reflect</package>
+                <package>com.google.common.util.concurrent</package>
                 <package>it.unibas.lunatic</package>
+                <package>it.unibas.lunatic.impl</package>
+                <package>it.unibas.lunatic.impl.listener</package>
+                <package>it.unibas.lunatic.impl.model</package>
                 <package>org.apache.commons.logging</package>
+                <package>org.apache.commons.logging.impl</package>
             </public-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/guava-14.0.1.jar</runtime-relative-path>

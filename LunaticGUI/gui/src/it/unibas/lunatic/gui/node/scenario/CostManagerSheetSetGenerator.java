@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.scenario;
 
 import it.unibas.lunatic.gui.model.LoadedScenario;
-import it.unibas.lunatic.model.chasemc.costmanager.ICostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,10 +10,6 @@ import org.openide.nodes.Sheet;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 @NbBundle.Messages({
     "PSET_costManagerProperties=Cost manager properties",
     "PROP_chaseBackward=Chase backward",

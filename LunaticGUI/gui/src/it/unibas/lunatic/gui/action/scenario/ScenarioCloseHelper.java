@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.action.scenario;
 
 import it.unibas.lunatic.IApplication;
@@ -13,10 +9,6 @@ import org.openide.filesystems.FileChangeListener;
 import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ScenarioCloseHelper implements ActionListener {
 
 //    private static ScenarioCloseHelper instance;

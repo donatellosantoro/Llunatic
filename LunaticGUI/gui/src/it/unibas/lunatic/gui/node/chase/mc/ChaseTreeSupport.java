@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.chase.mc;
 
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import java.util.Collections;
 import java.util.LinkedList;
 import org.apache.commons.logging.Log;
@@ -12,10 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openide.nodes.NodeNotFoundException;
 import org.openide.nodes.NodeOp;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ChaseTreeSupport {
 
     private static Log logger = LogFactory.getLog(ChaseTreeSupport.class);

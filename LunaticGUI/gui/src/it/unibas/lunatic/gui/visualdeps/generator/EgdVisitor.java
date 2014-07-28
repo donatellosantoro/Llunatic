@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps.generator;
 
 import com.google.common.collect.Multimap;
@@ -18,10 +14,6 @@ import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class EgdVisitor {
 }
 

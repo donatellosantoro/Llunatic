@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.scenario;
 
 import it.unibas.lunatic.gui.R;
@@ -14,10 +10,6 @@ import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 @NbBundle.Messages({"sourceNode=SOURCE", "targetNode=TARGET"})
 public class ScenarioChildFactory extends ChildFactory<LoadedScenario> {
 

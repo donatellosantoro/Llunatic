@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.table;
 
 import it.unibas.lunatic.LunaticConstants;
@@ -18,10 +14,6 @@ import org.openide.awt.Actions;
 import org.openide.explorer.view.NodePopupFactory;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class TablePopupFactory extends NodePopupFactory {
 
     private Component separator = new JSeparator();

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps.generator;
 
 import it.unibas.lunatic.gui.visualdeps.components.BestPathAnchor;
@@ -27,10 +23,6 @@ import org.netbeans.api.visual.widget.EventProcessingType;
 import org.netbeans.api.visual.widget.LayerWidget;
 import org.netbeans.api.visual.widget.Widget;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class LunaticDepScene extends GraphPinScene<GraphNode, EdgeNode, PinNode> implements IVmdScene {
 
     public static final String PIN_ID_DEFAULT_SUFFIX = "#default"; // NOI18N

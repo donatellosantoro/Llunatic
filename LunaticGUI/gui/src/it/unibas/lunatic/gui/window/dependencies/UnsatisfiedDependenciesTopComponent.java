@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.dependencies;
 
 import it.unibas.lunatic.gui.R;
@@ -11,10 +7,6 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
-/**
- *
- * @author Antonio Galotta
- */
 @ConvertAsProperties(
         dtd = "-//it.unibas.lunatic.gui.window//StepDeps//EN",
         autostore = false)

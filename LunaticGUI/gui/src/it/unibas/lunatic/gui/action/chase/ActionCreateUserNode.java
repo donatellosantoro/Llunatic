@@ -1,15 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.action.chase;
 
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chasemc.operators.AddUserNode;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.AddUserNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.DialogDisplayer;

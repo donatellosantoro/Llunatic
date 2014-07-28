@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.dependencies;
 
 import it.unibas.lunatic.AbstractSelectionListener;
@@ -16,10 +12,6 @@ import java.util.Collection;
 import org.netbeans.api.visual.widget.Scene;
 import org.openide.util.Lookup;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class DependencySceneBinder extends AbstractSelectionListener<DepTupleNode> {
 
     private IApplication app = Lookup.getDefault().lookup(IApplication.class);

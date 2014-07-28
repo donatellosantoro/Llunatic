@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.impl.model;
 
 import com.google.common.eventbus.EventBus;
@@ -9,10 +5,6 @@ import it.unibas.lunatic.impl.listener.EventBusListenerImpl;
 import it.unibas.lunatic.impl.listener.IListenerImpl;
 import java.util.EventObject;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class EventBusModel extends AbstractModel {
 
     protected final EventBus bus;

@@ -1,17 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.model;
 
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseTreeRoot;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class McChaseResult implements IChaseResult {
 
     private final LoadedScenario scenario;

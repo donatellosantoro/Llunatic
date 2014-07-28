@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.action.chase.task;
 
 import it.unibas.lunatic.ITaskListener;
@@ -17,10 +13,6 @@ import org.openide.awt.StatusDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 @NbBundle.Messages({
     "MSG_ChaseScenario=Scenario chase in progress",
     "MSG_ChaseSuccessful=Chase successful",

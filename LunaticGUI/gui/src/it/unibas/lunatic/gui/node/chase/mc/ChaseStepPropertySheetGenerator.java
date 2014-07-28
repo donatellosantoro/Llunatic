@@ -1,13 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.chase.mc;
 
 import it.unibas.lunatic.LunaticConstants;
 import static it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode.*;
 import it.unibas.lunatic.gui.node.utils.StringProperty;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.database.AttributeRef;
 import java.lang.reflect.InvocationTargetException;
 import java.util.MissingResourceException;
@@ -15,10 +11,6 @@ import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 @NbBundle.Messages({
     "PROP_CellGroup=Cell group",
     "PROP_ChaseMode=Chase mode",

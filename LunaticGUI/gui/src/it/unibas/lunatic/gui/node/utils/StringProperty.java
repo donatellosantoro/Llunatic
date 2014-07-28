@@ -1,16 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.utils;
 
 import java.lang.reflect.InvocationTargetException;
 import org.openide.nodes.PropertySupport;
 
-/**
- *
- * @author Antonio Galotta
- */
 public abstract class StringProperty extends PropertySupport<String> {
 
     public StringProperty(String name) {

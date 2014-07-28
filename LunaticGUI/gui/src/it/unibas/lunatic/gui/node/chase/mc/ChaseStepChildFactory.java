@@ -1,23 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.chase.mc;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.core.DbExtractor;
 import it.unibas.lunatic.gui.node.DbNode;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.database.IDatabase;
 import java.util.ArrayList;
 import java.util.List;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ChaseStepChildFactory extends ChildFactory<DeltaChaseStep> {
 
     private DeltaChaseStep chaseStep;

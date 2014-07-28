@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps.generator.vmd;
 
 import it.unibas.lunatic.LunaticConstants;
@@ -10,10 +6,6 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import org.netbeans.api.visual.vmd.VMDGraphScene;
 import org.netbeans.api.visual.widget.Scene;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class VmdSceneGeneratorHelper implements IDependencySceneGenerator {
 
     @Override

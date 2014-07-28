@@ -24,25 +24,24 @@
                 <package>it.unibas.lunatic.model.algebra.operators</package>
                 <package>it.unibas.lunatic.model.algebra.operators.mainmemory</package>
                 <package>it.unibas.lunatic.model.algebra.sql</package>
-                <package>it.unibas.lunatic.model.chase</package>
-                <package>it.unibas.lunatic.model.chase.control</package>
-                <package>it.unibas.lunatic.model.chasede</package>
-                <package>it.unibas.lunatic.model.chasede.operators</package>
-                <package>it.unibas.lunatic.model.chasede.operators.dbms</package>
-                <package>it.unibas.lunatic.model.chasede.operators.mainmemory</package>
-                <package>it.unibas.lunatic.model.chaseded</package>
-                <package>it.unibas.lunatic.model.chaseded.dbms</package>
-                <package>it.unibas.lunatic.model.chaseded.mainmemory</package>
-                <package>it.unibas.lunatic.model.chasemc</package>
-                <package>it.unibas.lunatic.model.chasemc.costmanager</package>
-                <package>it.unibas.lunatic.model.chasemc.operators</package>
-                <package>it.unibas.lunatic.model.chasemc.operators.cache</package>
-                <package>it.unibas.lunatic.model.chasemc.operators.dbms</package>
-                <package>it.unibas.lunatic.model.chasemc.operators.mainmemory</package>
-                <package>it.unibas.lunatic.model.chasemc.operators.thread</package>
-                <package>it.unibas.lunatic.model.chasemc.partialorder</package>
-                <package>it.unibas.lunatic.model.chasemc.partialorder.valuecomparator</package>
-                <package>it.unibas.lunatic.model.chasemc.usermanager</package>
+                <package>it.unibas.lunatic.model.chase.chasede</package>
+                <package>it.unibas.lunatic.model.chase.chasede.operators</package>
+                <package>it.unibas.lunatic.model.chase.chasede.operators.dbms</package>
+                <package>it.unibas.lunatic.model.chase.chasede.operators.mainmemory</package>
+                <package>it.unibas.lunatic.model.chase.chaseded</package>
+                <package>it.unibas.lunatic.model.chase.chaseded.dbms</package>
+                <package>it.unibas.lunatic.model.chase.chaseded.mainmemory</package>
+                <package>it.unibas.lunatic.model.chase.chasemc</package>
+                <package>it.unibas.lunatic.model.chase.chasemc.costmanager</package>
+                <package>it.unibas.lunatic.model.chase.chasemc.operators</package>
+                <package>it.unibas.lunatic.model.chase.chasemc.operators.cache</package>
+                <package>it.unibas.lunatic.model.chase.chasemc.operators.dbms</package>
+                <package>it.unibas.lunatic.model.chase.chasemc.operators.mainmemory</package>
+                <package>it.unibas.lunatic.model.chase.chasemc.partialorder</package>
+                <package>it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator</package>
+                <package>it.unibas.lunatic.model.chase.chasemc.usermanager</package>
+                <package>it.unibas.lunatic.model.chase.commons</package>
+                <package>it.unibas.lunatic.model.chase.commons.control</package>
                 <package>it.unibas.lunatic.model.database</package>
                 <package>it.unibas.lunatic.model.database.dbms</package>
                 <package>it.unibas.lunatic.model.database.lazyloading</package>
@@ -85,6 +84,10 @@
                 <binary-origin>release/modules/ext/logback-core-1.1.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/c3p0-0.9.2.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/c3p0-0.9.2.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/commons-io-2.4.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-io-2.4.jar</binary-origin>
             </class-path-extension>
@@ -99,6 +102,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/js-engine.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/js-engine.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/mchange-commons-java-0.2.3.4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/mchange-commons-java-0.2.3.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jdom.jar</runtime-relative-path>
@@ -121,24 +128,12 @@
                 <binary-origin>release/modules/ext/js.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/c3p0-0.9.2-pre5.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/c3p0-0.9.2-pre5.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/postgresql-9.1-903.jdbc3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/postgresql-9.1-903.jdbc3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/mchange-commons-java-0.2.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/mchange-commons-java-0.2.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/concurrent.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/concurrent.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/commons-logging-1.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/commons-logging-1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/slf4j-api-1.7.7.jar</runtime-relative-path>

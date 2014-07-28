@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps.components;
 
 import it.unibas.lunatic.gui.visualdeps.model.EdgeNode;
@@ -16,10 +12,6 @@ import org.netbeans.api.visual.graph.layout.UniversalGraph;
 import org.netbeans.api.visual.model.ObjectScene;
 import org.netbeans.api.visual.widget.Widget;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class GraphBiLayout extends GraphLayout<GraphNode, EdgeNode> {
 
     public enum Align {

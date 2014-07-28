@@ -1,14 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.cellgroup;
 
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
-import it.unibas.lunatic.model.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.database.LLUNValue;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,10 +12,6 @@ import org.openide.awt.Actions;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class StepCellGroupNode extends AbstractNode {
     
     private Log logger = LogFactory.getLog(getClass());

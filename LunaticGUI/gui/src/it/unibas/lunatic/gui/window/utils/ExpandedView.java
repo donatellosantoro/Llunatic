@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.utils;
 
 import javax.swing.event.TreeModelEvent;
@@ -10,10 +6,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openide.explorer.view.BeanTreeView;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ExpandedView extends BeanTreeView implements TreeModelListener {
     
     private Log logger = LogFactory.getLog(getClass());

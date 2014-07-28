@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.chase;
 
 import it.unibas.lunatic.gui.ExplorerTopComponent;
@@ -13,10 +9,6 @@ import it.unibas.lunatic.gui.model.IChaseResult;
 import it.unibas.lunatic.gui.node.chase.de.DeResultNode;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class DeChaseListener extends AbstractListener<IChaseResult> {
 
     private ExplorerTopComponent tc;

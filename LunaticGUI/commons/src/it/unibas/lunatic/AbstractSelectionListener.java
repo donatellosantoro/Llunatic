@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic;
 
 import java.util.Collection;
@@ -12,10 +8,6 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.Utilities;
 
-/**
- *
- * @author Antonio Galotta
- */
 public abstract class AbstractSelectionListener<Bean> implements LookupListener {
 
     protected Log logger = LogFactory.getLog(getClass());

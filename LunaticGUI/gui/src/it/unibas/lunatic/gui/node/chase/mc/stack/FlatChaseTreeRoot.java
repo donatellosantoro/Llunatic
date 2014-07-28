@@ -1,17 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.chase.mc.stack;
 
 import it.unibas.lunatic.gui.model.McChaseResult;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class FlatChaseTreeRoot extends AbstractNode {
 
     private McChaseResult result;

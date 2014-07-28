@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps.generator;
 
 import it.unibas.lunatic.gui.visualdeps.SceneUtils;
@@ -27,10 +23,6 @@ import org.apache.commons.logging.LogFactory;
 import org.netbeans.api.visual.border.Border;
 import org.netbeans.api.visual.vmd.VMDNodeWidget;
 
-/**
- *
- * @author Antonio Galotta
- */
 class TgdVisitor implements IFormulaVisitor {
 
     private Log logger = LogFactory.getLog(getClass());

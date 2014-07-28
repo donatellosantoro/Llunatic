@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.impl.listener;
 
 import it.unibas.lunatic.*;
@@ -10,10 +6,6 @@ import it.unibas.lunatic.impl.model.AppModelChangeEvent;
 import it.unibas.lunatic.impl.model.BeanModelChangeEvent;
 import it.unibas.lunatic.impl.model.EventBusModel;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class EventBusListenerImpl<Bean> extends AbstractListenerImpl<Bean> {
 
     protected EventBusModel model;

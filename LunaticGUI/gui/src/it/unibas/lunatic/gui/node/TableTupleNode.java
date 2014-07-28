@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node;
 
 import it.unibas.lunatic.gui.node.utils.StringProperty;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.ITable;
@@ -19,10 +15,6 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 @NbBundle.Messages("tuple=Tuple ")
 public class TableTupleNode extends AbstractNode implements IChaseNode {
 

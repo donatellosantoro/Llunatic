@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node;
 
 import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
@@ -18,10 +14,6 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class PagedBatchTupleFactory extends Children.Keys<Tuple> implements ITupleFactory {
 
     private static Log logger = LogFactory.getLog(PagedBatchTupleFactory.class);

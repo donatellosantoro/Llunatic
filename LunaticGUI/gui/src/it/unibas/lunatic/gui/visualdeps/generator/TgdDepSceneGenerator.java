@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps.generator;
 
 import it.unibas.lunatic.gui.visualdeps.IDependencySceneGenerator;
@@ -25,10 +21,6 @@ import org.netbeans.api.visual.layout.SceneLayout;
 import org.netbeans.api.visual.vmd.VMDConnectionWidget;
 import org.netbeans.api.visual.widget.Scene;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class TgdDepSceneGenerator implements IDependencySceneGenerator {
 
     private Log logger = LogFactory.getLog(getClass());

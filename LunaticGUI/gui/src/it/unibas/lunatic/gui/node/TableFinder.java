@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node;
 
 import it.unibas.lunatic.exceptions.NodeNotFoundException;
@@ -10,10 +6,6 @@ import java.util.List;
 import org.openide.nodes.Node;
 import org.openide.nodes.NodeOp;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class TableFinder {
 
     public List<TableNode> findTables(Node node) {

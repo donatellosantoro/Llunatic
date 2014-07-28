@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.impl.listener;
 
 import it.unibas.lunatic.IListener;
@@ -9,10 +5,6 @@ import it.unibas.lunatic.impl.model.ObservableModel;
 import java.util.Observable;
 import java.util.Observer;
 
-/**
- *
- * @author Antonio Galotta
- */
 public final class ObserverImpl<Bean> extends AbstractListenerImpl<Bean> implements Observer {
 
     protected ObservableModel model;

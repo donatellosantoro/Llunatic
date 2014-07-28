@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps.generator.vmd;
 
 import it.unibas.lunatic.gui.visualdeps.SceneUtils;
@@ -23,10 +19,6 @@ import org.netbeans.api.visual.vmd.VMDGraphScene;
 import org.netbeans.api.visual.vmd.VMDNodeWidget;
 import org.netbeans.api.visual.vmd.VMDPinWidget;
 
-/**
- *
- * @author Antonio Galotta
- */
 class VmdTgdDepSceneGenerator implements IVmdSceneGenerator {
 
     private Dependency dep;

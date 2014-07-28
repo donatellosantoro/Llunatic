@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.model;
 
 import it.unibas.lunatic.BeansModel;
@@ -16,10 +12,6 @@ import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class LoadedScenario extends BeansModel {
 
     private ScenarioDataObject dataObject;

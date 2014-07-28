@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps;
 
 import java.awt.Color;
@@ -24,10 +20,6 @@ import org.netbeans.api.visual.widget.Scene;
 import org.netbeans.api.visual.widget.Widget;
 import org.openide.util.ImageUtilities;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class GraphColorScheme extends VMDColorScheme {
     
     static final Color COLOR_NORMAL = new Color(0xBACDF0);

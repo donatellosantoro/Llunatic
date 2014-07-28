@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.scenario;
 
 import it.unibas.lunatic.gui.node.utils.StringProperty;
-import it.unibas.lunatic.model.chasemc.partialorder.OrderingAttribute;
+import it.unibas.lunatic.model.chase.chasemc.partialorder.OrderingAttribute;
 import java.lang.reflect.InvocationTargetException;
 import org.openide.explorer.view.OutlineView;
 import org.openide.nodes.AbstractNode;
@@ -13,10 +9,6 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 @NbBundle.Messages({
     "COL_AssociatedAttribute=associated attribute",
     "COL_Sort=sort"

@@ -1,20 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.core;
 
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chasemc.operators.dbms.BuildSQLDBForChaseStep;
-import it.unibas.lunatic.model.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDBForChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class DbExtractor {
 
     private BuildMainMemoryDBForChaseStep mainMemoryBuilder = new BuildMainMemoryDBForChaseStep();

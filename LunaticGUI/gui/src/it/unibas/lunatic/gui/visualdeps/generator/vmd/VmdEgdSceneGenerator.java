@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps.generator.vmd;
 
 import com.google.common.collect.HashMultimap;
@@ -30,10 +26,6 @@ import org.netbeans.api.visual.vmd.VMDNodeWidget;
 import org.netbeans.api.visual.vmd.VMDPinWidget;
 
 
-/**
- *
- * @author Antonio Galotta
- */
 class VmdEgdSceneGenerator implements IVmdSceneGenerator {
 
     private Multimap<String, String> commonValues = HashMultimap.create();

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.cellgroup;
 
 import it.unibas.lunatic.model.database.AttributeRef;
@@ -12,10 +8,6 @@ import java.util.Set;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class AdditionalCellTupleFactory extends ChildFactory<AttributeRef> {
 
     private final AttributeRef key;

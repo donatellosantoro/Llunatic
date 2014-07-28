@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.table;
 
 import javax.swing.table.TableColumnModel;
@@ -10,10 +6,6 @@ import org.netbeans.swing.etable.ETableColumnModel;
 import org.openide.explorer.view.OutlineView;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class OutlineTableHelper {
 
 //    public void setColumns(OutlineView outlineView, Node node) {

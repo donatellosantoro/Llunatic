@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.chase;
 
 import it.unibas.lunatic.AbstractListener;
@@ -10,10 +6,6 @@ import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.IChaseResult;
 import it.unibas.lunatic.gui.model.McChaseResult;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class McResultUpdateListener extends AbstractListener<IChaseResult> {
 
     private McResultView tc;

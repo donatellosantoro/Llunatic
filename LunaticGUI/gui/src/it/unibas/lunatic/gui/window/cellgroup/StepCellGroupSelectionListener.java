@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.cellgroup;
 
 import it.unibas.lunatic.AbstractSelectionListener;
@@ -12,10 +8,6 @@ import it.unibas.lunatic.gui.node.cellgroup.StepCellGroupNode;
 import java.util.Collection;
 import org.openide.util.Lookup;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class StepCellGroupSelectionListener extends AbstractSelectionListener<StepCellGroupNode> {
 
     private IApplication app = Lookup.getDefault().lookup(IApplication.class);

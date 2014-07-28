@@ -1,17 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic;
 
 import it.unibas.lunatic.impl.IModelImpl;
 import it.unibas.lunatic.impl.IApplicationImpl;
 import org.openide.util.Lookup;
 
-/**
- *
- * @author Antonio Galotta
- */
 public abstract class BeansModel implements IModel {
 
     private IApplicationImpl applicationInjector = Lookup.getDefault().lookup(IApplicationImpl.class);

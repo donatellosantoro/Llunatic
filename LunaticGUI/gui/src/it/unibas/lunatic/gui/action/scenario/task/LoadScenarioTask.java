@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.action.scenario.task;
 
 import it.unibas.lunatic.IApplication;
@@ -27,10 +23,6 @@ import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 @NbBundle.Messages({
     "MSG_LoadError=Loading failed:"
 })

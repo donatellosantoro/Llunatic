@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.action.cellgroups;
 
 import it.unibas.lunatic.IApplication;
@@ -10,7 +6,7 @@ import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.LoadedScenario;
 import it.unibas.lunatic.gui.node.cellgroup.StepCellGroupNode;
 import it.unibas.lunatic.gui.window.cellgroup.CellGroupMultiViewManager;
-import it.unibas.lunatic.model.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.apache.commons.logging.Log;

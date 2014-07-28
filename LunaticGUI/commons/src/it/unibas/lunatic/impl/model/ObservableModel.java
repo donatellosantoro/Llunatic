@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.impl.model;
 
 import it.unibas.lunatic.IModel;
@@ -10,10 +6,6 @@ import it.unibas.lunatic.impl.listener.IListenerImpl;
 import it.unibas.lunatic.impl.listener.ObserverImpl;
 import java.util.Observable;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ObservableModel extends Observable implements IModelImpl {
 
     private Model model;

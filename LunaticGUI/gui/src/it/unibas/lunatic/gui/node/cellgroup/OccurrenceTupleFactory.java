@@ -1,12 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.cellgroup;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.core.CellGroupHelper;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IValue;
 import java.util.List;
@@ -14,10 +10,6 @@ import java.util.Set;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class OccurrenceTupleFactory extends ChildFactory<CellRef> {
 
     private DeltaChaseStep chaseStep;

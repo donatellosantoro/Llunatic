@@ -5,10 +5,6 @@ import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public interface ICellGroupCategoryFilter {
 
     public Node[] createNodesForKey(ChaseStepNode node, StepCellGroups cellGroups, ICellGroupValueFilter valueFilter);

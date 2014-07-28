@@ -1,22 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.cellgroup.filters;
 
 import it.unibas.lunatic.core.StepCellGroups;
 import it.unibas.lunatic.gui.node.cellgroup.StepCellGroupCategoryNode;
 import it.unibas.lunatic.gui.node.cellgroup.StepCellGroupNode;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
-import it.unibas.lunatic.model.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import java.util.ArrayList;
 import java.util.List;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class FilterChangedCellgroups implements ICellGroupCategoryFilter {
     
     @Override

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic;
 
 import it.unibas.lunatic.impl.IApplicationImpl;
@@ -11,10 +7,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openide.util.Lookup;
 
-/**
- *
- * @author Antonio Galotta
- */
 public abstract class ContextAwareActionProxy<Bean> extends AbstractAction implements IListener<Bean> {
 
     private IApplicationImpl applicationInjector = Lookup.getDefault().lookup(IApplicationImpl.class);

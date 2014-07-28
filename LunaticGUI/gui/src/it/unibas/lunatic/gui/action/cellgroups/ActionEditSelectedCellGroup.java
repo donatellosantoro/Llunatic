@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.action.cellgroups;
 
 import it.unibas.lunatic.gui.node.TableFinder;
@@ -14,8 +10,8 @@ import it.unibas.lunatic.gui.node.cellgroup.StepCellGroupNode;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
 import it.unibas.lunatic.gui.window.db.TableWindow;
 import it.unibas.lunatic.gui.window.db.TableWindowManager;
-import it.unibas.lunatic.model.chasemc.CellGroup;
-import it.unibas.lunatic.model.chasemc.operators.AddUserNode;
+import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.operators.AddUserNode;
 import it.unibas.lunatic.model.database.ConstantValue;
 import java.awt.event.ActionEvent;
 import java.util.List;

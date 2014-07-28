@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.cellgroup;
 
 import it.unibas.lunatic.core.CellGroupHelper;
@@ -13,10 +9,6 @@ import java.util.List;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class StepCellGroupsCategoryLoaderFactory extends ChildFactory<ChaseStepNode> {
 
     private final ChaseStepNode info;

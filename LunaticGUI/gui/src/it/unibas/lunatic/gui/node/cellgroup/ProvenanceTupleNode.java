@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.cellgroup;
 
 import it.unibas.lunatic.gui.R;
@@ -17,10 +13,6 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ProvenanceTupleNode extends AbstractNode {
 
     private final Cell cell;

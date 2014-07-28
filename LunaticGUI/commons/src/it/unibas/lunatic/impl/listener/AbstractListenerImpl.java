@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.impl.listener;
 
 import it.unibas.lunatic.IListener;
@@ -9,10 +5,6 @@ import it.unibas.lunatic.IModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/**
- *
- * @author Antonio Galotta
- */
 abstract class AbstractListenerImpl<Bean> implements IListenerImpl<Bean> {
 
     protected Log logger = LogFactory.getLog(getClass());

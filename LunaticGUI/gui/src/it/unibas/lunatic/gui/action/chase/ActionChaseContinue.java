@@ -8,7 +8,7 @@ import it.unibas.lunatic.gui.action.chase.task.ChaseTask;
 import it.unibas.lunatic.gui.action.chase.task.InteractiveChase;
 import it.unibas.lunatic.gui.model.IChaseResult;
 import it.unibas.lunatic.gui.model.LoadedScenario;
-import it.unibas.lunatic.model.chase.control.ChaseState;
+import it.unibas.lunatic.model.chase.commons.control.ChaseState;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Action;

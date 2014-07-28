@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui;
 
 import java.awt.Image;
@@ -15,10 +11,6 @@ import org.openide.awt.UndoRedo;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
-/**
- *
- * @author Antonio Galotta
- */
 public abstract class MultiViewExplorerTopComponent extends ExplorerTopComponent {
 
     protected MultiViewElementCallback callback;

@@ -1,17 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.impl.model;
 
 import it.unibas.lunatic.IApplication;
 import it.unibas.lunatic.impl.EventBusApplication;
 import java.util.EventObject;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class AppModelChangeEvent extends EventObject {
 
     private final String beanName;

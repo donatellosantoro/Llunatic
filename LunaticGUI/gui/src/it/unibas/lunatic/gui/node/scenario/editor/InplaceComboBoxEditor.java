@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.scenario.editor;
 
 import java.awt.Component;
@@ -16,10 +12,6 @@ import org.openide.explorer.propertysheet.InplaceEditor;
 import org.openide.explorer.propertysheet.PropertyEnv;
 import org.openide.explorer.propertysheet.PropertyModel;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class InplaceComboBoxEditor implements InplaceEditor {
 
     private Log logger = LogFactory.getLog(getClass());

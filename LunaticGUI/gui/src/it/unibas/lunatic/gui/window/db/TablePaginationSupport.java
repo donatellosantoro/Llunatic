@@ -3,10 +3,6 @@ package it.unibas.lunatic.gui.window.db;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class TablePaginationSupport {
 
     private Log logger = LogFactory.getLog(getClass());

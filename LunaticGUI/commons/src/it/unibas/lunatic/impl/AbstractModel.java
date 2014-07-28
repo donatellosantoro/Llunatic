@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.impl.model;
 
 import it.unibas.lunatic.impl.IModelImpl;
@@ -10,10 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/**
- *
- * @author Antonio Galotta
- */
 abstract class AbstractModel implements IModelImpl {
 
     protected Map<String, Object> beans = new ConcurrentHashMap<String, Object>();

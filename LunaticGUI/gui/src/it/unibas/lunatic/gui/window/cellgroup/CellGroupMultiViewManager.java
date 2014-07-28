@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.cellgroup;
 
 import org.netbeans.core.spi.multiview.MultiViewDescription;
@@ -9,10 +5,6 @@ import org.netbeans.core.spi.multiview.MultiViewFactory;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
-/**
- *
- * @author Antonio Galotta
- */
 @NbBundle.Messages({
     "CTL_CellGroupAction=CellGroup",
     "CTL_CellGroupTopComponent=Cell group details",

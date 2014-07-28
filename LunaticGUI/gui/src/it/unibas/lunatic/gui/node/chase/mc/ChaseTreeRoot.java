@@ -1,23 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.chase.mc;
 
 import it.unibas.lunatic.gui.model.McChaseResult;
 import it.unibas.lunatic.gui.node.utils.StringProperty;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chasemc.operators.ChaseTreeSize;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import java.lang.reflect.InvocationTargetException;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ChaseTreeRoot extends AbstractNode{
 
     private ChaseTreeSize chaseTreeSize = new ChaseTreeSize();

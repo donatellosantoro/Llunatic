@@ -1,12 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.core.UserManagerProvider;
-import it.unibas.lunatic.model.chasemc.usermanager.IUserManager;
+import it.unibas.lunatic.model.chase.chasemc.usermanager.IUserManager;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.beans.PropertyEditor;
@@ -22,10 +18,6 @@ import org.openide.explorer.propertysheet.InplaceEditor;
 import org.openide.explorer.propertysheet.PropertyEnv;
 import org.openide.explorer.propertysheet.PropertyModel;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class UserManagerSwitch extends PropertyEditorSupport implements ExPropertyEditor, InplaceEditor.Factory {
 
     private final Scenario scenario;

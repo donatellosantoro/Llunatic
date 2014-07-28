@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps.components;
 
 import org.netbeans.api.visual.anchor.AnchorShape;
@@ -9,10 +5,6 @@ import org.netbeans.api.visual.vmd.VMDColorScheme;
 import org.netbeans.api.visual.vmd.VMDConnectionWidget;
 import org.netbeans.api.visual.widget.Scene;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class CustomConnectionWidget extends VMDConnectionWidget {
 
     private boolean targetAnchorShapeHidden;

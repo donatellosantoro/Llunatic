@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.cellgroup;
 
 import it.unibas.lunatic.AbstractSelectionListener;
@@ -12,16 +8,12 @@ import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
 import it.unibas.lunatic.gui.node.cellgroup.filters.DefaultFilter;
 import it.unibas.lunatic.gui.node.cellgroup.filters.ICellGroupCategoryFilter;
 import it.unibas.lunatic.gui.node.cellgroup.filters.ICellGroupValueFilter;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import java.util.Collection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 @NbBundle.Messages({
     "TITLE_allCellGroups=Step cell groups - ",
     "TITLE_editCellGroups=Edit cell groups - "

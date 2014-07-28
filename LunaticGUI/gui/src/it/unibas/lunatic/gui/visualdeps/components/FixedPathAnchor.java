@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps.components;
 
 import java.awt.Point;
@@ -9,10 +5,6 @@ import java.awt.Rectangle;
 import org.netbeans.api.visual.anchor.Anchor;
 import org.netbeans.api.visual.widget.Widget;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class FixedPathAnchor extends Anchor {
 
     private final Direction direction;

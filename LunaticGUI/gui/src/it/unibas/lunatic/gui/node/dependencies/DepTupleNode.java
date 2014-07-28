@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.dependencies;
 
 import it.unibas.lunatic.gui.R;
@@ -19,10 +15,6 @@ import static org.openide.nodes.Node.PROP_NAME;
 import org.openide.nodes.Sheet;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 @NbBundle.Messages({
     "PROP_DependencyType=Dependency type",
     "PROP_DependencyId=id"

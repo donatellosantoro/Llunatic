@@ -1,15 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.action.chase.task;
 
 import it.unibas.lunatic.ITaskListener;
 import it.unibas.lunatic.gui.IViewManager;
-import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.IChaseResult;
 import it.unibas.lunatic.gui.model.LoadedScenario;
-import it.unibas.lunatic.model.chase.control.ChaseState;
+import it.unibas.lunatic.model.chase.commons.control.ChaseState;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.SwingWorker;
@@ -18,10 +13,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openide.util.Cancellable;
 import org.openide.util.Lookup;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ChaseTask extends SwingWorker<IChaseResult, Object> implements Cancellable, Observer {
 
     protected Log logger = LogFactory.getLog(ChaseTask.class);

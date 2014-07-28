@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.scenario;
 
 import it.unibas.lunatic.gui.node.scenario.editor.UserManagerEditor;
@@ -10,9 +6,9 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.gui.model.LoadedScenario;
 import it.unibas.lunatic.gui.node.scenario.editor.CostManagerEditor;
 import it.unibas.lunatic.gui.node.utils.StringProperty;
-import it.unibas.lunatic.model.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chasemc.partialorder.IPartialOrder;
-import it.unibas.lunatic.model.chasemc.usermanager.IUserManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
+import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
+import it.unibas.lunatic.model.chase.chasemc.usermanager.IUserManager;
 import java.beans.PropertyEditor;
 import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.logging.Log;
@@ -21,10 +17,6 @@ import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Antonio Galotta
- */
 @NbBundle.Messages({
     "PROP_partialOrder=Partial order",
     "PROP_costManager=Cost manager",

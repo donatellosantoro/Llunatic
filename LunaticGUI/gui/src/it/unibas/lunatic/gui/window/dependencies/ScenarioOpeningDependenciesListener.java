@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.dependencies;
 
 import it.unibas.lunatic.AbstractListener;
@@ -12,10 +8,6 @@ import it.unibas.lunatic.gui.model.LoadedScenario;
 import it.unibas.lunatic.gui.node.dependencies.DepRootNode;
 import it.unibas.lunatic.gui.node.scenario.ScenarioNode;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ScenarioOpeningDependenciesListener extends AbstractListener<LoadedScenario> {
 
     private ExplorerTopComponent provider;

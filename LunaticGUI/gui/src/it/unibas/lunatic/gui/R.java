@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class R {
 
     public static class Bean {

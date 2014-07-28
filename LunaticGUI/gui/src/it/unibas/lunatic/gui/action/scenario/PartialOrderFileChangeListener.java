@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.action.scenario;
 
 import it.unibas.lunatic.gui.data.ScenarioDataObject;
@@ -10,10 +6,6 @@ import org.openide.filesystems.FileChangeListener;
 import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileRenameEvent;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class PartialOrderFileChangeListener implements FileChangeListener {
 
     private ScenarioDataObject scenario;

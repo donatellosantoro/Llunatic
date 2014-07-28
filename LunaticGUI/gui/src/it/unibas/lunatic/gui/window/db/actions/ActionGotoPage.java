@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.db.actions;
 
 import it.unibas.lunatic.gui.window.db.DbPagedTableTopComponent;
@@ -9,10 +5,6 @@ import it.unibas.lunatic.gui.window.db.TablePaginationSupport;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ActionGotoPage extends AbstractAction {
 
     private final DbPagedTableTopComponent pagedTableView;

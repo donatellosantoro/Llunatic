@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.action.cellgroups;
 
 import it.unibas.lunatic.IApplication;
@@ -19,10 +15,10 @@ import it.unibas.lunatic.gui.node.chase.mc.ChaseTreeRoot;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseTreeSupport;
 import it.unibas.lunatic.gui.window.cellgroup.CellGroupMultiViewManager;
 import it.unibas.lunatic.gui.window.db.TableWindow;
-import it.unibas.lunatic.model.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.apache.commons.logging.Log;

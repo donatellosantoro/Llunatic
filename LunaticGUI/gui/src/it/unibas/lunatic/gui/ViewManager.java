@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui;
 
 import java.awt.Frame;
@@ -12,10 +8,6 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-/**
- *
- * @author Antonio Galotta
- */
 @ServiceProvider(service = IViewManager.class, position = 2)
 public class ViewManager implements IViewManager {
 

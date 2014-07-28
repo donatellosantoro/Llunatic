@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node.dependencies;
 
 import it.unibas.lunatic.Scenario;
@@ -12,10 +8,6 @@ import java.util.List;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class DepRootChildFactory extends ChildFactory<Scenario> {
     
     private Scenario scenario;
@@ -36,7 +28,7 @@ public class DepRootChildFactory extends ChildFactory<Scenario> {
         addDEDNode(key.getDEDEGDs(), nodes,"DEDEGDs");
         addDEDNode(key.getDEDextTGDs(), nodes, "DEDextTGDs");
 //        addDEDNode(key.getDEDstTGDs(), nodes, "DEDstTGDs");
-        addNode(key.getDTGDs(), nodes, "DTGDs");
+        addNode(key.getDCs(), nodes, "DTGDs");
         addNode(key.getEGDs(), nodes, "EGDs");
         addNode(key.getExtEGDs(), nodes, "ExtEGDs");
         addNode(key.getExtTGDs(), nodes, "ExtTGDs");

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.action.chase.task;
 
 import it.unibas.lunatic.Scenario;
@@ -9,14 +5,10 @@ import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.IChaseResult;
 import it.unibas.lunatic.gui.model.LoadedScenario;
 import it.unibas.lunatic.gui.model.McChaseResult;
-import it.unibas.lunatic.model.chase.control.IChaseState;
-import it.unibas.lunatic.model.chasemc.ChaseMCScenario;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class InteractiveChase implements IChaseOperator {
 
     @Override

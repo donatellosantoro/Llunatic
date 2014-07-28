@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.utils;
 
 import it.unibas.lunatic.gui.IViewManager;
@@ -10,10 +6,6 @@ import java.beans.PropertyChangeListener;
 import org.openide.util.Lookup;
 import org.openide.windows.TopComponent;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class TopComponentListener implements PropertyChangeListener {
 
     private TopComponent tc;

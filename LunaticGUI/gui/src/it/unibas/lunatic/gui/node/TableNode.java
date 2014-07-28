@@ -1,13 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.node;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.gui.R;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.database.Attribute;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.ITable;
@@ -18,10 +14,6 @@ import org.openide.awt.Actions;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class TableNode extends AbstractNode implements IChaseNode {
 
     private Scenario scenario;

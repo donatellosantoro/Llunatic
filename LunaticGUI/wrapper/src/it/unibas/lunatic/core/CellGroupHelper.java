@@ -1,29 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.core;
 
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chasemc.CellGroup;
-import it.unibas.lunatic.model.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chasemc.operators.AddUserNode;
-import it.unibas.lunatic.model.chasemc.operators.CheckUnsatisfiedDependencies;
-import it.unibas.lunatic.model.chasemc.operators.IBuildDatabaseForChaseStep;
-import it.unibas.lunatic.model.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.chasemc.operators.IValueOccurrenceHandlerMC;
-import it.unibas.lunatic.model.chasemc.operators.ValueExtractor;
+import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.AddUserNode;
+import it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies;
+import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
+import it.unibas.lunatic.model.chase.chasemc.operators.IValueOccurrenceHandlerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.ValueExtractor;
 import it.unibas.lunatic.model.database.IValue;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class CellGroupHelper {
 
     private static Log logger = LogFactory.getLog(CellGroupHelper.class);

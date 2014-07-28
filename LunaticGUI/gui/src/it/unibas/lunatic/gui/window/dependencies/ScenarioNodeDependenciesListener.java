@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.window.dependencies;
 
 import it.unibas.lunatic.AbstractSelectionListener;
@@ -10,10 +6,6 @@ import it.unibas.lunatic.gui.node.dependencies.DepRootNode;
 import it.unibas.lunatic.gui.node.scenario.ScenarioNode;
 import java.util.Collection;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class ScenarioNodeDependenciesListener extends AbstractSelectionListener<ScenarioNode> {
 
     private ExplorerTopComponent provider;

@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.unibas.lunatic.gui.visualdeps.model;
 
-/**
- *
- * @author Antonio Galotta
- */
 public class PinNode extends AbstractVisualNode {
 
     private final GraphNode graphNode;
