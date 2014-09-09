@@ -16,17 +16,15 @@ import it.unibas.lunatic.model.dependency.DED;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.utility.combinatorial.GenericListGenerator;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ChaseDEDScenario implements IDEDChaser {
+public class ChaseDEDScenarioGreedy implements IDEDChaser {
 
     public static final int ITERATION_LIMIT = 10;
-    private static Logger logger = LoggerFactory.getLogger(ChaseDEDScenario.class);
+    private static Logger logger = LoggerFactory.getLogger(ChaseDEDScenarioGreedy.class);
     //
     private IChaseSTTGDs stChaser;
     private ChaseDEDExtTGDs extTgdChaser;
@@ -36,7 +34,7 @@ public class ChaseDEDScenario implements IDEDChaser {
 //    private FindSymmetricAtoms symmetryFinder = new FindSymmetricAtoms();
     private ImmutableChaseState immutableChaseState = ImmutableChaseState.getInstance();
 
-    public ChaseDEDScenario(IChaseSTTGDs stChaser, IInsertFromSelectNaive naiveInsert, IRemoveDuplicates duplicateRemover,
+    public ChaseDEDScenarioGreedy(IChaseSTTGDs stChaser, IInsertFromSelectNaive naiveInsert, IRemoveDuplicates duplicateRemover,
             IValueOccurrenceHandlerDE valueOccurrenceHandler, IRunQuery queryRunner, IUpdateCell cellUpdater, IDatabaseManager databaseManager) {
         this.stChaser = stChaser;
         this.extTgdChaser = new ChaseDEDExtTGDs(naiveInsert);
@@ -50,14 +48,14 @@ public class ChaseDEDScenario implements IDEDChaser {
     }
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
-        List<Map<DED, Dependency>> dedScenarios = generateDEDScenarios(scenario);
+        List<GreedyDEDScenario> dedScenarios = generateGreedyDEDScenarios(scenario);
         if (logger.isDebugEnabled()) printDEDScenarios(dedScenarios);
-        Iterator<Map<DED, Dependency>> it = dedScenarios.iterator();
+        Iterator<GreedyDEDScenario> it = dedScenarios.iterator();
         stChaser.doChase(scenario, true);
         IDatabase originalTarget = databaseManager.cloneTarget(scenario);
         IDatabase result = null;
         while (it.hasNext()) {
-            Map<DED, Dependency> dedScenario = it.next();
+            GreedyDEDScenario dedScenario = it.next();
             result = doChase(scenario, chaseState, dedScenario);
             if (result != null) {
                 //Solution found
@@ -72,8 +70,8 @@ public class ChaseDEDScenario implements IDEDChaser {
         throw new ChaseException("Unable to find solution...");
     }
 
-    private IDatabase doChase(Scenario scenario, IChaseState chaseState, Map<DED, Dependency> dedScenario) {
-        if (logger.isDebugEnabled()) logger.debug("Chasing dependencies on ded scenario: " + printDEDScenario(dedScenario));
+    private IDatabase doChase(Scenario scenario, IChaseState chaseState, GreedyDEDScenario dedScenario) {
+        if (logger.isDebugEnabled()) logger.debug("Chasing dependencies on ded scenario: " + dedScenario);
 //        ChaseUtility.findTargetJoinAttributes(scenario.getEGDs());
 //        ChaseUtility.findQueriedAttributes(scenario.getEGDs());
 //        symmetryFinder.findSymmetricAtoms(scenario.getEGDs());
@@ -98,7 +96,7 @@ public class ChaseDEDScenario implements IDEDChaser {
         }
     }
 
-    private List<Map<DED, Dependency>> generateDEDScenarios(Scenario scenario) {
+    private List<GreedyDEDScenario> generateGreedyDEDScenarios(Scenario scenario) {
         List<DED> deds = new ArrayList<DED>();
 //        deds.addAll(scenario.getDEDstTGDs());
         deds.addAll(scenario.getDEDextTGDs());
@@ -106,44 +104,36 @@ public class ChaseDEDScenario implements IDEDChaser {
         return generateCombinations(deds);
     }
 
-    private List<Map<DED, Dependency>> generateCombinations(List<DED> deds) {
+    private List<GreedyDEDScenario> generateCombinations(List<DED> deds) {
         List<List<Dependency>> lists = new ArrayList<List<Dependency>>();
         for (DED ded : deds) {
             lists.add(ded.getAssociatedDependencies());
         }
         List<List<Dependency>> result = new GenericListGenerator<Dependency>().generateListsOfElements(lists);
-        List<Map<DED, Dependency>> scenarios = new ArrayList<Map<DED, Dependency>>();
+        List<GreedyDEDScenario> scenarios = new ArrayList<GreedyDEDScenario>();
         for (List<Dependency> combinations : result) {
-            Map<DED, Dependency> scenario = generateScenario(deds, combinations);
+            GreedyDEDScenario scenario = generateScenario(deds, combinations);
             scenarios.add(scenario);
         }
         return scenarios;
     }
 
-    private Map<DED, Dependency> generateScenario(List<DED> deds, List<Dependency> combinations) {
-        Map<DED, Dependency> scenario = new HashMap<DED, Dependency>();
+    private GreedyDEDScenario generateScenario(List<DED> deds, List<Dependency> combinations) {
+        GreedyDEDScenario scenario = new GreedyDEDScenario();
         for (int i = 0; i < deds.size(); i++) {
-            scenario.put(deds.get(i), combinations.get(i));
+            scenario.addDEDInstantiation(deds.get(i), combinations.get(i));
         }
         return scenario;
     }
 
-    private void printDEDScenarios(List<Map<DED, Dependency>> dedScenarios) {
-        StringBuffer sb = new StringBuffer();
+    private void printDEDScenarios(List<GreedyDEDScenario> dedScenarios) {
+        StringBuilder sb = new StringBuilder();
         sb.append("DED Scenarios: ").append(dedScenarios.size()).append("\n");
         for (int i = 0; i < dedScenarios.size(); i++) {
             sb.append("## Scenario ").append(i).append("\n");
-            Map<DED, Dependency> dedScenario = dedScenarios.get(i);
-            sb.append(printDEDScenario(dedScenario));
+            sb.append(dedScenarios.get(i));
         }
         if (logger.isDebugEnabled()) logger.debug(sb.toString());
     }
 
-    private String printDEDScenario(Map<DED, Dependency> dedScenario) {
-        StringBuilder sb = new StringBuilder();
-        for (DED ded : dedScenario.keySet()) {
-            sb.append("DED ").append(ded.getId()).append(" ").append(dedScenario.get(ded)).append("\n");
-        }
-        return sb.toString();
-    }
 }

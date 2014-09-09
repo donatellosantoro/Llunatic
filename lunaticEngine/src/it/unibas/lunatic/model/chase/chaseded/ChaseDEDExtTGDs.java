@@ -24,7 +24,7 @@ public class ChaseDEDExtTGDs {
         this.naiveInsert = naiveInsert;
     }
 
-    public boolean doChase(Scenario scenario, Map<DED, Dependency> dedScenario) {
+    public boolean doChase(Scenario scenario, GreedyDEDScenario dedScenario) {
         if (logger.isDebugEnabled()) logger.debug("Chasing st tgds on scenario: " + scenario);
         Map<DED, IAlgebraOperator> treeMap = buildAlgebraTrees(scenario.getDEDextTGDs(), scenario, dedScenario);
         boolean modified = false;
@@ -32,7 +32,7 @@ public class ChaseDEDExtTGDs {
         while (true) {
             boolean insertedTuples = false;
             for (DED dedExtTgd : scenario.getDEDextTGDs()) {
-                Dependency eTgd = dedScenario.get(dedExtTgd);
+                Dependency eTgd = dedScenario.getDependencyForDED(dedExtTgd);
                 if (logger.isDebugEnabled()) logger.debug("----Chasing tgd: " + eTgd);
                 IAlgebraOperator treeRoot = treeMap.get(dedExtTgd);
                 insertedTuples = naiveInsert.execute(eTgd, treeRoot, scenario.getSource(), scenario.getTarget()) || insertedTuples;
@@ -50,10 +50,10 @@ public class ChaseDEDExtTGDs {
         return modified;
     }
 
-    private Map<DED, IAlgebraOperator> buildAlgebraTrees(List<DED> extTGDs, Scenario scenario, Map<DED, Dependency> dedScenario) {
+    private Map<DED, IAlgebraOperator> buildAlgebraTrees(List<DED> extTGDs, Scenario scenario, GreedyDEDScenario dedScenario) {
         Map<DED, IAlgebraOperator> result = new HashMap<DED, IAlgebraOperator>();
         for (DED ded : extTGDs) {
-            IAlgebraOperator standardInsert = insertGenerator.generate(ded, dedScenario.get(ded), scenario);
+            IAlgebraOperator standardInsert = insertGenerator.generate(ded, dedScenario.getDependencyForDED(ded), scenario);
             if (logger.isDebugEnabled()) logger.debug("Operator for dependency " + ded + "\n" + standardInsert);
             result.put(ded, standardInsert);
         }

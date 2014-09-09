@@ -48,6 +48,6 @@ public class DEDChaserFactory {
         } else {
             throw new IllegalArgumentException("Scenario is not supported");
         }
-        return new ChaseDEDScenario(stChaser, naiveInsert, duplicateRemover, valueOccurrenceHandler, queryRunner, cellUpdater, databaseManager);
+        return new ChaseDEDScenarioGreedy(stChaser, naiveInsert, duplicateRemover, valueOccurrenceHandler, queryRunner, cellUpdater, databaseManager);
     }
 }
