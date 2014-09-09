@@ -49,9 +49,9 @@
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   <Component id="btnLast" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="lblQuery" pref="204" max="32767" attributes="0"/>
+                  <Component id="lblQuery" pref="211" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="lblRowText" pref="50" max="32767" attributes="0"/>
+                  <Component id="lblRowText" pref="57" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="lblRowNumber" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -64,7 +64,7 @@
                   <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                       <Component id="lblQuery" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnPrevious" alignment="0" max="32767" attributes="0"/>
+                      <Component id="btnPrevious" alignment="0" pref="29" max="32767" attributes="0"/>
                       <Component id="btnFirst" alignment="0" max="32767" attributes="0"/>
                       <Component id="btnLast" alignment="0" max="32767" attributes="0"/>
                       <Component id="btnNext" alignment="0" max="32767" attributes="0"/>

@@ -13,6 +13,8 @@ import it.unibas.lunatic.gui.window.db.actions.ActionNextPage;
 import it.unibas.lunatic.gui.window.db.actions.ActionPreviousPage;
 import it.unibas.lunatic.model.database.Cell;
 import java.lang.reflect.InvocationTargetException;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumnModel;
 import org.netbeans.swing.etable.ETable;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.Outline;
@@ -183,7 +185,8 @@ public final class DbPagedTableTopComponent extends TableWindow implements Paged
         Outline outline = outlineView1.getOutline();
         outline.setRootVisible(false);
         outline.setCellSelectionEnabled(true);
-        outline.setAutoResizeMode(ETable.AUTO_RESIZE_OFF);
+//        outline.setAutoResizeMode(ETable.AUTO_RESIZE_OFF);
+        outline.setAutoResizeMode(ETable.AUTO_RESIZE_ALL_COLUMNS);
         ((DefaultOutlineModel) outline.getOutlineModel()).setNodesColumnLabel("tid");
         outline.setFullyNonEditable(true);
     }
@@ -196,6 +199,8 @@ public final class DbPagedTableTopComponent extends TableWindow implements Paged
     @Override
     public void updateTable() {
         updatePage(offset);
+        //SORT BY ID
+        outlineView1.getOutline().setColumnSorted(0, true, 1);
     }
 
     @Override

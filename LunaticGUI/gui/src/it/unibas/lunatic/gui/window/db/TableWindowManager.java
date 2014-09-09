@@ -21,7 +21,8 @@ public class TableWindowManager {
         TableWindow tableWindow = getOpenedTable(tableNode);
         if (tableWindow == null) {
             if (tableNode.isMcResultNode()) {
-                tableWindow = new DbTableTopComponent(tableNode, name);
+//                tableWindow = new DbTableTopComponent(tableNode, name);
+                tableWindow = new DbPagedTableTopComponent(tableNode, name);
             } else {
                 tableWindow = new DbPagedTableTopComponent(tableNode, name);
             }

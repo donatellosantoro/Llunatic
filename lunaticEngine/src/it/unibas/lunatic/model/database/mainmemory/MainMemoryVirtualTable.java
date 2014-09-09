@@ -37,6 +37,10 @@ public class MainMemoryVirtualTable implements ITable {
     }
 
     public List<Attribute> getAttributes() {
+        if (originalDatabase.getTableNames().contains(name)) {
+            ITable originalTable = originalDatabase.getTable(name);
+            return originalTable.getAttributes();
+        }
         List<AttributeRef> attributeRefs = this.query.getAttributes(null, database);
         List<Attribute> result = new ArrayList<Attribute>();
         for (AttributeRef attributeRef : attributeRefs) {

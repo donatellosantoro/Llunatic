@@ -8,3 +8,7 @@ hs_err_pid*
 /LunaticGUI/wrapper/build/
 /LunaticGUI/res/build/
 /LunaticGUI/gui/build/
+/lunaticEngine/nbproject/private/
+/LunaticGUI/gui/nbproject/private/
+/LunaticGUI/wrapper/nbproject/private/
+/LunaticGUI/commons/nbproject/private/

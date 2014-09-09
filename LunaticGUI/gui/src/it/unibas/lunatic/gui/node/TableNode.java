@@ -55,7 +55,8 @@ public class TableNode extends AbstractNode implements IChaseNode {
     public List<String> getVisibleColumns() {
         if (columns == null) {
             columns = new ArrayList<String>();
-            for (Attribute a : table.getAttributes()) {
+            List<Attribute> attributes = table.getAttributes();
+            for (Attribute a : attributes) {
                 if (!(a.getName().equals(LunaticConstants.TID) || a.getName().equals(LunaticConstants.OID))) {
                     columns.add(a.getName());
                 }
@@ -91,6 +92,4 @@ public class TableNode extends AbstractNode implements IChaseNode {
     public String getDbDisplayName() {
         return DbNode.getTargetDbName(scenario, db);
     }
-
-    
 }
