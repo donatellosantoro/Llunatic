@@ -25,8 +25,8 @@
             <pathelement location="${lib.dir}/simmetrics-1.6.2.jar" />  
             <pathelement location="${lib.dir}/jgrapht-jdk1.6.jar" />  
             <pathelement location="${lib.dir}/jgraph.jar" />  
-            <pathelement location="${lib.dir}/c3p0-0.9.2.1.jar" />  
-            <pathelement location="${lib.dir}/mchange-commons-java-0.2.3.4.jar" />  
+            <pathelement location="${lib.dir}/c3p0-${c3p0.ver}.jar" />  
+            <pathelement location="${lib.dir}/mchange-commons-java-${mchange.ver}.jar" />  
             <pathelement location="${lib.dir}/commons-io-2.4.jar" />  
             <pathelement location="${lib.dir}/spicyBenchmark-0.1.jar" />  
             <pathelement location="${lib.dir}/spicyEngine-1.0.jar" />  
