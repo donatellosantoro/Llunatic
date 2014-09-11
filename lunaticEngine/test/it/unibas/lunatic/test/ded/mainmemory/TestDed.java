@@ -26,13 +26,4 @@ public class TestDed extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }
-    
-    public void testTeachers() throws Exception {
-        String path = "/Users/donatello/Projects/LLunatic-SVN/lunatic/releatedProjects/mappingUnfolder/mappingUnfolder-0.beta3/misc/resources/unfold/ded/";
-        Scenario scenario = UtilityTest.loadScenarioFromAbsolutePath(path + "example-teachers-unfolded.xml");
-//        Scenario scenario = UtilityTest.loadScenarioFromAbsolutePath(path + "example-teachers-egds-unfolded.xml");
-        IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
-        if (logger.isDebugEnabled()) logger.debug(result.toString());
-//        checkExpectedInstances(result, scenario);
-    }
 }

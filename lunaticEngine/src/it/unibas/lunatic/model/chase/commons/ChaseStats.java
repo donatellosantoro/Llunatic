@@ -43,6 +43,27 @@ public class ChaseStats {
         if (!logger.isDebugEnabled()) {
             return;
         }
+        logger.debug(this.toString());
+    }
+    
+    public void addStat(String statName, long newTime) {
+//        if (!logger.isDebugEnabled()) {
+//            return;
+//        }
+        long previousTime = 0;
+        if (stats.containsKey(statName)) {
+            previousTime = stats.get(statName);
+        }
+        long totalTime = previousTime + newTime;
+        stats.put(statName, totalTime);
+    }
+
+    public void resetStatistics() {
+        stats.clear();
+    }
+
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("------ SCENARIO STATS ------").append("\n");
         if(stats.containsKey(NUMBER_OF_STTGDS)) sb.append( NUMBER_OF_STTGDS + ": ").append(stats.get(NUMBER_OF_STTGDS)).append("\n");
@@ -67,22 +88,8 @@ public class ChaseStats {
         if(stats.containsKey(DELTA_DB_STEP_BUILDER)) sb.append( DELTA_DB_STEP_BUILDER + ": ").append(stats.get(DELTA_DB_STEP_BUILDER)).append(" ms").append("\n");
         if(stats.containsKey(DUPLICATE_TIME)) sb.append(DUPLICATE_TIME + ": ").append(stats.get(DUPLICATE_TIME)).append(" ms").append("\n");
         sb.append("-------------------------").append("\n");
-        logger.debug(sb.toString());
+        return sb.toString();
     }
     
-    public void addStat(String statName, long newTime) {
-        if (!logger.isDebugEnabled()) {
-            return;
-        }
-        long previousTime = 0;
-        if (stats.containsKey(statName)) {
-            previousTime = stats.get(statName);
-        }
-        long totalTime = previousTime + newTime;
-        stats.put(statName, totalTime);
-    }
-
-    public void resetStatistics() {
-        stats.clear();
-    }
+    
 }

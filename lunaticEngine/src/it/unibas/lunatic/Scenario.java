@@ -62,7 +62,7 @@ public class Scenario {
     }
 
     public boolean isDEDScenario() {
-        return (!this.dedegds.isEmpty()) || (!this.dedextTgds.isEmpty()) || (!this.dedegds.isEmpty());
+        return (!this.dedstTgds.isEmpty()) || (!this.dedegds.isEmpty()) || (!this.dedextTgds.isEmpty()) || (!this.dedegds.isEmpty());
     }
 
     public String getFileName() {

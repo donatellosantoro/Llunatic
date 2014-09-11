@@ -3,9 +3,11 @@ package it.unibas.lunatic;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;
+import it.unibas.lunatic.model.chase.chaseded.DEDChaserFactory;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import java.io.File;
@@ -33,10 +35,14 @@ public class Main {
             System.out.println(scenario);
             System.out.println("*** Chasing scenario...");
             long start = new Date().getTime();
-            if (scenario.isDEScenario()) {
+            if(scenario.isDEDScenario()){
+                chaseDEDScenario(scenario);
+            } else if (scenario.isDEScenario()) {
                 chaseDEScenario(scenario);
-            } else {
+            } else if(scenario.isMCScenario()){
                 chaseMCScenario(scenario);
+            } else {
+                throw new IllegalArgumentException("Scenario non supported!");
             }
             long end = new Date().getTime();
             double executionTime = (end - start) / 1000.0;
@@ -52,12 +58,13 @@ public class Main {
     private static void chaseDEScenario(Scenario scenario) {
         IDEChaser chaser = DEChaserFactory.getChaser(scenario);
         IDatabase result = chaser.doChase(scenario);
-        System.out.println("*** Chasing successful...");
+        System.out.println("*** Chasing DE scenario successful...");
         if (scenario.isMainMemory()) {
             System.out.println("--------------");
             System.out.println("Chase Result:");
             System.out.println(result);
         }
+        System.out.println(ChaseStats.getInstance().toString());
     }
 
     private static void chaseMCScenario(Scenario scenario) {
@@ -67,7 +74,7 @@ public class Main {
         long end = new Date().getTime();
         double sec = (end - start) / 1000.0;
         ChaseTreeSize resultSizer = new ChaseTreeSize();
-        System.out.println("*** Chasing successful...");
+        System.out.println("*** Chasing MC scenario successful...");
         System.out.println("Time elapsed: " + sec + " sec");
         System.out.println("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         System.out.println("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
@@ -82,5 +89,17 @@ public class Main {
                 System.out.println("Solutions: " + size);
             }
         }
+        System.out.println(ChaseStats.getInstance().toString());
+    }
+
+    private static void chaseDEDScenario(Scenario scenario) {
+        IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
+        System.out.println("*** Chasing DED scenario successful...");
+        if (scenario.isMainMemory()) {
+            System.out.println("--------------");
+            System.out.println("Chase Result:");
+            System.out.println(result);
+        }
+        System.out.println(ChaseStats.getInstance().toString());
     }
 }

@@ -23,7 +23,7 @@ public class Expression implements Cloneable {
         jepExpression.addStandardFunctions();
         jepExpression.parseExpression(expression);
         if (jepExpression.hasError()) {
-            throw new ExpressionSyntaxException(jepExpression.getErrorInfo());
+            throw new ExpressionSyntaxException("Unable to parse expression " + expression + ". " + jepExpression.getErrorInfo());
         }
         if (logger.isDebugEnabled()) logger.debug("Created expression: " + jepExpression);
     }
