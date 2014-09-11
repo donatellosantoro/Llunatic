@@ -25,13 +25,13 @@ public class DBMSVirtualTable implements ITable {
     private String suffix;
     private AccessConfiguration accessConfiguration;
     private List<Attribute> attributes;
-    private final ITable originalTable;
+//    private final ITable originalTable;
 
     public DBMSVirtualTable(ITable originalTable, AccessConfiguration accessConfiguration, String suffix) {
         this.tableName = originalTable.getName();
         this.accessConfiguration = accessConfiguration;
         this.suffix = suffix;
-        this.originalTable = originalTable;
+//        this.originalTable = originalTable;
 //        initConnection();
     }
 
@@ -128,6 +128,16 @@ public class DBMSVirtualTable implements ITable {
     }
 
     public int getSize() {
-        return originalTable.getSize();
+        String query = "SELECT count(*) as count FROM " + accessConfiguration.getSchemaName() + "." + tableName + suffix;
+        ResultSet resultSet = null;
+        try {
+            resultSet = QueryManager.executeQuery(query, accessConfiguration);
+            resultSet.next();
+            return resultSet.getInt("count");
+        } catch (SQLException ex) {
+            throw new DBMSException("Unable to execute query " + query + " on database \n" + accessConfiguration + "\n" + ex);
+        } finally {
+            QueryManager.closeResultSet(resultSet);
+        }
     }
 }

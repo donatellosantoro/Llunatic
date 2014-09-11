@@ -74,11 +74,19 @@ public class ChaseMCScenario {
         DeltaChaseStep result = doChase(root, scenario, chaseState);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.TOTAL_TIME, end - start);
-//        ChaseStats.getInstance().printStats();
+        ChaseStats.getInstance().printStats();
         return result;
     }
 
     public DeltaChaseStep doChase(DeltaChaseStep root, Scenario scenario, IChaseState chaseState) {
+        if(scenario.isDEDScenario()){
+            throw new ChaseException("ChaseMCScenario cannot handle scenarios with deds");
+        }
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_STTGDS, scenario.getSTTgds().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXTEGDS, scenario.getExtEGDs().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXTGDS, scenario.getExtTGDs().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DCS, scenario.getDCs().size());
+        ChaseStats.getInstance().printStats();
         Map<Dependency, IAlgebraOperator> egdQueryMap = treeBuilderForEGD.buildPremiseAlgebraTreesForEGDs(scenario.getExtEGDs(), scenario);
         Map<Dependency, IAlgebraOperator> tgdQueryMap = treeBuilderForTGD.buildAlgebraTreesForTGDViolations(scenario.getExtTGDs(), scenario);
         Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap = treeBuilderForTGD.buildAlgebraTreesForTGDSatisfaction(scenario.getExtTGDs(), scenario);

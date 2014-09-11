@@ -20,10 +20,10 @@ public class TestChaseExtTgds extends CheckTest {
         checkExpectedInstances(result, scenario);
     }
 
-//    public void testJoin() throws Exception {
-//        Scenario scenario = UtilityTest.loadScenario(References.RS_join);
-//        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
-//        if (logger.isDebugEnabled()) logger.debug(result.toString());
-//        checkExpectedInstances(result, scenario);
-//    }
+    public void testJoin() throws Exception {
+        Scenario scenario = UtilityTest.loadScenario(References.RS_join);
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        checkExpectedInstances(result, scenario);
+    }
 }

@@ -75,27 +75,31 @@ public class Join extends AbstractOperator {
         Map<String, ListPair> joinMap = new HashMap<String, ListPair>();
         while (leftTuples.hasNext()) {
             Tuple leftTuple = leftTuples.next();
-            if (logger.isDebugEnabled()) logger.debug("Left tuple: " + leftTuple);
+            if (logger.isDebugEnabled()) logger.debug("Left tuple in join: " + leftTuple);
             List<Object> leftTupleValues = findTupleValues(leftAttributes, leftTuple);
             if (leftTupleValues.size() != getAttributeSize()) {
+                if (logger.isDebugEnabled()) logger.debug("Tuple " + leftTuple + " has " + leftTupleValues.size() + " values, instead of " + getAttributeSize() + ". Skipping...");
                 continue;
             }
             ListPair listPair = getListPair(leftTupleValues.toString(), joinMap);
             listPair.leftTuples.add(leftTuple);
+            if (logger.isDebugEnabled()) logger.debug("Adding left tuple to join map " + leftTupleValues.toString());
         }
         leftTuples.reset();
         while (rightTuples.hasNext()) {
             Tuple rightTuple = rightTuples.next();
-            if (logger.isDebugEnabled()) logger.debug("Right tuple: " + rightTuple);
+            if (logger.isDebugEnabled()) logger.debug("Right tuple in join: " + rightTuple);
             List<Object> rightTupleValues = findTupleValues(rightAttributes, rightTuple);
             if (rightTupleValues.size() != getAttributeSize()) {
+                if (logger.isDebugEnabled()) logger.debug("Tuple " + rightTuple + " has " + rightTupleValues.size() + " values, instead of " + getAttributeSize() + ". Skipping...");
                 continue;
             }
             ListPair listPair = getListPair(rightTupleValues.toString(), joinMap);
             listPair.rightTuples.add(rightTuple);
+            if (logger.isDebugEnabled()) logger.debug("Adding right tuple to join map " + rightTupleValues.toString());
         }
         rightTuples.reset();
-        if (logger.isDebugEnabled()) logger.debug(LunaticUtility.printMap(joinMap));
+        if (logger.isDebugEnabled()) logger.debug("Join map: " + LunaticUtility.printMap(joinMap));
         for (String key : joinMap.keySet()) {
             ListPair listPair = joinMap.get(key);
             for (Tuple leftTuple : listPair.leftTuples) {
@@ -151,9 +155,10 @@ public class Join extends AbstractOperator {
         List<Object> values = new ArrayList<Object>();
         for (AttributeRef attribute : attributes) {
             IValue attributeValue = AlgebraUtility.getCellValue(tuple, attribute);
-            if (!(attributeValue instanceof NullValue)) {
-                values.add(attributeValue.getPrimitiveValue());
+            if ((attributeValue instanceof NullValue) && !((NullValue) attributeValue).isLabeledNull()) {
+                continue;
             }
+            values.add(attributeValue.getPrimitiveValue());
         }
         return values;
     }

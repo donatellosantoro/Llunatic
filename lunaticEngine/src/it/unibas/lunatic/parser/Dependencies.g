@@ -73,11 +73,11 @@ egd:	 	 dependency {  dependency.setType(LunaticConstants.EGD); dependency.setId
 		    
 eegd:	 	 dependency {  dependency.setType(LunaticConstants.ExtEGD); dependency.setId("e" + counter++); generator.addExtEGD(dependency); } ;
 		    
-dedstgd:	 ded {  ded.setType(LunaticConstants.STTGD); ded.setId("ded-m" + counter++); generator.addDEDSTTGD(ded); } ;		    
+dedstgd:	 ded {  ded.setType(LunaticConstants.STTGD); ded.setId("ded_m" + counter++); generator.addDEDSTTGD(ded); } ;		    
 		    
-dedetgd:	 ded {  ded.setType(LunaticConstants.ExtTGD); ded.setId("ded-t" + counter++); generator.addDEDExtTGD(ded); } ;		    
+dedetgd:	 ded {  ded.setType(LunaticConstants.ExtTGD); ded.setId("ded_t" + counter++); generator.addDEDExtTGD(ded); } ;		    
 
-dedegd:	         ded {  ded.setType(LunaticConstants.EGD); ded.setId("ded-e" + counter++); generator.addDEDExtEGD(ded); } ;		    
+dedegd:	         ded {  ded.setType(LunaticConstants.EGD); ded.setId("ded_e" + counter++); generator.addDEDExtEGD(ded); } ;		    
 
 dependency:	 (id = IDENTIFIER':')? {  dependency = new Dependency(); 
                     formulaWN = new FormulaWithNegations(); 

@@ -49,7 +49,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(LunaticConstants.OCCURRENCE_TABLE).append("(").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.STEP).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text,").append("\n");
-        script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_OID).append(" integer,").append("\n");
+        script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_OID).append(" bigint,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_TABLE).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_ATTRIBUTE).append(" text").append("\n");
         script.append(") WITH OIDS;").append("\n\n");
@@ -57,7 +57,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(LunaticConstants.PROVENANCE_TABLE).append("(").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.STEP).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text,").append("\n");
-        script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_OID).append(" integer,").append("\n");
+        script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_OID).append(" bigint,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_TABLE).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_ATTRIBUTE).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.PROVENANCE_CELL_VALUE).append(" text").append("\n");
@@ -96,7 +96,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         String deltaRelationName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
         script.append("CREATE TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.STEP).append(" text,").append("\n");
-        script.append(LunaticConstants.INDENT).append(LunaticConstants.TID).append(" integer,").append("\n");
+        script.append(LunaticConstants.INDENT).append(LunaticConstants.TID).append(" bigint,").append("\n");
         script.append(LunaticConstants.INDENT).append(attributeName).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text").append("\n");
         script.append(") WITH OIDS;").append("\n\n");
@@ -112,7 +112,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         String deltaRelationName = tableName + LunaticConstants.NA_TABLE_SUFFIX;
         StringBuilder script = new StringBuilder();
         script.append("CREATE TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
-        script.append(LunaticConstants.INDENT).append(LunaticConstants.TID).append(" integer,").append("\n");
+        script.append(LunaticConstants.INDENT).append(LunaticConstants.TID).append(" bigint,").append("\n");
 //        script.append(LunaticConstants.INDENT).append(LunaticConstants.OID).append(" integer,").append("\n");
         for (Attribute attribute : tableNonAffectedAttributes) {
             script.append(LunaticConstants.INDENT).append(attribute.getName()).append(" text").append(",\n");

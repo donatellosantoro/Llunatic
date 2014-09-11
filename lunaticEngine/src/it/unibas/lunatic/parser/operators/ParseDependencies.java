@@ -226,7 +226,7 @@ public class ParseDependencies {
         scenario.setDCs(dcs);
         scenario.setEGDs(egds);
         scenario.setExtEGDs(eEGDs);
-//        scenario.setDEDstTGDs(dedstTGDs);
+        scenario.setDEDstTGDs(dedstTGDs);
         scenario.setDEDextTGDs(dedeTGDs);
         scenario.setDEDEGDs(dedegds);
     }

@@ -49,6 +49,7 @@ public class TestJoin extends TestCase{
         Join join = new Join(leftAttributes, rightAttributes);
         join.addChild(new Scan(r));
         join.addChild(new Scan(s));
+        if (logger.isDebugEnabled()) logger.debug("Executing " + join);
         Iterator<Tuple> result = join.execute(scenario.getSource(), scenario.getTarget());
         String stringResult = LunaticUtility.printTupleIterator(result);
         if (logger.isDebugEnabled()) logger.debug(stringResult);

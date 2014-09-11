@@ -7,7 +7,16 @@ import java.util.Map;
 
 public class GreedyDEDScenario {
 
+    private int id;
     private Map<DED, Dependency> dedInstantiations = new HashMap<DED, Dependency>();
+
+    public GreedyDEDScenario(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
 
     public void addDEDInstantiation(DED ded, Dependency dependency) {
         this.dedInstantiations.put(ded, dependency);
@@ -20,6 +29,7 @@ public class GreedyDEDScenario {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        sb.append("## Scenario ").append(id).append("\n");
         for (DED ded : dedInstantiations.keySet()) {
             sb.append("DED ").append(ded.getId()).append(" ").append(dedInstantiations.get(ded)).append("\n");
         }

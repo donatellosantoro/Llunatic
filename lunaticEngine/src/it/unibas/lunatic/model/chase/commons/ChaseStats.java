@@ -18,6 +18,15 @@ public class ChaseStats {
     public static final String DELTA_DB_BUILDER = "Building Delta DB";
     public static final String DELTA_DB_STEP_BUILDER = "Building Delta DB for Chase Step";
     public static final String DUPLICATE_TIME = "Finding Duplicate Time";
+    public static final String NUMBER_OF_STTGDS = "#ST-TGDs";
+    public static final String NUMBER_OF_EXTGDS = "#Ex-TGDs";
+    public static final String NUMBER_OF_EXTEGDS = "#Ex-EGDs";
+    public static final String NUMBER_OF_EGDS = "#EGDs";
+    public static final String NUMBER_OF_DED_STTGDS = "#DED ST-TGDs";
+    public static final String NUMBER_OF_DED_EXTGDS = "#DED Ex-TGDs";
+    public static final String NUMBER_OF_DED_EGDS = "#DED EGDs";
+    public static final String NUMBER_OF_DCS = "#DCs";
+    public static final String NUMBER_OF_GREEDY_SCENARIOS = "#Greedy Scenarios";
     /////
     private static Logger logger = LoggerFactory.getLogger(ChaseStats.class);
     private static ChaseStats singleton = new ChaseStats();
@@ -35,6 +44,16 @@ public class ChaseStats {
             return;
         }
         StringBuilder sb = new StringBuilder();
+        sb.append("------ SCENARIO STATS ------").append("\n");
+        if(stats.containsKey(NUMBER_OF_STTGDS)) sb.append( NUMBER_OF_STTGDS + ": ").append(stats.get(NUMBER_OF_STTGDS)).append("\n");
+        if(stats.containsKey(NUMBER_OF_EXTGDS)) sb.append( NUMBER_OF_EXTGDS + ": ").append(stats.get(NUMBER_OF_EXTGDS)).append("\n");
+        if(stats.containsKey(NUMBER_OF_EXTEGDS)) sb.append( NUMBER_OF_EXTEGDS + ": ").append(stats.get(NUMBER_OF_EXTEGDS)).append("\n");
+        if(stats.containsKey(NUMBER_OF_EGDS)) sb.append( NUMBER_OF_EGDS + ": ").append(stats.get(NUMBER_OF_EGDS)).append("\n");
+        if(stats.containsKey(NUMBER_OF_DCS)) sb.append( NUMBER_OF_DCS + ": ").append(stats.get(NUMBER_OF_DCS)).append("\n");
+        if(stats.containsKey(NUMBER_OF_DED_STTGDS)) sb.append( NUMBER_OF_DED_STTGDS + ": ").append(stats.get(NUMBER_OF_DED_STTGDS)).append("\n");
+        if(stats.containsKey(NUMBER_OF_DED_EXTGDS)) sb.append( NUMBER_OF_DED_EXTGDS + ": ").append(stats.get(NUMBER_OF_DED_EXTGDS)).append("\n");
+        if(stats.containsKey(NUMBER_OF_DED_EGDS)) sb.append( NUMBER_OF_DED_EGDS + ": ").append(stats.get(NUMBER_OF_DED_EGDS)).append("\n");
+        if(stats.containsKey(NUMBER_OF_GREEDY_SCENARIOS)) sb.append( NUMBER_OF_GREEDY_SCENARIOS + ": ").append(stats.get(NUMBER_OF_GREEDY_SCENARIOS)).append("\n");
         sb.append("------ CHASE STATS ------").append("\n");
         if(stats.containsKey(TOTAL_TIME)) sb.append( TOTAL_TIME + ": ").append(stats.get(TOTAL_TIME)).append(" ms").append("\n");
         if(stats.containsKey(STTGD_TIME)) sb.append(STTGD_TIME + ": ").append(stats.get(STTGD_TIME)).append(" ms").append("\n");

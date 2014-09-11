@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasede;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
@@ -22,10 +23,21 @@ import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 public class DEChaserFactory {
 
     public static IDEChaser getChaser(Scenario scenario) {
+        String deChaserStrategy = scenario.getConfiguration().getDeChaser();
+        if (deChaserStrategy.equals(LunaticConstants.CLASSIC_DE_CHASER)) {
+            return getClassicDEChaser(scenario);
+        }
+        if (deChaserStrategy.equals(LunaticConstants.PROXY_MC_CHASER)) {
+            return getProxyMCChaser(scenario);
+        }
+        throw new IllegalArgumentException("DE Chaser " + deChaserStrategy + " is not supported");
+    }
+
+    private static IDEChaser getProxyMCChaser(Scenario scenario) {
         return new ChaseDEScenarioProxy();
     }
 
-    public static IDEChaser getClassicDEChaser(Scenario scenario) {
+    private static IDEChaser getClassicDEChaser(Scenario scenario) {
         IChaseSTTGDs stChaser;
         IInsertFromSelectNaive naiveInsert;
         IRemoveDuplicates duplicateRemover;

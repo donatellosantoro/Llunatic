@@ -12,6 +12,9 @@ import it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLUpdateCell;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.ChaseMainMemorySTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryUpdateCell;
+import it.unibas.lunatic.model.chase.chaseded.IDatabaseManager;
+import it.unibas.lunatic.model.chase.chaseded.dbms.SQLDatabaseManager;
+import it.unibas.lunatic.model.chase.chaseded.mainmemory.MainMemoryDatabaseManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.AddUserNode;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChangeCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs;
@@ -82,6 +85,9 @@ public class OperatorFactory {
     //
     private IOIDGenerator mainMemoryOIDGenerator = new MainMemoryOIDGenerator();
     private IOIDGenerator sqlOIDGenerator = SQLOIDGenerator.getInstance();
+    //
+    private IDatabaseManager mainMemoryDatabaseManager = new MainMemoryDatabaseManager();
+    private IDatabaseManager sqlDatabaseManager = new SQLDatabaseManager();
     //
     private Map<Scenario, IValueOccurrenceHandlerMC> occurrenceHandlerMap = new HashMap<Scenario, IValueOccurrenceHandlerMC>();
 
@@ -162,6 +168,13 @@ public class OperatorFactory {
             return mainMemoryOIDGenerator;
         }
         return sqlOIDGenerator;
+    }
+
+    public IDatabaseManager getDatabaseManager(Scenario scenario) {
+        if (scenario.isMainMemory()) {
+            return mainMemoryDatabaseManager;
+        }
+        return sqlDatabaseManager;
     }
 
     public IValueOccurrenceHandlerMC getOccurrenceHandlerMC(Scenario scenario) {

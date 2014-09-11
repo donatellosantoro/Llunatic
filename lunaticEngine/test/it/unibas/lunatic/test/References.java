@@ -115,4 +115,6 @@ public class References {
     //DEDs
     public static final String deds_rs = "/resources/deds/RS/RS-mcscenario.xml";
     public static final String deds_rs_dbms = "/resources/deds/RS/RS-mcscenario-dbms.xml";
+    public static final String deds_rs_sttgds = "/resources/deds/RS-STTGDs/RS-STTGDs-mcscenario.xml";
+    public static final String deds_rs_sttgds_dbms = "/resources/deds/RS-STTGDs/RS-STTGDs-mcscenario-dbms.xml";
 }

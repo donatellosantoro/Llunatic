@@ -1,6 +1,7 @@
 package it.unibas.lunatic.test;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.database.ITable;
 import it.unibas.lunatic.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.persistence.DAOMCScenario;
@@ -19,9 +20,26 @@ public class UtilityTest {
         return loadScenario(scenarioName, false);
     }
 
+    public static Scenario loadScenarioFromAbsolutePath(String scenarioName) {
+        return loadScenarioFromAbsolutePath(scenarioName, false);
+    }
+
     public static Scenario loadScenario(String scenarioName, boolean recreateDB) {
+        return loadScenario(scenarioName, recreateDB, false);
+    }
+
+    public static Scenario loadScenarioFromAbsolutePath(String scenarioName, boolean recreateDB) {
+        return loadScenario(scenarioName, recreateDB, true);
+    }
+
+    private static Scenario loadScenario(String scenarioPath, boolean recreateDB, boolean absolutePath) {
         try {
-            String fileScenario = new File(UtilityTest.class.getResource(scenarioName).toURI()).getAbsolutePath();
+            String fileScenario;
+            if (absolutePath) {
+                fileScenario = scenarioPath;
+            } else {
+                fileScenario = new File(UtilityTest.class.getResource(scenarioPath).toURI()).getAbsolutePath();
+            }
             DAOMCScenario daoScenario = new DAOMCScenario();
             Scenario scenario = daoScenario.loadScenario(fileScenario);
             if (recreateDB) {
@@ -57,15 +75,5 @@ public class UtilityTest {
 
     public static int getSize(ITable table) {
         return table.getSize();
-//        return getSize(table.getTupleIterator());
     }
-//    public static int getSize(ITupleIterator iterator) {
-//        int i = 0;
-//        while (iterator.hasNext()) {
-//            iterator.next();
-//            i++;
-//        }
-//        iterator.reset();
-//        return i;
-//    }
 }

@@ -30,7 +30,7 @@ public class DED implements Cloneable {
         this.id = id;
         for (int i = 0; i < associatedDependencies.size(); i++) {
             Dependency dependency = associatedDependencies.get(i);
-            dependency.setId(id + "-" + i);
+            dependency.setId(id + "_" + i);
         }
     }
 
@@ -39,7 +39,7 @@ public class DED implements Cloneable {
     }
 
     public void setType(String type) {
-        this.type = LunaticConstants.DED + "-" + type;
+        this.type = LunaticConstants.DED + "_" + type;
         for (Dependency dependency : associatedDependencies) {
             dependency.setType(type);
         }

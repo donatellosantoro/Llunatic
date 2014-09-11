@@ -52,9 +52,12 @@ public class ParseDatabase {
             if (instance != null) {
                 INode instanceNode = new TupleNode(PersistenceConstants.DATASOURCE_ROOT_LABEL, oidGenerator.getNextOID());
                 instanceNode.setRoot(true);
+                for (INode setNode : dataSource.getSchema().getChildren()) {
+                    instanceNode.addChild(PersistenceUtility.generateInstanceNode(setNode));
+                }
                 addFactsToInstance(instanceNode, instance);
                 dataSource.addInstanceWithCheck(instanceNode);
-            }else{
+            } else {
                 PersistenceUtility.createEmptyTables(dataSource);
             }
             return new MainMemoryDB(dataSource);
@@ -91,6 +94,7 @@ public class ParseDatabase {
             INode setNodeInstance = findSetNode(parserFact.getSet(), rootInstance);
             if (setNodeInstance == null) {
                 setNodeInstance = new SetNode(parserFact.getSet(), oidGenerator.getNextOID());
+                System.out.println("### AGGIUNGO SET NODE " + setNodeInstance);
                 rootInstance.addChild(setNodeInstance);
             }
             TupleNode tupleNodeInstance = new TupleNode(parserFact.getSet() + "Tuple", oidGenerator.getNextOID());

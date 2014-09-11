@@ -2,7 +2,8 @@ package it.unibas.lunatic.model.chase.chaseded;
 
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
+import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
+import it.unibas.lunatic.model.chase.chasede.IDEChaser;
 import it.unibas.lunatic.model.chase.chasede.operators.IInsertFromSelectNaive;
 import it.unibas.lunatic.model.chase.chasede.operators.IRemoveDuplicates;
 import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
@@ -20,34 +21,14 @@ import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryUpda
 import it.unibas.lunatic.model.chase.chaseded.dbms.SQLDatabaseManager;
 import it.unibas.lunatic.model.chase.chaseded.mainmemory.MainMemoryDatabaseManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
+import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
 
 public class DEDChaserFactory {
 
     public static IDEDChaser getChaser(Scenario scenario) {
-        IChaseSTTGDs stChaser;
-        IInsertFromSelectNaive naiveInsert;
-        IRemoveDuplicates duplicateRemover;
-        IValueOccurrenceHandlerDE valueOccurrenceHandler;
-        IRunQuery queryRunner = OperatorFactory.getInstance().getQueryRunner(scenario);
-        IUpdateCell cellUpdater = OperatorFactory.getInstance().getCellUpdater(scenario);
-        IDatabaseManager databaseManager;
-        if (scenario.isMainMemory()) {
-            stChaser = new ChaseMainMemorySTTGDs();
-            naiveInsert = new MainMemoryInsertFromSelectNaive();
-            duplicateRemover = new MainMemoryRemoveDuplicates();
-            valueOccurrenceHandler = new MainMemoryDEOccurrenceHandler();
-            cellUpdater = new MainMemoryUpdateCell();
-            databaseManager = new MainMemoryDatabaseManager();
-        } else if (scenario.isDBMS()) {
-            stChaser = new ChaseSQLSTTGDs();
-            naiveInsert = new SQLInsertFromSelectNaive();
-            duplicateRemover = new SQLRemoveDuplicates();
-            valueOccurrenceHandler = new SQLDEOccurrenceHandlerWithCache();
-            cellUpdater = new SQLUpdateCell();
-            databaseManager = new SQLDatabaseManager();
-        } else {
-            throw new IllegalArgumentException("Scenario is not supported");
-        }
-        return new ChaseDEDScenarioGreedy(stChaser, naiveInsert, duplicateRemover, valueOccurrenceHandler, queryRunner, cellUpdater, databaseManager);
+        IChaseSTTGDs stChaser = OperatorFactory.getInstance().getSTChaser(scenario);
+        IDEChaser deChaser = DEChaserFactory.getChaser(scenario);
+        IDatabaseManager databaseManager = OperatorFactory.getInstance().getDatabaseManager(scenario);
+        return new ChaseDEDScenarioGreedy(stChaser, deChaser, databaseManager);
     }
 }

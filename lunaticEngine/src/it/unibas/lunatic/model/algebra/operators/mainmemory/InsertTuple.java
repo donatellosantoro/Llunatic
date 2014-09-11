@@ -7,13 +7,16 @@ import it.unibas.lunatic.model.database.mainmemory.MainMemoryTable;
 import it.unibas.lunatic.model.database.mainmemory.datasource.DataSource;
 import it.unibas.lunatic.model.database.mainmemory.datasource.INode;
 import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
+import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.TupleNode;
+import it.unibas.lunatic.persistence.PersistenceConstants;
+import it.unibas.lunatic.persistence.PersistenceUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InsertTuple implements IInsertTuple {
 
     private static Logger logger = LoggerFactory.getLogger(InsertTuple.class);
-    
+
     @Override
     public void execute(ITable table, Tuple tuple) {
         if (logger.isDebugEnabled()) logger.debug("----Executing insert into table " + table.getName() + " tuple: " + tuple);

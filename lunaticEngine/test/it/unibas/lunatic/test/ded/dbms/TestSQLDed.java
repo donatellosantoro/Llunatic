@@ -14,7 +14,14 @@ public class TestSQLDed extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLDed.class);
 
     public void test() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.deds_rs_dbms);
+        Scenario scenario = UtilityTest.loadScenario(References.deds_rs_dbms, true);
+        IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        checkExpectedInstances(result, scenario);
+    }
+    
+    public void testRSSTTGDs() throws Exception {
+        Scenario scenario = UtilityTest.loadScenario(References.deds_rs_sttgds_dbms, true);
         IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

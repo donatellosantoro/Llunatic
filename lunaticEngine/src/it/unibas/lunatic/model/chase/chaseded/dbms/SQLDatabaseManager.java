@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.chase.chaseded.dbms;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chaseded.IDatabaseManager;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.dbms.DBMSDB;
@@ -8,6 +9,8 @@ import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import it.unibas.lunatic.persistence.relational.QueryManager;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SQLDatabaseManager implements IDatabaseManager {
 
@@ -15,7 +18,6 @@ public class SQLDatabaseManager implements IDatabaseManager {
 
     public IDatabase cloneTarget(Scenario scenario) {
         DBMSDB target = (DBMSDB) scenario.getTarget();
-        createCloneFunction(target);
         AccessConfiguration targetConfiguration = target.getAccessConfiguration();
         String originalTargetSchemaName = targetConfiguration.getSchemaName();
         String cloneTargetSchemaName = originalTargetSchemaName + CLONE_SUFFIX;
@@ -34,7 +36,6 @@ public class SQLDatabaseManager implements IDatabaseManager {
         DBMSDB target = (DBMSDB) scenario.getTarget();
         AccessConfiguration targetConfiguration = target.getAccessConfiguration();
         AccessConfiguration clonedTargetConfiguration = ((DBMSDB) clonedDatabase).getAccessConfiguration();
-        createCloneFunction((DBMSDB) clonedDatabase);
         String originalTargetSchemaName = targetConfiguration.getSchemaName();
         String cloneTargetSchemaName = originalTargetSchemaName + CLONE_SUFFIX;
         removeSchema(originalTargetSchemaName, clonedTargetConfiguration);
@@ -59,16 +60,18 @@ public class SQLDatabaseManager implements IDatabaseManager {
     }
 
     private void cloneSchema(String src, String dest, AccessConfiguration ac) {
-        String function = "SELECT clone_schema('" + src + "','" + dest + "');";
-        QueryManager.executeScript(function, ac, true, true, false);
+        StringBuilder script = new StringBuilder();
+        script.append(getCloneFunction()).append("\n");
+        script.append("SELECT clone_schema('").append(src).append("','").append(dest).append("');");
+        QueryManager.executeScript(script.toString(), ac, true, true, true);
     }
 
     private void removeSchema(String schema, AccessConfiguration ac) {
         String function = "drop schema " + schema + " cascade;";
         QueryManager.executeScript(function, ac, true, true, false);
     }
-
-    private void createCloneFunction(DBMSDB db) {
+    
+    private String getCloneFunction(){
         StringBuilder function = new StringBuilder();
         function.append("CREATE OR REPLACE FUNCTION clone_schema(source_schema text, dest_schema text) RETURNS void AS").append("\n");
         function.append("$BODY$").append("\n");
@@ -87,6 +90,6 @@ public class SQLDatabaseManager implements IDatabaseManager {
         function.append("END;").append("\n");
         function.append("$BODY$").append("\n");
         function.append("LANGUAGE plpgsql VOLATILE;").append("\n");
-        QueryManager.executeScript(function.toString(), (db).getAccessConfiguration(), true, false, true);
+        return function.toString();
     }
 }

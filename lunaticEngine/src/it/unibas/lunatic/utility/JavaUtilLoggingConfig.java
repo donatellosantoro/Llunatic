@@ -25,9 +25,11 @@ public class JavaUtilLoggingConfig {
     final void configure() {
         defaultHandler.setFormatter(defaultFormatter);
         defaultHandler.setLevel(Level.ALL);
-        rootLogger.setLevel(Level.ALL);
+        rootLogger.setLevel(Level.SEVERE);
         rootLogger.addHandler(defaultHandler);
         logManager.addLogger(rootLogger);
         Logger.getLogger("org.apache.jcs").setLevel(Level.SEVERE);
+        Logger.getLogger("com.mchange").setLevel(Level.SEVERE);
+        Logger.getLogger("com.sun").setLevel(Level.SEVERE);
     }
 }

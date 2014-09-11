@@ -3,6 +3,7 @@ package it.unibas.lunatic.model.chase.chasede.operators;
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
+import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.commons.control.ImmutableChaseState;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;
@@ -32,6 +33,7 @@ public class ChaseDEScenarioProxy implements IDEChaser {
         forwardOnlyCostManager.setDoPermutations(false);
         scenario.setCostManager(forwardOnlyCostManager);
         scenario.setPartialOrder(new DEPartialOrder());
+        scenario.getConfiguration().setUseCellGroupsForTGDs(false);
         ChaseMCScenario mcChaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep chaseStep = mcChaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("----MC result: " + chaseStep);
@@ -40,7 +42,7 @@ public class ChaseDEScenarioProxy implements IDEChaser {
         }
         DeltaChaseStep solution = getSolution(chaseStep);
         if(solution.isInvalid()){
-            throw new ChaseException("Chase fails. No solutions...");
+            throw new ChaseFailedException("Chase fails. No solutions...");
         }
         IBuildDatabaseForChaseStep databaseBuilder = OperatorFactory.getInstance().getDatabaseBuilder(scenario);
         IDatabase result = databaseBuilder.extractDatabaseWithDistinct(solution.getId(), solution.getDeltaDB(), solution.getOriginalDB());

@@ -29,7 +29,7 @@ public class Scenario {
     private List<Dependency> dcs = new ArrayList<Dependency>();
     private List<Dependency> egds = new ArrayList<Dependency>();
     private List<Dependency> extEgds = new ArrayList<Dependency>();
-//    private List<DED> dedstTgds = new ArrayList<DED>();
+    private List<DED> dedstTgds = new ArrayList<DED>();
     private List<DED> dedextTgds = new ArrayList<DED>();
     private List<DED> dedegds = new ArrayList<DED>();
     private List<String> authoritativeSources = new ArrayList<String>();
@@ -131,13 +131,14 @@ public class Scenario {
         this.extEgds = eEgds;
     }
 
-//    public List<DED> getDEDstTGDs() {
-//        return dedstTgds;
-//    }
-//
-//    public void setDEDstTGDs(List<DED> dedstTgds) {
-//        this.dedstTgds = dedstTgds;
-//    }
+    public List<DED> getDEDstTGDs() {
+        return dedstTgds;
+    }
+
+    public void setDEDstTGDs(List<DED> dedstTgds) {
+        this.dedstTgds = dedstTgds;
+    }
+
     public List<DED> getDEDextTGDs() {
         return dedextTgds;
     }
@@ -325,12 +326,12 @@ public class Scenario {
                 result.append(dtgd).append("\n");
             }
         }
-//        if (!this.dedstTgds.isEmpty()) {
-//            result.append("================ DED ST Tgds ===================\n");
-//            for (DED ded : this.dedstTgds) {
-//                result.append(ded).append("\n");
-//            }
-//        }
+        if (!this.dedstTgds.isEmpty()) {
+            result.append("================ DED ST Tgds ===================\n");
+            for (DED ded : this.dedstTgds) {
+                result.append(ded).append("\n");
+            }
+        }
         if (!this.dedextTgds.isEmpty()) {
             result.append("================ DED Extended Tgds ===================\n");
             for (DED ded : this.dedextTgds) {

@@ -5,10 +5,13 @@
         <generate>
 <![CDATA[
 SCHEMA:
-R(a, b)
+SourceR(a, b, c)
+SourceS(a, b)
 INSTANCE:
-R(a: "1" , b: "2")
-R(a: "2" , b: "3")
+SourceR(a: "a" , b: "a", c: "b")
+SourceR(a: "b" , b: "b", c: "c")
+SourceR(a: "c" , b: "b", c: "d")
+SourceS(a: "a" , b: "b")
 ]]>
         </generate>
     </source>
@@ -17,17 +20,19 @@ R(a: "2" , b: "3")
         <generate>
 <![CDATA[
 SCHEMA:
+R(a, b, c)
 S(a, b)
 T(a, b)
+//V(a, b, c)
 ]]>
         </generate>
     </target>
     <dependencies>
 <![CDATA[
-STTGDs:
-R(a: $x, b: $y) -> S(a: $x, b: $y).
-ExtTGDs:
-S(a: $x, b: $y) -> T(a: $x, b: $N), T(a: $N, b: $x).
+DED-STTGDs:
+SourceR(a: $a, b: $b, c: $c) -> [S(a: $a, b: $c)] | [R(a: $a, b: $b, c: $c)].
+DCs:
+S(a: $a, b: $b) -> #fail.
 ]]>
     </dependencies>
 </scenario>

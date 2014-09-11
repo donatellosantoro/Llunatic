@@ -57,6 +57,7 @@ public class ChaseDeltaDCs {
                 node.setInvalid(true);
 //                throw new ChaseException("Chase fails. Denial constraint \n" + dTgd + "\nis violated on node \n" + node);
             }
+            it.close();
         }
     }
 }

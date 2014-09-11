@@ -86,7 +86,7 @@ public abstract class BatchTest extends CheckExpectedSolutionsTest {
     private BatchTestResult executeScenario(Scenario scenario, String fileOutput) throws IOException {
         BatchTestResult result;
         preExecute(scenario);
-        if (scenario.isMCScenario() || scenario.getConfiguration().isForceMCChaser()) {
+        if (scenario.isMCScenario() || scenario.getConfiguration().isForceMCChaserInTests()) {
             if (logger.isDebugEnabled()) logger.debug("Executing scenario with MC chaser");
             result = executeMCScenario(scenario, fileOutput);
         } else {

@@ -3,7 +3,7 @@ package it.unibas.lunatic;
 public class LunaticConfiguration {
 
     public static boolean sout = false;
-    private boolean debugMode;
+    private boolean debugMode = false;
     private Integer iterationLimit = null;
     private boolean useLimit1 = false;
     private boolean useCellGroupsForTGDs = true;
@@ -13,16 +13,20 @@ public class LunaticConfiguration {
     private boolean removeDuplicates = true;
     private boolean removeSuspiciousSolutions = true;
     private boolean checkAllNodesForEGDSatisfaction = false;
-    private boolean forceMCChaser = false;
+    private boolean forceMCChaserInTests = false;
+//
+//    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
+    private String deChaser = LunaticConstants.PROXY_MC_CHASER;
+//
 //    private String cacheType = LunaticConstants.NO_CACHE;
 //    private String cacheType = LunaticConstants.LAZY_CACHE;
 //    private String cacheType = LunaticConstants.GREEDY_JCS;
     private String cacheType = LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE;
-
 //    private String cacheType = LunaticConstants.GREEDY_SINGLESTEP_SIMPLE_CACHE;
 //    private String cacheType = LunaticConstants.GREEDY_SIMPLE_CACHE;
 //    private String cacheType = LunaticConstants.GREEDY_EHCACHE;
 //    private String cacheType = LunaticConstants.GREEDY_SINGLESTEP_EHCACHE_CACHE;
+
     public boolean isDebugMode() {
         return debugMode;
     }
@@ -111,18 +115,26 @@ public class LunaticConfiguration {
         this.cacheType = cacheType;
     }
 
-    public boolean isForceMCChaser() {
-        return forceMCChaser;
+    public boolean isForceMCChaserInTests() {
+        return forceMCChaserInTests;
     }
 
-    public void setForceMCChaser(boolean forceMCChaser) {
-        this.forceMCChaser = forceMCChaser;
+    public void setForceMCChaserInTests(boolean forceMCChaser) {
+        this.forceMCChaserInTests = forceMCChaser;
     }
 
     public void changeParametersForScalabilityTests() {
         this.checkGroundSolutions = false;
         this.removeDuplicates = false;
         this.removeSuspiciousSolutions = false;
+    }
+
+    public String getDeChaser() {
+        return deChaser;
+    }
+
+    public void setDeChaser(String deChaser) {
+        this.deChaser = deChaser;
     }
 
     @Override
@@ -137,6 +149,7 @@ public class LunaticConfiguration {
                 + "\n\tRemoveDuplicates: " + removeDuplicates
                 + "\n\tRemoveSuspiciousSolutions: " + removeSuspiciousSolutions
                 + "\n\tCheckAllNodesForEGDSatisfaction: " + checkAllNodesForEGDSatisfaction
-                + "\n\tCache type: " + cacheType;
+                + "\n\tCache type: " + cacheType
+                + "\n\tDeChaser: " + deChaser;
     }
 }

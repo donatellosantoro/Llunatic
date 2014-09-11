@@ -70,4 +70,9 @@ public class LunaticConstants {
     public static final String GREEDY_SINGLESTEP_JCS_CACHE = "GREEDY_JCS_SINGLESTEP";
 //    public static final String GREEDY_FATHER_JCS_CACHE = "GREEDY_JCS_FATHER";
     
+
+    ///////////////    DE CHASER STRATEGIES    ///////////////////
+    public static final String CLASSIC_DE_CHASER = "CLASSIC_DE_CHASER";
+    public static final String PROXY_MC_CHASER = "PROXY_MC_CHASER";
+    
 }
