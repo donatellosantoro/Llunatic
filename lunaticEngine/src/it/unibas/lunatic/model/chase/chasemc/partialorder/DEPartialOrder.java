@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.partialorder;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.exceptions.ChaseException;
+import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
@@ -17,7 +17,7 @@ public class DEPartialOrder extends AbstractPartialOrder {
         CellGroup newGroup = new CellGroup(newValue, true);
         mergeCells(group1, group2, newGroup);
         if (newValue instanceof LLUNValue) {
-            throw new ChaseException("Unable to equate cell groups " + group1 + " and " + group2);
+            throw new ChaseFailedException("Unable to equate cell groups " + group1 + " and " + group2);
         }
         return newGroup;
     }

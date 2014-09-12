@@ -27,6 +27,7 @@ public class ChaseStats {
     public static final String NUMBER_OF_DED_EGDS = "#DED EGDs";
     public static final String NUMBER_OF_DCS = "#DCs";
     public static final String NUMBER_OF_GREEDY_SCENARIOS = "#Greedy Scenarios";
+    public static final String NUMBER_OF_EXECUTED_GREEDY_SCENARIOS = "#Executed greedy Scenarios";
     /////
     private static Logger logger = LoggerFactory.getLogger(ChaseStats.class);
     private static ChaseStats singleton = new ChaseStats();
@@ -75,6 +76,7 @@ public class ChaseStats {
         if(stats.containsKey(NUMBER_OF_DED_EXTGDS)) sb.append( NUMBER_OF_DED_EXTGDS + ": ").append(stats.get(NUMBER_OF_DED_EXTGDS)).append("\n");
         if(stats.containsKey(NUMBER_OF_DED_EGDS)) sb.append( NUMBER_OF_DED_EGDS + ": ").append(stats.get(NUMBER_OF_DED_EGDS)).append("\n");
         if(stats.containsKey(NUMBER_OF_GREEDY_SCENARIOS)) sb.append( NUMBER_OF_GREEDY_SCENARIOS + ": ").append(stats.get(NUMBER_OF_GREEDY_SCENARIOS)).append("\n");
+        if(stats.containsKey(NUMBER_OF_EXECUTED_GREEDY_SCENARIOS)) sb.append( NUMBER_OF_EXECUTED_GREEDY_SCENARIOS + ": ").append(stats.get(NUMBER_OF_EXECUTED_GREEDY_SCENARIOS)).append("\n");
         sb.append("------ CHASE STATS ------").append("\n");
         if(stats.containsKey(TOTAL_TIME)) sb.append( TOTAL_TIME + ": ").append(stats.get(TOTAL_TIME)).append(" ms").append("\n");
         if(stats.containsKey(STTGD_TIME)) sb.append(STTGD_TIME + ": ").append(stats.get(STTGD_TIME)).append(" ms").append("\n");
