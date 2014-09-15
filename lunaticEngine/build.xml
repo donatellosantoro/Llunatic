@@ -14,6 +14,8 @@
         <path id="compile.classpath">
             <pathelement location="${build.dir}" />
             <pathelement location="${lib.dir}/slf4j-api-${slf4j.ver}.jar" />
+            <pathelement location="${lib.dir}/logback-core-${logback.ver}.jar" />
+            <pathelement location="${lib.dir}/logback-classic-${logback.ver}.jar" />
             <pathelement location="${lib.dir}/postgresql-9.1-903.jdbc3.jar" />
             <pathelement location="${lib.dir}/jdom.jar" />
             <pathelement location="${lib.dir}/xercesImpl.jar" />
@@ -38,8 +40,6 @@
             <path refid="compile.classpath" />
             <pathelement location="${test.build.dir}" />
             <pathelement location="${lib.dir}/junit.jar" />
-            <pathelement location="${lib.dir}/logback-core-${logback.ver}.jar" />
-            <pathelement location="${lib.dir}/logback-classic-${logback.ver}.jar" />
         </path>
     </target>
     

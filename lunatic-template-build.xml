@@ -289,6 +289,7 @@
                 <include name="**/*.*" />
                 <exclude name="**/conf/**" />
                 <exclude name="**/resources/**" />
+                <exclude name="logback.xml" />
             </fileset>
         </jar>
     </target>
