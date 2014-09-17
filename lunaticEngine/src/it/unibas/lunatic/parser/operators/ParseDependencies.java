@@ -245,7 +245,7 @@ public class ParseDependencies {
         CheckVariablesInExpressions checker = new CheckVariablesInExpressions();
         recursionChecker.checkRecursion(dependency);
         aliasAssigner.assignAliases(dependency);
-        variableFinder.findVariables(dependency, scenario);
+        variableFinder.findVariables(dependency, scenario.getSource().getTableNames(), scenario.getAuthoritativeSources());
         checker.checkVariables(dependency);
     }
 
