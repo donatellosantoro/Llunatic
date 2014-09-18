@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.extendedegdanalysis.operators;
 
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.TableAlias;
@@ -32,7 +33,10 @@ public class FindSymmetricAtoms {
 
     private static Logger logger = LoggerFactory.getLogger(FindSymmetricAtoms.class);
 
-    public void findSymmetricAtoms(List<Dependency> dependencies) {
+    public void findSymmetricAtoms(List<Dependency> dependencies, Scenario scenario) {
+        if(!scenario.getConfiguration().isUseSymmetricOptimization()){
+            return;
+        }
         for (Dependency dependency : dependencies) {
             findSymmetricAtoms(dependency);
         }

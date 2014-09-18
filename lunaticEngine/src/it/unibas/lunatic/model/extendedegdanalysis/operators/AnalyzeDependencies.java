@@ -42,7 +42,7 @@ public class AnalyzeDependencies {
         findAllQueriedAttributesForEGDs(scenario.getExtEGDs());
         findAllQueriedAttributesForTGDs(scenario.getExtTGDs());
         DependencyStratification stratification = generateStratification(scenario);
-        symmetryFinder.findSymmetricAtoms(scenario.getExtEGDs());
+        symmetryFinder.findSymmetricAtoms(scenario.getExtEGDs(), scenario);
         findAttributesForBackwardChasing(scenario.getExtEGDs());
         findAllAffectedAttributes(scenario.getExtEGDs());
         assignAdditionalAttributes(scenario.getExtEGDs(), scenario);

@@ -112,5 +112,10 @@ class AlgebraTreeToStringVisitor implements IAlgebraTreeVisitor {
         result.append(this.indentString()).append(operator.getName()).append("\n");
         visitChildren(operator);
     }
+
+    public void visitCartesianProduct(CartesianProduct operator) {
+        result.append(this.indentString()).append(operator.getName()).append("\n");
+        visitChildren(operator);
+    }
     
 }

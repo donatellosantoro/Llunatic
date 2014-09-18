@@ -49,7 +49,7 @@ public class ChaseDEScenario implements IDEChaser {
         stChaser.doChase(scenario, true);
         addTargetJoinAttributes(scenario.getEGDs());
         addQueriedAttributes(scenario.getEGDs());
-        symmetryFinder.findSymmetricAtoms(scenario.getEGDs());
+        symmetryFinder.findSymmetricAtoms(scenario.getEGDs(), scenario);
         int iterations = 0;
         while (iterations < ITERATION_LIMIT) {
             if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState);

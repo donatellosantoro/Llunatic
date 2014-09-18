@@ -119,6 +119,12 @@ public class AlgebraTreeToSQL {
             createJoinClause(operator, leftChild, rightChild, nestedSelect);
         }
 
+        public void visitCartesianProduct(CartesianProduct operator) {
+            List<TableAlias> nestedSelect = findNestedTablesForJoin(operator);
+            createSQLSelectClause(operator, nestedSelect, true);
+            result.append(" FROM ");
+        }
+
         public void visitProject(Project operator) {
             IAlgebraOperator child = operator.getChildren().get(0);
             if (child instanceof Project) {
@@ -411,7 +417,7 @@ public class AlgebraTreeToSQL {
             this.indentLevel--;
         }
 
-        private List<TableAlias> findNestedTablesForJoin(Join operator) {
+        private List<TableAlias> findNestedTablesForJoin(IAlgebraOperator operator) {
             List<TableAlias> tableAliases = new ArrayList<TableAlias>();
             List<AttributeRef> attributes = new ArrayList<AttributeRef>();
             IAlgebraOperator leftChild = operator.getChildren().get(0);

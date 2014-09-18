@@ -9,6 +9,7 @@ public interface IAlgebraTreeVisitor {
     void visitDistinct(Distinct operator);
     void visitSelectIn(SelectIn operator);
     void visitJoin(Join operator);
+    void visitCartesianProduct(CartesianProduct operator);
     void visitProject(Project operator);
     void visitDifference(Difference operator);
     void visitUnion(Union operator);

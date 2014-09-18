@@ -71,7 +71,7 @@ public class FormulaVariable implements Cloneable{
     }
     
     public String toLongString() {
-        return this.toString() + " " + premiseOccurrences + " " + conclusionOccurrences;
+        return this.toString() + " Occurrences - Premise: " + premiseOccurrences + " Conclusion: " + conclusionOccurrences  + " NonRelational: " + nonRelationalOccurrences;
     }
        
     

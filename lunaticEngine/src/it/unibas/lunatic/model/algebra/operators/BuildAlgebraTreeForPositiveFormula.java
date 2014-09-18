@@ -191,7 +191,7 @@ public class BuildAlgebraTreeForPositiveFormula {
     }
 
     private void sortEqualityGroups(List<EqualityGroup> equalityGroups) {
-        if(equalityGroups.isEmpty()){
+        if (equalityGroups.isEmpty()) {
             return;
         }
         if (logger.isDebugEnabled()) logger.debug("Sorting equality groups\n" + LunaticUtility.printCollection(equalityGroups));
@@ -244,12 +244,12 @@ public class BuildAlgebraTreeForPositiveFormula {
         return variableAliasesInFormula;
     }
 
-    private List<AttributeRef> filterOccurrences(FormulaVariable variable, List<TableAlias> aliases, boolean premise) {
-        if (logger.isDebugEnabled()) logger.debug("Filtering occurrences for variable: " + variable + " in aliases " + aliases);
+    private List<AttributeRef> filterOccurrences(FormulaVariable variable, List<TableAlias> allAliases, boolean premise) {
+        if (logger.isDebugEnabled()) logger.debug("Filtering occurrences for variable: " + variable + " in aliases " + allAliases);
         List<AttributeRef> result = new ArrayList<AttributeRef>();
         for (FormulaVariableOccurrence occurrence : getFormulaVariableOccurrence(variable, premise)) {
             if (logger.isDebugEnabled()) logger.debug("\tOccurrence: " + occurrence.toLongString());
-            if (aliases.contains(occurrence.getAttributeRef().getTableAlias())) {
+            if (allAliases.contains(occurrence.getAttributeRef().getTableAlias())) {
                 result.add(occurrence.getAttributeRef());
             }
         }
