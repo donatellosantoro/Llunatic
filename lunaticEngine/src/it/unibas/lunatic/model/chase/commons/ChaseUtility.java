@@ -200,9 +200,9 @@ public class ChaseUtility {
         return result;
     }
 
-    private static List<FormulaVariableOccurrence> findPositiveOccurrences(PositiveFormula positiveFormula, List<FormulaVariableOccurrence> premiseOccurrences) {
+    private static List<FormulaVariableOccurrence> findPositiveOccurrences(PositiveFormula positiveFormula, List<FormulaVariableOccurrence> premiseRelationalOccurrences) {
         List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
-        for (FormulaVariableOccurrence formulaVariableOccurrence : premiseOccurrences) {
+        for (FormulaVariableOccurrence formulaVariableOccurrence : premiseRelationalOccurrences) {
             if (containsAlias(positiveFormula, formulaVariableOccurrence.getTableAlias())) {
                 result.add(formulaVariableOccurrence);
             }
