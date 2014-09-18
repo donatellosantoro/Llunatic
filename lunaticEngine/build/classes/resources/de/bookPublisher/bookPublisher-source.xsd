@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="source">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="IBDBookSet" minOccurs="0" nillable="false">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="IBDBook" maxOccurs="unbounded" minOccurs="0" nillable="false">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="title" nillable="false" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="LOCSet" minOccurs="0" nillable="false">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="LOC" maxOccurs="unbounded" minOccurs="0" nillable="false">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="title" nillable="false" type="xs:string"/>
+										<xs:element name="publisher" nillable="false" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="IBLBookSet" minOccurs="0" nillable="false">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="IBLBook" maxOccurs="unbounded" minOccurs="0" nillable="false">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="title" nillable="false" type="xs:string"/>
+										<xs:element name="pubId" nillable="false" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="IBLPublisherSet" minOccurs="0" nillable="false">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="IBLPublisher" maxOccurs="unbounded" minOccurs="0" nillable="false">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="id" nillable="false" type="xs:string"/>
+										<xs:element name="name" nillable="false" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

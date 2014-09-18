@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source/>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+R(a, b)
+S(a)
+INSTANCE:
+R(a: "1", b: "3")
+R(a: "1", b: "4")
+//S(a: "10")
+S(a: "3")
+//S(a: "4")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+R(a: $x, b: $y1), R(a: $x, b: $y2) and not exists(S(a: $y1)) -> $y1 == $y2.
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

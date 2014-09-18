@@ -94,7 +94,7 @@ public class SQLInsertTuplesForTGDs implements IInsertTuplesForTGDs {
                     query.append(sqlSkolemGenerator.toString());
                 } else {
                     FormulaVariable universalVariable = LunaticUtility.findVariableInList(occurrence, tgd.getPremise().getLocalVariables());
-                    query.append(DBMSUtility.attributeRefToSQL(universalVariable.getPremiseOccurrences().get(0).getAttributeRef()));
+                    query.append(DBMSUtility.attributeRefToSQL(universalVariable.getPremiseRelationalOccurrences().get(0).getAttributeRef()));
                 }
                 query.append(" AS ").append(DBMSUtility.attributeRefToSQL(attributeRef));
                 query.append(", ");
@@ -133,7 +133,7 @@ public class SQLInsertTuplesForTGDs implements IInsertTuplesForTGDs {
         root.addChild(append);
         List<FormulaVariable> universalVariablesInConclusion = DependencyUtility.findUniversalVariablesInConclusion(dependency);
         for (FormulaVariable formulaVariable : universalVariablesInConclusion) {
-            FormulaVariableOccurrence sourceOccurrence = formulaVariable.getPremiseOccurrences().get(0);
+            FormulaVariableOccurrence sourceOccurrence = formulaVariable.getPremiseRelationalOccurrences().get(0);
             String attributeString = DBMSUtility.attributeRefToSQL(sourceOccurrence.getAttributeRef());
             append.addChild(new StringSkolemPart(attributeString));
         }

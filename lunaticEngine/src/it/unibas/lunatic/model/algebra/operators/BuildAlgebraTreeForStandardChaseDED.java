@@ -78,8 +78,8 @@ public class BuildAlgebraTreeForStandardChaseDED {
         List<FormulaVariable> universalVariable = DependencyUtility.getUniversalVariablesInConclusion(negatedDependency);
         if (logger.isDebugEnabled()) logger.debug("Universal variables: " + universalVariable);
         for (FormulaVariable formulaVariable : universalVariable) {
-            AttributeRef leftAttribute = DependencyUtility.findFirstOccurrenceInFormula(negatedDependency.getPremise(), formulaVariable.getPremiseOccurrences());
-            AttributeRef rightAttribute = DependencyUtility.findFirstOccurrenceInFormula(negatedDependency.getConclusion(), formulaVariable.getConclusionOccurrences());
+            AttributeRef leftAttribute = DependencyUtility.findFirstOccurrenceInFormula(negatedDependency.getPremise(), formulaVariable.getPremiseRelationalOccurrences());
+            AttributeRef rightAttribute = DependencyUtility.findFirstOccurrenceInFormula(negatedDependency.getConclusion(), formulaVariable.getConclusionRelationalOccurrences());
             if (logger.isDebugEnabled()) logger.debug("Adding equality on " + leftAttribute + " and " + rightAttribute);
             result.add(new DifferenceEquality(leftAttribute, rightAttribute));
         }

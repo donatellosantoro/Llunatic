@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:synthetic_02</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+
+create table consta1 (
+  oid serial,
+  a varchar(50)
+);
+
+insert into consta1(a) values ('a1');
+]]>
+    </init-db>
+  </source>
+  <target> 
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:synthetic_02</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table r (
+  oid serial,
+  a varchar(50),
+  b varchar(50),
+  c varchar(50)
+);
+
+insert into r(a,b,c) values ('a1', 'b1', 'c1');
+insert into r(a,b,c) values ('a1', 'b2', 'c2');
+insert into r(a,b,c) values ('a2', 'b3', 'c1');
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+r(a: $x, b: $y1, c: $z1), r(a: $x, b: $y2, c: $z2), consta1(a: $x) -> $y1 == $y2.
+r(a: $x1, b: $y1, c: $z), r(a: $x2, b: $y2, c: $z) -> $x1 == $x2.
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

@@ -65,11 +65,11 @@ public class DependencyGraph {
 
     private void handleFormulaVariable(FormulaVariable formulaVariable, UndirectedGraph<IFormulaAtom, DefaultEdge> graph, Dependency dependency) {
         List<IFormulaAtom> formulaAtoms = new ArrayList<IFormulaAtom>();
-        for (FormulaVariableOccurrence formulaVariableOccurrence : formulaVariable.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence formulaVariableOccurrence : formulaVariable.getPremiseRelationalOccurrences()) {
             IFormulaAtom atom = getRelationalAtom(dependency, formulaVariableOccurrence.getTableAlias());
             formulaAtoms.add(atom);
         }
-        for (FormulaVariableOccurrence formulaVariableOccurrence : formulaVariable.getConclusionOccurrences()) {
+        for (FormulaVariableOccurrence formulaVariableOccurrence : formulaVariable.getConclusionRelationalOccurrences()) {
             IFormulaAtom atom = getRelationalAtom(dependency, formulaVariableOccurrence.getTableAlias());
             formulaAtoms.add(atom);
         }

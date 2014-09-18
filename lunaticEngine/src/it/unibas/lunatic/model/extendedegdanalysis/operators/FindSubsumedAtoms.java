@@ -51,7 +51,7 @@ public class FindSubsumedAtoms {
             joinGraph.addVertex(relationalAtom.getTableAlias().toString());
         }
         for (FormulaVariable joinVariable : joinVariables) {
-            List<FormulaVariableOccurrence> occurrences = joinVariable.getPremiseOccurrences();
+            List<FormulaVariableOccurrence> occurrences = joinVariable.getPremiseRelationalOccurrences();
             for (int i = 0; i < occurrences.size() - 1; i++) {
                 FormulaVariableOccurrence occurrencei = occurrences.get(i);
                 TableAlias aliasi = occurrencei.getAttributeRef().getTableAlias();

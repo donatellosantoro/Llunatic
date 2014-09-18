@@ -79,7 +79,7 @@ public class NormalizeDependency {
         }
         //Clean occurrences
         for (FormulaVariable formulaVariable : clone.getPremise().getLocalVariables()) {
-            for (Iterator<FormulaVariableOccurrence> it = formulaVariable.getConclusionOccurrences().iterator(); it.hasNext();) {
+            for (Iterator<FormulaVariableOccurrence> it = formulaVariable.getConclusionRelationalOccurrences().iterator(); it.hasNext();) {
                 FormulaVariableOccurrence formulaVariableOccurrence = it.next();
                 boolean containsOccurrences = containsOccurrences(formulaVariableOccurrence.getTableAlias(), connectedComponent);
                 if (!containsOccurrences) {
@@ -91,7 +91,7 @@ public class NormalizeDependency {
     }
 
     private boolean checkOccurrences(FormulaVariable localVariable, Set<RelationalAtom> connectedComponent) {
-        for (FormulaVariableOccurrence formulaVariableOccurrence : localVariable.getConclusionOccurrences()) {
+        for (FormulaVariableOccurrence formulaVariableOccurrence : localVariable.getConclusionRelationalOccurrences()) {
             if (containsOccurrences(formulaVariableOccurrence.getTableAlias(), connectedComponent)) {
                 return true;
             }

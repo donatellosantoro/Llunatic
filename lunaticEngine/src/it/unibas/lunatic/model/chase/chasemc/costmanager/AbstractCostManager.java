@@ -98,12 +98,12 @@ public abstract class AbstractCostManager implements ICostManager {
     protected boolean isSuspicious(CellGroup cellGroup, BackwardAttribute backwardAttribute, EquivalenceClass equivalenceClass) {
         Dependency egd = equivalenceClass.getDependency();
         FormulaVariable variable = backwardAttribute.getVariable();
-        if (logger.isDebugEnabled()) logger.debug("Checking if cell group is suspicious:\n" + cellGroup + "\nEGD: " + egd + "\nVariable: " + variable + "\nVariable occurrence " + variable.getPremiseOccurrences());
-        if (variable.getPremiseOccurrences().size() > cellGroup.getOccurrences().size()) {
+        if (logger.isDebugEnabled()) logger.debug("Checking if cell group is suspicious:\n" + cellGroup + "\nEGD: " + egd + "\nVariable: " + variable + "\nVariable occurrence " + variable.getPremiseRelationalOccurrences());
+        if (variable.getPremiseRelationalOccurrences().size() > cellGroup.getOccurrences().size()) {
             return false;
         }
         List<CellRef> occurrences = new ArrayList<CellRef>(cellGroup.getOccurrences());
-        for (FormulaVariableOccurrence occurrence : variable.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : variable.getPremiseRelationalOccurrences()) {
             if (logger.isDebugEnabled()) logger.debug("Variable occurrence: " + occurrence.toLongString());
             if (occurrence.getAttributeRef().isSource()) {
                 continue;

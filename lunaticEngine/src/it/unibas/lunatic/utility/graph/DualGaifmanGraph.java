@@ -40,11 +40,11 @@ public class DualGaifmanGraph {
     private void addEdges(UndirectedGraph<RelationalAtom, DefaultEdge> graph, Dependency dependency) {
         Map<FormulaVariable, List<RelationalAtom>> occurrencesGroup = new HashMap<FormulaVariable, List<RelationalAtom>>();
         for (FormulaVariable formulaVariable : dependency.getConclusion().getLocalVariables()) {
-            if (!formulaVariable.getPremiseOccurrences().isEmpty()) {
+            if (!formulaVariable.getPremiseRelationalOccurrences().isEmpty()) {
                 //Universal variable
                 continue;
             }
-            for (FormulaVariableOccurrence formulaVariableOccurrence : formulaVariable.getConclusionOccurrences()) {
+            for (FormulaVariableOccurrence formulaVariableOccurrence : formulaVariable.getConclusionRelationalOccurrences()) {
                 RelationalAtom relationalAtom = getRelationalAtom(dependency, formulaVariableOccurrence.getTableAlias());
                 addOccurrence(formulaVariable, relationalAtom, occurrencesGroup);
             }

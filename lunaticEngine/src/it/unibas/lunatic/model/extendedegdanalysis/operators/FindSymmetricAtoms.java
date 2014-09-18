@@ -76,7 +76,7 @@ public class FindSymmetricAtoms {
         }
         if (logger.isDebugEnabled()) logger.debug("Vertices: " + joinGraph.vertexSet());
         for (FormulaVariable joinVariable : joinVariables) {
-            List<FormulaVariableOccurrence> occurrences = joinVariable.getPremiseOccurrences();
+            List<FormulaVariableOccurrence> occurrences = joinVariable.getPremiseRelationalOccurrences();
             for (int i = 0; i < occurrences.size() - 1; i++) {
                 FormulaVariableOccurrence occurrencei = occurrences.get(i);
                 TableAlias aliasi = occurrencei.getAttributeRef().getTableAlias();
@@ -204,7 +204,7 @@ public class FindSymmetricAtoms {
     }
 
     private boolean hasOccurrenceInTable(FormulaVariable v, TableAlias tableAlias) {
-        for (FormulaVariableOccurrence occurrence : v.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : v.getPremiseRelationalOccurrences()) {
             if (occurrence.getAttributeRef().getTableAlias().equals(tableAlias)) {
                 return true;
             }

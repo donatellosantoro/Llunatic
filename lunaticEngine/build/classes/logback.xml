@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d %-5p %c %n%m%n</pattern>
+    </encoder>
+  </appender>
+  <appender name="file" class="ch.qos.logback.core.FileAppender">
+    <Append>false</Append>
+    <File>${user.home}/Temp/logLunatic.txt</File>
+    <encoder>
+      <pattern>%m%n</pattern>
+    </encoder>
+  </appender>  
+  <root level="INFO">
+    <appender-ref ref="stdout"/>
+    <!--<appender-ref ref="file"/>-->
+  </root>
+  <!--     TEST     -->
+  <logger name="it.unibas.lunatic.test" level="DEBUG"/>
+  <!--<logger name="it.unibas.lunatic.test.BatchTest" level="DEBUG"/>-->
+
+  <!--     MODEL     -->
+  <!--<logger name="it.unibas.lunatic.model.extendedegdanalysis.operators.AnalyzeDependencies" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.model.chasemc.partialorder.AbstractPartialOrder" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.model.dependency.operators.CheckVariablesInExpressions" level="DEBUG"/>-->
+
+  <!--     ALGEBRA     -->
+  <!--<logger name="it.unibas.lunatic.model.algebra.Difference" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.model.algebra.Join" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.model.algebra.operators.mainmemory.InsertTuple" level="DEBUG"/>-->
+  <logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula" level="DEBUG"/>
+
+  <!--     CHASE DE     -->
+  <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs" level="DEBUG"/>-->
+
+  <!--     CHASE MC     -->
+  <!--<logger name="it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDsWithoutCellGroups" level="DEBUG"/>-->
+
+  <!--     CHASE DED     -->
+  <!--<logger name="it.unibas.lunatic.model.chase.chaseded.ChaseDEDScenarioGreedy" level="DEBUG"/>-->
+
+  <!--     OTHERS     -->
+  <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.ScriptUtility" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.test.comparator.instances.CompareInstances" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.persistence.relational.QueryStatManager" level="DEBUG"/>-->
+  <!--<logger name="it.unibas.lunatic.persistence.relational.QueryManager" level="TRACE"/>-->
+  <!--<logger name="it.unibas.lunatic.persistence.relational.PooledDbConnectionFactory" level="TRACE"/>-->
+  <!--<logger name="it.unibas.lunatic.model.chase.ChaseStats" level="DEBUG"/>-->
+  <logger name="com.mchange" level="WARN"/>
+  <logger name="com.sun" level="WARN"/>
+  
+</configuration>

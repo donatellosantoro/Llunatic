@@ -122,11 +122,11 @@ public class BuildExtendedDependencies {
                 throw new ChaseException("Unable to handle extended egd: constants appear in conclusion;  " + dependency);
             }
             FormulaVariable v1 = comparison.getVariables().get(0);
-            if (v1.getPremiseOccurrences().size() > 1) {
+            if (v1.getPremiseRelationalOccurrences().size() > 1) {
                 dependency.setOverlapBetweenAffectedAndQueried(true);
             }
             FormulaVariable v2 = comparison.getVariables().get(1);
-            if (v2.getPremiseOccurrences().size() > 1) {
+            if (v2.getPremiseRelationalOccurrences().size() > 1) {
                 dependency.setOverlapBetweenAffectedAndQueried(true);
             }
             addAttributesForVariable(v1, affectedAttributes);
@@ -136,7 +136,7 @@ public class BuildExtendedDependencies {
     }
 
     private void addAttributesForVariable(FormulaVariable v, List<AttributeRef> attributes) {
-        for (FormulaVariableOccurrence occurrence : v.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : v.getPremiseRelationalOccurrences()) {
             AttributeRef attribute = occurrence.getAttributeRef();
             if (attribute.getTableAlias().isSource()) {
                 continue;

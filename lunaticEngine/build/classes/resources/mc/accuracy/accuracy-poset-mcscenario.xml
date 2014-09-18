@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+masterdata(fn, ln, league, season, team)
+INSTANCE:
+masterdata(fn:  "Michael", ln:  "Jordan",   league:  "NBA", season:  "1994-95", team:  "Chicago Bulls")
+masterdata(fn:  "David",   ln:  "Robinson", league:  "NBA", season:  "1994-95", team:  "San Antonio Spurs")
+//masterdata(fn:  "Michael", ln:  "Jordan",   league:  "NBA", season:  "2001-02", team:  "Washington Wizard")
+]]>
+    </generate>
+  </source>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+stat(id, fn, mn, ln, rnds, totalpts, j, league, team, arena)
+//result(id, fn, mn, ln, rnds, totalpts, league, team)
+INSTANCE:
+stat(id: 1, fn:  "MJ",      mn:  #NULL#,    ln:  #NULL#,   rnds:  "16",  totalpts:  "424", j:  "45", league:  "NBA", team:  "Chicago",           arena:  "Chicago Stadium")
+stat(id: 1, fn:  "Michael", mn:  #NULL#,    ln:  "Jordan", rnds:  "27",  totalpts:  "772", j:  "23", league:  "NBA", team:  "Chicago Bulls",     arena:  "United Center")
+stat(id: 1, fn:  "Michael", mn:  #NULL#,    ln:  "Jordan", rnds:  "1",   totalpts:  "19",  j:  "45", league:  "NBA", team:  "Chicago Bulls",     arena:  "United Center")
+stat(id: 1, fn:  "Michael", mn:  "Jeffrey", ln:  "Jordan", rnds:  "127", totalpts:  "51",  j:  "45", league:  "SL",  team:  "Birmingham Barons", arena:  "Regions Park")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+//(ID) -> FN
+e1: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league1, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league2, team: $team2, arena: $arena2) 
+      -> $fn1 == $fn2.
+//(ID, FN) -> MN
+e2: stat(id: $id, fn: $fn, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league1, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league2, team: $team2, arena: $arena2) 
+      -> $mn1 == $mn2.
+//(ID) -> LN
+e3: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league1, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league2, team: $team2, arena: $arena2) 
+      -> $ln1 == $ln2.
+//(ID, J, LEAGUE) -> RNDS
+e4: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j, league: $league, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j, league: $league, team: $team2, arena: $arena2) 
+      -> $rnds1 == $rnds2.
+//(ID, LEAGUE) -> TOTPNTS
+e5: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league, team: $team2, arena: $arena2) 
+      -> $totalpts1 == $totalpts2.
+//(ID, LEAGUE) -> J
+e6: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league, team: $team2, arena: $arena2) 
+      -> $j1 == $j2.
+//(ID, LEAGUE) -> TEAM
+e7: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league, team: $team2, arena: $arena2) 
+      -> $team1 == $team2.
+//(ID, LEAGUE, TEAM) -> ARENA
+e8: stat(id: $id1, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league, team: $team, arena: $arena1),
+     stat(id: $id2, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league, team: $team, arena: $arena2) 
+      -> $arena1 == $arena2.
+
+//Master Data
+//masterdata(fn: $fn, ln: $ln, league: $league1, season: $season, team: $team1),
+//    consttable_md1(season: $season),
+//    stat(id: $id, fn: $fn, mn: $mn2, ln: $ln, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league2, team: $team2, arena: $arena2) 
+//-> $league1 == $league2.
+md1: masterdata(fn: $fn, ln: $ln, league: $league, season: $season, team: $team1),
+   stat(id: $id, fn: $fn, mn: $mn2, ln: $ln, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league, team: $team2, arena: $arena2) 
+-> $team1 == $team2.
+
+//ExtTGDs:
+//stat(id: $id, fn: $fn, mn: $mn, ln: $ln, rnds: $rnds, totalpts: $totalpts, j: $j, league: $league, team: $team, arena: $arena) ->
+//result(id: $id, fn: $fn, mn: $mn, ln: $ln, rnds: $rnds, totalpts: $totalpts, league: $league, team: $team).
+]]>
+  </dependencies>
+  <orderingAttributes>
+    <orderingAttribute>
+      <attribute>stat.fn</attribute>
+      <associatedAttribute>stat.mn</associatedAttribute>
+      <valueComparator sort="DESC"/>
+    </orderingAttribute>
+    <orderingAttribute>
+      <attribute>stat.j</attribute>
+      <associatedAttribute>stat.rnds</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+    </orderingAttribute>
+    <orderingAttribute>
+      <attribute>stat.totalpts</attribute>
+      <associatedAttribute>stat.rnds</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+    </orderingAttribute>
+    <orderingAttribute>
+      <attribute>stat.rnds</attribute>
+      <associatedAttribute>stat.rnds</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+    </orderingAttribute>
+  </orderingAttributes>
+<costManager>
+  <type>Standard</type>
+  <doBackward>false</doBackward>
+</costManager>
+</scenario>
+

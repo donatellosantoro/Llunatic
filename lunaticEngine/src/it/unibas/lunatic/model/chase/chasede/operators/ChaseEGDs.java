@@ -276,14 +276,14 @@ public class ChaseEGDs {
         List<AttributeRef> attributesForForwardChasing = new ArrayList<AttributeRef>();
         FormulaVariable v1 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(0);
         FormulaVariable v2 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(1);
-        for (FormulaVariableOccurrence occurrence : v1.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : v1.getPremiseRelationalOccurrences()) {
             AttributeRef occurrenceAttribute = EquivalenceClassUtility.correctAttributeForSymmetricEGDs(occurrence.getAttributeRef(), egd);
             if (attributesForForwardChasing.contains(occurrenceAttribute)) {
                 continue;
             }
             attributesForForwardChasing.add(occurrenceAttribute);
         }
-        for (FormulaVariableOccurrence occurrence : v2.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : v2.getPremiseRelationalOccurrences()) {
             AttributeRef occurrenceAttribute = EquivalenceClassUtility.correctAttributeForSymmetricEGDs(occurrence.getAttributeRef(), egd);
             if (attributesForForwardChasing.contains(occurrenceAttribute)) {
                 continue;

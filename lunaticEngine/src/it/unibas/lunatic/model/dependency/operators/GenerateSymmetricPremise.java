@@ -63,14 +63,14 @@ public class GenerateSymmetricPremise {
         if (logger.isDebugEnabled()) logger.debug("Making symmetric variable: " + variable + " with symmetric atoms: " + symmetricAtoms);
         FormulaVariable symmetricVariable = new FormulaVariable(variable.getId());
 //        symmetricVariable.setNonRelationalOccurrences(variable.getNonRelationalOccurrences());
-        for (FormulaVariableOccurrence premiseOccurrence : variable.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence premiseOccurrence : variable.getPremiseRelationalOccurrences()) {
             if (logger.isDebugEnabled()) logger.debug("Analyzing occurrence: " + premiseOccurrence);
             if (appearsInSymmetricAtom(premiseOccurrence.getTableAlias(), symmetricAtoms)) {
                 AttributeRef symmetricAttribute = premiseOccurrence.getAttributeRef().clone();
                 symmetricAttribute.getTableAlias().setAlias("");
                 FormulaVariableOccurrence symmetricOccurrence = new FormulaVariableOccurrence(symmetricAttribute, premiseOccurrence.getVariableId());
                 if (logger.isDebugEnabled()) logger.debug("Symmetric occurrence: " + symmetricOccurrence);
-                symmetricVariable.addPremiseOccurrence(symmetricOccurrence);
+                symmetricVariable.addPremiseRelationalOccurrence(symmetricOccurrence);
             }
 //            if (premiseOccurrence.getTableAlias().getTableName().equals(symmetricTable)) {
 //                AttributeRef symmetricAttribute = new AttributeRef(symmetricTable, premiseOccurrence.getAttributeRef().getName());

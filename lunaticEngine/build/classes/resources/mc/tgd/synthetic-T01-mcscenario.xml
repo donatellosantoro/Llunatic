@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+R(a, b)
+S(a, b)
+INSTANCE:
+R(a: "1", b: "3")
+R(a: "2", b: "3")
+R(a: "5", b: "5")
+S(a: "3", b: "4")
+S(a: "2", b: "4")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtTGDs:
+R(a: $x, b: $y) -> S(a: $y, b: $z).
+ExtEGDs:
+S(a: $y1, b: $x), S(a: $y2, b: $x) -> $y1 == $y2.
+]]>
+  </dependencies>
+  <partialOrder/>
+  <configuration>
+  	<useCellGroupsForTGDs>true</useCellGroupsForTGDs>
+  </configuration>
+</scenario>
+

@@ -1,0 +1,24 @@
+#prescription
+rxid,patient,npiref
+P1,J. Doe,_L137
+P3,M. White,5555
+P1,J. Doe,_L137
+P2,W. Smith,5555
+
+#doctor
+npi,name,hospital,email
+1222,C. Taub,_SKm1-N1(P1;J. Doe;1222;C. Taub),_SKm1-N2(P1;J. Doe;1222;C. Taub)
+5555,G. House,PPTH,house@ppth.com
+_L137,_SKt0-N1(_L137),_SKt0-N2(_L137),_SKt0-N3(_L137)
+1112,R. Chase,Sacred Hearth,chase@sh.com
+5555,G. House,PPTH,house@ppth.com
+
+#prescription_join_doctor
+rxid,patient,npiref,npi,name,hospital,email
+P1,J. Doe,_L137,_L137,_SKt0-N1(_L137),_SKt0-N2(_L137),_SKt0-N3(_L137)
+P1,J. Doe,_L137,_L137,_SKt0-N1(_L137),_SKt0-N2(_L137),_SKt0-N3(_L137)
+P3,M. White,5555,5555,G. House,PPTH,house@ppth.com
+P3,M. White,5555,5555,G. House,PPTH,house@ppth.com
+P2,W. Smith,5555,5555,G. House,PPTH,house@ppth.com
+P2,W. Smith,5555,5555,G. House,PPTH,house@ppth.com
+

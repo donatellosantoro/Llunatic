@@ -34,7 +34,7 @@ public class FormulaAttributeToSQL {
             return createSkolemGenerator(existentialVariable, dependency, skolems).toString();
         }
         FormulaVariable universalVariable = LunaticUtility.findVariableInList(occurrence, dependency.getPremise().getLocalVariables());
-        FormulaVariableOccurrence sourceOccurrence = universalVariable.getPremiseOccurrences().get(0);
+        FormulaVariableOccurrence sourceOccurrence = universalVariable.getPremiseRelationalOccurrences().get(0);
 //        return dependency.getId() + "." + sourceOccurrence.getAttributeRef().toScriptString();
         return DBMSUtility.attributeRefToSQL(sourceOccurrence.getAttributeRef());
     }
@@ -51,7 +51,7 @@ public class FormulaAttributeToSQL {
         root.addChild(append);
         List<FormulaVariable> universalVariablesInConclusion = findUniversalVariablesInConclusion(dependency);
         for (FormulaVariable formulaVariable : universalVariablesInConclusion) {
-            FormulaVariableOccurrence sourceOccurrence = formulaVariable.getPremiseOccurrences().get(0);
+            FormulaVariableOccurrence sourceOccurrence = formulaVariable.getPremiseRelationalOccurrences().get(0);
 //            String attributeString = dependency.getId() + "." + sourceOccurrence.getAttributeRef().toScriptString();
             String attributeString = DBMSUtility.attributeRefToSQL(sourceOccurrence.getAttributeRef());
             append.addChild(new StringSkolemPart(attributeString));
@@ -64,7 +64,7 @@ public class FormulaAttributeToSQL {
     private List<FormulaVariable> findUniversalVariablesInConclusion(Dependency dependency) {
         List<FormulaVariable> result = new ArrayList<FormulaVariable>();
         for (FormulaVariable formulaVariable : dependency.getPremise().getLocalVariables()) {
-            if (formulaVariable.getConclusionOccurrences().size() > 0) {
+            if (formulaVariable.getConclusionRelationalOccurrences().size() > 0) {
                 result.add(formulaVariable);
             }
         }

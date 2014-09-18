@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="1" failures="0" hostname="MacBook-Pro-di-Giansalvatore.local" name="it.unibas.lunatic.test.mc.mainmemory.TestEmployees" skipped="0" tests="2" time="0.868" timestamp="2014-09-18T14:33:16">
+  <properties>
+    <property name="run.maxmemory" value="4G" />
+    <property name="java.vendor" value="Oracle Corporation" />
+    <property name="lib.dir" value="../lib" />
+    <property name="netbeans.user" value="/Users/mecca/Library/Application Support/NetBeans/8.0.1" />
+    <property name="sun.java.launcher" value="SUN_STANDARD" />
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers" />
+    <property name="netbeans.autoupdate.version" value="1.23" />
+    <property name="test.data.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/test/testdata" />
+    <property name="ant.file.type.lunatic-template" value="file" />
+    <property name="build.sysclasspath" value="ignore" />
+    <property name="os.name" value="Mac OS X" />
+    <property name="sun.boot.class.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre/classes" />
+    <property name="netbeans.importclass" value="org.netbeans.upgrade.AutoUpgrade" />
+    <property name="c3p0.ver" value="0.9.5-pre8" />
+    <property name="java.vm.specification.vendor" value="Oracle Corporation" />
+    <property name="ant.home" value="/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/extide/ant" />
+    <property name="java.runtime.version" value="1.8.0-b132" />
+    <property name="jep.dir" value="../jep-2.4.1" />
+    <property name="test.build.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/build/test/classes" />
+    <property name="netbeans.default_userdir_root" value="/Users/mecca/Library/Application Support/NetBeans" />
+    <property name="netbeans.accept_license_class" value="org.netbeans.license.AcceptLicense" />
+    <property name="user.name" value="mecca" />
+    <property name="test.conf.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/test/conf" />
+    <property name="ibatis.ver" value="2.3.4.726" />
+    <property name="guice.disable.misplaced.annotation.check" value="true" />
+    <property name="jep.ver" value="2.4.1" />
+    <property name="build.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/build/classes" />
+    <property name="nb.show.statistics.ui" value="usageStatisticsEnabled" />
+    <property name="svnkit.http.methods" value="Basic" />
+    <property name="user.language" value="it" />
+    <property name="test.report.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/build/test/results" />
+    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre/lib" />
+    <property name="ant.file.lunaticEngine" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/build.xml" />
+    <property name="nb.native.filechooser" value="false" />
+    <property name="org.openide.awt.ActionReference.completion" value="org.netbeans.modules.apisupport.project.layers.PathCompletions" />
+    <property name="ant.project.name" value="file" />
+    <property name="java.version" value="1.8.0" />
+    <property name="sun.java2d.dpiaware" value="true" />
+    <property name="user.timezone" value="Europe/Rome" />
+    <property name="resources.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/misc/resources" />
+    <property name="sun.arch.data.model" value="64" />
+    <property name="test.src.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/test" />
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16" />
+    <property name="java.endorsed.dirs" value="/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre/lib/endorsed" />
+    <property name="sun.cpu.isalist" value="" />
+    <property name="netbeans.productversion" value="NetBeans IDE 8.0.1 (Build 201408251540)" />
+    <property name="sun.jnu.encoding" value="UTF-8" />
+    <property name="file.encoding.pkg" value="sun.io" />
+    <property name="build.debuglevel" value="lines,vars,source" />
+    <property name="includes" value="it/unibas/lunatic/test/mc/mainmemory/TestEmployees.java" />
+    <property name="mchange.ver" value="0.2.7" />
+    <property name="file.separator" value="/" />
+    <property name="java.specification.name" value="Java Platform API Specification" />
+    <property name="junit.maxmemory" value="16G" />
+    <property name="java.class.version" value="52.0" />
+    <property name="user.country" value="IT" />
+    <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre" />
+    <property name="dist.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/dist" />
+    <property name="netbeans.buildnumber" value="201408251540" />
+    <property name="java.vm.info" value="mixed mode" />
+    <property name="org.openide.version" value="deprecated" />
+    <property name="ant.file" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/nbproject/file-targets.xml" />
+    <property name="os.version" value="10.9.4" />
+    <property name="netbeans.hash.code" value="unique=NB_JAVA_WEBCOMMON_WEBEE_GFMOD06fae2273-8c20-44a5-81e4-720d6feb7590_410444a4-817d-4483-bd18-343cf74a4df4" />
+    <property name="build.resources.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/build/classes/resources" />
+    <property name="netbeans.autoupdate.country" value="IT" />
+    <property name="sun.font.fontmanager" value="sun.font.CFontManager" />
+    <property name="https.nonProxyHosts" value="localhost|127.0.0.1|MacBook-Pro-di-Giansalvatore.local" />
+    <property name="ant.file.type.lunaticEngine" value="file" />
+    <property name="path.separator" value=":" />
+    <property name="java.vm.version" value="25.0-b70" />
+    <property name="netbeans.dynamic.classpath" value="/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/platform/core/core.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/platform/core/org-openide-filesystems.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/platform/core/locale/core_ja.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/platform/core/locale/core_pt_BR.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/platform/core/locale/core_ru.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/platform/core/locale/core_zh_CN.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/platform/core/locale/org-openide-filesystems_ja.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/platform/core/locale/org-openide-filesystems_pt_BR.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/platform/core/locale/org-openide-filesystems_ru.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/platform/core/locale/org-openide-filesystems_zh_CN.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/nb/core/org-netbeans-upgrader.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/nb/core/locale/core_nb.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/nb/core/locale/core_nb_ja.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/nb/core/locale/core_nb_pt_BR.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/nb/core/locale/core_nb_ru.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/nb/core/locale/core_nb_zh_CN.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/nb/core/locale/org-netbeans-upgrader_ja.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/nb/core/locale/org-netbeans-upgrader_pt_BR.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/nb/core/locale/org-netbeans-upgrader_ru.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/nb/core/locale/org-netbeans-upgrader_zh_CN.jar" />
+    <property name="jna.boot.library.name" value="jnidispatch-410" />
+    <property name="ant.file.file" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/nbproject/file-targets.xml" />
+    <property name="com.apple.mrj.application.apple.menu.about.name" value="NetBeans" />
+    <property name="sun.awt.enableExtraMouseButtons" value="true" />
+    <property name="ant.junit.enabletestlistenerevents" value="true" />
+    <property name="java.awt.printerjob" value="sun.lwawt.macosx.CPrinterJob" />
+    <property name="ant.file.type.file" value="file" />
+    <property name="sun.io.unicode.encoding" value="UnicodeBig" />
+    <property name="awt.toolkit" value="sun.lwawt.macosx.LWCToolkit" />
+    <property name="netbeans.autoupdate.variant" value="" />
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16" />
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16" />
+    <property name="org.openide.major.version" value="IDE/1" />
+    <property name="main.class" value="it.unibas.lunatic.Main" />
+    <property name="netbeans.home" value="/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/platform" />
+    <property name="user.home" value="/Users/mecca" />
+    <property name="java.specification.vendor" value="Oracle Corporation" />
+    <property name="apple.laf.useScreenMenuBar" value="true" />
+    <property name="org.xml.sax.driver" value="com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser" />
+    <property name="test.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/build/test" />
+    <property name="java.vendor.url" value="http://java.oracle.com/" />
+    <property name="java.library.path" value="/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/webcommon/bin::/Users/mecca/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:." />
+    <property name="gopherProxySet" value="false" />
+    <property name="java.vm.vendor" value="Oracle Corporation" />
+    <property name="build.optimize" value="off" />
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment" />
+    <property name="ant.version" value="Apache Ant(TM) version 1.9.4 compiled on April 29 2014" />
+    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner it.unibas.lunatic.test.mc.mainmemory.TestEmployees skipNonTests=false filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true threadid=0 logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,/Users/mecca/Dev/java/Llunatic/lunaticEngine/build/test/results/TEST-it.unibas.lunatic.test.mc.mainmemory.TestEmployees.xml formatter=org.apache.tools.ant.taskdefs.optional.junit.PlainJUnitResultFormatter crashfile=/Users/mecca/Dev/java/Llunatic/lunaticEngine/junitvmwatcher8527784409256577943.properties propsfile=/Users/mecca/Dev/java/Llunatic/lunaticEngine/junit804539975078457415.properties" />
+    <property name="java.class.path" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/build/classes:/Users/mecca/Dev/java/Llunatic/lib/slf4j-api-1.7.7.jar:/Users/mecca/Dev/java/Llunatic/lib/logback-core-1.1.2.jar:/Users/mecca/Dev/java/Llunatic/lib/logback-classic-1.1.2.jar:/Users/mecca/Dev/java/Llunatic/lib/postgresql-9.1-903.jdbc3.jar:/Users/mecca/Dev/java/Llunatic/lib/jdom.jar:/Users/mecca/Dev/java/Llunatic/lib/xercesImpl.jar:/Users/mecca/Dev/java/Llunatic/lib/antlr-3.1.1-runtime.jar:/Users/mecca/Dev/java/Llunatic/lib/mybatis-3.1.1.jar:/Users/mecca/Dev/java/Llunatic/lib/jep-2.4.1.jar:/Users/mecca/Dev/java/Llunatic/lib/js.jar:/Users/mecca/Dev/java/Llunatic/lib/js-engine.jar:/Users/mecca/Dev/java/Llunatic/lib/simmetrics-1.6.2.jar:/Users/mecca/Dev/java/Llunatic/lib/jgrapht-jdk1.6.jar:/Users/mecca/Dev/java/Llunatic/lib/jgraph.jar:/Users/mecca/Dev/java/Llunatic/lib/c3p0-0.9.5-pre8.jar:/Users/mecca/Dev/java/Llunatic/lib/mchange-commons-java-0.2.7.jar:/Users/mecca/Dev/java/Llunatic/lib/commons-io-2.4.jar:/Users/mecca/Dev/java/Llunatic/lib/spicyBenchmark-0.1.jar:/Users/mecca/Dev/java/Llunatic/lib/spicyEngine-1.0.jar:/Users/mecca/Dev/java/Llunatic/lib/jcs-1.3.jar:/Users/mecca/Dev/java/Llunatic/lib/concurrent.jar:/Users/mecca/Dev/java/Llunatic/lib/commons-logging-1.1.jar:/Users/mecca/Dev/java/Llunatic/lunaticEngine/build/test/classes:/Users/mecca/Dev/java/Llunatic/lib/junit.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/extide/ant/lib/ant-launcher.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/extide/ant/lib/ant.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/extide/ant/lib/ant-junit.jar:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/extide/ant/lib/ant-junit4.jar" />
+    <property name="sun.java2d.noddraw" value="true" />
+    <property name="jdk.home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home" />
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+    <property name="log4j.ver" value="1.2.14" />
+    <property name="org.openide.specification.version" value="6.2" />
+    <property name="java.vm.specification.version" value="1.8" />
+    <property name="sun.cpu.endian" value="little" />
+    <property name="sun.os.patch.level" value="unknown" />
+    <property name="build.debug" value="on" />
+    <property name="java.io.tmpdir" value="/var/folders/zm/hhsmr1gx3nb365p51333bpv00000gn/T/" />
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/" />
+    <property name="netbeans.dirs" value="/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/nb:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/ergonomics:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/ide:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/extide:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/java:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/apisupport:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/webcommon:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/websvccommon:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/enterprise:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/mobility:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/profiler:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/python:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/php:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/identity:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/harness:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/cnd:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/dlight:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/groovy:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/extra:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/javacard:/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/javafx:" />
+    <property name="conf.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/src/conf" />
+    <property name="netbeans.autoupdate.language" value="it" />
+    <property name="jna.platform.library.path" value="/usr/lib:/usr/lib" />
+    <property name="java.awt.graphicsenv" value="sun.awt.CGraphicsEnvironment" />
+    <property name="ant.file.lunatic-template" value="/Users/mecca/Dev/java/Llunatic/lunatic-template-build.xml" />
+    <property name="os.arch" value="x86_64" />
+    <property name="slf4j.ver" value="1.7.7" />
+    <property name="lunaticEngine.dir" value="../lunaticEngine" />
+    <property name="java.ext.dirs" value="/Users/mecca/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.8.0.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java" />
+    <property name="java.util.logging.config.class" value="it.unibas.lunatic.utility.JavaUtilLoggingConfig" />
+    <property name="build.compiler.emacs" value="true" />
+    <property name="user.dir" value="/" />
+    <property name="misc.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/misc" />
+    <property name="resources.dir.present" value="true" />
+    <property name="line.separator" value="&#xa;" />
+    <property name="apple.awt.graphics.UseQuartz" value="true" />
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM" />
+    <property name="logback.ver" value="1.1.2" />
+    <property name="basedir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine" />
+    <property name="lunaticEngine.ver" value="0.1" />
+    <property name="sun.awt.datatransfer.timeout" value="1000" />
+    <property name="ant.java.version" value="1.8" />
+    <property name="ant.core.lib" value="/Applications/NetBeans/NetBeans 8.0.1.app/Contents/Resources/NetBeans/extide/ant/lib/ant.jar" />
+    <property name="file.encoding" value="UTF-8" />
+    <property name="conf.dir.present" value="true" />
+    <property name="java.specification.version" value="1.8" />
+    <property name="src.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/src" />
+    <property name="ant.project.invoked-targets" value="run-selected-tests" />
+    <property name="javadoc.dir" value="/Users/mecca/Dev/java/Llunatic/lunaticEngine/dist/javadoc" />
+    <property name="commons-logging.ver" value="1.1" />
+  </properties>
+  <testcase classname="it.unibas.lunatic.test.mc.mainmemory.TestEmployees" name="testScenario" time="0.71">
+    <error message="Unable to execute formula emp(name: n1, dept: d1, salary: s1, manager: m1), emp(name: n2, dept: d2, salary: s2, manager: m2), (n1 == n2). Formula is not normalized" type="java.lang.IllegalArgumentException">java.lang.IllegalArgumentException: Unable to execute formula emp(name: n1, dept: d1, salary: s1, manager: m1), emp(name: n2, dept: d2, salary: s2, manager: m2), (n1 == n2). Formula is not normalized
+	at it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula.addJoins(BuildAlgebraTreeForPositiveFormula.java:188)
+	at it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula.buildTreeForPositiveFormula(BuildAlgebraTreeForPositiveFormula.java:42)
+	at it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree.buildDeltaTreeForFormulaWithNegations(BuildAlgebraTree.java:40)
+	at it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForEGD.buildTreeForExtEGDPremise(BuildAlgebraTreeForEGD.java:51)
+	at it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForEGD.buildTreeForExtEGDPremise(BuildAlgebraTreeForEGD.java:44)
+	at it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForEGD.buildPremiseAlgebraTreesForEGDs(BuildAlgebraTreeForEGD.java:30)
+	at it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario.doChase(ChaseMCScenario.java:90)
+	at it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario.doChase(ChaseMCScenario.java:74)
+	at it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario.doChase(ChaseMCScenario.java:129)
+	at it.unibas.lunatic.test.mc.mainmemory.TestEmployees.testScenario(TestEmployees.java:22)
+</error>
+  </testcase>
+  <testcase classname="it.unibas.lunatic.test.mc.mainmemory.TestEmployees" name="testDummy" time="0.0" />
+  <system-out><![CDATA[2014-09-18 16:33:16,668 DEBUG it.unibas.lunatic.test.UtilityTest 
+=============================== SCENARIO ================================
+Config: 
+	DebugMode: false
+	IterationLimit: null
+	UseLimit1: false
+	UseCellGroupsForTGDs: true
+	CheckSolutions: false
+	CheckSolutionsQuery: false
+	CheckGroundSolutions: false
+	RemoveDuplicates: true
+	RemoveSuspiciousSolutions: true
+	CheckAllNodesForEGDSatisfaction: false
+	UseSymmetricOptimization: true
+	Cache type: GREEDY_JCS_SINGLESTEP
+	DeChaser: PROXY_MC_CHASER
+Cost manager: 
+	Standard	doBackward=true
+	doPermutations=true
+	chaseTreeSizeThreshold=50
+	potentialSolutionsThreshold=50
+	dependencyLimit=-1
+User manager: 
+	Standard
+Partial order:
+	Standard
+Source:
+Schema: dataSource {
+    Table: md{
+        name string
+        salary string
+        manager string
+    }
+}
+Tables: dataSource {
+    Table: md {
+        oid: 8 [oid:8, name:Bob, salary:1000, manager:John]
+    }
+}
+
+Target:
+Schema: dataSource {
+    Table: emp{
+        name string
+        dept string
+        salary string
+        manager string
+    }
+}
+Tables: dataSource {
+    Table: emp {
+        oid: 21 [oid:21, name:John, dept:Marketing, salary:2000, manager:Carl]
+        oid: 26 [oid:26, name:John, dept:Marketing, salary:3000, manager:Carl]
+        oid: 31 [oid:31, name:Bob, dept:Marketing, salary:1000, manager:John]
+        oid: 36 [oid:36, name:Mark, dept:Staff, salary:1000, manager:Frank]
+        oid: 41 [oid:41, name:Frank, dept:Sales, salary:2000, manager:Frank]
+        oid: 46 [oid:46, name:Frank, dept:Sales, salary:2500, manager:Frank]
+    }
+}
+
+Authoritative sources: [md]
+================ Extended Egds ===================
+e1:
+for each n1, d1, s1, m1, n2, d2, s2, m2:
+emp(name: n1, dept: d1, salary: s1, manager: m1), emp(name: n2, dept: d2, salary: s2, manager: m2), (n1 == n2) -> 
+    (d1 == d2).
+
+
+2014-09-18 16:33:17,060 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Building tree for formula: emp(name: n1, dept: d1, salary: s1, manager: m1), emp(name: n2, dept: d2, salary: s2, manager: m2), (n1 == n2)
+2014-09-18 16:33:17,061 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+--Relational atoms: [emp(name: n1, dept: d1, salary: s1, manager: m1), emp(name: n2, dept: d2, salary: s2, manager: m2)]
+2014-09-18 16:33:17,062 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+--Builtin atoms: []
+2014-09-18 16:33:17,062 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+--Comparisons: [(n1 == n2)]
+2014-09-18 16:33:17,066 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Adding selections for atoms: []
+2014-09-18 16:33:17,066 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Adding selections for atoms: [(n1 == n2)]
+2014-09-18 16:33:17,068 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering occurrences for variable: n1 in aliases [emp_1, emp_2]
+2014-09-18 16:33:17,068 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+	Occurrence: n1:emp_1.name
+2014-09-18 16:33:17,068 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering result occurrences for variable: [emp_1.name]
+2014-09-18 16:33:17,068 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Occurrences for variable n1: [emp_1.name]
+2014-09-18 16:33:17,068 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering occurrences for variable: d1 in aliases [emp_1, emp_2]
+2014-09-18 16:33:17,068 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+	Occurrence: d1:emp_1.dept
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering result occurrences for variable: [emp_1.dept]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Occurrences for variable d1: [emp_1.dept]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering occurrences for variable: s1 in aliases [emp_1, emp_2]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+	Occurrence: s1:emp_1.salary
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering result occurrences for variable: [emp_1.salary]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Occurrences for variable s1: [emp_1.salary]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering occurrences for variable: m1 in aliases [emp_1, emp_2]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+	Occurrence: m1:emp_1.manager
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering result occurrences for variable: [emp_1.manager]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Occurrences for variable m1: [emp_1.manager]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering occurrences for variable: n2 in aliases [emp_1, emp_2]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+	Occurrence: n2:emp_2.name
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering result occurrences for variable: [emp_2.name]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Occurrences for variable n2: [emp_2.name]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering occurrences for variable: d2 in aliases [emp_1, emp_2]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+	Occurrence: d2:emp_2.dept
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering result occurrences for variable: [emp_2.dept]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Occurrences for variable d2: [emp_2.dept]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering occurrences for variable: s2 in aliases [emp_1, emp_2]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+	Occurrence: s2:emp_2.salary
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering result occurrences for variable: [emp_2.salary]
+2014-09-18 16:33:17,069 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Occurrences for variable s2: [emp_2.salary]
+2014-09-18 16:33:17,070 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering occurrences for variable: m2 in aliases [emp_1, emp_2]
+2014-09-18 16:33:17,070 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+	Occurrence: m2:emp_2.manager
+2014-09-18 16:33:17,070 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Filtering result occurrences for variable: [emp_2.manager]
+2014-09-18 16:33:17,070 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Occurrences for variable m2: [emp_2.manager]
+2014-09-18 16:33:17,070 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Equality generating variables: []
+2014-09-18 16:33:17,070 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Join equalities: []
+2014-09-18 16:33:17,070 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Added table aliases: []
+2014-09-18 16:33:17,070 DEBUG it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula 
+Atoms in formula: [emp(name: n1, dept: d1, salary: s1, manager: m1), emp(name: n2, dept: d2, salary: s2, manager: m2)]
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

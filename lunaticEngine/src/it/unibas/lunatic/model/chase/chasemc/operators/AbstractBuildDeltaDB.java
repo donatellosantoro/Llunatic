@@ -33,7 +33,7 @@ public abstract class AbstractBuildDeltaDB implements IBuildDeltaDB {
             }
             List<FormulaVariable> universalVariablesInConclusion = DependencyUtility.getUniversalVariablesInConclusion(tgd);
             for (FormulaVariable formulaVariable : universalVariablesInConclusion) {
-                for (FormulaVariableOccurrence formulaVariableOccurrence : formulaVariable.getPremiseOccurrences()) {
+                for (FormulaVariableOccurrence formulaVariableOccurrence : formulaVariable.getPremiseRelationalOccurrences()) {
                     LunaticUtility.addIfNotContained(result, formulaVariableOccurrence.getAttributeRef());
                 }
             }

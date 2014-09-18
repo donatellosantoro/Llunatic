@@ -1,0 +1,5 @@
+employee(Charlie, 1978, 32000)
+employee(Melanie, 1990, N_100)
+employee(Bob, 1977, 37000)
+employee(Jack, N_102, N_103)
+employee(Paul, 1978, 29000.5)

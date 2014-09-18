@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+consttablecf1(insurance, treatment)
+consttablecf2(insurance, city)
+masterdata(ssn, name, phone, str, city)
+INSTANCE:
+consttablecf1(insurance: "Abx", treatment: "Dental")
+consttablecf2(insurance: "Abx", city: "SF")
+masterdata(ssn: "222", name: "F. Lennon",  phone: "122-1876", str: "Sky Dr.", city: "SF")
+]]>
+    </generate>
+  </source>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+customers(ssn, name, phone, cfphone, str, city, cc)
+treatments(ssn, salary, insurance, treatment, date)
+INSTANCE:
+customers(ssn: "111", name: "Mike White",  phone: "408-3334", cfphone: "8", str: "Red Ave.", city: "NYC", cc: "112-321")
+customers(ssn: "111", name: "Mary White",  phone: "408-3334", cfphone: "8", str: "Red Ave.", city: "NYC", cc: "112-321")
+customers(ssn: "222", name: "L. Lennon", phone: "122-1876", cfphone: "9", str: #NULL#,     city: "SF",  cc: "781-658")
+customers(ssn: "222", name: "L. Lennon", phone: "000-0000", cfphone: "0", str: "Fry Dr.",  city: "SF",  cc: "784-659")
+treatments(ssn: "111", salary: "10K", insurance: "Abx", treatment: "Dental",    date: "2011-01-10")
+treatments(ssn: "111", salary: "25K", insurance: "Abx", treatment: "Cholest.",  date: "2012-12-08")
+treatments(ssn: "222", salary: "30K", insurance: "Med", treatment: "Eye surg.", date: "2012-10-06")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+//MasterData: CUST[SSN,PHONE],MD[SSN,PHONE] -> NAME,STREET,CITY
+md1: customers( ssn: $ssn, name: $name1, phone: $phone, cfphone: $cfphone1, str: $str1, city: $city1, cc: $cc1),
+masterdata(ssn: $ssn, name: $name2, phone: $phone, str: $str2, city: $city2) 
+    -> $name1 == $name2.
+md2: customers( ssn: $ssn, name: $name1, phone: $phone, cfphone: $cfphone1, str: $str1, city: $city1, cc: $cc1),
+masterdata(ssn: $ssn, name: $name2, phone: $phone, str: $str2, city: $city2) 
+    -> $str1 == $str2.
+md3: customers( ssn: $ssn, name: $name1, phone: $phone, cfphone: $cfphone1, str: $str1, city: $city1, cc: $cc1),
+masterdata(ssn: $ssn, name: $name2, phone: $phone, str: $str2, city: $city2) 
+    -> $city1 == $city2.
+
+//CFD: INSUR[Abx] -> TREAT[Dental]
+cfd1: treatments(ssn: $ssn1, salary: $salary1, insurance: $insurance, treatment: $treat1, date: $date1),
+consttablecf1(insurance: $insurance, treatment: $treat2)
+    -> $treat1 == $treat2.
+
+//CFD: CUST[SSN],INSUR[Abx] -> CITY[Sf]
+cfd2: treatments(ssn: $ssn, salary: $salary1, insurance: $insurance, treatment: $treatment1, date: $date1),
+       customers(ssn: $ssn, name: $name1,  phone: $phone1, cfphone: $cfphone1, str: $str1, city: $city1, cc: $cc1),
+consttablecf2(insurance: $insurance, city: $city2)
+    -> $city1 == $city2.
+
+//FD: SSN,NAME -> PHONE 
+fd1: customers(ssn: $ssn, name: $name,  phone: $phone1, cfphone: $cfphone1, str: $str1, city: $city1, cc: $cc1),
+customers(ssn: $ssn, name: $name,  phone: $phone2, cfphone: $cfphone2, str: $str2, city: $city2, cc: $cc2) 
+    -> $phone1 == $phone2.
+
+//FD: SSN,NAME -> CC 
+fd3: customers(ssn: $ssn, name: $name,  phone: $phone1, cfphone: $cfphone1, str: $str1, city: $city1, cc: $cc1),
+customers(ssn: $ssn, name: $name,  phone: $phone2, cfphone: $cfphone2, str: $str2, city: $city2, cc: $cc2) 
+    -> $cc1 == $cc2.
+
+//Currency
+//FD: SSN -> SALARY 
+fd2: treatments(ssn: $ssn, salary: $salary1, insurance: $insur1, treatment: $treat1, date: $date1),
+    treatments(ssn: $ssn, salary: $salary2, insurance: $insur2, treatment: $treat2, date: $date2)
+    -> $salary1 == $salary2.
+
+//FD: SSN -> NAME
+fd4: customers(ssn: $ssn, name: $name1,  phone: $phone1, cfphone: $cfphone1, str: $str1, city: $city1, cc: $cc1),
+customers(ssn: $ssn, name: $name2,  phone: $phone2, cfphone: $cfphone2, str: $str2, city: $city2, cc: $cc2) 
+    -> $name1 == $name2.
+]]>
+  </dependencies>
+  <orderingAttributes>
+    <orderingAttribute>
+      <attribute>customers.phone</attribute>
+      <associatedAttribute>customers.cfphone</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+    </orderingAttribute>    
+    <orderingAttribute>
+      <attribute>treatments.salary</attribute>
+      <associatedAttribute>treatments.date</associatedAttribute>
+      <valueComparator sort="DESC">
+        <dateComparator pattern="yyyy-MM-dd"/>
+      </valueComparator>
+    </orderingAttribute>
+  </orderingAttributes>
+  <userManager>
+    <type>AfterLLUN</type>
+  </userManager>
+<costManager>
+    <type>Standard</type>
+    <leavesThreshold>20</leavesThreshold>
+    <potentialSolutionsThreshold>10</potentialSolutionsThreshold>
+</costManager>
+  <configuration>
+    <useCellGroupsForTGDs>true</useCellGroupsForTGDs>
+  </configuration>
+</scenario>
+

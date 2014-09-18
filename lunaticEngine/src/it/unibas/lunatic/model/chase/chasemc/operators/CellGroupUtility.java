@@ -29,8 +29,8 @@ public class CellGroupUtility {
         if (cellGroups == null) {
             cellGroups = new ArrayList<CellGroup>();
         }
-        loadOrCreateCellGroupForTGDVariable(extractAttributeRefs(formulaVariable.getPremiseOccurrences()), tuple, cellGroups, deltaDB, stepId, occurrenceHandler);
-        loadOrCreateCellGroupForTGDVariable(extractAttributeRefs(formulaVariable.getConclusionOccurrences()), tuple, cellGroups, deltaDB, stepId, occurrenceHandler);
+        loadOrCreateCellGroupForTGDVariable(extractAttributeRefs(formulaVariable.getPremiseRelationalOccurrences()), tuple, cellGroups, deltaDB, stepId, occurrenceHandler);
+        loadOrCreateCellGroupForTGDVariable(extractAttributeRefs(formulaVariable.getConclusionRelationalOccurrences()), tuple, cellGroups, deltaDB, stepId, occurrenceHandler);
         cellGroupsForVariable.put(formulaVariable, cellGroups);
     }
 

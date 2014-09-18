@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+   <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:customers</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+
+create table consttable1 (
+  oid serial,
+  cc varchar(50)
+);
+
+create table consttable2 (
+  oid serial,
+  cc varchar(50),
+  ac varchar(50),
+  city varchar(50)
+);
+
+insert into consttable1 values (1, '44');
+insert into consttable2 values (1, '44', '131', 'EDI');
+]]>
+    </init-db>
+  </source>
+   <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:customers</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table cust (
+  oid serial,
+  cc varchar(50),
+  ac varchar(50),
+  name varchar(50),
+  street varchar(50),
+  city varchar(50),
+  zip varchar(50)
+);
+
+insert into cust values (1, '44', '131', 'Mike', 'Mayfield', 'NYC', 'EH4 8LE');
+insert into cust values (2, '44', '131', 'Rick', 'Crichton', 'NYC', 'EH4 8LE');
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+cust(cc: $cc, ac: $ac1, name: $name1, street: $street1, city: $city1, zip: $zip), 
+ cust(cc: $cc, ac: $ac2, name: $name2, street: $street2, city: $city2, zip: $zip),
+ consttable1(cc: $cc) -> $street1 == $street2.
+
+cust(cc: $cc, ac: $ac, name: $name1, street: $street1, city: $city1, zip: $zip1), 
+consttable2(cc: $cc, ac: $ac, city: $city2) -> $city1 == $city2.
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

@@ -6,8 +6,8 @@ import java.util.List;
 public class FormulaVariable implements Cloneable{
 
     private String id;
-    private List<FormulaVariableOccurrence> premiseOccurrences = new ArrayList<FormulaVariableOccurrence>();
-    private List<FormulaVariableOccurrence> conclusionOccurrences = new ArrayList<FormulaVariableOccurrence>();
+    private List<FormulaVariableOccurrence> premiseRelationalOccurrences = new ArrayList<FormulaVariableOccurrence>();
+    private List<FormulaVariableOccurrence> conclusionRelationalOccurrences = new ArrayList<FormulaVariableOccurrence>();
     private List<IFormulaAtom> nonRelationalOccurrences = new ArrayList<IFormulaAtom>();
 
     public FormulaVariable(String id) {
@@ -18,20 +18,20 @@ public class FormulaVariable implements Cloneable{
         return id;
     }
 
-    public List<FormulaVariableOccurrence> getPremiseOccurrences() {
-        return premiseOccurrences;
+    public List<FormulaVariableOccurrence> getPremiseRelationalOccurrences() {
+        return premiseRelationalOccurrences;
     }
     
-    public void addPremiseOccurrence(FormulaVariableOccurrence occurrence) {
-        this.premiseOccurrences.add(occurrence);
+    public void addPremiseRelationalOccurrence(FormulaVariableOccurrence occurrence) {
+        this.premiseRelationalOccurrences.add(occurrence);
     }
 
-    public List<FormulaVariableOccurrence> getConclusionOccurrences() {
-        return conclusionOccurrences;
+    public List<FormulaVariableOccurrence> getConclusionRelationalOccurrences() {
+        return conclusionRelationalOccurrences;
     }
     
-    public void addConclusionOccurrence(FormulaVariableOccurrence occurrence) {
-        this.conclusionOccurrences.add(occurrence);
+    public void addConclusionRelationalOccurrence(FormulaVariableOccurrence occurrence) {
+        this.conclusionRelationalOccurrences.add(occurrence);
     }
 
     public List<IFormulaAtom> getNonRelationalOccurrences() {
@@ -48,12 +48,12 @@ public class FormulaVariable implements Cloneable{
         this.nonRelationalOccurrences.add(atom);
     }
 
-    public void setPremiseOccurrences(List<FormulaVariableOccurrence> premiseOccurrences) {
-        this.premiseOccurrences = premiseOccurrences;
+    public void setPremiseRelationalOccurrences(List<FormulaVariableOccurrence> premiseOccurrences) {
+        this.premiseRelationalOccurrences = premiseOccurrences;
     }
 
-    public void setConclusionOccurrences(List<FormulaVariableOccurrence> conclusionOccurrences) {
-        this.conclusionOccurrences = conclusionOccurrences;
+    public void setConclusionRelationalOccurrences(List<FormulaVariableOccurrence> conclusionOccurrences) {
+        this.conclusionRelationalOccurrences = conclusionOccurrences;
     }
 
     public void setNonRelationalOccurrences(List<IFormulaAtom> nonRelationalOccurrences) {
@@ -62,7 +62,7 @@ public class FormulaVariable implements Cloneable{
 
     
     public boolean isUniversal() {
-        return this.premiseOccurrences.size() > 0;
+        return this.premiseRelationalOccurrences.size() > 0;
     }
     
     @Override
@@ -71,7 +71,7 @@ public class FormulaVariable implements Cloneable{
     }
     
     public String toLongString() {
-        return this.toString() + " Occurrences - Premise: " + premiseOccurrences + " Conclusion: " + conclusionOccurrences  + " NonRelational: " + nonRelationalOccurrences;
+        return this.toString() + " Occurrences - Premise: " + premiseRelationalOccurrences + " Conclusion: " + conclusionRelationalOccurrences  + " NonRelational: " + nonRelationalOccurrences;
     }
        
     
@@ -80,13 +80,13 @@ public class FormulaVariable implements Cloneable{
         FormulaVariable clone = null;
         try {
             clone = (FormulaVariable) super.clone();
-            clone.premiseOccurrences = new ArrayList<FormulaVariableOccurrence>();
-            for (FormulaVariableOccurrence occurrence : premiseOccurrences) {
-                clone.premiseOccurrences.add((FormulaVariableOccurrence) occurrence.clone());
+            clone.premiseRelationalOccurrences = new ArrayList<FormulaVariableOccurrence>();
+            for (FormulaVariableOccurrence occurrence : premiseRelationalOccurrences) {
+                clone.premiseRelationalOccurrences.add((FormulaVariableOccurrence) occurrence.clone());
             }
-            clone.conclusionOccurrences = new ArrayList<FormulaVariableOccurrence>();
-            for (FormulaVariableOccurrence occurrence : conclusionOccurrences) {
-                clone.conclusionOccurrences.add((FormulaVariableOccurrence) occurrence.clone());
+            clone.conclusionRelationalOccurrences = new ArrayList<FormulaVariableOccurrence>();
+            for (FormulaVariableOccurrence occurrence : conclusionRelationalOccurrences) {
+                clone.conclusionRelationalOccurrences.add((FormulaVariableOccurrence) occurrence.clone());
             }            
             clone.nonRelationalOccurrences = new ArrayList<IFormulaAtom>(this.nonRelationalOccurrences);
         } catch (CloneNotSupportedException ex) {

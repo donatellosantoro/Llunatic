@@ -125,8 +125,8 @@ public class BuildAlgebraTreeForTGD {
         List<FormulaVariable> universalVariable = DependencyUtility.getUniversalVariablesInConclusion(dependency);
         if (logger.isDebugEnabled()) logger.debug("Universal variables: " + universalVariable);
         for (FormulaVariable formulaVariable : universalVariable) {
-            AttributeRef leftAttribute = DependencyUtility.findFirstOccurrenceInFormula(dependency.getPremise(), formulaVariable.getPremiseOccurrences());
-            AttributeRef rightAttribute = DependencyUtility.findFirstOccurrenceInFormula(dependency.getConclusion(), formulaVariable.getConclusionOccurrences());
+            AttributeRef leftAttribute = DependencyUtility.findFirstOccurrenceInFormula(dependency.getPremise(), formulaVariable.getPremiseRelationalOccurrences());
+            AttributeRef rightAttribute = DependencyUtility.findFirstOccurrenceInFormula(dependency.getConclusion(), formulaVariable.getConclusionRelationalOccurrences());
             if (logger.isDebugEnabled()) logger.debug("Adding equality on " + leftAttribute + " and " + rightAttribute);
             result.add(new DifferenceEquality(leftAttribute, rightAttribute));
         }

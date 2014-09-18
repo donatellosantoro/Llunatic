@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source/>
+  <target> 
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:rs_tgd_scal</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table r (
+  oid serial,
+  a varchar(50),
+  b varchar(50),
+  c varchar(50)
+);
+
+create table s (
+  oid serial,
+  a varchar(50),
+  b varchar(50)
+);
+
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtTGDs:
+r(a: $x, b: $y, c: $z) -> s(a: $z, b: $N).
+ExtEGDs:
+r(a: $x, b: $y1, c: $z1), r(a: $x, b: $y2, c: $z2) -> $z1 == $z2.
+
+//r(a: $x, b: $y1, c: $z1), r(a: $x, b: $y2, c: $z2),
+//s(a: $z1, b: $w1), s(a: $z2, b: $w2)
+ //-> $z1 == $z2.
+//
+//r(a: $x, b: $y1, c: $z1), r(a: $x, b: $y2, c: $z2),
+//s(a: $z1, b: $w1)  and not exists(s(a: $z2, b: $w2))
+ //-> $z1 == $z2.
+//
+//r(a: $x, b: $y1, c: $z1), r(a: $x, b: $y2, c: $z2)
+//and not exists(s(a: $z1, b: $w1))  and not exists(s(a: $z2, b: $w2))
+ //-> $z1 == $z2.
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+
+<!--
+  <?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source/>
+  <target> 
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:rs_tgd</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table r1 (
+  a varchar(50),
+  b varchar(50),
+  c varchar(50)
+) with oids;
+
+create table r2 (
+  a varchar(50),
+  b varchar(50)
+) with oids;
+
+create table s1 (
+  a varchar(50),
+  b varchar(50)
+) with oids;
+
+create table s2 (
+  a varchar(50),
+  b varchar(50)
+) with oids;
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtTGDs:
+r1(a: $x, b: $y, c: $z) -> s1(a: $z, b: $N).
+//r1(a: $x, b: $y, c: $z), r2(a: $x, b: $y) -> s1(a: $z, b: $N), s2(a: $z, b: $N).
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+
+-->

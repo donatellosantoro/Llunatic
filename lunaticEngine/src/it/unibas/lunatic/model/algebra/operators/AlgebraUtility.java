@@ -107,7 +107,7 @@ public class AlgebraUtility {
 
     public static List<TableAlias> findAliasesForVariable(FormulaVariable variable) {
         List<TableAlias> result = new ArrayList<TableAlias>();        
-        for (FormulaVariableOccurrence occurrence : variable.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : variable.getPremiseRelationalOccurrences()) {
             TableAlias tableAlias = occurrence.getAttributeRef().getTableAlias();
             if (!result.contains(tableAlias)) {
                 result.add(tableAlias);

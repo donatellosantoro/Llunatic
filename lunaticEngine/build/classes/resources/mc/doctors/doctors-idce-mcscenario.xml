@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <source>    
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+treatment(id, patient, hospital, npi, conf)
+physician(npi, name, spec, conf)
+medprescription(id, patient, npi, doctor, spec, conf)
+hospital(doctor, spec, npi, hospital)
+INSTANCE:
+treatment(id: "P1", patient: "A. Doe",   hospital: "PPTH", npi: "1222", conf: "0.5")
+treatment(id: "P2", patient: "W. Smith", hospital: "PPTH", npi: "5555", conf: "0.5")
+physician(npi: "1222", name: "R. Chase", spec: "surg", conf: "0.5")
+physician(npi: "5555", name: "G. House", spec: "urol", conf: "0.5")
+medprescription(id: "P3", patient: "I. White", npi: "5556", doctor: "G. House", spec: "diag",  conf: "0.7")
+medprescription(id: "P4", patient: "M. Ross",  npi: "4321", doctor: "C. Taub",  spec: "plast", conf: "0.7")
+hospital(doctor: "R. Chase", spec: "surg", npi: "1112", hospital: "PPTH")
+]]>
+        </generate>
+    </source>
+    <target>    
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+prescription(id, patient, npiref, conf)
+doctor(npi, name, spec, hospital, conf)
+INSTANCE:
+prescription(id: "P1", patient: "J. Doe", npiref: "1112", conf: "0.5")
+doctor(npi: "1112", name: "R. Chase", spec: "surg", hospital: "Sacred H.", conf: "0.5")
+doctor(npi: "5555", name: "G. House", spec: "urol", hospital: "PPTH",      conf: "0.7")
+]]>
+        </generate>
+    </target>
+    <dependencies>
+<![CDATA[
+STTGDs:
+mst1: treatment(id: $id, patient: $patient, hospital: $hospital, npi: $npi, conf: $conf1),
+physician(npi: $npi, name: $name, spec: $spec, conf: $conf2) ->
+    prescription(id: $id, patient: $patient, npiref: $npi, conf: $conf1),
+    doctor(npi: $npi, name: $name, spec: $spec, hospital: $hospital, conf: $conf2).
+
+mst2: medprescription(id: $id, patient: $patient, npi: $npi, doctor: $doctor, spec: $spec, conf: $conf) ->
+    prescription(id: $id, patient: $patient, npiref: $npi, conf: $conf),
+    doctor(npi: $npi, name: $doctor, spec: $spec, hospital: $H, conf: $conf).
+
+ExtTGDs:
+mt1: prescription(id: $id, patient: $patient, npiref: $npi, conf: $conf) ->
+    doctor(npi: $npi, name: $D, spec: $S, hospital: $H, conf: $C).
+
+ExtEGDs:
+ep1a: prescription(id: $id, patient: $patient1, npiref: $npi1, conf: $conf1),
+      prescription(id: $id, patient: $patient2, npiref: $npi2, conf: $conf2) ->
+        $patient1 == $patient2.
+
+ep1b: prescription(id: $id, patient: $patient1, npiref: $npi1, conf: $conf1),
+      prescription(id: $id, patient: $patient2, npiref: $npi2, conf: $conf2) ->
+        $npi1 == $npi2.
+
+ed2a: doctor(npi: $npi, name: $doctor1, spec: $spec1, hospital: $hospital1, conf: $conf1),
+      doctor(npi: $npi, name: $doctor2, spec: $spec2, hospital: $hospital2, conf: $conf2) ->
+        $doctor1 == $doctor2.
+
+ed2b: doctor(npi: $npi, name: $doctor1, spec: $spec1, hospital: $hospital1, conf: $conf1),
+      doctor(npi: $npi, name: $doctor2, spec: $spec2, hospital: $hospital2, conf: $conf2) ->
+        $spec1 == $spec2.
+
+ed2c: doctor(npi: $npi, name: $doctor1, spec: $spec1, hospital: $hospital1, conf: $conf1),
+      doctor(npi: $npi, name: $doctor2, spec: $spec2, hospital: $hospital2, conf: $conf2) ->
+        $hospital1 == $hospital2.
+
+ed3a: doctor(npi: $npi1, name: $doctor, spec: $spec1, hospital: $hospital1, conf: $conf1),
+      doctor(npi: $npi2, name: $doctor, spec: $spec2, hospital: $hospital2, conf: $conf2) ->
+        $npi1 == $npi2.
+
+emd4a: hospital(doctor: $doctor, spec: $spec, npi: $npi1, hospital: $hospital1),
+       doctor(npi: $npi2, name: $doctor, spec: $spec, hospital: $hospital2, conf: $conf2) ->
+        $npi1 == $npi2.
+
+emd4b: hospital(doctor: $doctor, spec: $spec, npi: $npi1, hospital: $hospital1),
+       doctor(npi: $npi2, name: $doctor, spec: $spec, hospital: $hospital2, conf: $conf2) ->
+        $hospital1 == $hospital2.
+]]>
+    </dependencies>
+    <authoritativeSources>
+        <source>hospital</source>
+    </authoritativeSources>
+    <partialOrder/>
+    <costManager>
+        <type>Standard</type>
+        <leavesThreshold>20</leavesThreshold>
+        <potentialSolutionsThreshold>10</potentialSolutionsThreshold>
+    </costManager>
+    <configuration>
+        <useCellGroupsForTGDs>true</useCellGroupsForTGDs>
+    </configuration>
+</scenario>
+

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><scenario>
+  <source>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+SourceEmp(id, name, dept, rating)
+SourceDept(name, manager)
+INSTANCE:
+SourceEmp(id: "1", name: "John", dept: "Marketing", rating: "5")
+SourceEmp(id: "2", name: "Luke", dept: "Shipping", rating: "7")
+SourceEmp(id: "3", name: "Mike", dept: "Shipping", rating: "2")
+SourceDept(name: "Marketing", manager: "1")
+SourceDept(name: "Shipping" , manager: "2")
+]]>
+    </generate>
+  </source>
+  <target>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+TGD_2(attr1, attr2)
+TGD_3(attr1, attr2)
+HasPassedTest(emp, testcode)
+TGD_4(attr1, attr2)
+TGD_5(attr1, attr2)
+Manager(mgr, dept)
+Dept(name)
+TGD_1(attr1)
+Employee(id, name, dept)
+DisciplinaryProcedure(pnum, emp)
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+STTGDs:
+SourceEmp(id: $x1, name: $x2, dept: $x3, rating: $x4), $x4 < 5 -> TGD_1(attr1: $x1).
+SourceEmp(id: $x1, name: $x2, dept: $x3, rating: $x4), $x4 < 5 -> Employee(id: $x1, name: $x2, dept: $x5).
+SourceEmp(id: $x1, name: $x2, dept: $x3, rating: $x4), $x4 < 5 -> Employee(id: $x1, name: $x5, dept: $x3).
+SourceEmp(id: $x1, name: $x2, dept: $x3, rating: $x4), $x4 < 5 -> Dept(name: $x3).
+SourceEmp(id: $x1, name: $x2, dept: $x3, rating: $x4), $x4 >= 5 -> TGD_2(attr1: $x1, attr2: $x2).
+SourceEmp(id: $x1, name: $x2, dept: $x3, rating: $x4), $x4 >= 5 -> Employee(id: $x1, name: $x2, dept: $x5).
+SourceEmp(id: $x1, name: $x2, dept: $x3, rating: $x4), $x4 >= 5 -> Employee(id: $x1, name: $x5, dept: $x3).
+SourceEmp(id: $x1, name: $x2, dept: $x3, rating: $x4), $x4 >= 5 -> Dept(name: $x3).
+SourceDept(name: $x1, manager: $x2) -> Dept(name: $x1).
+SourceDept(name: $x1, manager: $x2) -> Manager(mgr: $x2, dept: $x1).
+SourceDept(name: $x1, manager: $x2) -> Employee(id: $x2, name: $x3, dept: $x4), Employee(id: $x2, name: $x3, dept: $x5), TGD_4(attr1: $x2, attr2: $x3).
+ExtTGDs:
+TGD_1(attr1: $x1), HasPassedTest(emp: $x1, testcode: $x2) -> DisciplinaryProcedure(pnum: $x3, emp: $x1).
+TGD_2(attr1: $x1, attr2: $x2), Employee(id: $x1, name: $x2, dept: $x3) -> HasPassedTest(emp: $x1, testcode: $x4), TGD_3(attr1: $x5, attr2: $x1).
+TGD_4(attr1: $x1, attr2: $x2), Employee(id: $x1, name: $x2, dept: $x3) -> HasPassedTest(emp: $x1, testcode: $x4), TGD_5(attr1: $x5, attr2: $x1).
+EGDs:
+Employee(id: $x1, name: $x2, dept: $x3), Employee(id: $x1, name: $x4, dept: $x5) -> $x2 == $x4.
+Manager(mgr: $x1, dept: $x2), Manager(mgr: $x3, dept: $x2) -> $x1 == $x3.
+DCs:
+TGD_3(attr1: $x1, attr2: $x2), DisciplinaryProcedure(pnum: $x1, emp: $x2) -> #fail.
+TGD_5(attr1: $x1, attr2: $x2), DisciplinaryProcedure(pnum: $x1, emp: $x2) -> #fail.
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>

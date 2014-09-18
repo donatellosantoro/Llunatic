@@ -39,7 +39,7 @@ public class ChaseUtility {
         if (logger.isTraceEnabled()) logger.debug("Finding cells for variable " + variable);
         if (logger.isTraceEnabled()) logger.debug("Premise tuple: " + premiseTuple);
         List<Cell> result = new ArrayList<Cell>();
-        for (FormulaVariableOccurrence occurrence : variable.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : variable.getPremiseRelationalOccurrences()) {
             AttributeRef occurrenceAttribute = occurrence.getAttributeRef();
             TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(premiseTuple, occurrenceAttribute));
             if (logger.isTraceEnabled()) logger.debug("Occurrence: " + occurrenceAttribute);
@@ -60,7 +60,7 @@ public class ChaseUtility {
 //        throw new IllegalArgumentException("Unable to find tuple oid for attribute " + occurrenceAttribute + " in tuple " + premiseTuple);
 //    }
     public static IValue findValueForVariable(FormulaVariable variable, Tuple premiseTuple) {
-        AttributeRef attributeOfFirstOccurrence = variable.getPremiseOccurrences().get(0).getAttributeRef();
+        AttributeRef attributeOfFirstOccurrence = variable.getPremiseRelationalOccurrences().get(0).getAttributeRef();
         for (Cell cell : premiseTuple.getCells()) {
             if (cell.getAttributeRef().equals(attributeOfFirstOccurrence)) {
                 return cell.getValue();
@@ -115,7 +115,7 @@ public class ChaseUtility {
 
     public static List<FormulaVariableOccurrence> findTargetOccurrences(FormulaVariable variable) {
         List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
-        for (FormulaVariableOccurrence occurrence : variable.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : variable.getPremiseRelationalOccurrences()) {
             if (occurrence.getAttributeRef().getTableAlias().isSource()) {
                 continue;
             }
@@ -138,7 +138,7 @@ public class ChaseUtility {
     }
 
     public static boolean containsOccurrences(AttributeRef attributeRef, FormulaVariable v) {
-        for (FormulaVariableOccurrence formulaVariableOccurrence : v.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence formulaVariableOccurrence : v.getPremiseRelationalOccurrences()) {
             if (formulaVariableOccurrence.getAttributeRef().equals(attributeRef)) {
                 return true;
             }
@@ -192,7 +192,7 @@ public class ChaseUtility {
         List<FormulaVariable> result = new ArrayList<FormulaVariable>();
         for (FormulaVariable variable : egd.getPremise().getLocalVariables()) {
             List<FormulaVariableOccurrence> targetOccurrences = findTargetOccurrences(variable);
-            List<FormulaVariableOccurrence> positiveOccurrences = findPositiveOccurrences(egd.getPremise().getPositiveFormula(), variable.getPremiseOccurrences());
+            List<FormulaVariableOccurrence> positiveOccurrences = findPositiveOccurrences(egd.getPremise().getPositiveFormula(), variable.getPremiseRelationalOccurrences());
             if (positiveOccurrences.size() > 1 && !targetOccurrences.isEmpty()) {
                 result.add(variable);
             }

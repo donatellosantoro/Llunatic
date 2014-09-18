@@ -144,7 +144,7 @@ public class ChaseEGDEquivalenceClass {
         List<AttributeRef> occurrenceAttributesForConclusionVariable = new ArrayList<AttributeRef>();
         FormulaVariable v1 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(0);
         FormulaVariable v2 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(1);
-        for (FormulaVariableOccurrence occurrence : v1.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : v1.getPremiseRelationalOccurrences()) {
             if (!ChaseUtility.containsAlias(egd.getPremise().getPositiveFormula(), occurrence.getTableAlias())) {
                 continue;
             }
@@ -154,7 +154,7 @@ public class ChaseEGDEquivalenceClass {
             }
             occurrenceAttributesForConclusionVariable.add(occurrenceAttribute);
         }
-        for (FormulaVariableOccurrence occurrence : v2.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : v2.getPremiseRelationalOccurrences()) {
             if (!ChaseUtility.containsAlias(egd.getPremise().getPositiveFormula(), occurrence.getTableAlias())) {
                 continue;
             }

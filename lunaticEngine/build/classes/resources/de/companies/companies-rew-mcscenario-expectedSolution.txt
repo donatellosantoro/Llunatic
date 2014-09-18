@@ -1,0 +1,7 @@
+Company(N_101, Google)
+Company(23, Yahoo)
+Company(25, Adobe)
+Company(N_1, I.B.M.)
+Grant(18000, 23)
+Grant(50000, 25)
+Grant(25000, N_1)

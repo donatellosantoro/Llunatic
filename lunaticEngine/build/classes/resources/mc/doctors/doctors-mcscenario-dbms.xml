@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:doctor</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+
+create table treatment (
+  oid serial,
+  patient varchar(50),
+  rxid varchar(50),
+  hospital varchar(50),
+  npi varchar(50)
+);
+
+create table physician (
+  oid serial,
+  npi varchar(50),
+  name varchar(50),
+  email varchar(50)
+);
+
+create table medprescription (
+  oid serial,
+  rxid varchar(50),
+  patient varchar(50),
+  npi varchar(50),
+  doctor varchar(50)
+);
+
+create table hospital (
+  oid serial,
+  name varchar(50),
+  npi varchar(50),
+  doctor varchar(50),
+  email varchar(50)
+);
+
+insert into treatment(patient, rxid, hospital, npi) values ('W. Smith', 'P2', 'PPTH', '5555');
+insert into physician(npi, name, email) values ('5555', 'G. House', 'house@ppth.com');
+insert into medprescription(rxid, patient, npi, doctor) values ('P1', 'J. Doe', '1222', 'C. Taub');
+insert into medprescription(rxid, patient, npi, doctor) values ('P3', 'M. White', '5556', 'G. House');
+insert into hospital(name, npi, doctor, email) values ('PPTH', '5555', 'G. House', 'house@ppth.com');
+]]>
+    </init-db>
+  </source>
+  <target> 
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:doctor</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table prescription (
+  oid serial,
+  rxid varchar(50),
+  patient varchar(50),
+  npiref varchar(50)
+);
+
+create table doctor (
+  oid serial,
+  npi varchar(50),
+  name varchar(50),
+  hospital varchar(50),
+  email varchar(50)
+);
+
+insert into prescription(rxid, patient, npiref) values ('P1', 'J. Doe', '1112');
+insert into doctor(npi, name, hospital, email) values ('1112', 'R. Chase', 'Sacred Hearth', 'chase@sh.com');
+]]>
+    </init-db>
+  </target>
+    <dependencies>
+<![CDATA[
+STTGDs:
+treatment(patient: $patient, rxid: $rxid, hospital: $hospital, npi: $npi), 
+physician(npi: $npi, name: $docname, email: $email) ->
+    prescription(rxid: $rxid, patient: $patient, npiref: $npi),
+    doctor(npi: $npi, name: $docname, hospital: $hospital, email: $email).
+
+medprescription(rxid: $rxid, patient: $pname, npi: $npi, doctor: $docname) ->
+    prescription(rxid: $rxid, patient: $pname, npiref: $npi),
+    doctor(npi: $npi, name: $docname, hospital: $N1, email: $N2).
+
+ExtTGDs:
+prescription(rxid: $rxid, patient: $name, npiref: $npi) ->
+    doctor(npi: $npi, name: $N1, hospital: $N2, email: $N3).
+
+ExtEGDs:
+ep1: prescription(rxid: $rxid, patient: $name1, npiref: $npi1),
+prescription(rxid: $rxid, patient: $name2, npiref: $npi2) -> $name1 == $name2.
+
+//ep2: prescription(rxid: $rxid, patient: $name1, npiref: $npi1),
+//prescription(rxid: $rxid, patient: $name2, npiref: $npi2) -> $npi1 == $npi2.
+
+ep2: prescription(rxid: $rxid, patient: $name1, npiref: $npi1),
+prescription(rxid: $rxid, patient: $name2, npiref: $npi2),
+doctor(npi: $npi1, name: $docname1, hospital: $hospital1, email: $email1),
+doctor(npi: $npi2, name: $docname2, hospital: $hospital2, email: $email2),
+prescription(rxid: $r1, patient: $n1, npiref: $npi1),
+prescription(rxid: $r2, patient: $n2, npiref: $npi2) -> $npi1 == $npi2.
+
+ed1: doctor(npi: $npi, name: $docname1, hospital: $hospital1, email: $email1),
+doctor(npi: $npi, name: $docname2, hospital: $hospital2, email: $email2) ->
+  $docname1 == $docname2.
+
+ed2: doctor(npi: $npi, name: $docname1, hospital: $hospital1, email: $email1),
+doctor(npi: $npi, name: $docname2, hospital: $hospital2, email: $email2) ->
+  $hospital1 == $hospital2.
+
+ed3: doctor(npi: $npi, name: $docname1, hospital: $hospital1, email: $email1),
+doctor(npi: $npi, name: $docname2, hospital: $hospital2, email: $email2) ->
+  $email1 == $email2.
+
+//ed4: doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
+//doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2) ->
+  //$npi1 == $npi2.
+
+doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
+doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2),
+prescription(rxid: $rxid1, patient: $name1, npiref: $npi1),
+prescription(rxid: $rxid2, patient: $name2, npiref: $npi2)  ->
+  $npi1 == $npi2.
+
+doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
+doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2),
+prescription(rxid: $rxid1, patient: $name1, npiref: $npi1)
+and not exists(prescription(rxid: $rxid2, patient: $name2, npiref: $npi2))  ->
+  $npi1 == $npi2.
+
+doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
+doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2)
+and not exists(prescription(rxid: $rxid1, patient: $name1, npiref: $npi1))
+and not exists(prescription(rxid: $rxid2, patient: $name2, npiref: $npi2))  ->
+  $npi1 == $npi2.
+
+//md1: hospital(name: $hname, npi: $npi1, doctor: $dname, email: $email),
+//doctor(npi: $npi2, name: $dname, hospital: $hname, email: $email) ->
+    //$npi1 == $npi2.
+
+md1: hospital(name: $hname, npi: $npi1, doctor: $dname, email: $email),
+doctor(npi: $npi2, name: $dname, hospital: $hname, email: $email),
+prescription(rxid: $rxid1, patient: $name1, npiref: $npi2) ->
+    $npi1 == $npi2.
+]]>
+    </dependencies>
+    <partialOrder/>
+    <costManager>
+        <type>Standard</type>
+        <leavesThreshold>20</leavesThreshold>
+        <potentialSolutionsThreshold>10</potentialSolutionsThreshold>
+    </costManager>
+    <configuration>
+        <useCellGroupsForTGDs>true</useCellGroupsForTGDs>
+    </configuration>
+</scenario>

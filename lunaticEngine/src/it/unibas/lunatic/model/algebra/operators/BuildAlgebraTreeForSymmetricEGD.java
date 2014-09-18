@@ -137,7 +137,7 @@ public class BuildAlgebraTreeForSymmetricEGD {
     }
     
     public boolean containsOccurrences(AttributeRef attribute, FormulaVariable v, SymmetricAtoms symmetricAtoms) {
-        for (FormulaVariableOccurrence formulaVariableOccurrence : v.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence formulaVariableOccurrence : v.getPremiseRelationalOccurrences()) {
             if (!symmetricAtoms.getSymmetricAliases().contains(formulaVariableOccurrence.getAttributeRef().getTableAlias())) {
                 continue;
             }

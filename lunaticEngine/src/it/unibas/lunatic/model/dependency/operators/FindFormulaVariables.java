@@ -53,9 +53,9 @@ class FindFormulaVariablesVisitor implements IFormulaVisitor {
                     formula.addLocalVariable(variable);
                 }
                 if (!inConclusion) {
-                    variable.addPremiseOccurrence(occurrence);
+                    variable.addPremiseRelationalOccurrence(occurrence);
                 } else {
-                    variable.addConclusionOccurrence(occurrence);
+                    variable.addConclusionRelationalOccurrence(occurrence);
                 }
                 AttributeRef attributeRef = occurrence.getAttributeRef();
                 if (sourceTables.contains(attributeRef.getTableName())) {

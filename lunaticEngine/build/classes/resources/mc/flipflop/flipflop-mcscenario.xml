@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+const1(a, b)
+const2(a, b)
+INSTANCE:
+const1(a: "true", b: "b1")
+const1(a: "false", b: "b2")
+const2(a: "false", b: "b1")
+const2(a: "true", b: "b2")
+]]>
+    </generate>
+  </source>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+r(a, b)
+INSTANCE:
+r(a: "true", b: "x")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+r(a: $a, b: $b), 
+ const1(a: $a, b: $b1)
+ -> $b == $b1.
+
+r(a: $a, b: $b), 
+ const2(a: $a1, b: $b)
+ -> $a == $a1.
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

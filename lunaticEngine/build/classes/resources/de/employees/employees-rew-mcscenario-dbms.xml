@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:employees</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+
+create table s_employee (
+  name varchar(50),
+  age varchar(50),
+  salary varchar(50)
+) with oids;
+
+insert into s_employee values ('Charlie', '1978', '32000');
+insert into s_employee values ('Paul', '1978', NULL);
+insert into s_employee values ('Paul', '1979', NULL);
+insert into s_employee values ('Bob', '1977', NULL);
+insert into s_employee values ('Paul', NULL, '29000.5');
+insert into s_employee values ('Bob', NULL, '37000');
+insert into s_employee values ('Melanie', '1990', NULL);
+insert into s_employee values ('Jack', NULL, NULL);
+]]>
+    </init-db>
+  </source>
+  <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:employees</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table t_employee (
+  name varchar(50),
+  age varchar(50),
+  salary varchar(50)
+) with oids;
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+STTGDs:
+s_employee(name: $n, age: $a, salary: $s), $n != "Paul", {isNotNull($a)}, {isNotNull($s)}  -> t_employee(name: $n, age: $a, salary: $s).
+s_employee(name: $n, age: $a, salary: #NULL#), $n != "Paul", {isNotNull($a)} -> t_employee(name: $n, age: $a, salary: $N).
+s_employee(name: $n, age: #NULL#, salary: $s), $n != "Paul", {isNotNull($s)} -> t_employee(name: $n, age: $N, salary: $s).
+s_employee(name: $n, age: #NULL#, salary: #NULL#), $n != "Paul" -> t_employee(name: $n, age: $N1, salary: $N2).
+s_employee(name: $n, age: $a, salary: $s), $n == "Paul", {isNull($a)} -> t_employee(name: $n, age: $N, salary: $s).
+s_employee(name: $n, age: $a, salary: $s), $n == "Paul", {isNotNull($a)}, $a == "1978" -> t_employee(name: $n, age: $a, salary: $N).
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

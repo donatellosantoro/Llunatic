@@ -78,7 +78,7 @@ public class EvaluateExpression {
     }
 
     private AttributeRef findOccurrenceInTuple(FormulaVariable formulaVariable, Tuple tuple) {
-        for (FormulaVariableOccurrence occurrence : formulaVariable.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : formulaVariable.getPremiseRelationalOccurrences()) {
             AttributeRef attributeRef = occurrence.getAttributeRef();
             if (AlgebraUtility.contains(tuple, attributeRef)) {
                 return attributeRef;

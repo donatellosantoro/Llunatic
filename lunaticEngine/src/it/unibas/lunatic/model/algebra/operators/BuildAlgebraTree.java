@@ -143,7 +143,7 @@ public class BuildAlgebraTree {
 
     private AttributeRef findFirstOccurrenceInFormula(FormulaVariable formulaVariable, IFormula formula) {
         List<TableAlias> aliasesInFormula = AlgebraUtility.findAliasesForFormula(formula.getPositiveFormula());
-        for (FormulaVariableOccurrence occurrence : formulaVariable.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occurrence : formulaVariable.getPremiseRelationalOccurrences()) {
             AttributeRef attribute = occurrence.getAttributeRef();
             if (aliasesInFormula.contains(attribute.getTableAlias())) {
                 return attribute;

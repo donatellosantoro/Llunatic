@@ -489,8 +489,8 @@ public class DBMSUtility {
         Object objectVariable = variableExpression.getDescription();
         if (objectVariable instanceof FormulaVariable) {
             FormulaVariable variableDescription = (FormulaVariable) variableExpression.getDescription();
-            FormulaVariableOccurrence occurrence = variableDescription.getPremiseOccurrences().get(0);
-            if (logger.isDebugEnabled()) logger.debug("Occurrences: " + variableDescription.getPremiseOccurrences());
+            FormulaVariableOccurrence occurrence = variableDescription.getPremiseRelationalOccurrences().get(0);
+            if (logger.isDebugEnabled()) logger.debug("Occurrences: " + variableDescription.getPremiseRelationalOccurrences());
             AttributeRef attributeRef = occurrence.getAttributeRef();
             String result;
             if (useAlias) {

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="expenseDB">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" name="companies" nillable="false">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" minOccurs="1" name="company" nillable="false">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="1" name="companyId" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="1" name="companyName" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="1" name="city" nillable="true" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element minOccurs="1" name="projects" nillable="false">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" minOccurs="1" name="project" nillable="false">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="1" name="projectName" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="1" name="year" nillable="true" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element minOccurs="1" name="grants" nillable="false">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" minOccurs="1" name="grant" nillable="false">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="1" name="principalInvestigator" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="1" name="amount" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="1" name="sponsorId" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="1" name="projectRef" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="1" name="grantee" nillable="true" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:key name="key1">
+      <xs:selector xpath=".//project"/>
+      <xs:field xpath="projectName"/>
+    </xs:key>
+    <xs:key name="key2">
+      <xs:selector xpath=".//company"/>
+      <xs:field xpath="companyId"/>
+    </xs:key>
+    <xs:keyref name="keyRef1" refer="key1">
+      <xs:selector xpath=".//grant"/>
+      <xs:field xpath="projectRef"/>
+    </xs:keyref>
+    <xs:keyref name="keyRef2" refer="key2">
+      <xs:selector xpath=".//grant"/>
+      <xs:field xpath="grantee"/>
+    </xs:keyref>
+  </xs:element>
+</xs:schema>

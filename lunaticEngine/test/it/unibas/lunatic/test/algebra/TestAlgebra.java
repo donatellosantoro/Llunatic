@@ -56,7 +56,7 @@ public class TestAlgebra extends TestCase {
         TableAlias tableAlias = new TableAlias("IBDBookSet", true);
         AttributeRef attributeRef = new AttributeRef(tableAlias, "title");
         FormulaVariable tVariable = new FormulaVariable("t");
-        tVariable.addPremiseOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
+        tVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
         expression.setVariableDescription("t", tVariable);
         expressions.add(expression);
         Select select = new Select(expressions);
@@ -177,7 +177,7 @@ public class TestAlgebra extends TestCase {
         groupBy.addChild(scan);
         Expression expression = new Expression("count > 1");
         FormulaVariable countVariable = new FormulaVariable("count");
-        countVariable.addPremiseOccurrence(new FormulaVariableOccurrence(countAttribute, "count"));
+        countVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(countAttribute, "count"));
         expression.setVariableDescription("count", countVariable);
         Select select = new Select(expression);
         select.addChild(groupBy);
@@ -207,7 +207,7 @@ public class TestAlgebra extends TestCase {
         firstGroupBy.addChild(violationScan);
         Expression expression = new Expression("count > 1");
         FormulaVariable countVariable = new FormulaVariable("count");
-        countVariable.addPremiseOccurrence(new FormulaVariableOccurrence(countAttribute, "count"));
+        countVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(countAttribute, "count"));
         expression.setVariableDescription("count", countVariable);
 
         List<AttributeRef> secondGroupingAttribute = new ArrayList<AttributeRef>();

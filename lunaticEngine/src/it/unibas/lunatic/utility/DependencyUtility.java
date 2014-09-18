@@ -23,7 +23,7 @@ public class DependencyUtility {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
         List<FormulaVariable> universalVariable = DependencyUtility.getUniversalVariablesInConclusion(dependency);
         for (FormulaVariable formulaVariable : universalVariable) {
-            AttributeRef firstAttribute = DependencyUtility.findFirstOccurrenceInFormula(dependency.getPremise(), formulaVariable.getPremiseOccurrences());
+            AttributeRef firstAttribute = DependencyUtility.findFirstOccurrenceInFormula(dependency.getPremise(), formulaVariable.getPremiseRelationalOccurrences());
 //            LunaticUtility.addIfNotContained(result, firstAttribute);
             result.add(firstAttribute);
         }
@@ -33,7 +33,7 @@ public class DependencyUtility {
     public static List<FormulaVariable> getUniversalVariablesInConclusion(Dependency dependency) {
         List<FormulaVariable> result = new ArrayList<FormulaVariable>();
         for (FormulaVariable formulaVariable : dependency.getPremise().getLocalVariables()) {
-            List<FormulaVariableOccurrence> variablesOccurrence = formulaVariable.getConclusionOccurrences();
+            List<FormulaVariableOccurrence> variablesOccurrence = formulaVariable.getConclusionRelationalOccurrences();
             if (!variablesOccurrence.isEmpty()) {
                 LunaticUtility.addIfNotContained(result, formulaVariable);
             }
@@ -44,7 +44,7 @@ public class DependencyUtility {
     public static List<FormulaVariable> findUniversalVariablesInConclusion(Dependency dependency) {
         List<FormulaVariable> result = new ArrayList<FormulaVariable>();
         for (FormulaVariable formulaVariable : dependency.getPremise().getLocalVariables()) {
-            if (formulaVariable.getConclusionOccurrences().size() > 0) {
+            if (formulaVariable.getConclusionRelationalOccurrences().size() > 0) {
                 result.add(formulaVariable);
             }
         }
@@ -64,7 +64,7 @@ public class DependencyUtility {
     public static List<AttributeRef> getUniversalAttributesInPremise(List<FormulaVariable> universalVariables) {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
         for (FormulaVariable formulaVariable : universalVariables) {
-            LunaticUtility.addIfNotContained(result, formulaVariable.getPremiseOccurrences().get(0).getAttributeRef());
+            LunaticUtility.addIfNotContained(result, formulaVariable.getPremiseRelationalOccurrences().get(0).getAttributeRef());
         }
         return result;
     }
@@ -72,7 +72,7 @@ public class DependencyUtility {
     public static List<AttributeRef> getUniversalAttributesInConclusion(List<FormulaVariable> universalVariables) {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
         for (FormulaVariable formulaVariable : universalVariables) {
-            LunaticUtility.addIfNotContained(result, formulaVariable.getConclusionOccurrences().get(0).getAttributeRef());
+            LunaticUtility.addIfNotContained(result, formulaVariable.getConclusionRelationalOccurrences().get(0).getAttributeRef());
         }
         return result;
     }
@@ -103,15 +103,15 @@ public class DependencyUtility {
         List<AttributeRef> queriedAttributes = new ArrayList<AttributeRef>();
         LunaticUtility.addAllIfNotContained(queriedAttributes, findQueriedAttributesInPremise(dependency));
         for (FormulaVariable formulaVariable : dependency.getPremise().getLocalVariables()) {
-            if (formulaVariable.getConclusionOccurrences().isEmpty()) {
+            if (formulaVariable.getConclusionRelationalOccurrences().isEmpty()) {
                 continue;
             }
-            AttributeRef firstPremiseOccurrenceInTarget = getFirstPremiseOccurrenceInTarget(formulaVariable.getPremiseOccurrences());
+            AttributeRef firstPremiseOccurrenceInTarget = getFirstPremiseOccurrenceInTarget(formulaVariable.getPremiseRelationalOccurrences());
             if (firstPremiseOccurrenceInTarget != null) {
                 AttributeRef unaliasedPremiseAttribute = ChaseUtility.unAlias(firstPremiseOccurrenceInTarget);
                 LunaticUtility.addIfNotContained(queriedAttributes, unaliasedPremiseAttribute);
             }
-            for (FormulaVariableOccurrence conclusionOccurrence : formulaVariable.getConclusionOccurrences()) {
+            for (FormulaVariableOccurrence conclusionOccurrence : formulaVariable.getConclusionRelationalOccurrences()) {
                 AttributeRef attribute = conclusionOccurrence.getAttributeRef();
                 if (attribute.getTableAlias().isSource()) {
                     continue;
@@ -140,7 +140,7 @@ public class DependencyUtility {
             if (hasSingleOccurrence(variable)) {
                 continue;
             }
-            for (FormulaVariableOccurrence occurrence : variable.getPremiseOccurrences()) {
+            for (FormulaVariableOccurrence occurrence : variable.getPremiseRelationalOccurrences()) {
                 if (logger.isTraceEnabled()) logger.trace("Inspecting occurrence: " + occurrence);
                 AttributeRef attribute = occurrence.getAttributeRef();
                 if (attribute.getTableAlias().isSource()) {
@@ -156,7 +156,7 @@ public class DependencyUtility {
 
     private static boolean hasSingleOccurrence(FormulaVariable variable) {
         if (logger.isTraceEnabled()) logger.trace("Occurrences for variable: " + variable.toLongString());
-        int relationalPremiseOccurrences = variable.getPremiseOccurrences().size();
+        int relationalPremiseOccurrences = variable.getPremiseRelationalOccurrences().size();
         int nonRelationalOccurrences = variable.getNonRelationalOccurrences().size();
         return relationalPremiseOccurrences + nonRelationalOccurrences <= 1;
     }
