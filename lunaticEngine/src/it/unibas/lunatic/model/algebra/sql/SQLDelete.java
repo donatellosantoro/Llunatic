@@ -5,12 +5,14 @@ import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.Scan;
 import it.unibas.lunatic.model.algebra.Select;
 import it.unibas.lunatic.model.algebra.operators.IDelete;
+import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.model.expressions.Expression;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import it.unibas.lunatic.persistence.relational.QueryManager;
+import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +27,7 @@ public class SQLDelete implements IDelete {
         deleteQuery.append(getSelectQuery(operator));
         deleteQuery.append(";");
         if (logger.isDebugEnabled()) logger.debug("Delete query:\n" + deleteQuery.toString());
-        return QueryManager.executeInsertOrDelete(deleteQuery.toString(), ((DBMSDB)target).getAccessConfiguration());
+        return QueryManager.executeInsertOrDelete(deleteQuery.toString(), ((DBMSDB) target).getAccessConfiguration());
     }
 
     private String getScanQuery(IAlgebraOperator operator, IDatabase source, IDatabase target) {

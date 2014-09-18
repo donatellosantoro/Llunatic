@@ -82,6 +82,7 @@ public class AlgebraTreeToSQL {
         }
 
         public void visitScan(Scan operator) {
+            if (logger.isDebugEnabled()) logger.debug("Visiting scan " + operator);
             createSQLSelectClause(operator, new ArrayList<TableAlias>(), true);
             result.append(" FROM ");
             TableAlias tableAlias = operator.getTableAlias();
@@ -414,11 +415,16 @@ public class AlgebraTreeToSQL {
             result.append("\n").append(this.indentString());
             for (Expression condition : operator.getSelections()) {
                 boolean useAlias = true;
-                if (!operator.getChildren().isEmpty()
-                        && operator.getChildren().get(0) instanceof Difference) {
-                    Difference diff = (Difference) operator.getChildren().get(0);
-                    if (diff.getChildren().get(0) instanceof Difference || diff.getChildren().get(1) instanceof Difference) {
-                        useAlias = false;
+                if (isInACartesianProduct(operator)) {
+                    useAlias = false;
+                }
+                if (!operator.getChildren().isEmpty()) {
+                    IAlgebraOperator firstChild = operator.getChildren().get(0);
+                    if (firstChild instanceof Difference) {
+                        Difference diff = (Difference) operator.getChildren().get(0);
+                        if (diff.getChildren().get(0) instanceof Difference || diff.getChildren().get(1) instanceof Difference) {
+                            useAlias = false;
+                        }
                     }
                 }
                 String expressionSQL = DBMSUtility.expressionToSQL(condition, useAlias);
@@ -427,6 +433,20 @@ public class AlgebraTreeToSQL {
             }
             LunaticUtility.removeChars(" AND ".length(), result.getStringBuilder());
             this.indentLevel--;
+        }
+
+        private boolean isInACartesianProduct(IAlgebraOperator operator) {
+            if (operator.getChildren().isEmpty()) {
+                return false;
+            }
+            IAlgebraOperator firstChild = operator.getChildren().get(0);
+            if(firstChild instanceof CartesianProduct){
+                return true;
+            }
+            if(firstChild instanceof Select){
+                return isInACartesianProduct(firstChild);
+            }
+            return false;
         }
 
         private List<TableAlias> findNestedTablesForJoin(IAlgebraOperator operator) {
@@ -463,6 +483,13 @@ public class AlgebraTreeToSQL {
             }
             if (operator instanceof Project) {
                 attributes.addAll(operator.getAttributes(source, target));
+            }
+            if (operator instanceof Join) {
+                IAlgebraOperator leftChild = operator.getChildren().get(0);
+                attributes.addAll(getNestedAttributes(leftChild));
+                IAlgebraOperator rightChild = operator.getChildren().get(1);
+                attributes.addAll(getNestedAttributes(rightChild));
+//            attributes.addAll(operator.getAttributes(source, target));
             }
             if (operator instanceof CreateTable) {
                 attributes.addAll(operator.getAttributes(source, target));
