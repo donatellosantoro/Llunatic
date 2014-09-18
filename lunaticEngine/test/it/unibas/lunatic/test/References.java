@@ -43,6 +43,7 @@ public class References {
     public static final String customers_cfd_po_dbms = "/resources/mc/customers/customers-cfd-po-mcscenario-dbms.xml";
     
     public static final String employees_comparisons = "/resources/mc/employees/employees-comparisons-mcscenario.xml";
+    public static final String employees_comparisons_dbms = "/resources/mc/employees/employees-comparisons-mcscenario-dbms.xml";
     
     public static final String treatments_fr_sp = "/resources/mc/treatments/treatments-mcscenario-fr-sp.xml";
     public static final String treatments_fr_sp_dbms = "/resources/mc/treatments/treatments-mcscenario-fr-sp-dbms.xml";

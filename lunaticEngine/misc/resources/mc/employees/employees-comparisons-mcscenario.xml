@@ -19,10 +19,10 @@ SCHEMA:
 emp(name, dept, salary, manager)
 INSTANCE:
 emp(name: "John", dept: "Marketing", salary: "2000", manager: "Carl")
-emp(name: "John", dept: "Marketing", salary: "3000", manager: "Carl")
 emp(name: "Bob", dept: "Marketing", salary: "1000", manager: "John")
 emp(name: "Mark", dept: "Staff", salary: "1000", manager: "Frank")
 emp(name: "Frank", dept: "Sales", salary: "2000", manager: "Frank")
+emp(name: "John", dept: "Marketing", salary: "3000", manager: "Carl")
 emp(name: "Frank", dept: "Sales", salary: "2500", manager: "Frank")
 ]]>
         </generate>

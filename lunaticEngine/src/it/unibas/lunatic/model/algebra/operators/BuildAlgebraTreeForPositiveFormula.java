@@ -25,7 +25,7 @@ public class BuildAlgebraTreeForPositiveFormula {
     private static Logger logger = LoggerFactory.getLogger(BuildAlgebraTreeForPositiveFormula.class);
 
     private FindConnectedTables connectedTablesFinder = new FindConnectedTables();
-    
+
     public IAlgebraOperator buildTreeForPositiveFormula(Dependency dependency, PositiveFormula positiveFormula, boolean premise) {
         if (logger.isDebugEnabled()) logger.debug("Building tree for formula: " + positiveFormula);
         List<RelationalAtom> relationalAtoms = extractRelationalAtoms(positiveFormula);
@@ -123,8 +123,10 @@ public class BuildAlgebraTreeForPositiveFormula {
         for (Iterator<IFormulaAtom> it = atoms.iterator(); it.hasNext();) {
             IFormulaAtom atom = it.next();
             List<TableAlias> aliasesForAtom = AlgebraUtility.findAliasesForAtom(atom);
+            boolean atomToRemove = false;
             for (TableAlias tableAlias : aliasesForAtom) {
                 if (hasLocalOccurrences(tableAlias, atom, premise)) {
+                    atomToRemove = true;
                     IAlgebraOperator rootForAlias = treeMap.get(tableAlias);
                     if (rootForAlias instanceof Select) {
                         Select select = (Select) rootForAlias;
@@ -136,7 +138,9 @@ public class BuildAlgebraTreeForPositiveFormula {
                     }
                 }
             }
-            it.remove();
+            if (atomToRemove) {
+                it.remove();
+            }
         }
     }
 
@@ -166,6 +170,7 @@ public class BuildAlgebraTreeForPositiveFormula {
         if (logger.isDebugEnabled()) logger.debug("Join equalities: " + equalities);
         List<EqualityGroup> equalityGroups = groupEqualities(equalities);
         List<ConnectedTables> connectedTables = connectedTablesFinder.findConnectedEqualityGroups(atoms, equalityGroups);
+        if (logger.isDebugEnabled()) logger.debug("Connected tables: " + connectedTables);
         assignEqualityGroupsToConnectedTables(connectedTables, equalityGroups);
         List<IAlgebraOperator> rootsForConnectedComponents = new ArrayList<IAlgebraOperator>();
         for (ConnectedTables connectedComponent : connectedTables) {
@@ -204,7 +209,7 @@ public class BuildAlgebraTreeForPositiveFormula {
                 variableAliasesInFormula.add(occurrence.getAttributeRef());
             }
         }
-        if (logger.isDebugEnabled()) logger.debug("Filtering result occurrences for variable: " + variableAliasesInFormula);        
+        if (logger.isDebugEnabled()) logger.debug("Filtering result occurrences for variable: " + variableAliasesInFormula);
         return variableAliasesInFormula;
     }
 
@@ -234,7 +239,7 @@ public class BuildAlgebraTreeForPositiveFormula {
         }
         return new ArrayList<EqualityGroup>(groups.values());
     }
-    
+
     private String getHashString(TableAlias alias1, TableAlias alias2) {
         List<String> aliases = new ArrayList<String>();
         aliases.add(alias1.toString());
@@ -253,12 +258,12 @@ public class BuildAlgebraTreeForPositiveFormula {
             }
             connectedComponent.setEqualityGroups(equalityGroupsForConnectedComponent);
         }
-    }    
+    }
 
     private IAlgebraOperator generateRootForConnectedComponent(ConnectedTables connectedTables, Dependency dependency, Map<TableAlias, IAlgebraOperator> treeMap) {
         if (connectedTables.getTableAliases().size() == 1) {
             TableAlias singletonTable = connectedTables.getTableAliases().iterator().next();
-            return treeMap.get(singletonTable); 
+            return treeMap.get(singletonTable);
         }
         IAlgebraOperator root = null;
         List<TableAlias> addedTables = new ArrayList<TableAlias>();
@@ -387,6 +392,7 @@ public class BuildAlgebraTreeForPositiveFormula {
     }
 
     private IAlgebraOperator addGlobalSelectionsForComparisons(List<IFormulaAtom> atoms, IAlgebraOperator root, PositiveFormula positiveFormula, boolean premise) {
+        if (logger.isDebugEnabled()) logger.debug("Adding global selections for comparisons " + atoms);
         for (IFormulaAtom atom : atoms) {
             ComparisonAtom comparisonAtom = (ComparisonAtom) atom;
             if (isDifference(comparisonAtom, positiveFormula, premise)) {
@@ -408,7 +414,7 @@ public class BuildAlgebraTreeForPositiveFormula {
         }
         return false;
     }
-    
+
     private List<FormulaVariableOccurrence> getFormulaVariableOccurrence(FormulaVariable variable, boolean premise) {
         if (premise) {
             return variable.getPremiseRelationalOccurrences();

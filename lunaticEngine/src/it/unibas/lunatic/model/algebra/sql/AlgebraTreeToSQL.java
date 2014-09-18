@@ -126,7 +126,6 @@ public class AlgebraTreeToSQL {
                 result.append(", ");
             }
             LunaticUtility.removeChars(", ".length(), result.getStringBuilder());
-
         }
 
         private void generateNestedSelect(IAlgebraOperator operator) {

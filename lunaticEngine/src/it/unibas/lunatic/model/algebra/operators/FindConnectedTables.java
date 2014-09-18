@@ -39,6 +39,9 @@ public class FindConnectedTables {
         for (EqualityGroup equalityGroup : equalityGroups) {
             TableAlias leftTable = equalityGroup.getLeftTable();
             TableAlias rightTable = equalityGroup.getRightTable();
+            if(leftTable.equals(rightTable)){
+                continue;
+            }
             joinGraph.addEdge(leftTable, rightTable, new LabeledEdge(leftTable.toString(), rightTable.toString(), equalityGroup.toString()));
         }
         return joinGraph;

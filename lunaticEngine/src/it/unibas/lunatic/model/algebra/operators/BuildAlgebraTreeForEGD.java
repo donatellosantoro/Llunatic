@@ -107,6 +107,9 @@ public class BuildAlgebraTreeForEGD {
                 attributesForOrderBy.add(attributeForOrderBy);
             }
         }
+//        if(attributesForOrderBy.isEmpty()){
+//            return premiseRoot;
+//        }
         OrderBy orderBy = new OrderBy(attributesForOrderBy);
         orderBy.addChild(premiseRoot);
         return orderBy;

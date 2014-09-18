@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.algebra;
 
+import it.unibas.lunatic.exceptions.AlgebraException;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.model.algebra.operators.ListTupleIterator;
 import it.unibas.lunatic.model.algebra.operators.IAlgebraTreeVisitor;
@@ -20,6 +21,9 @@ public class OrderBy extends AbstractOperator {
     private List<AttributeRef> attributes;
 
     public OrderBy(List<AttributeRef> attributes) {
+        if(attributes.isEmpty()){
+            throw new AlgebraException("Unable to create an OrderBy without attributes");
+        }
         this.attributes = attributes;
     }
 
