@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 public class AlgebraTreeToSQL {
 
     private static Logger logger = LoggerFactory.getLogger(AlgebraTreeToSQL.class);
-    
+
     public String treeToSQL(IAlgebraOperator root, Scenario scenario, String initialIndent) {
         if (!scenario.isDBMS()) {
             throw new ChaseException("Unable to generate SQL: data sources are not on a dbms");
@@ -120,9 +120,19 @@ public class AlgebraTreeToSQL {
         }
 
         public void visitCartesianProduct(CartesianProduct operator) {
-            List<TableAlias> nestedSelect = findNestedTablesForJoin(operator);
-            createSQLSelectClause(operator, nestedSelect, true);
-            result.append(" FROM ");
+            result.append("SELECT * FROM ");
+            generateNestedSelect(operator.getChildren().get(0));
+            result.append(", ");
+            generateNestedSelect(operator.getChildren().get(1));
+        }
+
+        private void generateNestedSelect(IAlgebraOperator operator) {
+            this.indentLevel++;
+            result.append("(\n");
+            operator.accept(this);
+            result.append("\n").append(this.indentString()).append(") AS ");
+            result.append("Nest_").append(operator.hashCode());
+            this.indentLevel--;
         }
 
         public void visitProject(Project operator) {
@@ -591,5 +601,6 @@ public class AlgebraTreeToSQL {
             }
             throw new UnsupportedOperationException("Unable generate SQL for aggregate function" + aggregateFunction);
         }
+
     }
 }
