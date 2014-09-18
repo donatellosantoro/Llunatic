@@ -121,9 +121,12 @@ public class AlgebraTreeToSQL {
 
         public void visitCartesianProduct(CartesianProduct operator) {
             result.append("SELECT * FROM ");
-            generateNestedSelect(operator.getChildren().get(0));
-            result.append(", ");
-            generateNestedSelect(operator.getChildren().get(1));
+            for (IAlgebraOperator child : operator.getChildren()) {
+                generateNestedSelect(child);
+                result.append(", ");
+            }
+            LunaticUtility.removeChars(", ".length(), result.getStringBuilder());
+
         }
 
         private void generateNestedSelect(IAlgebraOperator operator) {

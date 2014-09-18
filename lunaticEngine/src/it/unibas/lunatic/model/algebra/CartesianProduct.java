@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.algebra;
 
-import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.model.algebra.operators.*;
 import it.unibas.lunatic.model.database.*;
 import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
@@ -18,17 +17,25 @@ public class CartesianProduct extends AbstractOperator {
     }
 
     public ITupleIterator execute(IDatabase source, IDatabase target) {
-        List<Tuple> result = new ArrayList<Tuple>();
-        ITupleIterator leftTuples = children.get(0).execute(source, target);
-        ITupleIterator rightTuples = children.get(1).execute(source, target);
-        materializeResult(leftTuples, rightTuples, result);
-        if (logger.isDebugEnabled()) logger.debug(getName() + " - Result: \n" + LunaticUtility.printCollection(result));
-        leftTuples.close();
-        rightTuples.close();
-        return new ListTupleIterator(result);
+        List<ITupleIterator> tupleIterators = new ArrayList<ITupleIterator>();
+        for (IAlgebraOperator child : children) {
+            ITupleIterator childrenTuple = child.execute(source, target);
+            tupleIterators.add(childrenTuple);
+        }
+        ITupleIterator firstChild = tupleIterators.remove(0);
+        ITupleIterator secondChild = tupleIterators.remove(0);
+        ITupleIterator currentResult = computeSimpleCartesianProduct(firstChild, secondChild);
+        while(!tupleIterators.isEmpty()){
+            currentResult = computeSimpleCartesianProduct(currentResult, tupleIterators.remove(0));
+        }
+        for (ITupleIterator tupleIterator : tupleIterators) {
+            tupleIterator.close();
+        }
+        return currentResult;
     }
 
-    public void materializeResult(ITupleIterator leftTuples, ITupleIterator rightTuples, List<Tuple> result) {
+    private ITupleIterator computeSimpleCartesianProduct(ITupleIterator leftTuples, ITupleIterator rightTuples) {
+        List<Tuple> result = new ArrayList<Tuple>();
         while (leftTuples.hasNext()) {
             Tuple leftTuple = leftTuples.next();
             if (logger.isDebugEnabled()) logger.debug("Left tuple in cartesian product: " + leftTuple);
@@ -41,6 +48,7 @@ public class CartesianProduct extends AbstractOperator {
             rightTuples.reset();
         }
         leftTuples.reset();
+        return new ListTupleIterator(result);
     }
 
     private Tuple joinTuples(Tuple firstTuple, Tuple secondTuple) {

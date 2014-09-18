@@ -59,7 +59,7 @@ public class TestAlgebraToSQL extends CheckTest {
         TableAlias tableAlias = new TableAlias("ibdbookset", true);
         AttributeRef attributeRef = new AttributeRef(tableAlias, "title");
         FormulaVariable tVariable = new FormulaVariable("t");
-        tVariable.addPremiseOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
+        tVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
         expression.setVariableDescription("t", tVariable);
         expressions.add(expression);
         Select select = new Select(expressions);
@@ -83,7 +83,7 @@ public class TestAlgebraToSQL extends CheckTest {
         TableAlias tableAlias = new TableAlias("ibdbookset", true);
         AttributeRef attributeRef = new AttributeRef(tableAlias, "title");
         FormulaVariable tVariable = new FormulaVariable("t");
-        tVariable.addPremiseOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
+        tVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
         expression2.setVariableDescription("t", tVariable);
         expressions.add(expression2);
         Select select = new Select(expressions);
@@ -108,7 +108,7 @@ public class TestAlgebraToSQL extends CheckTest {
         TableAlias tableAlias = new TableAlias("ibdbookset", true);
         AttributeRef attributeRef = new AttributeRef(tableAlias, "title");
         FormulaVariable tVariable = new FormulaVariable("t");
-        tVariable.addPremiseOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
+        tVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
         expression1.setVariableDescription("t", tVariable);
         expressions.add(expression1);
         expression2.setVariableDescription("t", tVariable);
@@ -187,5 +187,22 @@ public class TestAlgebraToSQL extends CheckTest {
         result.close();
         if (logger.isDebugEnabled()) logger.debug(stringResult);
         Assert.assertTrue(stringResult.startsWith("Number of tuples: 4\n"));
+    }
+
+    public void testMultipleCartesianProduct() {
+        TableAlias bookSet = new TableAlias("iblbookset", true);
+        TableAlias publisherSet = new TableAlias("iblpublisherset", true);
+        TableAlias locSet = new TableAlias("locset", true);
+        CartesianProduct cartesianProduct = new CartesianProduct();
+        cartesianProduct.addChild(new Scan(bookSet));
+        cartesianProduct.addChild(new Scan(publisherSet));
+        cartesianProduct.addChild(new Scan(locSet));
+        String query = sqlGenerator.treeToSQL(cartesianProduct, scenario, "");
+        if (logger.isDebugEnabled()) logger.debug(query);
+        ITupleIterator result = queryRunner.run(cartesianProduct, scenario.getSource(), scenario.getTarget());
+        String stringResult = LunaticUtility.printTupleIterator(result);
+        result.close();
+        if (logger.isDebugEnabled()) logger.debug(stringResult);
+        Assert.assertTrue(stringResult.startsWith("Number of tuples: 8\n"));
     }
 }

@@ -33,7 +33,7 @@ public class TestCartesianProduct extends TestCase {
         if (logger.isDebugEnabled()) logger.debug(stringResult);
         Assert.assertTrue(stringResult.startsWith("Number of tuples: 4\n"));
     }
-    
+
     public void testCartesianProductRS() {
         Scenario scenario = UtilityTest.loadScenario(References.testRS);
         TableAlias r = new TableAlias("R");
@@ -46,5 +46,20 @@ public class TestCartesianProduct extends TestCase {
         String stringResult = LunaticUtility.printTupleIterator(result);
         if (logger.isDebugEnabled()) logger.debug(stringResult);
         Assert.assertTrue(stringResult.startsWith("Number of tuples: 20\n"));
+    }
+
+    public void testMultipleCartesianProduct() {
+        Scenario scenario = UtilityTest.loadScenario(References.bookPublisher_plain);
+        TableAlias bookSet = new TableAlias("IBLBookSet", true);
+        TableAlias publisherSet = new TableAlias("IBLPublisherSet", true);
+        TableAlias locSet = new TableAlias("LOCSet", true);
+        CartesianProduct cartesianProduct = new CartesianProduct();
+        cartesianProduct.addChild(new Scan(bookSet));
+        cartesianProduct.addChild(new Scan(publisherSet));
+        cartesianProduct.addChild(new Scan(locSet));
+        Iterator<Tuple> result = cartesianProduct.execute(scenario.getSource(), scenario.getTarget());
+        String stringResult = LunaticUtility.printTupleIterator(result);
+        if (logger.isDebugEnabled()) logger.debug(stringResult);
+        Assert.assertTrue(stringResult.startsWith("Number of tuples: 8\n"));
     }
 }
