@@ -22,7 +22,6 @@ public class ComparisonAtom implements IFormulaAtom {
         this.operator = operator;
     }
 
-
     public Expression getExpression() {
         return expression;
     }
@@ -95,6 +94,10 @@ public class ComparisonAtom implements IFormulaAtom {
             return getRightVariable().toString();
         }
         return rightConstant;
+    }
+
+    public boolean isVariableEqualityComparison() {
+        return isEqualityComparison() && variables.size() == 2;
     }
 
     public IFormulaAtom clone() {
