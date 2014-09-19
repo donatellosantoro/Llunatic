@@ -36,6 +36,8 @@ private PositiveFormula positiveFormula;
 private IFormulaAtom atom;
 private FormulaAttribute attribute;
 private StringBuilder expressionString;
+private String leftConstant;
+private String rightConstant;
 private int counter;
 
 public void setGenerator(ParseDependencies generator) {
@@ -133,16 +135,22 @@ builtin	:	 expression=EXPRESSION
                  {  atom = new BuiltInAtom(positiveFormula, new Expression(generator.clean(expression.getText()))); 
                     positiveFormula.addAtom(atom);  } ;         
 
-comparison :	 {   expressionString = new StringBuilder(); }
-                 argument 
+comparison :	 {   expressionString = new StringBuilder(); 
+		     leftConstant = null;
+		     rightConstant = null;}
+                 leftargument 
                  oper=OPERATOR { expressionString.append(" ").append(oper.getText()); }
-                 argument 
+                 rightargument 
                  {  Expression expression = new Expression(expressionString.toString()); 
-                    atom = new ComparisonAtom(positiveFormula, expression, oper.getText()); 
+                    atom = new ComparisonAtom(positiveFormula, expression, leftConstant, rightConstant, oper.getText()); 
                     positiveFormula.addAtom(atom); } ;
 
-argument:	 ('\$'var=IDENTIFIER { expressionString.append(var.getText()); } |
-                 constant=(STRING | NUMBER) { expressionString.append(constant.getText()); }
+leftargument:	 ('\$'var=IDENTIFIER { expressionString.append(var.getText()); } |
+                 constant=(STRING | NUMBER) { expressionString.append(constant.getText()); leftConstant = constant.getText();}
+                 );
+                 
+rightargument:	 ('\$'var=IDENTIFIER { expressionString.append(var.getText()); } |
+                 constant=(STRING | NUMBER) { expressionString.append(constant.getText()); rightConstant = constant.getText();}
                  );
 
 attribute:	 attr=IDENTIFIER ':' { attribute = new FormulaAttribute(attr.getText()); } value

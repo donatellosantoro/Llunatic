@@ -9,14 +9,19 @@ public class ComparisonAtom implements IFormulaAtom {
 
     private IFormula formula;
     private Expression expression;
-    private String operator;
     private List<FormulaVariable> variables = new ArrayList<FormulaVariable>();
+    private String leftConstant;
+    private String rightConstant;
+    private String operator;
 
-    public ComparisonAtom(IFormula formula, Expression expression, String operator) {
+    public ComparisonAtom(IFormula formula, Expression expression, String leftConstant, String rightConstant, String operator) {
         this.formula = formula;
         this.expression = expression;
+        this.leftConstant = leftConstant;
+        this.rightConstant = rightConstant;
         this.operator = operator;
     }
+
 
     public Expression getExpression() {
         return expression;
@@ -46,6 +51,52 @@ public class ComparisonAtom implements IFormulaAtom {
         return LunaticConstants.EQUAL.equals(operator);
     }
 
+    public FormulaVariable getLeftVariable() {
+        if (leftConstant == null) {
+            return variables.get(0);
+        }
+        return null;
+    }
+
+    public FormulaVariable getRightVariable() {
+        if (rightConstant == null && leftConstant != null) {
+            return variables.get(0);
+        } else if (rightConstant == null && leftConstant == null) {
+            return variables.get(1);
+        }
+        return null;
+    }
+
+    public String getLeftConstant() {
+        return leftConstant;
+    }
+
+    public void setLeftConstant(String leftConstant) {
+        this.leftConstant = leftConstant;
+    }
+
+    public String getRightConstant() {
+        return rightConstant;
+    }
+
+    public void setRightConstant(String rightConstant) {
+        this.rightConstant = rightConstant;
+    }
+
+    public String getLeftArgument() {
+        if (leftConstant == null) {
+            return getLeftVariable().toString();
+        }
+        return leftConstant;
+    }
+
+    public String getRightArgument() {
+        if (rightConstant == null) {
+            return getRightVariable().toString();
+        }
+        return rightConstant;
+    }
+
     public IFormulaAtom clone() {
         try {
             ComparisonAtom clone = (ComparisonAtom) super.clone();
@@ -60,6 +111,11 @@ public class ComparisonAtom implements IFormulaAtom {
     @Override
     public String toString() {
         return this.expression.toString();
+    }
+
+    public String toLongString() {
+        return this.expression.toString() + "\n\tvariables=" + variables + "\n\tleftConstant=" + leftConstant + "\n\trightConstant=" + rightConstant + "\n\toperator=" + operator;
+
     }
 
 }
