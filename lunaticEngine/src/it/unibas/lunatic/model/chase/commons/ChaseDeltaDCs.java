@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.chase.commons;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
@@ -55,7 +56,7 @@ public class ChaseDeltaDCs {
             ITupleIterator it = queryRunner.run(tgdQuery, scenario.getSource(), databaseForStep);
             if (it.hasNext()) {
                 node.setInvalid(true);
-//                throw new ChaseException("Chase fails. Denial constraint \n" + dTgd + "\nis violated on node \n" + node);
+//                throw new ChaseException("Chase fails. Denial constraint \n" + dc + "\nis violated on node \n" + node);
             }
             it.close();
         }

@@ -28,5 +28,6 @@ public class TestEmployees extends CheckTest {
         Assert.assertFalse(scenario.getDependency("e4").hasSymmetricAtoms());
         Assert.assertFalse(scenario.getDependency("e5").hasSymmetricAtoms());
         Assert.assertEquals(3, resultSizer.getSolutions(result));
+        Assert.assertEquals(3, resultSizer.getInvalids(result));
     }
 }

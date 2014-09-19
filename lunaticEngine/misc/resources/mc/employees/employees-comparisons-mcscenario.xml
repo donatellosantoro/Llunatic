@@ -18,12 +18,13 @@ md(name: "Bob", salary: "1000", manager: "John")
 SCHEMA:
 emp(name, dept, salary, manager)
 INSTANCE:
+emp(name: "Bob", dept: "Marketing", salary: "1000", manager: "John")
 emp(name: "John", dept: "Marketing", salary: "2000", manager: "Carl")
 emp(name: "John", dept: "Marketing", salary: "3000", manager: "Carl")
-emp(name: "Frank", dept: "Sales", salary: "2000", manager: "Frank")
-emp(name: "Frank", dept: "Sales", salary: "2500", manager: "Frank")
-emp(name: "Bob", dept: "Marketing", salary: "1000", manager: "John")
 emp(name: "Mark", dept: "Staff", salary: "1000", manager: "Frank")
+emp(name: "Frank", dept: "Sales", salary: "2000", manager: "Carl")
+emp(name: "Frank", dept: "Sales", salary: "2500", manager: "Carl")
+emp(name: "Carl", dept: "Managment", salary: "5000", manager: "Carl")
 ]]>
         </generate>
     </target>
