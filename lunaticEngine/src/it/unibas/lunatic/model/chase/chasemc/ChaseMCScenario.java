@@ -25,7 +25,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.chasemc.operators.IValueOccurrenceHandlerMC;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.model.extendedegdanalysis.operators.AnalyzeDependencies;
+import it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies;
 import java.util.Date;
 import java.util.Map;
 import org.slf4j.Logger;

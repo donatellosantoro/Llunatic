@@ -1,4 +1,4 @@
-package it.unibas.lunatic.model.extendedegdanalysis;
+package it.unibas.lunatic.model.dependency;
 
 import org.jgrapht.graph.DefaultEdge;
 

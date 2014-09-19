@@ -20,7 +20,7 @@ import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.operators.GenerateSymmetricPremise;
 import it.unibas.lunatic.model.expressions.Expression;
-import it.unibas.lunatic.model.extendedegdanalysis.SymmetricAtoms;
+import it.unibas.lunatic.model.dependency.SymmetricAtoms;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.List;

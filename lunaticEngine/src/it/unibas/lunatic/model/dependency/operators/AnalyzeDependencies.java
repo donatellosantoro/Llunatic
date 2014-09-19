@@ -1,4 +1,4 @@
-package it.unibas.lunatic.model.extendedegdanalysis.operators;
+package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility;
@@ -8,8 +8,8 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedDependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.operators.AssignAdditionalAttributes;
-import it.unibas.lunatic.model.extendedegdanalysis.DependencyStratification;
-import it.unibas.lunatic.model.extendedegdanalysis.DependencyStratum;
+import it.unibas.lunatic.model.dependency.DependencyStratification;
+import it.unibas.lunatic.model.dependency.DependencyStratum;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;

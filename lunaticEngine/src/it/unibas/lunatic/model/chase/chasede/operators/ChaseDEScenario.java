@@ -11,7 +11,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.model.extendedegdanalysis.operators.FindSymmetricAtoms;
+import it.unibas.lunatic.model.dependency.operators.FindSymmetricAtoms;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.List;
 import org.slf4j.Logger;

@@ -2,7 +2,7 @@ package it.unibas.lunatic.model.algebra.operators;
 
 import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
-import it.unibas.lunatic.model.extendedegdanalysis.LabeledEdge;
+import it.unibas.lunatic.model.dependency.LabeledEdge;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

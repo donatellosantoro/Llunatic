@@ -39,5 +39,9 @@ public class BuiltInAtom implements IFormulaAtom {
     public String toString() {
         return expression.toString();
     }
+
+    public String toLongString() {
+        return this.expression.toString() + "\n\tvariables=" + variables;
+    }
     
 }

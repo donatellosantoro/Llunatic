@@ -7,7 +7,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDBForChaseSt
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDeltaDB;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.model.extendedegdanalysis.operators.AnalyzeDependencies;
+import it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies;
 import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;

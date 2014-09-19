@@ -117,8 +117,14 @@ public class ComparisonAtom implements IFormulaAtom {
     }
 
     public String toLongString() {
-        return this.expression.toString() + "\n\tvariables=" + variables + "\n\tleftConstant=" + leftConstant + "\n\trightConstant=" + rightConstant + "\n\toperator=" + operator;
-
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.expression.toString());
+        sb.append("\n\t LeftV ariable: ").append((getLeftVariable() != null ? getLeftVariable().toLongString() : "null"));
+        sb.append("\n\t Right Variable: ").append((getRightVariable()!= null ? getRightVariable().toLongString() : "null"));
+        sb.append("\n\t Left Constant: ").append(leftConstant);
+        sb.append("\n\t Right Constant: ").append(rightConstant);
+        sb.append("\n\t Operator: ").append(operator);
+        return sb.toString();
     }
 
 }

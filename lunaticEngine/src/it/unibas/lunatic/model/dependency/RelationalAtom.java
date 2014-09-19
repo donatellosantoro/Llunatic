@@ -120,4 +120,8 @@ public class RelationalAtom implements IFormulaAtom, Cloneable {
         result.append(")");
         return result.toString();
     }
+
+    public String toLongString() {
+        return toString();
+    }
 }

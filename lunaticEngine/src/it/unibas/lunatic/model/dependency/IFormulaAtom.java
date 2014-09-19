@@ -10,4 +10,5 @@ public interface IFormulaAtom {
     public Expression getExpression();
     public IFormula getFormula();
     public void setFormula(IFormula formula);
+    public String toLongString();
 }

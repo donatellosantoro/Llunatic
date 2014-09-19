@@ -9,7 +9,7 @@ import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
-import it.unibas.lunatic.model.extendedegdanalysis.SymmetricAtoms;
+import it.unibas.lunatic.model.dependency.SymmetricAtoms;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class GenerateSymmetricPremise {
         if (!dependency.hasSymmetricAtoms()) {
             throw new IllegalArgumentException("Dependency must have symmetric atoms: " + dependency);
         }
-        if (logger.isDebugEnabled()) logger.debug("Generating symmetring premise for dependency " + dependency);
+        if (logger.isDebugEnabled()) logger.debug("Generating symmetring premise for dependency " + dependency.toLongString());
         if (logger.isDebugEnabled()) logger.debug("Symmetric atoms: " + dependency.getSymmetricAtoms());
         PositiveFormula premise = dependency.getPremise().getPositiveFormula();
         PositiveFormula symmetricPremise = new PositiveFormula(premise.getFather());
@@ -35,7 +35,6 @@ public class GenerateSymmetricPremise {
                 symmetricPremise.addAtom(atom);
                 continue;
             }
-//            RelationalAtom relationAtom = (RelationalAtom) atom;
             RelationalAtom relationAtom = ((RelationalAtom) atom).clone();
             if (logger.isDebugEnabled()) logger.debug("Analyzing atom: " + relationAtom);
             if (symmetricAtoms.contains(relationAtom.getTableAlias())) {
@@ -48,7 +47,7 @@ public class GenerateSymmetricPremise {
             symmetricPremise.addLocalVariable(makeSymmetric(variable, dependency.getSymmetricAtoms()));
         }
         equivalenceClassFinder.findVariableEquivalenceClasses(symmetricPremise);
-        if (logger.isDebugEnabled()) logger.debug("Result: " + symmetricPremise);
+        if (logger.isDebugEnabled()) logger.debug("Result: " + symmetricPremise.toLongString());
         return symmetricPremise;
     }
 

@@ -1,4 +1,4 @@
-package it.unibas.lunatic.model.extendedegdanalysis.operators;
+package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.utility.LunaticUtility;

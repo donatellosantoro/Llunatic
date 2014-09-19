@@ -83,6 +83,7 @@ public class BuildAlgebraTreeForPositiveFormula {
 
     private void initializeMap(List<RelationalAtom> atoms, Map<TableAlias, IAlgebraOperator> treeMap) {
         for (RelationalAtom atom : atoms) {
+            if (logger.isDebugEnabled()) logger.debug("Initialize operator for table alias in atom " + atom);
             RelationalAtom relationalAtom = (RelationalAtom) atom;
             TableAlias tableAlias = relationalAtom.getTableAlias();
             IAlgebraOperator tableRoot = new Scan(tableAlias);
@@ -128,6 +129,9 @@ public class BuildAlgebraTreeForPositiveFormula {
                 if (hasLocalOccurrences(tableAlias, atom, premise)) {
                     atomToRemove = true;
                     IAlgebraOperator rootForAlias = treeMap.get(tableAlias);
+                    if(rootForAlias == null){
+                        throw new IllegalArgumentException("Unable to find operator for table alias " + tableAlias);
+                    }
                     if (rootForAlias instanceof Select) {
                         Select select = (Select) rootForAlias;
                         select.getSelections().add(atom.getExpression());

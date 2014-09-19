@@ -1,4 +1,4 @@
-package it.unibas.lunatic.model.extendedegdanalysis.operators;
+package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
@@ -12,9 +12,9 @@ import it.unibas.lunatic.model.dependency.IFormula;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
-import it.unibas.lunatic.model.extendedegdanalysis.LabeledEdge;
-import it.unibas.lunatic.model.extendedegdanalysis.SelfJoin;
-import it.unibas.lunatic.model.extendedegdanalysis.SymmetricAtoms;
+import it.unibas.lunatic.model.dependency.LabeledEdge;
+import it.unibas.lunatic.model.dependency.SelfJoin;
+import it.unibas.lunatic.model.dependency.SymmetricAtoms;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Collections;

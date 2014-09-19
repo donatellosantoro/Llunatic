@@ -24,14 +24,15 @@
     <!--<logger name="it.unibas.lunatic.model.extendedegdanalysis.operators.AnalyzeDependencies" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chasemc.partialorder.AbstractPartialOrder" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.CheckVariablesInExpressions" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.FindVariableEquivalenceClasses" level="DEBUG"/>-->
+    <logger name="it.unibas.lunatic.model.dependency.operators.GenerateSymmetricPremise" level="DEBUG"/>
 
     <!--     ALGEBRA     -->
     <!--<logger name="it.unibas.lunatic.model.algebra.Difference" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.algebra.Join" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.algebra.operators.mainmemory.InsertTuple" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula" level="DEBUG"/>-->
+    <logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula" level="DEBUG"/>
     <!--<logger name="it.unibas.lunatic.model.algebra.sql.AlgebraTreeToSQL" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.dependency.operators.FindVariableEquivalenceClasses" level="DEBUG"/>-->
 
     <!--     CHASE DE     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs" level="DEBUG"/>-->

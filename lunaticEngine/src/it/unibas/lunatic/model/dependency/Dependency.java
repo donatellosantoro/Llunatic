@@ -5,7 +5,6 @@ import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.dependency.operators.DependencyToString;
 import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;
-import it.unibas.lunatic.model.extendedegdanalysis.SymmetricAtoms;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -223,6 +222,7 @@ public class Dependency implements Cloneable {
         result.append("  Overlap between queried and affected: ").append(overlapBetweenAffectedAndQueried).append("\n");
         result.append("  Attributes for backward chasing: ").append(attributesForBackwardChasing).append("\n");
         result.append("  Symmetric atoms: ").append(symmetricAtoms).append("\n");
+        result.append("  Has Symmetric Atoms: ").append(hasSymmetricAtoms()).append("\n");
 //        result.append("  Extended dependencies:\n");
 //        for (ExtendedDependency extendedDependency : extendedDependencies) {
 //            result.append("      ").append(extendedDependency.toString());
