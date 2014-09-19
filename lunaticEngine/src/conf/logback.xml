@@ -17,7 +17,7 @@
         <!--<appender-ref ref="file"/>-->
     </root>
     <!--     TEST     -->
-    <logger name="it.unibas.lunatic.test" level="DEBUG"/>
+    <!--<logger name="it.unibas.lunatic.test" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.test.BatchTest" level="DEBUG"/>-->
 
     <!--     MODEL     -->

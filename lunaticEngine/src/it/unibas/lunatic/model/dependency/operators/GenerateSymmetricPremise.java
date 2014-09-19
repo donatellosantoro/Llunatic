@@ -36,7 +36,7 @@ public class GenerateSymmetricPremise {
         Set<TableAlias> symmetricAtoms = dependency.getSymmetricAtoms().getSymmetricAliases();
         if (logger.isDebugEnabled()) logger.debug("Symmetric atoms: " + symmetricAtoms);
         changeRelationalAtoms(symmetricPremise, symmetricAtoms);
-        Map<FormulaVariable, FormulaVariable> substitutionMap = makeVariablesSymmetric(premise, symmetricPremise, dependency);
+        Map<FormulaVariable, FormulaVariable> substitutionMap = makeVariablesSymmetric(symmetricPremise, dependency);
         changeNonRelationalAtoms(symmetricPremise, substitutionMap);
         removeUselessNonRelationalAtoms(symmetricPremise);
         equivalenceClassFinder.findVariableEquivalenceClasses(symmetricPremise);
@@ -50,7 +50,7 @@ public class GenerateSymmetricPremise {
             if (!(atom instanceof RelationalAtom)) {
                 continue;
             }
-            RelationalAtom relationAtom = ((RelationalAtom) atom).clone();
+            RelationalAtom relationAtom = (RelationalAtom) atom;
             if (logger.isDebugEnabled()) logger.debug("Analyzing atom: " + relationAtom);
             if (symmetricAtoms.contains(relationAtom.getTableAlias())) {
                 if (logger.isDebugEnabled()) logger.debug("Atom must be made symmetric...");
@@ -65,11 +65,12 @@ public class GenerateSymmetricPremise {
 //    private void makeSymmetricByRemovingAlias(RelationalAtom atom) {
 //        atom.setAlias("");
 //    }
-    private Map<FormulaVariable, FormulaVariable> makeVariablesSymmetric(PositiveFormula premise, PositiveFormula symmetricPremise, Dependency dependency) {
+    private Map<FormulaVariable, FormulaVariable> makeVariablesSymmetric(PositiveFormula symmetricPremise, Dependency dependency) {
         Map<FormulaVariable, FormulaVariable> substitutionMap = new HashMap<FormulaVariable, FormulaVariable>();
-        for (FormulaVariable variable : premise.getLocalVariables()) {
+        for (int i = 0; i < symmetricPremise.getLocalVariables().size(); i++) {
+            FormulaVariable variable = symmetricPremise.getLocalVariables().get(i);
             FormulaVariable newVariable = makeSymmetric(variable, dependency.getSymmetricAtoms());
-            symmetricPremise.addLocalVariable(newVariable);
+            symmetricPremise.getLocalVariables().set(i, newVariable);
             substitutionMap.put(variable, newVariable);
         }
         return substitutionMap;
@@ -114,8 +115,6 @@ public class GenerateSymmetricPremise {
                 FormulaVariable variableClone = substitutionMap.get(variable);
                 if (variableClone != null) {
                     atom.getVariables().set(i, variableClone);
-                    variableClone.getNonRelationalOccurrences().remove(atom);
-                    variableClone.getNonRelationalOccurrences().add(atom);
                     if (atom instanceof ComparisonAtom) {
                         ComparisonAtom comparisonAtom = (ComparisonAtom) atom;
                         comparisonAtom.getExpression().setVariableDescription(variable.getId(), variableClone);

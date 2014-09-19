@@ -169,6 +169,9 @@ public class PositiveFormula implements IFormula {
 
         private void changeVariablesInAtoms(PositiveFormula clone, Map<FormulaVariable, FormulaVariable> variableClones) {
             for (IFormulaAtom atomClone : clone.atoms) {
+                if(atomClone instanceof RelationalAtom){
+                    continue;
+                }
                 for (int i = 0; i < atomClone.getVariables().size(); i++) {
                     FormulaVariable variable = atomClone.getVariables().get(i);
                     FormulaVariable variableClone = variableClones.get(variable); 
