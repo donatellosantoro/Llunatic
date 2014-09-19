@@ -47,7 +47,7 @@ public class ComparisonAtom implements IFormulaAtom {
     }
 
     public boolean isEqualityComparison() {
-        return LunaticConstants.EQUAL.equals(operator);
+        return LunaticConstants.EQUAL.equals(operator.trim());
     }
 
     public FormulaVariable getLeftVariable() {

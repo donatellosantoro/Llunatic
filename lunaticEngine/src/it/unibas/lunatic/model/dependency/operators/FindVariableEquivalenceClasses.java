@@ -8,27 +8,32 @@ import org.slf4j.LoggerFactory;
 
 public class FindVariableEquivalenceClasses {
 
+    private static Logger logger = LoggerFactory.getLogger(FindVariableEquivalenceClasses.class);
+
     public void findVariableEquivalenceClasses(IFormula formula) {
         FindVariableEquivalenceClassesVisitor visitor = new FindVariableEquivalenceClassesVisitor();
         formula.accept(visitor);
+        if (logger.isDebugEnabled()) logger.debug("VariableEquivalenceClasses for formula " + formula.getLocalVariableEquivalenceClasses());
     }
 
     public void findVariableEquivalenceClasses(Dependency dependency) {
         FindVariableEquivalenceClassesVisitor visitor = new FindVariableEquivalenceClassesVisitor();
         dependency.accept(visitor);
+        if (logger.isDebugEnabled()) logger.debug("VariableEquivalenceClasses for dependency " + dependency.getPremise().getLocalVariableEquivalenceClasses());
     }
 }
 
 class FindVariableEquivalenceClassesVisitor implements IFormulaVisitor {
 
-    private static Logger logger = LoggerFactory.getLogger(FindFormulaVariablesVisitor.class);
+    private static Logger logger = LoggerFactory.getLogger(FindVariableEquivalenceClasses.class);
 
     public void visitDependency(Dependency dependency) {
         dependency.getPremise().accept(this);
     }
 
     public void visitPositiveFormula(PositiveFormula formula) {
-        generateVariableEquivalenceClasses(formula);
+        List<VariableEquivalenceClass> classes = generateVariableEquivalenceClasses(formula);
+        formula.setLocalVariableEquivalenceClasses(classes);
     }
 
     public void visitFormulaWithNegations(FormulaWithNegations formula) {
@@ -44,12 +49,15 @@ class FindVariableEquivalenceClassesVisitor implements IFormulaVisitor {
 
     List<VariableEquivalenceClass> generateVariableEquivalenceClasses(IFormula formula) {
         List<FormulaVariable> variables = formula.getLocalVariables();
+        if (logger.isDebugEnabled()) logger.debug("Local variables: " + variables);
         List<VariableEquivalenceClass> result = initiEquivalenceClasses(variables);
+        if (logger.isDebugEnabled()) logger.debug("Singleton equivalence classes: " + result);
         for (IFormulaAtom atom : formula.getAtoms()) {
             if (!(atom instanceof ComparisonAtom)) {
                 continue;
             }
             ComparisonAtom comparisonAtom = (ComparisonAtom) atom;
+            if (logger.isDebugEnabled()) logger.debug("Checking comparison atom " + comparisonAtom.toLongString());
             if (!comparisonAtom.isVariableEqualityComparison() || !isLocalComparison(comparisonAtom, variables)) {
                 continue;
             }
@@ -73,10 +81,14 @@ class FindVariableEquivalenceClassesVisitor implements IFormulaVisitor {
     }
 
     private void mergeClasses(ComparisonAtom comparisonAtom, List<VariableEquivalenceClass> equivalenceClasses) {
+        if (logger.isDebugEnabled()) logger.debug("Merging classes for comparison atom " + comparisonAtom + "\n " + equivalenceClasses);
         VariableEquivalenceClass firstClass = findEquivalenceClassForVariable(comparisonAtom.getLeftVariable(), equivalenceClasses);
         VariableEquivalenceClass secondClass = findEquivalenceClassForVariable(comparisonAtom.getRightVariable(), equivalenceClasses);
-        equivalenceClasses.remove(secondClass);
+        if(firstClass == secondClass){
+            return;
+        }
         firstClass.addVariables(secondClass.getVariables());
+        equivalenceClasses.remove(secondClass);
     }
 
     private VariableEquivalenceClass findEquivalenceClassForVariable(FormulaVariable variable, List<VariableEquivalenceClass> equivalenceClasses) {

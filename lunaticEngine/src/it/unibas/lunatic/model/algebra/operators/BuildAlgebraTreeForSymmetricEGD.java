@@ -21,6 +21,7 @@ import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.operators.GenerateSymmetricPremise;
 import it.unibas.lunatic.model.expressions.Expression;
 import it.unibas.lunatic.model.extendedegdanalysis.SymmetricAtoms;
+import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -59,7 +60,8 @@ public class BuildAlgebraTreeForSymmetricEGD {
         groupByQueriedAttributes.addChild(premiseRoot);
 
         List<IAggregateFunction> aggregatesForWitness = new ArrayList<IAggregateFunction>();
-        List<AttributeRef> symmetricWitnessAttributes = filterAttributesForSymmetricPremise(dependency.getTargetJoinAttributes(), dependency);
+        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(dependency);
+        List<AttributeRef> symmetricWitnessAttributes = filterAttributesForSymmetricPremise(targetJoinAttributes, dependency);
         if (logger.isDebugEnabled()) logger.debug("Symmetric witness attributes: " + symmetricWitnessAttributes);
         symmetricWitnessAttributes = filterConclusionOccurrences(symmetricWitnessAttributes, dependency);
         for (AttributeRef witnessAttribute : symmetricWitnessAttributes) {
@@ -79,14 +81,16 @@ public class BuildAlgebraTreeForSymmetricEGD {
     }
 
     private IAlgebraOperator generateSelectIn(Dependency dependency, IAlgebraOperator violationValues) {
-        List<AttributeRef> symmetricWitnessAttributes = filterAttributesForSymmetricPremise(dependency.getTargetJoinAttributes(), dependency);
+        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(dependency);
+        List<AttributeRef> symmetricWitnessAttributes = filterAttributesForSymmetricPremise(targetJoinAttributes, dependency);
         symmetricWitnessAttributes = filterConclusionOccurrences(symmetricWitnessAttributes, dependency);
         SelectIn selectIn = new SelectIn(symmetricWitnessAttributes, violationValues);
         return selectIn;
     }
 
     private IAlgebraOperator addOrderBy(Dependency dependency, IAlgebraOperator premiseRoot) {
-        List<AttributeRef> symmetricWitnessAttributes = filterAttributesForSymmetricPremise(dependency.getTargetJoinAttributes(), dependency);
+        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(dependency);
+        List<AttributeRef> symmetricWitnessAttributes = filterAttributesForSymmetricPremise(targetJoinAttributes, dependency);
         symmetricWitnessAttributes = filterConclusionOccurrences(symmetricWitnessAttributes, dependency);
         List<AttributeRef> attributesForOrderBy = new ArrayList<AttributeRef>();
         for (AttributeRef targetJoinAttribute : symmetricWitnessAttributes) {

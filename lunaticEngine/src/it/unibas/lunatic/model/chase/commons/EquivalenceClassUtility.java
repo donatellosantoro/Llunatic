@@ -12,6 +12,7 @@ import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.model.database.TupleOID;
 import it.unibas.lunatic.model.dependency.Dependency;
+import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ import org.slf4j.LoggerFactory;
 public class EquivalenceClassUtility {
 
     private static Logger logger = LoggerFactory.getLogger(EquivalenceClassUtility.class);
-    
+
     public static boolean sameEquivalenceClass(Tuple tuple, Tuple lastTuple, Dependency egd) {
         List<AttributeRef> joinAttributes = getTargetJoinAttributes(egd);
         joinAttributes = ChaseUtility.filterConclusionOccurrences(joinAttributes, egd);
@@ -102,11 +103,12 @@ public class EquivalenceClassUtility {
     }
 
     private static List<AttributeRef> getTargetJoinAttributes(Dependency egd) {
+        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(egd);
         if (!egd.hasSymmetricAtoms()) {
-            return egd.getTargetJoinAttributes();
+            return targetJoinAttributes;
         }
         List<AttributeRef> result = new ArrayList<AttributeRef>();
-        for (AttributeRef attributeRef : egd.getTargetJoinAttributes()) {
+        for (AttributeRef attributeRef : targetJoinAttributes) {
             result.add(correctAttributeForSymmetricEGDs(attributeRef, egd));
         }
         return result;

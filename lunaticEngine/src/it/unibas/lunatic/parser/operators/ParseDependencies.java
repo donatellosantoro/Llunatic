@@ -29,6 +29,12 @@ public class ParseDependencies {
     public final static String NULL = "#NULL#";
     private static Logger logger = LoggerFactory.getLogger(ParseDependencies.class);
 
+    private FindVariableEquivalenceClasses equivalenceClassFinder = new FindVariableEquivalenceClasses();
+    private CheckRecursion recursionChecker = new CheckRecursion();
+    private AssignAliasesInFormulas aliasAssigner = new AssignAliasesInFormulas();
+    private CheckVariablesInExpressions checker = new CheckVariablesInExpressions();
+    private FindFormulaVariables variableFinder = new FindFormulaVariables();
+
     private List<Dependency> stTGDs = new ArrayList<Dependency>();
     private List<Dependency> eTGDs = new ArrayList<Dependency>();
     private List<Dependency> dcs = new ArrayList<Dependency>();
@@ -240,16 +246,11 @@ public class ParseDependencies {
 
     private void processDependency(Dependency dependency) {
         assignAuthoritativeSources(dependency);
-        CheckRecursion recursionChecker = new CheckRecursion();
-        AssignAliasesInFormulas aliasAssigner = new AssignAliasesInFormulas();
-        CheckVariablesInExpressions checker = new CheckVariablesInExpressions();
         recursionChecker.checkRecursion(dependency);
         aliasAssigner.assignAliases(dependency);
-        FindFormulaVariables variableFinder = new FindFormulaVariables();
         variableFinder.findVariables(dependency, scenario.getSource().getTableNames(), scenario.getAuthoritativeSources());
-        FindVariableEquivalenceClasses equivalenceClassFinder = new FindVariableEquivalenceClasses();
-        equivalenceClassFinder.findVariableEquivalenceClasses(dependency);
         checker.checkVariables(dependency);
+        equivalenceClassFinder.findVariableEquivalenceClasses(dependency);
     }
 
     private void assignAuthoritativeSources(Dependency dependency) {

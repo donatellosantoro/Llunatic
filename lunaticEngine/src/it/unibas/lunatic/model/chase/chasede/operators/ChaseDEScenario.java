@@ -47,7 +47,6 @@ public class ChaseDEScenario implements IDEChaser {
         }
         if (logger.isDebugEnabled()) logger.debug("Chasing dependencies on de scenario: " + scenario);
         stChaser.doChase(scenario, true);
-        addTargetJoinAttributes(scenario.getEGDs());
         addQueriedAttributes(scenario.getEGDs());
         symmetryFinder.findSymmetricAtoms(scenario.getEGDs(), scenario);
         int iterations = 0;
@@ -71,13 +70,6 @@ public class ChaseDEScenario implements IDEChaser {
         for (Dependency dependency : dependencies) {
             List<AttributeRef> queriedAttributes = DependencyUtility.findQueriedAttributesInPremise(dependency);
             dependency.setQueriedAttributes(queriedAttributes);
-        }
-    }
-
-    public void addTargetJoinAttributes(List<Dependency> dependencies) {
-        for (Dependency dependency : dependencies) {
-            List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(dependency);
-            dependency.setTargetJoinAttributes(targetJoinAttributes);
         }
     }
 }

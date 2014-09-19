@@ -23,7 +23,6 @@ public class Dependency implements Cloneable {
     private Map<AttributeRef, IValueGenerator> targetGenerators = new HashMap<AttributeRef, IValueGenerator>();
     private List<AttributeRef> queriedAttributes = new ArrayList<AttributeRef>();
     private List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
-    private List<AttributeRef> targetJoinAttributes = new ArrayList<AttributeRef>();
     private List<BackwardAttribute> attributesForBackwardChasing = new ArrayList<BackwardAttribute>();
     private SymmetricAtoms symmetricAtoms = new SymmetricAtoms();
     private boolean overlapBetweenAffectedAndQueried;
@@ -130,14 +129,6 @@ public class Dependency implements Cloneable {
         this.affectedAttributes = affectedAttributes;
     }
 
-    public List<AttributeRef> getTargetJoinAttributes() {
-        return targetJoinAttributes;
-    }
-
-    public void setTargetJoinAttributes(List<AttributeRef> targetJoinAttributes) {
-        this.targetJoinAttributes = targetJoinAttributes;
-    }
-
     public List<BackwardAttribute> getAttributesForBackwardChasing() {
         return attributesForBackwardChasing;
     }
@@ -213,11 +204,6 @@ public class Dependency implements Cloneable {
             for (AttributeRef attributeRef : this.queriedAttributes) {
                 clone.queriedAttributes.add(new AttributeRef(attributeRef.getTableAlias(), attributeRef.getName()));
             }
-            clone.targetJoinAttributes = new ArrayList<AttributeRef>();
-            for (AttributeRef attributeRef : this.targetJoinAttributes) {
-                clone.targetJoinAttributes.add(new AttributeRef(attributeRef.getTableAlias(), attributeRef.getName()));
-            }
-
         } catch (CloneNotSupportedException ex) {
         }
         return clone;
@@ -235,7 +221,6 @@ public class Dependency implements Cloneable {
         result.append("  Queried attributes: ").append(queriedAttributes).append("\n");
         result.append("  Affected attributes: ").append(affectedAttributes).append("\n");
         result.append("  Overlap between queried and affected: ").append(overlapBetweenAffectedAndQueried).append("\n");
-        result.append("  Target join attributes: ").append(targetJoinAttributes).append("\n");
         result.append("  Attributes for backward chasing: ").append(attributesForBackwardChasing).append("\n");
         result.append("  Symmetric atoms: ").append(symmetricAtoms).append("\n");
 //        result.append("  Extended dependencies:\n");

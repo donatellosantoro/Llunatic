@@ -42,8 +42,6 @@ public class BuildExtendedDependencies {
             if (dependency.getConclusion().getAtoms().size() > 1) {
                 throw new IllegalArgumentException("The chase algorithm requires normalized depdendencies: " + dependency);
             }
-            List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(dependency);
-            dependency.setTargetJoinAttributes(targetJoinAttributes);
             List<ExtendedDependency> extendedDependencies = new ArrayList<ExtendedDependency>();
             if (logger.isDebugEnabled()) logger.debug("Building forward egd...");
             extendedDependencies.add(buildForwardEGD(dependency));
