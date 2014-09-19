@@ -29,7 +29,7 @@ public class ValueAggregateFunction implements IAggregateFunction {
     private boolean checkValues(List<Tuple> tuples, AttributeRef attribute) {
         IValue first = tuples.get(0).getCell(attribute).getValue();
         for (Tuple tuple : tuples) {
-            IValue value = tuples.get(0).getCell(attribute).getValue();
+            IValue value = tuple.getCell(attribute).getValue();
             if (!value.equals(first)) {
                 return false;
             }
