@@ -41,9 +41,24 @@ public class ComparisonAtom implements IFormulaAtom {
     public List<FormulaVariable> getVariables() {
         return this.variables;
     }
+    
+    public FormulaVariable getFirstVariable() {
+        return variables.get(0);
+    }
+
+    public FormulaVariable getSecondVariable() {
+        if (variables.size() == 1) {
+            return null;
+        }
+        return variables.get(1);
+    }
 
     public boolean isEqualityComparison() {
         return LunaticConstants.EQUAL.equals(operator);
+    }
+
+    public boolean isVariableEqualityComparison() {
+        return isEqualityComparison() && variables.size() == 2;
     }
 
     public IFormulaAtom clone() {

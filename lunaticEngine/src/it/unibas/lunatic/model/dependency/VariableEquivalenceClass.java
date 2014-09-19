@@ -14,6 +14,10 @@ public class VariableEquivalenceClass {
     public void addVariable(FormulaVariable variable) {
         this.variables.add(variable);
     }    
+    
+    public boolean contains(FormulaVariable variable) {
+        return this.variables.contains(variable);
+    }
 
     @Override
     public String toString() {
