@@ -94,9 +94,9 @@ public class RelationalAtom implements IFormulaAtom, Cloneable {
     
     @Override
     public RelationalAtom clone() {
+        // atoms are superficially cloned; see PositiveFormula.clone() for deop cloning
         try {
             RelationalAtom c = (RelationalAtom) super.clone();
-            c.formula = this.formula.clone();
             c.tableAlias = this.tableAlias.clone();
             c.attributes = new ArrayList<FormulaAttribute>();
             for (FormulaAttribute formulaAttribute : this.attributes) {
@@ -104,7 +104,7 @@ public class RelationalAtom implements IFormulaAtom, Cloneable {
             }
             return c;
         } catch (CloneNotSupportedException ex) {
-            throw new IllegalArgumentException("Unable to clone RelationalAtom " + ex.getLocalizedMessage());
+            return null;
         }
     }
     

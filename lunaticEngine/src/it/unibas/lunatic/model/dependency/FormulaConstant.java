@@ -1,8 +1,5 @@
 package it.unibas.lunatic.model.dependency;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class FormulaConstant implements IFormulaValue {
 
     private Object value;

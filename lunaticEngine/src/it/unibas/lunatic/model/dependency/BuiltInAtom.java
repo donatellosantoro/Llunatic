@@ -3,8 +3,6 @@ package it.unibas.lunatic.model.dependency;
 import it.unibas.lunatic.model.expressions.Expression;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class BuiltInAtom implements IFormulaAtom {
 
@@ -38,13 +36,14 @@ public class BuiltInAtom implements IFormulaAtom {
     }
 
     public IFormulaAtom clone() {
+        // atoms are superficially cloned; see PositiveFormula.clone() for deop cloning
         try {
             BuiltInAtom clone = (BuiltInAtom) super.clone();
             clone.expression = this.expression.clone();
-            clone.variables = new ArrayList<FormulaVariable>();
-            for (FormulaVariable variable : this.variables) {
-                clone.variables.add(variable.clone());
-            }
+            clone.variables = new ArrayList<FormulaVariable>(this.variables);
+//            for (FormulaVariable variable : this.variables) {
+//                clone.variables.add(variable.clone());
+//            }
             return clone;
         } catch (CloneNotSupportedException ex) {
             return null;

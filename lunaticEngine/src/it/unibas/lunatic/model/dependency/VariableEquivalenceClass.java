@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.dependency;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VariableEquivalenceClass implements Cloneable {
+public class VariableEquivalenceClass {
 
     private List<FormulaVariable> variables = new ArrayList<FormulaVariable>();
 
@@ -46,21 +46,7 @@ public class VariableEquivalenceClass implements Cloneable {
         }
         return result;
     }
-
-    @Override
-    public VariableEquivalenceClass clone() {
-        try {
-            VariableEquivalenceClass clone = (VariableEquivalenceClass) super.clone();
-            clone.variables = new ArrayList<FormulaVariable>();
-            for (FormulaVariable variable : variables) {
-                clone.variables.add(variable.clone());
-            }
-            return clone;
-        } catch (CloneNotSupportedException ex) {
-            return null;
-        }
-    }
-
+    
     @Override
     public String toString() {
         return "VariableEquivalenceClass:" + variables;

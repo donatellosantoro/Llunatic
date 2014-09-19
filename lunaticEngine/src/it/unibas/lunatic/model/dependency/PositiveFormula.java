@@ -3,7 +3,10 @@ package it.unibas.lunatic.model.dependency;
 import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.slf4j.LoggerFactory;
 
 public class PositiveFormula implements IFormula {
 
@@ -103,8 +106,8 @@ public class PositiveFormula implements IFormula {
         result.deleteCharAt(result.length() - 1);
         return result.toString();
     }
-    
-    public String toLongString(){
+
+    public String toLongString() {
         StringBuilder result = new StringBuilder();
         result.append(toString());
         result.append("\nAtoms:");
@@ -116,24 +119,95 @@ public class PositiveFormula implements IFormula {
 
     @Override
     public PositiveFormula clone() {
-        PositiveFormula clone = null;
-        try {
-            clone = (PositiveFormula) super.clone();
-//            if (this.father != null) {
-//                clone.father = this.father.clone();
-//            } //Cyclic clone
-            clone.atoms = new ArrayList<IFormulaAtom>(this.atoms);
-            clone.localVariables = new ArrayList<FormulaVariable>(this.localVariables);
-            clone.localVariables = new ArrayList<FormulaVariable>();
-            clone.localVariableEquivalenceClasses = new ArrayList<VariableEquivalenceClass>();
-            for (FormulaVariable formulaVariable : this.localVariables) {
-                clone.localVariables.add(formulaVariable.clone());
-            }
-            for (VariableEquivalenceClass equivalenceClass : this.localVariableEquivalenceClasses) {
-                clone.localVariableEquivalenceClasses.add(equivalenceClass.clone());
-            }
-        } catch (CloneNotSupportedException ex) {
-        }
-        return clone;
+        return new ClonePositiveFormula().clone(this);
     }
+
+    private PositiveFormula superficialClone() {
+        try {
+            return (PositiveFormula) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            return null;
+        }
+    }
+
+    private static class ClonePositiveFormula {
+
+        private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ClonePositiveFormula.class.getName());
+
+        public PositiveFormula clone(PositiveFormula formula) {
+            PositiveFormula clone = formula.superficialClone();
+            Map<FormulaVariable, FormulaVariable> variableClones = cloneVariables(formula, clone);
+            Map<IFormulaAtom, IFormulaAtom> atomClones = cloneAtoms(formula, clone);
+            changeVariablesInAtoms(clone, variableClones);
+            changeAtomsInVariables(clone, atomClones);
+            cloneEquivalenceClasses(clone, variableClones);
+            return clone;
+        }
+
+        private Map<FormulaVariable, FormulaVariable> cloneVariables(PositiveFormula formula, PositiveFormula formulaClone) {
+            formulaClone.localVariables = new ArrayList<FormulaVariable>();
+            Map<FormulaVariable, FormulaVariable> result = new HashMap<FormulaVariable, FormulaVariable>();
+            for (FormulaVariable variable : formula.getLocalVariables()) {
+                FormulaVariable variableClone = variable.clone();
+                formulaClone.localVariables.add(variableClone);
+                result.put(variable, variableClone);
+            }
+            return result;
+        }
+
+        private Map<IFormulaAtom, IFormulaAtom> cloneAtoms(PositiveFormula formula, PositiveFormula formulaClone) {
+            formulaClone.atoms = new ArrayList<IFormulaAtom>();
+            Map<IFormulaAtom, IFormulaAtom> result = new HashMap<IFormulaAtom, IFormulaAtom>();
+            for (IFormulaAtom atom : formula.getAtoms()) {
+                IFormulaAtom atomClone = atom.clone();
+                atomClone.setFormula(formulaClone);
+                formulaClone.atoms.add(atomClone);
+                result.put(atom, atomClone);
+            }
+            return result;
+        }
+
+        private void changeVariablesInAtoms(PositiveFormula clone, Map<FormulaVariable, FormulaVariable> variableClones) {
+            for (IFormulaAtom atomClone : clone.atoms) {
+                for (int i = 0; i < atomClone.getVariables().size(); i++) {
+                    FormulaVariable variable = atomClone.getVariables().get(i);
+                    FormulaVariable variableClone = variableClones.get(variable); 
+                    atomClone.getVariables().set(i, variableClone);
+                    if (atomClone instanceof ComparisonAtom) {
+                        ComparisonAtom comparisonAtom = (ComparisonAtom) atomClone;
+                        comparisonAtom.getExpression().setVariableDescription(variable.getId(), variableClone);
+                    }
+                    if (atomClone instanceof BuiltInAtom) {
+                        BuiltInAtom builtIn = (BuiltInAtom) atomClone;
+                        builtIn.getExpression().setVariableDescription(variable.getId(), variableClone);
+                    }
+                }
+            }
+        }
+
+        private void changeAtomsInVariables(PositiveFormula clone, Map<IFormulaAtom, IFormulaAtom> atomClones) {
+            for (FormulaVariable variableClone : clone.localVariables) {
+                for (int i = 0; i < variableClone.getNonRelationalOccurrences().size(); i++) {
+                    IFormulaAtom atom = variableClone.getNonRelationalOccurrences().get(i);
+                    IFormulaAtom atomClone = atomClones.get(atom); 
+                    variableClone.getNonRelationalOccurrences().set(i, atomClone);
+                }
+            }            
+        }
+
+        private void cloneEquivalenceClasses(PositiveFormula clone, Map<FormulaVariable, FormulaVariable> variableClones) {
+            List<VariableEquivalenceClass> equivalenceClasses = clone.localVariableEquivalenceClasses;
+            clone.localVariableEquivalenceClasses = new ArrayList<VariableEquivalenceClass>();
+            for (int i = 0; i < equivalenceClasses.size(); i++) {
+                VariableEquivalenceClass equivalenceClass = equivalenceClasses.get(i);
+                VariableEquivalenceClass equivalenceClassClone = new VariableEquivalenceClass();
+                for (FormulaVariable variable : equivalenceClass.getVariables()) {
+                    equivalenceClassClone.addVariable(variableClones.get(variable));
+                }
+                clone.localVariableEquivalenceClasses.add(equivalenceClassClone);
+            }
+        }
+
+    }
+
 }

@@ -5,14 +5,12 @@ import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.dependency.BuiltInAtom;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.model.dependency.FormulaAttribute;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.SymmetricAtoms;
-import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,20 +31,22 @@ public class GenerateSymmetricPremise {
         if (logger.isDebugEnabled()) logger.debug("Generating symmetring premise for dependency " + dependency.toLongString());
         if (logger.isDebugEnabled()) logger.debug("Symmetric atoms: " + dependency.getSymmetricAtoms());
         PositiveFormula premise = dependency.getPremise().getPositiveFormula();
-        PositiveFormula symmetricPremise = new PositiveFormula(premise.getFather());
+//        PositiveFormula symmetricPremise = new PositiveFormula(premise.getFather());
+        PositiveFormula symmetricPremise = premise.clone();
         Set<TableAlias> symmetricAtoms = dependency.getSymmetricAtoms().getSymmetricAliases();
         if (logger.isDebugEnabled()) logger.debug("Symmetric atoms: " + symmetricAtoms);
-        addSymmetricRelationalAtom(premise, symmetricAtoms, symmetricPremise);
+        changeRelationalAtoms(symmetricPremise, symmetricAtoms);
         Map<FormulaVariable, FormulaVariable> substitutionMap = makeVariablesSymmetric(premise, symmetricPremise, dependency);
-        addNonRelationalAtoms(premise, symmetricPremise, substitutionMap);
+        changeNonRelationalAtoms(symmetricPremise, substitutionMap);
         removeUselessNonRelationalAtoms(symmetricPremise);
         equivalenceClassFinder.findVariableEquivalenceClasses(symmetricPremise);
         if (logger.isDebugEnabled()) logger.debug("Result: " + symmetricPremise.toLongString());
         return symmetricPremise;
     }
 
-    private void addSymmetricRelationalAtom(PositiveFormula premise, Set<TableAlias> symmetricAtoms, PositiveFormula symmetricPremise) {
-        for (IFormulaAtom atom : premise.getAtoms()) {
+    private void changeRelationalAtoms(PositiveFormula symmetricPremise, Set<TableAlias> symmetricAtoms) {
+        for (Iterator<IFormulaAtom> iterator = symmetricPremise.getAtoms().iterator(); iterator.hasNext();) {
+            IFormulaAtom atom = iterator.next();
             if (!(atom instanceof RelationalAtom)) {
                 continue;
             }
@@ -54,21 +54,17 @@ public class GenerateSymmetricPremise {
             if (logger.isDebugEnabled()) logger.debug("Analyzing atom: " + relationAtom);
             if (symmetricAtoms.contains(relationAtom.getTableAlias())) {
                 if (logger.isDebugEnabled()) logger.debug("Atom must be made symmetric...");
-                symmetricPremise.addAtom(makeSymmetricByRemovingAlias(relationAtom));
+                relationAtom.setAlias("");
+//                makeSymmetricByRemovingAlias(relationAtom);
+            } else {
+                iterator.remove();
             }
         }
     }
 
-    private RelationalAtom makeSymmetricByRemovingAlias(RelationalAtom atom) {
-        RelationalAtom symmetricAtom = new RelationalAtom(atom.getTableName());
-        for (FormulaAttribute attribute : atom.getAttributes()) {
-            symmetricAtom.addAttribute(attribute.clone());
-        }
-//        symmetricAtom.setAlias("");
-        symmetricAtom.setSource(atom.isSource());
-        return symmetricAtom;
-    }
-
+//    private void makeSymmetricByRemovingAlias(RelationalAtom atom) {
+//        atom.setAlias("");
+//    }
     private Map<FormulaVariable, FormulaVariable> makeVariablesSymmetric(PositiveFormula premise, PositiveFormula symmetricPremise, Dependency dependency) {
         Map<FormulaVariable, FormulaVariable> substitutionMap = new HashMap<FormulaVariable, FormulaVariable>();
         for (FormulaVariable variable : premise.getLocalVariables()) {
@@ -107,32 +103,31 @@ public class GenerateSymmetricPremise {
         return symmetricAtoms.getSymmetricAliases().contains(tableAlias);
     }
 
-    private void addNonRelationalAtoms(PositiveFormula premise, PositiveFormula symmetricPremise, Map<FormulaVariable, FormulaVariable> substitutionMap) {
-        for (IFormulaAtom atom : premise.getAtoms()) {
+    private void changeNonRelationalAtoms(PositiveFormula symmetricPremise, Map<FormulaVariable, FormulaVariable> substitutionMap) {
+        for (Iterator<IFormulaAtom> iterator = symmetricPremise.getAtoms().iterator(); iterator.hasNext();) {
+            IFormulaAtom atom = iterator.next();
             if ((atom instanceof RelationalAtom)) {
                 continue;
             }
-            IFormulaAtom atomClone = atom.clone();
-            for (int i = 0; i < atomClone.getVariables().size(); i++) {
-                FormulaVariable variable = atomClone.getVariables().get(i);
+            for (int i = 0; i < atom.getVariables().size(); i++) {
+                FormulaVariable variable = atom.getVariables().get(i);
                 FormulaVariable variableClone = substitutionMap.get(variable);
                 if (variableClone != null) {
-                    atomClone.getVariables().set(i, variableClone);
+                    atom.getVariables().set(i, variableClone);
                     variableClone.getNonRelationalOccurrences().remove(atom);
-                    variableClone.getNonRelationalOccurrences().add(atomClone);
-                    if(atomClone instanceof ComparisonAtom){
-                        ComparisonAtom comparisonAtom = (ComparisonAtom)atomClone;
+                    variableClone.getNonRelationalOccurrences().add(atom);
+                    if (atom instanceof ComparisonAtom) {
+                        ComparisonAtom comparisonAtom = (ComparisonAtom) atom;
                         comparisonAtom.getExpression().setVariableDescription(variable.getId(), variableClone);
                     }
-                    if(atomClone instanceof BuiltInAtom){
-                        BuiltInAtom builtInAtom = (BuiltInAtom)atomClone;
+                    if (atom instanceof BuiltInAtom) {
+                        BuiltInAtom builtInAtom = (BuiltInAtom) atom;
                         builtInAtom.getExpression().setVariableDescription(variable.getId(), variableClone);
                     }
                     if (logger.isDebugEnabled()) logger.debug("Replacing variable in atom " + atom.toLongString() + "\n Old variable " + variable.toLongString() + " \nwith " + variableClone.toLongString());
-                    if (logger.isDebugEnabled()) logger.debug("New atom " + atomClone.toLongString());
+                    if (logger.isDebugEnabled()) logger.debug("New atom " + atom.toLongString());
                 }
             }
-            symmetricPremise.addAtom(atomClone);
         }
     }
 

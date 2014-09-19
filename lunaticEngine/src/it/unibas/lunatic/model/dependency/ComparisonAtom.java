@@ -2,7 +2,6 @@ package it.unibas.lunatic.model.dependency;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.expressions.Expression;
-import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,11 +100,16 @@ public class ComparisonAtom implements IFormulaAtom {
         return isEqualityComparison() && variables.size() == 2;
     }
 
+    @Override
     public ComparisonAtom clone() {
+        // atoms are superficially cloned; see PositiveFormula.clone() for deop cloning
         try {
             ComparisonAtom clone = (ComparisonAtom) super.clone();
             clone.expression = this.expression.clone();
             clone.variables = new ArrayList<FormulaVariable>(this.variables);
+//            for (FormulaVariable variable : variables) {
+//                clone.variables.add(variable.clone());
+//            }
             return clone;
         } catch (CloneNotSupportedException ex) {
             throw new IllegalArgumentException("Unable to clone ComparisonAtom " + ex.getLocalizedMessage());
