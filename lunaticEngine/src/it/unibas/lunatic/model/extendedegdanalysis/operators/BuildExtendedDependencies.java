@@ -12,6 +12,7 @@ import it.unibas.lunatic.model.dependency.ExtendedDependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
+import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,14 +74,14 @@ public class BuildExtendedDependencies {
 
     private List<ExtendedDependency> buildBackwardEGDs(Dependency dependency) {
         if (logger.isDebugEnabled()) logger.debug("Building backward dependencies for egd: " + dependency);
-        // backward chasing is only for joins (which includes equalities and selections, via const tables
+        // backward chasing is only for joins (which includes equalities and selections, via const tables)
         // backward chasing is not doable on other comparisons eg: a != 3 and built-ins
         List<ExtendedDependency> result = new ArrayList<ExtendedDependency>();
-        List<FormulaVariable> relevantVariables = ChaseUtility.findJoinVariablesInTarget(dependency);
-        if (logger.isDebugEnabled()) logger.debug("Join variables in target: " + relevantVariables);
+        List<VariableEquivalenceClass> relevantVariableClasses = ChaseUtility.findJoinVariablesInTarget(dependency);
+        if (logger.isDebugEnabled()) logger.debug("Join variables in target: " + relevantVariableClasses);
         int i = 0;
-        for (FormulaVariable variable : relevantVariables) {
-            for (FormulaVariableOccurrence occurrence : ChaseUtility.findTargetOccurrences(variable)) {
+        for (VariableEquivalenceClass variableClass : relevantVariableClasses) {
+            for (FormulaVariableOccurrence occurrence : ChaseUtility.findTargetOccurrences(variableClass)) {
                 String id = dependency.getId() + LunaticConstants.CHASE_BACKWARD + i++;
                 ExtendedDependency backward = new ExtendedDependency(id, dependency, LunaticConstants.CHASE_BACKWARD, occurrence);
                 result.add(backward);

@@ -14,6 +14,7 @@ public interface IFormula extends Cloneable{
     public List<IFormulaAtom> getAtoms();
     public void addAtom(IFormulaAtom a);
     public List<FormulaVariable> getLocalVariables();
+    public List<VariableEquivalenceClass> getLocalVariableEquivalenceClasses();
     public List<FormulaVariable> getAllVariables();
     public void accept(IFormulaVisitor visitor);
     public IFormula clone();

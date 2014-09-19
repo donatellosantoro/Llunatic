@@ -10,6 +10,7 @@ import it.unibas.lunatic.model.dependency.operators.CheckRecursion;
 import it.unibas.lunatic.model.dependency.operators.CheckVariablesInExpressions;
 import it.unibas.lunatic.model.dependency.operators.FindFormulaVariables;
 import it.unibas.lunatic.model.dependency.operators.FindTargetGenerators;
+import it.unibas.lunatic.model.dependency.operators.FindVariableEquivalenceClasses;
 import it.unibas.lunatic.model.dependency.operators.NormalizeDependency;
 import it.unibas.lunatic.parser.output.DependenciesLexer;
 import it.unibas.lunatic.parser.output.DependenciesParser;
@@ -241,11 +242,13 @@ public class ParseDependencies {
         assignAuthoritativeSources(dependency);
         CheckRecursion recursionChecker = new CheckRecursion();
         AssignAliasesInFormulas aliasAssigner = new AssignAliasesInFormulas();
-        FindFormulaVariables variableFinder = new FindFormulaVariables();
         CheckVariablesInExpressions checker = new CheckVariablesInExpressions();
         recursionChecker.checkRecursion(dependency);
         aliasAssigner.assignAliases(dependency);
+        FindFormulaVariables variableFinder = new FindFormulaVariables();
         variableFinder.findVariables(dependency, scenario.getSource().getTableNames(), scenario.getAuthoritativeSources());
+        FindVariableEquivalenceClasses equivalenceClassFinder = new FindVariableEquivalenceClasses();
+        equivalenceClassFinder.findVariableEquivalenceClasses(dependency);
         checker.checkVariables(dependency);
     }
 

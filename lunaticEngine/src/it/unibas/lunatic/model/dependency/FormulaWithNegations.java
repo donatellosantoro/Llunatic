@@ -4,8 +4,6 @@ import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class FormulaWithNegations implements IFormula {
 
@@ -61,6 +59,10 @@ public class FormulaWithNegations implements IFormula {
         return this.positiveFormula.getLocalVariables();
     }
 
+    public List<VariableEquivalenceClass> getLocalVariableEquivalenceClasses() {
+        return this.positiveFormula.getLocalVariableEquivalenceClasses();
+    }
+    
     @SuppressWarnings("unchecked")
     public List<FormulaVariable> getAllVariables() {
         if (father == null) {

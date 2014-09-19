@@ -24,6 +24,7 @@ import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
+import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
 import it.unibas.lunatic.model.expressions.Expression;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +125,17 @@ public class ChaseUtility {
         return result;
     }
 
+    public static List<FormulaVariableOccurrence> findTargetOccurrences(VariableEquivalenceClass variableEquivalenceClass) {
+        List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
+        for (FormulaVariableOccurrence occurrence : variableEquivalenceClass.getPremiseRelationalOccurrences()) {
+            if (occurrence.getAttributeRef().getTableAlias().isSource()) {
+                continue;
+            }
+            result.add(occurrence);
+        }
+        return result;
+    }
+
     public static List<AttributeRef> filterConclusionOccurrences(List<AttributeRef> attributes, Dependency dependency) {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
         ComparisonAtom comparisonAtom = (ComparisonAtom) dependency.getConclusion().getAtoms().get(0);
@@ -188,17 +200,28 @@ public class ChaseUtility {
         return father.getId() + "." + localId;
     }
 
-    public static List<FormulaVariable> findJoinVariablesInTarget(Dependency egd) {
-        List<FormulaVariable> result = new ArrayList<FormulaVariable>();
-        for (FormulaVariable variable : egd.getPremise().getLocalVariables()) {
-            List<FormulaVariableOccurrence> targetOccurrences = findTargetOccurrences(variable);
-            List<FormulaVariableOccurrence> positiveOccurrences = findPositiveOccurrences(egd.getPremise().getPositiveFormula(), variable.getPremiseRelationalOccurrences());
+    public static List<VariableEquivalenceClass> findJoinVariablesInTarget(Dependency egd) {
+        List<VariableEquivalenceClass> result = new ArrayList<VariableEquivalenceClass>();
+        for (VariableEquivalenceClass variableEquivalenceClass : egd.getPremise().getLocalVariableEquivalenceClasses()) {
+            List<FormulaVariableOccurrence> targetOccurrences = findTargetOccurrences(variableEquivalenceClass);
+            List<FormulaVariableOccurrence> positiveOccurrences = findPositiveOccurrences(egd.getPremise().getPositiveFormula(), variableEquivalenceClass.getPremiseRelationalOccurrences());
             if (positiveOccurrences.size() > 1 && !targetOccurrences.isEmpty()) {
-                result.add(variable);
+                result.add(variableEquivalenceClass);
             }
         }
         return result;
     }
+//    public static List<FormulaVariable> findJoinVariablesInTarget(Dependency egd) {
+//        List<FormulaVariable> result = new ArrayList<FormulaVariable>();
+//        for (FormulaVariable variable : egd.getPremise().getLocalVariables()) {
+//            List<FormulaVariableOccurrence> targetOccurrences = findTargetOccurrences(variable);
+//            List<FormulaVariableOccurrence> positiveOccurrences = findPositiveOccurrences(egd.getPremise().getPositiveFormula(), variable.getPremiseRelationalOccurrences());
+//            if (positiveOccurrences.size() > 1 && !targetOccurrences.isEmpty()) {
+//                result.add(variable);
+//            }
+//        }
+//        return result;
+//    }
 
     private static List<FormulaVariableOccurrence> findPositiveOccurrences(PositiveFormula positiveFormula, List<FormulaVariableOccurrence> premiseRelationalOccurrences) {
         List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();

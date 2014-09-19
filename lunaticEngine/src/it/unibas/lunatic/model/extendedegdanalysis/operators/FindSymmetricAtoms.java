@@ -11,6 +11,7 @@ import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormula;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
+import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
 import it.unibas.lunatic.model.extendedegdanalysis.LabeledEdge;
 import it.unibas.lunatic.model.extendedegdanalysis.SelfJoin;
 import it.unibas.lunatic.model.extendedegdanalysis.SymmetricAtoms;
@@ -43,7 +44,7 @@ public class FindSymmetricAtoms {
     }
 
     private void findSymmetricAtoms(Dependency dependency) {
-        List<FormulaVariable> joinVariables = ChaseUtility.findJoinVariablesInTarget(dependency);
+        List<VariableEquivalenceClass> joinVariables = ChaseUtility.findJoinVariablesInTarget(dependency);
         if (logger.isDebugEnabled()) logger.debug("Join variables: " + joinVariables);
         UndirectedGraph<TableAlias, LabeledEdge> joinGraph = initJoinGraph(dependency, joinVariables);
         if (logger.isDebugEnabled()) logger.debug("Join graph: " + joinGraph.toString());
@@ -63,10 +64,10 @@ public class FindSymmetricAtoms {
         }
     }
 
-    private UndirectedGraph<TableAlias, LabeledEdge> initJoinGraph(Dependency dependency, List<FormulaVariable> joinVariables) {
+    private UndirectedGraph<TableAlias, LabeledEdge> initJoinGraph(Dependency dependency, List<VariableEquivalenceClass> joinVariableClasses) {
         UndirectedGraph<TableAlias, LabeledEdge> joinGraph = new SimpleGraph<TableAlias, LabeledEdge>(LabeledEdge.class);
         if (logger.isDebugEnabled()) logger.debug("Find symmetric atoms for dependency " + dependency);
-        if (logger.isDebugEnabled()) logger.debug("Join variables: " + joinVariables);
+        if (logger.isDebugEnabled()) logger.debug("Join variables: " + joinVariableClasses);
         for (IFormulaAtom atom : dependency.getPremise().getAtoms()) {
             if (!(atom instanceof RelationalAtom)) {
                 continue;
@@ -75,8 +76,8 @@ public class FindSymmetricAtoms {
             joinGraph.addVertex(relationalAtom.getTableAlias());
         }
         if (logger.isDebugEnabled()) logger.debug("Vertices: " + joinGraph.vertexSet());
-        for (FormulaVariable joinVariable : joinVariables) {
-            List<FormulaVariableOccurrence> occurrences = joinVariable.getPremiseRelationalOccurrences();
+        for (VariableEquivalenceClass joinVariableClass : joinVariableClasses) {
+            List<FormulaVariableOccurrence> occurrences = joinVariableClass.getPremiseRelationalOccurrences();
             for (int i = 0; i < occurrences.size() - 1; i++) {
                 FormulaVariableOccurrence occurrencei = occurrences.get(i);
                 TableAlias aliasi = occurrencei.getAttributeRef().getTableAlias();
@@ -91,9 +92,9 @@ public class FindSymmetricAtoms {
         return joinGraph;
     }
 
-    private List<SelfJoin> findSelfJoins(List<FormulaVariable> joinVariables) {
+    private List<SelfJoin> findSelfJoins(List<VariableEquivalenceClass> joinVariableClass) {
         List<SelfJoin> result = new ArrayList<SelfJoin>();
-        for (FormulaVariable variable : joinVariables) {
+        for (VariableEquivalenceClass variable : joinVariableClass) {
             Map<AttributeRef, List<TableAlias>> atomMap = buildSelfJoinAtomMap(variable);
             if (logger.isDebugEnabled()) logger.debug("Self join atom map: " + LunaticUtility.printMap(atomMap));
             for (List<TableAlias> selfJoinTables : atomMap.values()) {
@@ -107,9 +108,9 @@ public class FindSymmetricAtoms {
         return result;
     }
 
-    private Map<AttributeRef, List<TableAlias>> buildSelfJoinAtomMap(FormulaVariable variable) {
+    private Map<AttributeRef, List<TableAlias>> buildSelfJoinAtomMap(VariableEquivalenceClass variableClass) {
         Map<AttributeRef, List<TableAlias>> atomMap = new HashMap<AttributeRef, List<TableAlias>>();
-        for (FormulaVariableOccurrence occurrence : ChaseUtility.findTargetOccurrences(variable)) {
+        for (FormulaVariableOccurrence occurrence : ChaseUtility.findTargetOccurrences(variableClass)) {
             AttributeRef occurrenceAttribute = occurrence.getAttributeRef();
             AttributeRef unaliasedOccurrence = ChaseUtility.unAlias(occurrenceAttribute);
             List<TableAlias> atomsForAttribute = atomMap.get(unaliasedOccurrence);

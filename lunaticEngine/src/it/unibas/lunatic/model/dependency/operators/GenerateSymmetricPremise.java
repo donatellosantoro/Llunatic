@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 public class GenerateSymmetricPremise {
 
     private static Logger logger = LoggerFactory.getLogger(GenerateSymmetricPremise.class);
+    
+    private FindVariableEquivalenceClasses equivalenceClassFinder = new FindVariableEquivalenceClasses();
 
     public PositiveFormula generateSymmetricPremise(Dependency dependency) {
         if (!dependency.hasSymmetricAtoms()) {
@@ -45,6 +47,7 @@ public class GenerateSymmetricPremise {
         for (FormulaVariable variable : premise.getLocalVariables()) {
             symmetricPremise.addLocalVariable(makeSymmetric(variable, dependency.getSymmetricAtoms()));
         }
+        equivalenceClassFinder.findVariableEquivalenceClasses(symmetricPremise);
         if (logger.isDebugEnabled()) logger.debug("Result: " + symmetricPremise);
         return symmetricPremise;
     }

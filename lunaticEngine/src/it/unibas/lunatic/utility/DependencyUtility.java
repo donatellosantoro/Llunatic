@@ -10,6 +10,7 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormula;
+import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -162,10 +163,10 @@ public class DependencyUtility {
     }
 
     public static List<AttributeRef> findTargetJoinAttributes(Dependency dependency) {
-        List<FormulaVariable> relevantVariables = ChaseUtility.findJoinVariablesInTarget(dependency);
+        List<VariableEquivalenceClass> relevantVariableClasses = ChaseUtility.findJoinVariablesInTarget(dependency);
         List<AttributeRef> targetJoinAttributes = new ArrayList<AttributeRef>();
-        for (FormulaVariable variable : relevantVariables) {
-            for (FormulaVariableOccurrence occurrence : ChaseUtility.findTargetOccurrences(variable)) {
+        for (VariableEquivalenceClass variableEquivalenceClass : relevantVariableClasses) {
+            for (FormulaVariableOccurrence occurrence : ChaseUtility.findTargetOccurrences(variableEquivalenceClass)) {
                 targetJoinAttributes.add(occurrence.getAttributeRef());
             }
         }

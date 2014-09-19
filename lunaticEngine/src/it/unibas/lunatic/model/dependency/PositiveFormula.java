@@ -4,14 +4,13 @@ import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class PositiveFormula implements IFormula {
 
     private IFormula father;
     private List<IFormulaAtom> atoms = new ArrayList<IFormulaAtom>();
     private List<FormulaVariable> localVariables = new ArrayList<FormulaVariable>();
+    private List<VariableEquivalenceClass> localVariableEquivalenceClasses = new ArrayList<VariableEquivalenceClass>();
 
     public PositiveFormula() {
     }
@@ -69,6 +68,14 @@ public class PositiveFormula implements IFormula {
         return result;
     }
 
+    public List<VariableEquivalenceClass> getLocalVariableEquivalenceClasses() {
+        return localVariableEquivalenceClasses;
+    }
+
+    public void setLocalVariableEquivalenceClasses(List<VariableEquivalenceClass> variableEquivalenceClasses) {
+        this.localVariableEquivalenceClasses = variableEquivalenceClasses;
+    }
+
     public void accept(IFormulaVisitor visitor) {
         visitor.visitPositiveFormula(this);
     }
@@ -108,8 +115,12 @@ public class PositiveFormula implements IFormula {
             clone.atoms = new ArrayList<IFormulaAtom>(this.atoms);
             clone.localVariables = new ArrayList<FormulaVariable>(this.localVariables);
             clone.localVariables = new ArrayList<FormulaVariable>();
+            clone.localVariableEquivalenceClasses = new ArrayList<VariableEquivalenceClass>();
             for (FormulaVariable formulaVariable : this.localVariables) {
                 clone.localVariables.add(formulaVariable.clone());
+            }
+            for (VariableEquivalenceClass equivalenceClass : this.localVariableEquivalenceClasses) {
+                clone.localVariableEquivalenceClasses.add(equivalenceClass.clone());
             }
         } catch (CloneNotSupportedException ex) {
         }
