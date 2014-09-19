@@ -1,7 +1,0 @@
-T_Employee(Charlie, 1978, 32000)
-T_Employee(Melanie, 1990, N_101)
-T_Employee(Bob, N_102, 37000)
-T_Employee(Jack, N_103, N_104)
-T_Employee(Bob, 1977, N_105)
-T_Employee(Paul, 1978, N_106)
-T_Employee(Paul, N_107, 29000.5)

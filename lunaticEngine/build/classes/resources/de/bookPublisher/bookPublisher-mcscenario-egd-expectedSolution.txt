@@ -1,7 +1,0 @@
-BookSet(TheDaVinciCode, N_102)
-BookSet(TheHobbit, 245)
-BookSet(TheCatcherInTheRye, 901)
-BookSet(TheLordOfTheRings, N_1)
-PublisherSet(245, Ballantine)
-PublisherSet(901, LbBooks)
-PublisherSet(N_1, Houghton)
