@@ -59,6 +59,14 @@ public class LunaticConstants {
     public static String AGGR = "aggr";
     public static String COUNT = "count";
     
+    /////////////////////// OPERATORS
+    public static final String EQUAL = "==";
+    public static final String NOT_EQUAL = "!=";
+    public static final String GREATER = ">";
+    public static final String LOWER = "<";
+    public static final String GREATER_EQ = ">=";
+    public static final String LOWER_EQ = "<=";
+    
     ///////////////    CACHE STRATEGIES    ///////////////////
     public static final String NO_CACHE = "NO_CACHE";
     public static final String LAZY_CACHE = "SIMPLE";

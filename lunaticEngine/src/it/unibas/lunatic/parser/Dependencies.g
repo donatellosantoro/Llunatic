@@ -138,7 +138,7 @@ comparison :	 {   expressionString = new StringBuilder(); }
                  oper=OPERATOR { expressionString.append(" ").append(oper.getText()); }
                  argument 
                  {  Expression expression = new Expression(expressionString.toString()); 
-                    atom = new ComparisonAtom(positiveFormula, expression); 
+                    atom = new ComparisonAtom(positiveFormula, expression, oper.getText()); 
                     positiveFormula.addAtom(atom); } ;
 
 argument:	 ('\$'var=IDENTIFIER { expressionString.append(var.getText()); } |

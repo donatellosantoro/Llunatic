@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.dependency;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.expressions.Expression;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,17 +12,12 @@ public class ComparisonAtom implements IFormulaAtom {
     private String operator;
     private List<FormulaVariable> variables = new ArrayList<FormulaVariable>();
 
-    public ComparisonAtom(IFormula formula, Expression expression) {
-        this.formula = formula;
-        this.expression = expression;
-    }
-
     public ComparisonAtom(IFormula formula, Expression expression, String operator) {
         this.formula = formula;
         this.expression = expression;
         this.operator = operator;
     }
-    
+
     public Expression getExpression() {
         return expression;
     }
@@ -44,6 +40,10 @@ public class ComparisonAtom implements IFormulaAtom {
 
     public List<FormulaVariable> getVariables() {
         return this.variables;
+    }
+
+    public boolean isEqualityComparison() {
+        return LunaticConstants.EQUAL.equals(operator);
     }
 
     public IFormulaAtom clone() {

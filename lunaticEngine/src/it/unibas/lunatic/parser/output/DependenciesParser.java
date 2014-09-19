@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g 2014-09-10 11:40:27
+// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g 2014-09-19 10:25:07
 
 package it.unibas.lunatic.parser.output;
 
@@ -2089,7 +2089,7 @@ public class DependenciesParser extends Parser {
 			adaptor.addChild(root_0, argument66.getTree());
 
 			  Expression expression = new Expression(expressionString.toString()); 
-			                    atom = new ComparisonAtom(positiveFormula, expression); 
+			                    atom = new ComparisonAtom(positiveFormula, expression, oper.getText()); 
 			                    positiveFormula.addAtom(atom); 
 			}
 
