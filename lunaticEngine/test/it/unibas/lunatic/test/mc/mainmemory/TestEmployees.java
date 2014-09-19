@@ -22,10 +22,11 @@ public class TestEmployees extends CheckTest {
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());
-        for (Dependency dependency : scenario.getExtEGDs()) {
-//            Assert.assertTrue(dependency.hasSymmetricAtoms());
-            if (logger.isDebugEnabled()) logger.debug(dependency.toLongString());
-        }
+        Assert.assertTrue(scenario.getDependency("e1").hasSymmetricAtoms());
+        Assert.assertTrue(scenario.getDependency("e1b").hasSymmetricAtoms());
+        Assert.assertTrue(scenario.getDependency("e2").hasSymmetricAtoms());
+        Assert.assertFalse(scenario.getDependency("e4").hasSymmetricAtoms());
+        Assert.assertFalse(scenario.getDependency("e5").hasSymmetricAtoms());
         Assert.assertEquals(3, resultSizer.getSolutions(result));
     }
 }

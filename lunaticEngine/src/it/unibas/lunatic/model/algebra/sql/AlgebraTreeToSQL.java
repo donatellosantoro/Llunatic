@@ -97,7 +97,14 @@ public class AlgebraTreeToSQL {
         public void visitSelectIn(SelectIn operator) {
             visitChildren(operator);
             result.append("\n").append(this.indentString());
-            result.append(" WHERE (");
+            if (operator.getChildren() != null
+                    && (operator.getChildren().get(0) instanceof Select
+                    || operator.getChildren().get(0) instanceof Join)) {
+                result.append(" AND (");
+            } else {
+                result.append(" WHERE (");
+            }
+//            result.append(" WHERE (");
             for (AttributeRef attributeRef : operator.getAttributes(source, target)) {
                 result.append(DBMSUtility.attributeRefToSQLDot(attributeRef)).append(", ");
             }

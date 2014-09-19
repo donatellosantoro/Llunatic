@@ -394,6 +394,25 @@ public class DBMSUtility {
         return Types.STRING;
     }
 
+    public static String convertDataSourceTypeToDBType(String columnType) {
+        if(columnType.equals(Types.DATE)){
+            return "date";
+        }
+        if(columnType.equals(Types.DATETIME)){
+            return "datetime";
+        }
+        if(columnType.equals(Types.INTEGER)){
+            return "bigint";
+        }
+        if(columnType.equals(Types.DOUBLE)){
+            return "float";
+        }
+        if(columnType.equals(Types.BOOLEAN)){
+            return "bool";
+        }
+        return "text";
+    }
+
     public static IValue convertDBMSValue(Object attributeValue) {
         IValue value;
         if (attributeValue == null) {

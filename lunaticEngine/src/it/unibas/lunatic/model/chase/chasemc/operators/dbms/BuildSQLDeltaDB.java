@@ -79,7 +79,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
                     continue;
                 }
                 if (isAffected(new AttributeRef(table.getName(), attribute.getName()), affectedAttributes)) {
-                    script.append(createDeltaRelationSchemaAndTrigger(deltaDBSchema, table.getName(), attribute.getName()));
+                    script.append(createDeltaRelationSchemaAndTrigger(deltaDBSchema, table.getName(), attribute.getName(), attribute.getType()));
                 } else {
                     tableNonAffectedAttributes.add(attribute);
                 }
@@ -91,13 +91,13 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         return script.toString();
     }
 
-    private String createDeltaRelationSchemaAndTrigger(String deltaDBSchema, String tableName, String attributeName) {
+    private String createDeltaRelationSchemaAndTrigger(String deltaDBSchema, String tableName, String attributeName, String attributeType) {
         StringBuilder script = new StringBuilder();
         String deltaRelationName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
         script.append("CREATE TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.STEP).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.TID).append(" bigint,").append("\n");
-        script.append(LunaticConstants.INDENT).append(attributeName).append(" text,").append("\n");
+        script.append(LunaticConstants.INDENT).append(attributeName).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text").append("\n");
         script.append(") WITH OIDS;").append("\n\n");
 //        script.append("CREATE INDEX ").append(attributeName).append("_oid  ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append(" USING btree(tid ASC);\n");
@@ -115,7 +115,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         script.append(LunaticConstants.INDENT).append(LunaticConstants.TID).append(" bigint,").append("\n");
 //        script.append(LunaticConstants.INDENT).append(LunaticConstants.OID).append(" integer,").append("\n");
         for (Attribute attribute : tableNonAffectedAttributes) {
-            script.append(LunaticConstants.INDENT).append(attribute.getName()).append(" text").append(",\n");
+            script.append(LunaticConstants.INDENT).append(attribute.getName()).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attribute.getType())).append(",\n");
         }
         LunaticUtility.removeChars(",\n".length(), script);
         script.append("\n").append(") WITH OIDS;").append("\n\n");

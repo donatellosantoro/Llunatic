@@ -34,10 +34,12 @@
     <!--<logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForSymmetricEGD" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.NormalizeDependency" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.algebra.sql.AlgebraTreeToSQL" level="DEBUG"/>-->
 
     <!--     CHASE DE     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryInsertTuplesForTGDs" level="DEBUG"/>-->
 
     <!--     CHASE MC     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario" level="DEBUG"/>-->

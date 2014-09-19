@@ -64,7 +64,8 @@ public class NormalizeDependency {
         IFormula conclusion = clone.getConclusion();
         for (Iterator<IFormulaAtom> it = conclusion.getAtoms().iterator(); it.hasNext();) {
             RelationalAtom atom = (RelationalAtom) it.next();
-            if (connectedComponent.contains(atom)) {
+//            if (connectedComponent.contains(atom)) {
+            if (isContained(atom, connectedComponent)) {
                 continue;
             }
             it.remove();
@@ -90,6 +91,15 @@ public class NormalizeDependency {
         return clone;
     }
 
+    private boolean isContained(RelationalAtom atom, Set<RelationalAtom> connectedComponent) {
+        for (RelationalAtom relationalAtom : connectedComponent) {
+            if (relationalAtom.toString().equals(atom.toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean checkOccurrences(FormulaVariable localVariable, Set<RelationalAtom> connectedComponent) {
         for (FormulaVariableOccurrence formulaVariableOccurrence : localVariable.getConclusionRelationalOccurrences()) {
             if (containsOccurrences(formulaVariableOccurrence.getTableAlias(), connectedComponent)) {
@@ -107,4 +117,5 @@ public class NormalizeDependency {
         }
         return false;
     }
+
 }
