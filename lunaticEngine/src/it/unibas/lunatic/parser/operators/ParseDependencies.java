@@ -202,8 +202,8 @@ public class ParseDependencies {
         for (Dependency eTGD : eTGDsNormalized) {
             generatorFinder.findGenerators(eTGD);
         }
-        for (Dependency dTGD : dcs) {
-            processDependency(dTGD);
+        for (Dependency dc : dcs) {
+            processDependency(dc);
         }
         for (Dependency egd : egds) {
             processDependency(egd);

@@ -26,6 +26,6 @@ public class TestEmployees extends CheckTest {
 //            Assert.assertTrue(dependency.hasSymmetricAtoms());
             if (logger.isDebugEnabled()) logger.debug(dependency.toLongString());
         }
-        Assert.assertEquals(0, resultSizer.getSolutions(result));
+        Assert.assertEquals(3, resultSizer.getSolutions(result));
     }
 }

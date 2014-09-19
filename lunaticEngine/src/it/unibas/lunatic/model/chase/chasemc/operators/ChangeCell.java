@@ -82,7 +82,7 @@ public class ChangeCell {
         String deltaTableName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
         Scan scan = new Scan(new TableAlias(deltaTableName));
         Expression expression = new Expression(LunaticConstants.STEP + "== \"" + stepId + "\"");
-        expression.setVariableDescription(LunaticConstants.STEP, new AttributeRef(deltaTableName, LunaticConstants.STEP));
+        expression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(deltaTableName, LunaticConstants.STEP));
         Select select = new Select(expression);
         select.addChild(scan);
         deleteOperator.execute(deltaTableName, select, null, deltaDB);

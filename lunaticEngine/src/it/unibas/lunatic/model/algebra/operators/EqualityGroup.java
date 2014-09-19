@@ -48,15 +48,15 @@ class EqualityGroup {
         List<Expression> result = new ArrayList<Expression>();
         for (Equality equality : equalities) {
             Expression equalityExpression = new Expression(equality.getLeftAttribute() + " == " + equality.getRightAttribute());
-            equalityExpression.setVariableDescription(equality.getLeftAttribute().toString(), equality.getLeftAttribute());
-            equalityExpression.setVariableDescription(equality.getRightAttribute().toString(), equality.getRightAttribute());
+            equalityExpression.changeVariableDescription(equality.getLeftAttribute().toString(), equality.getLeftAttribute());
+            equalityExpression.changeVariableDescription(equality.getRightAttribute().toString(), equality.getRightAttribute());
             result.add(equalityExpression);
         }
         if (leftTable.getTableName().equals(rightTable.getTableName())) {
             String inequalityOperator = "!=";
             Expression oidInequality = new Expression(leftTable.toString() + "." + LunaticConstants.OID + inequalityOperator + rightTable.toString() + "." + LunaticConstants.OID);
-            oidInequality.setVariableDescription(leftTable.toString() + "." + LunaticConstants.OID, new AttributeRef(leftTable, LunaticConstants.OID));
-            oidInequality.setVariableDescription(rightTable.toString() + "." + LunaticConstants.OID, new AttributeRef(rightTable, LunaticConstants.OID));
+            oidInequality.changeVariableDescription(leftTable.toString() + "." + LunaticConstants.OID, new AttributeRef(leftTable, LunaticConstants.OID));
+            oidInequality.changeVariableDescription(rightTable.toString() + "." + LunaticConstants.OID, new AttributeRef(rightTable, LunaticConstants.OID));
             result.add(oidInequality);
         }
         return result;

@@ -49,6 +49,7 @@ public class EvaluateExpression {
     }
 
     private void setVariableValues(Expression expression, Tuple tuple) {
+        if (logger.isDebugEnabled()) logger.debug("Evaluating expression " + expression.toLongString() + "\n on tuple " + tuple);
         JEP jepExpression = expression.getJepExpression();
         SymbolTable symbolTable = jepExpression.getSymbolTable();
         for (Variable jepVariable : symbolTable.getVariables()) {

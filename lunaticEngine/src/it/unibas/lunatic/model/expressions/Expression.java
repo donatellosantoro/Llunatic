@@ -1,6 +1,8 @@
 package it.unibas.lunatic.model.expressions;
 
 import it.unibas.lunatic.exceptions.ExpressionSyntaxException;
+import it.unibas.lunatic.model.database.AttributeRef;
+import it.unibas.lunatic.model.dependency.FormulaVariable;
 import java.util.ArrayList;
 import java.util.List;
 import org.nfunk.jep.IExpressionVisitor;
@@ -13,7 +15,12 @@ import org.slf4j.LoggerFactory;
 public class Expression implements Cloneable {
 
     private static Logger logger = LoggerFactory.getLogger(Expression.class);
-    
+
+    private static Expression trueExpression = new Expression("true");
+
+    public static Expression getTrueExpression() {
+        return trueExpression;
+    }
     private JEP jepExpression;
 
     public Expression(String expression) throws ExpressionSyntaxException {
@@ -49,20 +56,29 @@ public class Expression implements Cloneable {
         }
         return result;
     }
-    
+
     public List<Object> getConstants() {
         return jepExpression.getSymbolTable().getConstants();
     }
-    
-    public void setVariableDescription(String variable, Object description) {
+
+    public void changeVariableDescription(String oldDescription, Object newDescription) {
         SymbolTable symbolTable = jepExpression.getSymbolTable();
         for (Variable variableInExpression : symbolTable.getVariables()) {
-            if (variableInExpression.getDescription().equals(variable)) {
-                variableInExpression.setDescription(description);
+            if (variableInExpression.getDescription().equals(oldDescription)) {
+                variableInExpression.setDescription(newDescription);
             }
         }
     }
     
+    public void setVariableDescription(String variableId, Object description){
+        SymbolTable symbolTable = jepExpression.getSymbolTable();
+        for (Variable variableInExpression : symbolTable.getVariables()) {
+            if (variableInExpression.getName().equals(variableId)) {
+                variableInExpression.setDescription(description);
+            }
+        }
+    }
+
     public void setVariableValue(String variable, Object value) {
         jepExpression.setVarValue(variable, value);
     }
@@ -75,7 +91,7 @@ public class Expression implements Cloneable {
         if (logger.isDebugEnabled()) logger.debug("Value of function: " + value);
         return value;
     }
-   
+
     @Override
     public Expression clone() {
         Expression clone = null;
@@ -86,15 +102,6 @@ public class Expression implements Cloneable {
             logger.error(ex.getLocalizedMessage());
         }
         return clone;
-    }
-
-    @Override
-    public String toString() {
-        return this.jepExpression.toString();
-    }
-    
-    public String toSQLString() {
-        return this.jepExpression.toSQLString();
     }
 
     @Override
@@ -113,9 +120,33 @@ public class Expression implements Cloneable {
         Expression expression = (Expression) obj;
         return this.toString().equals(expression.toString());
     }
-    private static Expression trueExpression = new Expression("true");
 
-    public static Expression getTrueExpression() {
-        return trueExpression;
+    @Override
+    public String toString() {
+        return this.jepExpression.toString();
+    }
+
+    public String toSQLString() {
+        return this.jepExpression.toSQLString();
+    }
+
+    public String toLongString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(toString()).append("\n");
+        for (String variable : getVariables()) {
+            sb.append("\t Variable ").append(variable);
+            Variable jepVariable = this.getJepExpression().getSymbolTable().getVar(variable);
+            if (jepVariable != null) {
+                Object description = jepVariable.getDescription();
+                if (description instanceof FormulaVariable) {
+                    FormulaVariable formulaVariable = (FormulaVariable) description;
+                    sb.append(": ").append(formulaVariable.toLongString());
+                } else if (description instanceof AttributeRef) {
+                    sb.append(": ").append(description);
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 }

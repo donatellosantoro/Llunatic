@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.dependency;
 import it.unibas.lunatic.model.expressions.Expression;
 import java.util.List;
 
-public interface IFormulaAtom {
+public interface IFormulaAtom extends Cloneable{
     
     public void addVariable(FormulaVariable variable);
     public List<FormulaVariable> getVariables();
@@ -11,4 +11,5 @@ public interface IFormulaAtom {
     public IFormula getFormula();
     public void setFormula(IFormula formula);
     public String toLongString();
+    public IFormulaAtom clone();
 }

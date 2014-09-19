@@ -75,9 +75,9 @@ public class ValueExtractor {
         TableAlias table = new TableAlias(ChaseUtility.getDeltaRelationName(attribute.getTableName(), attribute.getName()));
         Scan tableScan = new Scan(table);
         Expression tidExpression = new Expression(LunaticConstants.TID + " == " + cellRef.getTupleOID().toString());
-        tidExpression.setVariableDescription(LunaticConstants.TID, new AttributeRef(table, LunaticConstants.TID));
+        tidExpression.changeVariableDescription(LunaticConstants.TID, new AttributeRef(table, LunaticConstants.TID));
         Expression stepExpression = new Expression("startswith(\"" + stepId + "\", " + LunaticConstants.STEP + ")");
-        stepExpression.setVariableDescription(LunaticConstants.STEP, new AttributeRef(table, LunaticConstants.STEP));
+        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(table, LunaticConstants.STEP));
         Select stepSelect = new Select(Arrays.asList(new Expression[]{tidExpression, stepExpression}));
         stepSelect.addChild(tableScan);
         // select max(step), oid from R_A group by oid

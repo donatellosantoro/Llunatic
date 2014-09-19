@@ -89,7 +89,7 @@ public class BuildAlgebraTreeForEGD {
         LunaticUtility.removeChars(" || ".length(), stringExpression);
         Expression expression = new Expression(stringExpression.toString());
         for (String variable : variableDescriptions.keySet()) {
-            expression.setVariableDescription(variable, variableDescriptions.get(variable));
+            expression.changeVariableDescription(variable, variableDescriptions.get(variable));
         }
         if (logger.isTraceEnabled()) logger.debug("Expression string for dependency " + dependency + "\n" + expression);
         List<Expression> selections = new ArrayList<Expression>();

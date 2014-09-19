@@ -39,6 +39,6 @@ public class SymmetricAtoms {
 
     @Override
     public String toString() {
-        return "SymmetricAtoms{" + "symmetricAliases=" + symmetricTableAliases + ", selfJoin=" + selfJoin + '}';
+        return "SymmetricAtoms{" + "symmetric atoms=" + symmetricTableAliases + ", selfJoin=" + selfJoin + '}';
     }
 }

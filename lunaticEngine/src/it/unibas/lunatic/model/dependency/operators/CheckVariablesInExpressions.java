@@ -41,7 +41,7 @@ class CheckFormulaVariablesVisitor implements IFormulaVisitor {
                         throw new ParserException("Unable to find variable " + variableId + " in expression " + atom.getExpression() + " in formula " + formula.getId());
                     }
                 }
-                atom.getExpression().setVariableDescription(variableId, variable);
+                atom.getExpression().changeVariableDescription(variableId, variable);
                 atom.addVariable(variable);
                 variable.addNonRelationalOccurrence(atom);
                 if (logger.isDebugEnabled()) logger.debug("Adding non relational occurrence to variable " + variable + " in atom " + atom);

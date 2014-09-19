@@ -62,14 +62,15 @@ ExtEGDs:
 e1: emp(name: $n1, dept: $d1, salary: $s1, manager: $m1), 
     emp(name: $n2, dept: $d2, salary: $s2, manager: $m2), $n1 == $n2 -> $d1 == $d2.
 
-//e1: emp(name: $n1, dept: $d1, salary: $s1, manager: $m1), 
-//    emp(name: $n1, dept: $d2, salary: $s2, manager: $m2) -> $d1 == $d2.
+e1b: emp(name: $n1, dept: $d1, salary: $s1, manager: $m1), 
+  emp(name: $n1, dept: $d2, salary: $s2, manager: $m2) -> $d1 == $d2.
 
-//e2: emp(name: $n1, dept: $d1, salary: $s1, manager: $m1), 
-//    emp(name: $n2, dept: $d2, salary: $s2, manager: $m2), $n1 == $n2, $d1 == $d2, $d1 == "Sales" -> $m1 == $m2.
+e2: emp(name: $n1, dept: $d1, salary: $s1, manager: $m1), 
+    emp(name: $n2, dept: $d2, salary: $s2, manager: $m2), $n1 == $n2, $d1 == $d2, $d1 == "Sales" -> $m1 == $m2.
 
-//e4: emp(name: $n1, dept: $d1, salary: $s1, manager: $m1), 
-//    md(name: $n2, salary: $s2, manager: $m2), $n1 == $n2 -> $m1 == $m2.
+e4: emp(name: $n1, dept: $d1, salary: $s1, manager: $m1), 
+    md(name: $n2, salary: $s2, manager: $m2), $n1 == $n2 -> $m1 == $m2.
+
 ]]>
     </dependencies>
     <authoritativeSources>

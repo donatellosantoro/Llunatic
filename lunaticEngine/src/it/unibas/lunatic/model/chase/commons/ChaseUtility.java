@@ -74,10 +74,10 @@ public class ChaseUtility {
         Scan scan = new Scan(new TableAlias(deltaTableName));
         List<Expression> expressions = new ArrayList<Expression>();
         Expression tidExpression = new Expression(LunaticConstants.TID + " == \"" + tid + "\"");
-        tidExpression.setVariableDescription(LunaticConstants.TID, new AttributeRef(deltaTableName, LunaticConstants.TID));
+        tidExpression.changeVariableDescription(LunaticConstants.TID, new AttributeRef(deltaTableName, LunaticConstants.TID));
         expressions.add(tidExpression);
         Expression stepExpression = new Expression(LunaticConstants.STEP + " == \"" + stepId + "\"");
-        stepExpression.setVariableDescription(LunaticConstants.STEP, new AttributeRef(deltaTableName, LunaticConstants.STEP));
+        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(deltaTableName, LunaticConstants.STEP));
         expressions.add(stepExpression);
         Select select = new Select(expressions);
         select.addChild(scan);

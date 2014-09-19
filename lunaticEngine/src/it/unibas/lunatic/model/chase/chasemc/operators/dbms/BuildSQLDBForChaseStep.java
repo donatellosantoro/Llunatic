@@ -246,7 +246,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         TableAlias table = new TableAlias(ChaseUtility.getDeltaRelationName(attribute.getTableName(), attribute.getName()));
         Scan tableScan = new Scan(table);
         Expression stepExpression = new Expression("startswith(" + stepId + ", " + LunaticConstants.STEP + ")");
-        stepExpression.setVariableDescription(LunaticConstants.STEP, new AttributeRef(table, LunaticConstants.STEP));
+        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(table, LunaticConstants.STEP));
         Select stepSelect = new Select(stepExpression);
         stepSelect.addChild(tableScan);
         // select max(step), oid from R_A group by oid

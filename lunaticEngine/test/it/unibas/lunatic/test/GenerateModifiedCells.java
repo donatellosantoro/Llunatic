@@ -143,7 +143,7 @@ public class GenerateModifiedCells {
         TableAlias tableAlias = new TableAlias(table.getName());
         Scan tableScan = new Scan(tableAlias);
         Expression stepExpression = new Expression("startswith(" + stepId + ", " + LunaticConstants.STEP + ")");
-        stepExpression.setVariableDescription(LunaticConstants.STEP, new AttributeRef(tableAlias, LunaticConstants.STEP));
+        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(tableAlias, LunaticConstants.STEP));
         Select stepSelect = new Select(stepExpression);
         stepSelect.addChild(tableScan);
         // select max(step), oid from R_A group by oid
@@ -174,7 +174,7 @@ public class GenerateModifiedCells {
         // except oid, A from ('r') 
         Scan rootScan = new Scan(tableAlias);
         Expression rootExpression = new Expression("\"r\" == " + LunaticConstants.STEP);
-        rootExpression.setVariableDescription(LunaticConstants.STEP, new AttributeRef(tableAlias, LunaticConstants.STEP));
+        rootExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(tableAlias, LunaticConstants.STEP));
         Select rootSelect = new Select(rootExpression);
         rootSelect.addChild(rootScan);
         AttributeRef rootAttributeInAlias = new AttributeRef(tableAlias, attribute.getName());

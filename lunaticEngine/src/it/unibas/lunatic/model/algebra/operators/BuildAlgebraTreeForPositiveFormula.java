@@ -377,8 +377,8 @@ public class BuildAlgebraTreeForPositiveFormula {
     private Select addOidInequality(TableAlias leftTable, TableAlias rightTable, IAlgebraOperator root) {
         String inequalityOperator = "!=";
         Expression oidInequality = new Expression(leftTable.toString() + "." + LunaticConstants.OID + inequalityOperator + rightTable.toString() + "." + LunaticConstants.OID);
-        oidInequality.setVariableDescription(leftTable.toString() + "." + LunaticConstants.OID, new AttributeRef(leftTable, LunaticConstants.OID));
-        oidInequality.setVariableDescription(rightTable.toString() + "." + LunaticConstants.OID, new AttributeRef(rightTable, LunaticConstants.OID));
+        oidInequality.changeVariableDescription(leftTable.toString() + "." + LunaticConstants.OID, new AttributeRef(leftTable, LunaticConstants.OID));
+        oidInequality.changeVariableDescription(rightTable.toString() + "." + LunaticConstants.OID, new AttributeRef(rightTable, LunaticConstants.OID));
         Select select = new Select(oidInequality);
         select.addChild(root);
         return select;

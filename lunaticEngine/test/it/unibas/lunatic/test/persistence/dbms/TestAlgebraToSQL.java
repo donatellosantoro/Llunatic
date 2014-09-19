@@ -60,7 +60,7 @@ public class TestAlgebraToSQL extends CheckTest {
         AttributeRef attributeRef = new AttributeRef(tableAlias, "title");
         FormulaVariable tVariable = new FormulaVariable("t");
         tVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
-        expression.setVariableDescription("t", tVariable);
+        expression.changeVariableDescription("t", tVariable);
         expressions.add(expression);
         Select select = new Select(expressions);
         Scan scan = new Scan(tableAlias);
@@ -84,7 +84,7 @@ public class TestAlgebraToSQL extends CheckTest {
         AttributeRef attributeRef = new AttributeRef(tableAlias, "title");
         FormulaVariable tVariable = new FormulaVariable("t");
         tVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
-        expression2.setVariableDescription("t", tVariable);
+        expression2.changeVariableDescription("t", tVariable);
         expressions.add(expression2);
         Select select = new Select(expressions);
         Scan scan = new Scan(tableAlias);
@@ -109,9 +109,9 @@ public class TestAlgebraToSQL extends CheckTest {
         AttributeRef attributeRef = new AttributeRef(tableAlias, "title");
         FormulaVariable tVariable = new FormulaVariable("t");
         tVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
-        expression1.setVariableDescription("t", tVariable);
+        expression1.changeVariableDescription("t", tVariable);
         expressions.add(expression1);
-        expression2.setVariableDescription("t", tVariable);
+        expression2.changeVariableDescription("t", tVariable);
         expressions.add(expression2);
         Select select = new Select(expressions);
         Scan scan = new Scan(tableAlias);

@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g 2014-09-19 10:43:51
+// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g 2014-09-19 16:56:04
 
 package it.unibas.lunatic.parser.output;
 
@@ -172,7 +172,7 @@ public class DependenciesParser extends Parser {
 
 
 	// $ANTLR start "dependencies"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:57:1: dependencies : ( 'STTGDs:' ( sttgd )+ | 'DED-STTGDs:' ( dedstgd )+ )? ( 'ExtTGDs:' ( etgd )+ | 'DED-ExtTGDs:' ( dedetgd )+ )? ( 'DCs:' ( dc )+ )? ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )? ;
+	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:57:1: dependencies : ( 'STTGDs:' ( sttgd )+ | 'DED-STTGDs:' ( dedstgd )+ )? ( 'ExtTGDs:' ( etgd )+ | 'DED-ExtTGDs:' ( dedetgd )+ )? ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )? ( 'DCs:' ( dc )+ )? ;
 	public final DependenciesParser.dependencies_return dependencies() throws RecognitionException {
 		DependenciesParser.dependencies_return retval = new DependenciesParser.dependencies_return();
 		retval.start = input.LT(1);
@@ -191,10 +191,10 @@ public class DependenciesParser extends Parser {
 		ParserRuleReturnScope dedstgd5 =null;
 		ParserRuleReturnScope etgd7 =null;
 		ParserRuleReturnScope dedetgd9 =null;
-		ParserRuleReturnScope dc11 =null;
-		ParserRuleReturnScope egd13 =null;
-		ParserRuleReturnScope dedegd15 =null;
-		ParserRuleReturnScope eegd17 =null;
+		ParserRuleReturnScope egd11 =null;
+		ParserRuleReturnScope dedegd13 =null;
+		ParserRuleReturnScope eegd15 =null;
+		ParserRuleReturnScope dc17 =null;
 
 		CommonTree string_literal2_tree=null;
 		CommonTree string_literal4_tree=null;
@@ -206,8 +206,8 @@ public class DependenciesParser extends Parser {
 		CommonTree string_literal16_tree=null;
 
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:57:13: ( ( 'STTGDs:' ( sttgd )+ | 'DED-STTGDs:' ( dedstgd )+ )? ( 'ExtTGDs:' ( etgd )+ | 'DED-ExtTGDs:' ( dedetgd )+ )? ( 'DCs:' ( dc )+ )? ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )? )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:58:11: ( 'STTGDs:' ( sttgd )+ | 'DED-STTGDs:' ( dedstgd )+ )? ( 'ExtTGDs:' ( etgd )+ | 'DED-ExtTGDs:' ( dedetgd )+ )? ( 'DCs:' ( dc )+ )? ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )?
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:57:13: ( ( 'STTGDs:' ( sttgd )+ | 'DED-STTGDs:' ( dedstgd )+ )? ( 'ExtTGDs:' ( etgd )+ | 'DED-ExtTGDs:' ( dedetgd )+ )? ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )? ( 'DCs:' ( dc )+ )? )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:58:11: ( 'STTGDs:' ( sttgd )+ | 'DED-STTGDs:' ( dedstgd )+ )? ( 'ExtTGDs:' ( etgd )+ | 'DED-ExtTGDs:' ( dedetgd )+ )? ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )? ( 'DCs:' ( dc )+ )?
 			{
 			root_0 = (CommonTree)adaptor.nil();
 
@@ -402,21 +402,34 @@ public class DependenciesParser extends Parser {
 
 			}
 
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:11: ( 'DCs:' ( dc )+ )?
-			int alt8=2;
-			int LA8_0 = input.LA(1);
-			if ( (LA8_0==21) ) {
-				alt8=1;
-			}
-			switch (alt8) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:12: 'DCs:' ( dc )+
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:11: ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )?
+			int alt10=4;
+			switch ( input.LA(1) ) {
+				case 25:
 					{
-					string_literal10=(Token)match(input,21,FOLLOW_21_in_dependencies162); 
+					alt10=1;
+					}
+					break;
+				case 22:
+					{
+					alt10=2;
+					}
+					break;
+				case 26:
+					{
+					alt10=3;
+					}
+					break;
+			}
+			switch (alt10) {
+				case 1 :
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:12: 'EGDs:' ( egd )+
+					{
+					string_literal10=(Token)match(input,25,FOLLOW_25_in_dependencies162); 
 					string_literal10_tree = (CommonTree)adaptor.create(string_literal10);
 					adaptor.addChild(root_0, string_literal10_tree);
 
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:19: ( dc )+
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:20: ( egd )+
 					int cnt7=0;
 					loop7:
 					while (true) {
@@ -428,13 +441,13 @@ public class DependenciesParser extends Parser {
 
 						switch (alt7) {
 						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:19: dc
+							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:20: egd
 							{
-							pushFollow(FOLLOW_dc_in_dependencies164);
-							dc11=dc();
+							pushFollow(FOLLOW_egd_in_dependencies164);
+							egd11=egd();
 							state._fsp--;
 
-							adaptor.addChild(root_0, dc11.getTree());
+							adaptor.addChild(root_0, egd11.getTree());
 
 							}
 							break;
@@ -450,37 +463,55 @@ public class DependenciesParser extends Parser {
 					 counter = 0;
 					}
 					break;
-
-			}
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:63:11: ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )?
-			int alt12=4;
-			switch ( input.LA(1) ) {
-				case 25:
+				case 2 :
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:63:12: 'DED-EGDs:' ( dedegd )+
 					{
-					alt12=1;
-					}
-					break;
-				case 22:
-					{
-					alt12=2;
-					}
-					break;
-				case 26:
-					{
-					alt12=3;
-					}
-					break;
-			}
-			switch (alt12) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:63:12: 'EGDs:' ( egd )+
-					{
-					string_literal12=(Token)match(input,25,FOLLOW_25_in_dependencies183); 
+					string_literal12=(Token)match(input,22,FOLLOW_22_in_dependencies182); 
 					string_literal12_tree = (CommonTree)adaptor.create(string_literal12);
 					adaptor.addChild(root_0, string_literal12_tree);
 
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:63:20: ( egd )+
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:63:24: ( dedegd )+
+					int cnt8=0;
+					loop8:
+					while (true) {
+						int alt8=2;
+						int LA8_0 = input.LA(1);
+						if ( (LA8_0==IDENTIFIER) ) {
+							alt8=1;
+						}
+
+						switch (alt8) {
+						case 1 :
+							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:63:24: dedegd
+							{
+							pushFollow(FOLLOW_dedegd_in_dependencies184);
+							dedegd13=dedegd();
+							state._fsp--;
+
+							adaptor.addChild(root_0, dedegd13.getTree());
+
+							}
+							break;
+
+						default :
+							if ( cnt8 >= 1 ) break loop8;
+							EarlyExitException eee = new EarlyExitException(8, input);
+							throw eee;
+						}
+						cnt8++;
+					}
+
+					counter = 0;
+					}
+					break;
+				case 3 :
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:64:12: 'ExtEGDs:' ( eegd )+
+					{
+					string_literal14=(Token)match(input,26,FOLLOW_26_in_dependencies203); 
+					string_literal14_tree = (CommonTree)adaptor.create(string_literal14);
+					adaptor.addChild(root_0, string_literal14_tree);
+
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:64:23: ( eegd )+
 					int cnt9=0;
 					loop9:
 					while (true) {
@@ -492,13 +523,13 @@ public class DependenciesParser extends Parser {
 
 						switch (alt9) {
 						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:63:20: egd
+							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:64:23: eegd
 							{
-							pushFollow(FOLLOW_egd_in_dependencies185);
-							egd13=egd();
+							pushFollow(FOLLOW_eegd_in_dependencies205);
+							eegd15=eegd();
 							state._fsp--;
 
-							adaptor.addChild(root_0, egd13.getTree());
+							adaptor.addChild(root_0, eegd15.getTree());
 
 							}
 							break;
@@ -514,55 +545,24 @@ public class DependenciesParser extends Parser {
 					 counter = 0;
 					}
 					break;
-				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:64:12: 'DED-EGDs:' ( dedegd )+
+
+			}
+
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:65:11: ( 'DCs:' ( dc )+ )?
+			int alt12=2;
+			int LA12_0 = input.LA(1);
+			if ( (LA12_0==21) ) {
+				alt12=1;
+			}
+			switch (alt12) {
+				case 1 :
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:65:12: 'DCs:' ( dc )+
 					{
-					string_literal14=(Token)match(input,22,FOLLOW_22_in_dependencies203); 
-					string_literal14_tree = (CommonTree)adaptor.create(string_literal14);
-					adaptor.addChild(root_0, string_literal14_tree);
-
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:64:24: ( dedegd )+
-					int cnt10=0;
-					loop10:
-					while (true) {
-						int alt10=2;
-						int LA10_0 = input.LA(1);
-						if ( (LA10_0==IDENTIFIER) ) {
-							alt10=1;
-						}
-
-						switch (alt10) {
-						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:64:24: dedegd
-							{
-							pushFollow(FOLLOW_dedegd_in_dependencies205);
-							dedegd15=dedegd();
-							state._fsp--;
-
-							adaptor.addChild(root_0, dedegd15.getTree());
-
-							}
-							break;
-
-						default :
-							if ( cnt10 >= 1 ) break loop10;
-							EarlyExitException eee = new EarlyExitException(10, input);
-							throw eee;
-						}
-						cnt10++;
-					}
-
-					counter = 0;
-					}
-					break;
-				case 3 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:65:12: 'ExtEGDs:' ( eegd )+
-					{
-					string_literal16=(Token)match(input,26,FOLLOW_26_in_dependencies224); 
+					string_literal16=(Token)match(input,21,FOLLOW_21_in_dependencies224); 
 					string_literal16_tree = (CommonTree)adaptor.create(string_literal16);
 					adaptor.addChild(root_0, string_literal16_tree);
 
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:65:23: ( eegd )+
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:65:19: ( dc )+
 					int cnt11=0;
 					loop11:
 					while (true) {
@@ -574,13 +574,13 @@ public class DependenciesParser extends Parser {
 
 						switch (alt11) {
 						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:65:23: eegd
+							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:65:19: dc
 							{
-							pushFollow(FOLLOW_eegd_in_dependencies226);
-							eegd17=eegd();
+							pushFollow(FOLLOW_dc_in_dependencies226);
+							dc17=dc();
 							state._fsp--;
 
-							adaptor.addChild(root_0, eegd17.getTree());
+							adaptor.addChild(root_0, dc17.getTree());
 
 							}
 							break;
@@ -2537,14 +2537,14 @@ public class DependenciesParser extends Parser {
 	public static final BitSet FOLLOW_etgd_in_dependencies123 = new BitSet(new long[]{0x0000000006600042L});
 	public static final BitSet FOLLOW_23_in_dependencies141 = new BitSet(new long[]{0x0000000000000040L});
 	public static final BitSet FOLLOW_dedetgd_in_dependencies143 = new BitSet(new long[]{0x0000000006600042L});
-	public static final BitSet FOLLOW_21_in_dependencies162 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_dc_in_dependencies164 = new BitSet(new long[]{0x0000000006400042L});
-	public static final BitSet FOLLOW_25_in_dependencies183 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_egd_in_dependencies185 = new BitSet(new long[]{0x0000000000000042L});
-	public static final BitSet FOLLOW_22_in_dependencies203 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_dedegd_in_dependencies205 = new BitSet(new long[]{0x0000000000000042L});
-	public static final BitSet FOLLOW_26_in_dependencies224 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_eegd_in_dependencies226 = new BitSet(new long[]{0x0000000000000042L});
+	public static final BitSet FOLLOW_25_in_dependencies162 = new BitSet(new long[]{0x0000000000000040L});
+	public static final BitSet FOLLOW_egd_in_dependencies164 = new BitSet(new long[]{0x0000000000200042L});
+	public static final BitSet FOLLOW_22_in_dependencies182 = new BitSet(new long[]{0x0000000000000040L});
+	public static final BitSet FOLLOW_dedegd_in_dependencies184 = new BitSet(new long[]{0x0000000000200042L});
+	public static final BitSet FOLLOW_26_in_dependencies203 = new BitSet(new long[]{0x0000000000000040L});
+	public static final BitSet FOLLOW_eegd_in_dependencies205 = new BitSet(new long[]{0x0000000000200042L});
+	public static final BitSet FOLLOW_21_in_dependencies224 = new BitSet(new long[]{0x0000000000000040L});
+	public static final BitSet FOLLOW_dc_in_dependencies226 = new BitSet(new long[]{0x0000000000000042L});
 	public static final BitSet FOLLOW_dependency_in_sttgd247 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_dependency_in_etgd260 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_dependency_in_dc273 = new BitSet(new long[]{0x0000000000000002L});

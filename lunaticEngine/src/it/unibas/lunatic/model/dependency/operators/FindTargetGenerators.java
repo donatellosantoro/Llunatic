@@ -61,7 +61,7 @@ public class FindTargetGenerators {
         }
         FormulaVariable universalVariable = LunaticUtility.findVariableInList(occurrence, dependency.getPremise().getLocalVariables());
         Expression expression = new Expression(universalVariable.getId());
-        expression.setVariableDescription(universalVariable.getId(), universalVariable);
+        expression.changeVariableDescription(universalVariable.getId(), universalVariable);
         ExpressionGenerator generator = new ExpressionGenerator(expression);
         return generator;
     }
@@ -79,7 +79,7 @@ public class FindTargetGenerators {
         List<FormulaVariable> universalVariablesInConclusion = DependencyUtility.findUniversalVariablesInConclusion(dependency);
         for (FormulaVariable formulaVariable : universalVariablesInConclusion) {
             Expression expression = new Expression(formulaVariable.getId());
-            expression.setVariableDescription(formulaVariable.getId(), formulaVariable);
+            expression.changeVariableDescription(formulaVariable.getId(), formulaVariable);
             append.addChild(new SubGeneratorSkolemPart(new ExpressionGenerator(expression)));
         }
         generatorForVariable = new SkolemFunctionGenerator(root);

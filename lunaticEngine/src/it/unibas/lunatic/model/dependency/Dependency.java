@@ -30,13 +30,6 @@ public class Dependency implements Cloneable {
     public Dependency() {
     }
 
-    public Dependency(String id, IFormula premise, IFormula conclusion, String type) {
-        this.id = id;
-        this.premise = premise;
-        this.conclusion = conclusion;
-        this.type = type;
-    }
-
     public String getId() {
         return id;
     }

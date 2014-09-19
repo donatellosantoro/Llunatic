@@ -107,8 +107,9 @@ public class PositiveFormula implements IFormula {
     public String toLongString(){
         StringBuilder result = new StringBuilder();
         result.append(toString());
+        result.append("\nAtoms:");
         for (IFormulaAtom atom : atoms) {
-            result.append("\n" + atom.toLongString());
+            result.append("\n\t" + atom.toLongString());
         }
         return result.toString();
     }

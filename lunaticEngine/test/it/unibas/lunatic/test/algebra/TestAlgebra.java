@@ -57,7 +57,7 @@ public class TestAlgebra extends TestCase {
         AttributeRef attributeRef = new AttributeRef(tableAlias, "title");
         FormulaVariable tVariable = new FormulaVariable("t");
         tVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(attributeRef, "t"));
-        expression.setVariableDescription("t", tVariable);
+        expression.changeVariableDescription("t", tVariable);
         expressions.add(expression);
         Select select = new Select(expressions);
         Scan scan = new Scan(tableAlias);
@@ -178,7 +178,7 @@ public class TestAlgebra extends TestCase {
         Expression expression = new Expression("count > 1");
         FormulaVariable countVariable = new FormulaVariable("count");
         countVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(countAttribute, "count"));
-        expression.setVariableDescription("count", countVariable);
+        expression.changeVariableDescription("count", countVariable);
         Select select = new Select(expression);
         select.addChild(groupBy);
         Project project = new Project(groupingAttribute);
@@ -208,7 +208,7 @@ public class TestAlgebra extends TestCase {
         Expression expression = new Expression("count > 1");
         FormulaVariable countVariable = new FormulaVariable("count");
         countVariable.addPremiseRelationalOccurrence(new FormulaVariableOccurrence(countAttribute, "count"));
-        expression.setVariableDescription("count", countVariable);
+        expression.changeVariableDescription("count", countVariable);
 
         List<AttributeRef> secondGroupingAttribute = new ArrayList<AttributeRef>();
         List<IAggregateFunction> secondAggregateFunction = new ArrayList<IAggregateFunction>();

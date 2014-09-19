@@ -4,6 +4,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.TableAlias;
+import it.unibas.lunatic.model.dependency.BuiltInAtom;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
@@ -35,7 +36,7 @@ public class FindSymmetricAtoms {
     private static Logger logger = LoggerFactory.getLogger(FindSymmetricAtoms.class);
 
     public void findSymmetricAtoms(List<Dependency> dependencies, Scenario scenario) {
-        if(!scenario.getConfiguration().isUseSymmetricOptimization()){
+        if (!scenario.getConfiguration().isUseSymmetricOptimization()) {
             return;
         }
         for (Dependency dependency : dependencies) {
@@ -44,6 +45,9 @@ public class FindSymmetricAtoms {
     }
 
     private void findSymmetricAtoms(Dependency dependency) {
+        if (hasInequalitiesOrBuiltIns(dependency)) {
+            return;
+        }
         List<VariableEquivalenceClass> joinVariables = ChaseUtility.findJoinVariablesInTarget(dependency);
         if (logger.isDebugEnabled()) logger.debug("Join variables: " + joinVariables);
         UndirectedGraph<TableAlias, LabeledEdge> joinGraph = initJoinGraph(dependency, joinVariables);
@@ -62,6 +66,24 @@ public class FindSymmetricAtoms {
         if (checkIfConclusionVariablesAreSymmetric(dependency, symmetricAtoms)) {
             dependency.setSymmetricAtoms(symmetricAtoms);
         }
+    }
+
+    private boolean hasInequalitiesOrBuiltIns(Dependency dependency) {
+        for (IFormulaAtom atom : dependency.getPremise().getAtoms()) {
+            if(atom instanceof RelationalAtom){
+                continue;
+            }
+            if(atom instanceof BuiltInAtom){
+                return true;
+            }
+            if(atom instanceof ComparisonAtom){
+                ComparisonAtom comparisonAtom = (ComparisonAtom)atom;
+                if(!comparisonAtom.isEqualityComparison()){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private UndirectedGraph<TableAlias, LabeledEdge> initJoinGraph(Dependency dependency, List<VariableEquivalenceClass> joinVariableClasses) {
@@ -212,4 +234,5 @@ public class FindSymmetricAtoms {
         }
         return false;
     }
+
 }

@@ -322,8 +322,8 @@ public class Scenario {
         }
         if (!this.dcs.isEmpty()) {
             result.append("================ Denial Constraints ===================\n");
-            for (Dependency dtgd : this.dcs) {
-                result.append(dtgd).append("\n");
+            for (Dependency dc : this.dcs) {
+                result.append(dc).append("\n");
             }
         }
         if (!this.dedstTgds.isEmpty()) {

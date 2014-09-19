@@ -72,7 +72,7 @@ public class BuildAlgebraTreeForSymmetricEGD {
         secondGroupBy.addChild(groupByQueriedAttributes);
 
         Expression expression = new Expression("count > 1");
-        expression.setVariableDescription("count", countAttribute);
+        expression.changeVariableDescription("count", countAttribute);
         Select select = new Select(expression);
         select.addChild(secondGroupBy);
         Project violationProject = new Project(symmetricWitnessAttributes);

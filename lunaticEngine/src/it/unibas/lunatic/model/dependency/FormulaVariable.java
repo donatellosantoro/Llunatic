@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.dependency;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FormulaVariable implements Cloneable{
+public class FormulaVariable implements Cloneable {
 
     private String id;
     private List<FormulaVariableOccurrence> premiseRelationalOccurrences = new ArrayList<FormulaVariableOccurrence>();
@@ -21,7 +21,7 @@ public class FormulaVariable implements Cloneable{
     public List<FormulaVariableOccurrence> getPremiseRelationalOccurrences() {
         return premiseRelationalOccurrences;
     }
-    
+
     public void addPremiseRelationalOccurrence(FormulaVariableOccurrence occurrence) {
         this.premiseRelationalOccurrences.add(occurrence);
     }
@@ -29,7 +29,7 @@ public class FormulaVariable implements Cloneable{
     public List<FormulaVariableOccurrence> getConclusionRelationalOccurrences() {
         return conclusionRelationalOccurrences;
     }
-    
+
     public void addConclusionRelationalOccurrence(FormulaVariableOccurrence occurrence) {
         this.conclusionRelationalOccurrences.add(occurrence);
     }
@@ -60,13 +60,12 @@ public class FormulaVariable implements Cloneable{
         this.nonRelationalOccurrences = nonRelationalOccurrences;
     }
 
-    
     public boolean isUniversal() {
         return this.premiseRelationalOccurrences.size() > 0;
     }
-    
+
     @Override
-    public FormulaVariable clone(){
+    public FormulaVariable clone() {
         FormulaVariable clone = null;
         try {
             clone = (FormulaVariable) super.clone();
@@ -77,7 +76,7 @@ public class FormulaVariable implements Cloneable{
             clone.conclusionRelationalOccurrences = new ArrayList<FormulaVariableOccurrence>();
             for (FormulaVariableOccurrence occurrence : conclusionRelationalOccurrences) {
                 clone.conclusionRelationalOccurrences.add((FormulaVariableOccurrence) occurrence.clone());
-            }            
+            }
             clone.nonRelationalOccurrences = new ArrayList<IFormulaAtom>(this.nonRelationalOccurrences);
         } catch (CloneNotSupportedException ex) {
         }
@@ -88,9 +87,20 @@ public class FormulaVariable implements Cloneable{
     public String toString() {
         return id;
     }
-    
+
     public String toLongString() {
-        return this.toString() + " Occurrences - Premise: " + premiseRelationalOccurrences + " Conclusion: " + conclusionRelationalOccurrences  + " NonRelational: " + nonRelationalOccurrences;
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.toString());
+        sb.append("\n Occurrences - Premise: ");
+        for (FormulaVariableOccurrence occurrence : premiseRelationalOccurrences) {
+            sb.append(occurrence.toLongString()).append(" ");
+        }
+        sb.append("\n\t Conclusion: ");
+        for (FormulaVariableOccurrence occurrence : conclusionRelationalOccurrences) {
+            sb.append(occurrence.toLongString()).append(" ");
+        }
+        sb.append("\n\t NonRelational: ").append(nonRelationalOccurrences);
+        return sb.toString();
     }
-       
+
 }

@@ -2,6 +2,7 @@ package it.unibas.lunatic.model.dependency;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.expressions.Expression;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,7 +101,7 @@ public class ComparisonAtom implements IFormulaAtom {
         return isEqualityComparison() && variables.size() == 2;
     }
 
-    public IFormulaAtom clone() {
+    public ComparisonAtom clone() {
         try {
             ComparisonAtom clone = (ComparisonAtom) super.clone();
             clone.expression = this.expression.clone();
@@ -118,8 +119,8 @@ public class ComparisonAtom implements IFormulaAtom {
 
     public String toLongString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(this.expression.toString());
-        sb.append("\n\t LeftV ariable: ").append((getLeftVariable() != null ? getLeftVariable().toLongString() : "null"));
+        sb.append("Expression: ").append(this.expression.toLongString());
+        sb.append("\n\t Left Variable: ").append((getLeftVariable() != null ? getLeftVariable().toLongString() : "null"));
         sb.append("\n\t Right Variable: ").append((getRightVariable()!= null ? getRightVariable().toLongString() : "null"));
         sb.append("\n\t Left Constant: ").append(leftConstant);
         sb.append("\n\t Right Constant: ").append(rightConstant);

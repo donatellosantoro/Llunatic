@@ -103,7 +103,7 @@ public abstract class AbstractCacheManager implements ICacheManager {
         Scan scan = new Scan(new TableAlias(occurrenceTable));
         List<Expression> selections = new ArrayList<Expression>();
         Expression stepExpression = new Expression("startswith(\"" + stepId + "\", " + LunaticConstants.STEP + ")");
-        stepExpression.setVariableDescription(LunaticConstants.STEP, new AttributeRef(occurrenceTable, LunaticConstants.STEP));
+        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(occurrenceTable, LunaticConstants.STEP));
         selections.add(stepExpression);
         Select select = new Select(selections);
         select.addChild(scan);
@@ -141,7 +141,7 @@ public abstract class AbstractCacheManager implements ICacheManager {
         Scan scan = new Scan(new TableAlias(provenanceTable));
         List<Expression> selections = new ArrayList<Expression>();
         Expression stepExpression = new Expression("startswith(\"" + stepId + "\", " + LunaticConstants.STEP + ")");
-        stepExpression.setVariableDescription(LunaticConstants.STEP, new AttributeRef(provenanceTable, LunaticConstants.STEP));
+        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(provenanceTable, LunaticConstants.STEP));
         selections.add(stepExpression);
         Select select = new Select(selections);
         select.addChild(scan);
