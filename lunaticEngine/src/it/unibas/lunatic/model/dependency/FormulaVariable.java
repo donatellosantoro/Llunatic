@@ -66,16 +66,6 @@ public class FormulaVariable implements Cloneable{
     }
     
     @Override
-    public String toString() {
-        return id;
-    }
-    
-    public String toLongString() {
-        return this.toString() + " Occurrences - Premise: " + premiseRelationalOccurrences + " Conclusion: " + conclusionRelationalOccurrences  + " NonRelational: " + nonRelationalOccurrences;
-    }
-       
-    
-    @Override
     public FormulaVariable clone(){
         FormulaVariable clone = null;
         try {
@@ -93,4 +83,14 @@ public class FormulaVariable implements Cloneable{
         }
         return clone;
     }
+
+    @Override
+    public String toString() {
+        return id;
+    }
+    
+    public String toLongString() {
+        return this.toString() + " Occurrences - Premise: " + premiseRelationalOccurrences + " Conclusion: " + conclusionRelationalOccurrences  + " NonRelational: " + nonRelationalOccurrences;
+    }
+       
 }
