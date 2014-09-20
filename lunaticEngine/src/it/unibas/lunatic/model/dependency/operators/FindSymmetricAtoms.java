@@ -14,6 +14,7 @@ import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
 import it.unibas.lunatic.model.dependency.LabeledEdge;
+import it.unibas.lunatic.model.dependency.NullFormula;
 import it.unibas.lunatic.model.dependency.SelfJoin;
 import it.unibas.lunatic.model.dependency.SymmetricAtoms;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -206,6 +207,9 @@ public class FindSymmetricAtoms {
         IFormula conclusion = dependency.getConclusion();
         if (conclusion.getAtoms().size() > 1) {
             return false;
+        }
+        if (conclusion instanceof NullFormula) {
+            return true;
         }
         ComparisonAtom comparison = (ComparisonAtom) conclusion.getAtoms().get(0);
         FormulaVariable v1 = comparison.getVariables().get(0);
