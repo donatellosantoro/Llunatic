@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.algebra.operators;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.Limit;
 import it.unibas.lunatic.model.algebra.OrderBy;
@@ -101,6 +102,9 @@ public class BuildAlgebraTreeForEGD {
 
     private IAlgebraOperator addOrderBy(Dependency dependency, IAlgebraOperator premiseRoot) {
         List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(dependency);
+        if(targetJoinAttributes.isEmpty()){
+            throw new ChaseException("Dependency " + dependency + " is incorrect. It doesn't contain joins in the premise.");
+        }
         List<AttributeRef> attributesForOrderBy = new ArrayList<AttributeRef>();
         for (AttributeRef targetJoinAttribute : targetJoinAttributes) {
             AttributeRef attributeForOrderBy = targetJoinAttribute;

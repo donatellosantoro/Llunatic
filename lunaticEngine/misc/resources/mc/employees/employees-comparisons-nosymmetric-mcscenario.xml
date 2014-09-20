@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <source>    
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+md(name, salary, manager)
+INSTANCE:
+md(name: "Bob", salary: "1000", manager: "John")
+]]>
+        </generate>
+    </source>
+    <target>    
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+emp(name, dept, salary, manager)
+INSTANCE:
+emp(name: "Bob", dept: "Marketing", salary: "1000", manager: "John")
+emp(name: "John", dept: "Marketing", salary: "2000", manager: "Carl")
+emp(name: "John", dept: "Marketing", salary: "3000", manager: "Carl")
+emp(name: "Mark", dept: "Staff", salary: "1000", manager: "Frank")
+emp(name: "Frank", dept: "Sales", salary: "2000", manager: "Carl")
+emp(name: "John", dept: "Sales", salary: "2500", manager: "Carl")
+emp(name: "Carl", dept: "Marketing", salary: "2500", manager: "Carl")
+emp(name: "John", dept: "Staff", salary: "2500", manager: "Carl")
+emp(name: "Bob", dept: "Staff", salary: "2500", manager: "Carl")
+emp(name: "Carl", dept: "Managment", salary: "5000", manager: "Carl")
+]]>
+        </generate>
+    </target>
+    <dependencies>
+<![CDATA[
+ExtEGDs:
+e1: emp(name: $n1, dept: $d1, salary: $s1, manager: $m1), 
+    emp(name: $n2, dept: $d2, salary: $s2, manager: $m2), $d1 != $d2 -> $n1 == $n2.
+
+]]>
+    </dependencies>
+    <authoritativeSources>
+        <source>md</source>
+    </authoritativeSources>
+</scenario>
