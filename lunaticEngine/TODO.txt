@@ -1,0 +1,3 @@
+da BART
+- eliminare parametro Dependency in buildAlgebraTree
+- aggiungere id != id nei prodotti cartesiani

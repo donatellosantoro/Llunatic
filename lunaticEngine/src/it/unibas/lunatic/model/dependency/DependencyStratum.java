@@ -1,7 +1,5 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.model.dependency.ExtendedDependency;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
