@@ -27,6 +27,7 @@ public class ChaseDeltaDCs {
     }
 
     public void doChase(DeltaChaseStep treeRoot, Scenario scenario, IChaseState chaseState, Map<Dependency, IAlgebraOperator> tgdTreeMap) {
+        if (scenario.getDCs().isEmpty()) return;
         long start = new Date().getTime();
         chaseTree(treeRoot, scenario, chaseState, tgdTreeMap);
         long end = new Date().getTime();
@@ -43,16 +44,16 @@ public class ChaseDeltaDCs {
     }
 
     private void chaseNode(DeltaChaseStep node, Scenario scenario, IChaseState chaseState, Map<Dependency, IAlgebraOperator> tgdTreeMap) {
-        if (logger.isDebugEnabled()) logger.debug("Chasing dcs on scenario: " + scenario);
+        if (logger.isDebugEnabled()) logger.trace("Chasing dcs on scenario: " + scenario);
+        IDatabase databaseForStep = databaseBuilder.extractDatabase(node.getId(), node.getDeltaDB(), node.getOriginalDB());
         for (Dependency dc : scenario.getDCs()) {
             if (chaseState.isCancelled()) {
                 ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
             }
             if (logger.isDebugEnabled()) logger.debug("----Chasing dc: " + dc);
-            if (logger.isDebugEnabled()) logger.debug("----Current leaf: " + node);
+            if (logger.isDebugEnabled()) logger.debug("----Current leaf: " + node.getId());
             IAlgebraOperator tgdQuery = tgdTreeMap.get(dc);
             if (logger.isDebugEnabled()) logger.debug("----DC Query: " + tgdQuery);
-            IDatabase databaseForStep = databaseBuilder.extractDatabase(node.getId(), node.getDeltaDB(), node.getOriginalDB());
             ITupleIterator it = queryRunner.run(tgdQuery, scenario.getSource(), databaseForStep);
             if (it.hasNext()) {
                 node.setInvalid(true);

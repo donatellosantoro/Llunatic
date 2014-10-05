@@ -8,11 +8,13 @@ import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.commons.control.ImmutableChaseState;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.FindSymmetricAtoms;
 import it.unibas.lunatic.utility.DependencyUtility;
+import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,11 @@ public class ChaseDEScenario implements IDEChaser {
         if (!scenario.isDEScenario()) {
             throw new ChaseException("Unable to execute scenario. Only tgds and egds are allowed. " + scenario);
         }
+        long start = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_STTGDS, scenario.getSTTgds().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EGDS, scenario.getEGDs().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXTGDS, scenario.getExtTGDs().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DCS, scenario.getDCs().size());
         if (logger.isDebugEnabled()) logger.debug("Chasing dependencies on de scenario: " + scenario);
         stChaser.doChase(scenario, true);
         addQueriedAttributes(scenario.getEGDs());
@@ -63,6 +70,8 @@ public class ChaseDEScenario implements IDEChaser {
         dChaser.doChase(scenario, chaseState);
         IDatabase target = scenario.getTarget();
         if (logger.isDebugEnabled()) logger.debug("----Result of chase: " + target);
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.TOTAL_TIME, end - start);
         return target;
     }
 

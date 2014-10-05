@@ -1,13 +1,13 @@
 package it.unibas.lunatic.test;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.database.ITable;
 import it.unibas.lunatic.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import it.unibas.lunatic.persistence.relational.QueryManager;
 import java.io.File;
+import java.net.URL;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +33,15 @@ public class UtilityTest {
     }
 
     private static Scenario loadScenario(String scenarioPath, boolean recreateDB, boolean absolutePath) {
+        Assert.assertNotNull(scenarioPath);
         try {
             String fileScenario;
             if (absolutePath) {
                 fileScenario = scenarioPath;
             } else {
-                fileScenario = new File(UtilityTest.class.getResource(scenarioPath).toURI()).getAbsolutePath();
+                URL url = UtilityTest.class.getResource(scenarioPath);
+                Assert.assertNotNull("File " + scenarioPath + " doesn't exist", url);
+                fileScenario = new File(url.toURI()).getAbsolutePath();
             }
             DAOMCScenario daoScenario = new DAOMCScenario();
             Scenario scenario = daoScenario.loadScenario(fileScenario);

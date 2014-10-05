@@ -75,7 +75,7 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
         if (result == null) {
             throw new ChaseException("Unable to find solution...");
         }
-        ChaseStats.getInstance().printStats();
+        if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
         return result;
     }
 

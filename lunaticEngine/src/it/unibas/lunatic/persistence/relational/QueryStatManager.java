@@ -16,7 +16,7 @@ public class QueryStatManager {
     private int TOP_K_QUERIES = 0;
     private int QUERY_PREVIEW_LENGHT = -1; //-1 to print the whole query
     private Date lastPrint;
-    private int SEC = 10;
+    private int SEC = -1; //-1 to disable printAfterSeconds
 
     private QueryStatManager() {
     }
@@ -33,6 +33,7 @@ public class QueryStatManager {
 
     private void printStatisticsAfterSeconds() {
         if (!logger.isDebugEnabled()) return;
+        if(SEC < 0) return;
         Date nowDate = new Date();
         if (lastPrint == null || (nowDate.getTime() - lastPrint.getTime() > SEC * 1000)) {
             lastPrint = nowDate;

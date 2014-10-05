@@ -1,3 +1,5 @@
 da BART
 - eliminare parametro Dependency in buildAlgebraTree
 - aggiungere id != id nei prodotti cartesiani
+- ripulire il codice di BuildAlgebraTreeForSymmetricEGD (evitare di ricalcolare gli stessi attributi)
+- in UtilityTest utilizzare lo stesso metodo per fare il dropdb

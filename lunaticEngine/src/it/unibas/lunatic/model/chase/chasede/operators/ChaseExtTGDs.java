@@ -4,9 +4,11 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForStandardChase;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.dependency.Dependency;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ public class ChaseExtTGDs {
         Map<Dependency, IAlgebraOperator> treeMap = buildAlgebraTrees(scenario.getExtTGDs(), scenario);
         boolean modified = false;
         int iterations = 0;
+        long start = new Date().getTime();
         while (true) {
             boolean insertedTuples = false;
             for (Dependency eTgd : scenario.getExtTGDs()) {
@@ -48,6 +51,8 @@ public class ChaseExtTGDs {
                 modified = true;
             }
         }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.TGD_TIME, end - start);
         return modified;
     }
 

@@ -30,6 +30,9 @@ public class ChaseDeltaExtTGDsWithoutCellGroups implements IChaseDeltaExtTGDs {
     }
 
     public boolean doChase(DeltaChaseStep treeRoot, Scenario scenario, IChaseState chaseState, Map<Dependency, IAlgebraOperator> tgdTreeMap, Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap) {
+        if (scenario.getExtTGDs().isEmpty()) {
+            return false;
+        }
         long start = new Date().getTime();
         int size = treeRoot.getNumberOfNodes();
         chaseTree(treeRoot, scenario, chaseState, tgdTreeMap);

@@ -4,7 +4,6 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.database.*;
 import it.unibas.lunatic.model.database.mainmemory.datasource.DataSource;
 import it.unibas.lunatic.model.database.mainmemory.datasource.ForeignKeyConstraint;
-import it.unibas.lunatic.model.database.mainmemory.datasource.INode;
 import it.unibas.lunatic.model.database.mainmemory.datasource.KeyConstraint;
 import it.unibas.lunatic.model.database.mainmemory.paths.PathExpression;
 import java.util.ArrayList;

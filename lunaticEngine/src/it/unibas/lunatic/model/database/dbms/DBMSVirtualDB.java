@@ -1,12 +1,10 @@
 package it.unibas.lunatic.model.database.dbms;
 
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.database.Attribute;
 import it.unibas.lunatic.model.database.ForeignKey;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.ITable;
 import it.unibas.lunatic.model.database.Key;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryVirtualTable;
 import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import java.util.ArrayList;
 import java.util.List;

@@ -24,8 +24,8 @@ public class TupleOID implements Serializable{
         return this.value.toString().hashCode();
     }
     
-    public Integer getNumericalValue() {
-        return Integer.parseInt(value.toString());
+    public Long getNumericalValue() {
+        return Long.parseLong(value.toString());
     }
     
     @Override

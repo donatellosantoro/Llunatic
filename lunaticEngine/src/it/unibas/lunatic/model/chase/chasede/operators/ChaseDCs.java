@@ -9,7 +9,9 @@ import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.dependency.Dependency;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +27,7 @@ public class ChaseDCs {
     }
 
     public void doChase(Scenario scenario, IChaseState chaseState) {
+        long start = new Date().getTime();
         if (logger.isDebugEnabled()) logger.debug("Chasing dtgds on scenario: " + scenario);
         for (Dependency dc : scenario.getDCs()) {
             if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
@@ -37,5 +40,7 @@ public class ChaseDCs {
             }
             result.close();
         }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.DTGD_TIME, end - start);
     }
 }

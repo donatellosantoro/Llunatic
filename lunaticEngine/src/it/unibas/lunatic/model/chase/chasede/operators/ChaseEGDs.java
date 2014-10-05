@@ -12,9 +12,11 @@ import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
+import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.ConstantValue;
@@ -28,6 +30,7 @@ import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,6 +66,7 @@ public class ChaseEGDs {
             }
         }
         if (logger.isDebugEnabled()) logger.debug("Chasing egds on scenario: " + scenario);
+        long start = new Date().getTime();
         Map<Dependency, IAlgebraOperator> premiseTreeMap = treeBuilderForEGD.buildPremiseAlgebraTreesForEGDs(scenario.getEGDs(), scenario);
         boolean modifiedCells = false;
         while (true) {
@@ -78,8 +82,13 @@ public class ChaseEGDs {
                 modifiedCells = true;
             }
         }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.EGD_TIME, end - start);
         if (modifiedCells) {
+            long startDuplicate = new Date().getTime();
             duplicateRemover.removeDuplicatesModuloOID(scenario.getTarget());
+            long endDuplicate = new Date().getTime();
+            ChaseStats.getInstance().addStat(ChaseStats.REMOVE_DUPLICATE_TIME, endDuplicate - startDuplicate);
         }
         return modifiedCells;
     }
@@ -89,7 +98,10 @@ public class ChaseEGDs {
         this.lastTuple = null;
         this.lastTupleHandled = false;
         if (logger.isDebugEnabled()) logger.debug("Executing premise query: " + premiseQuery);
+        long violationQueryStart = new Date().getTime();
         ITupleIterator it = queryRunner.run(premiseQuery, scenario.getSource(), scenario.getTarget());
+        long violationQueryEnd = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.EGD_VIOLATION_QUERY_TIME, violationQueryEnd - violationQueryStart);
 //        List<Repair> repairsForDependency = new ArrayList<Repair>();
         Repair repairForDependency = new Repair();
         while (true) {
@@ -114,7 +126,10 @@ public class ChaseEGDs {
         if (repairForDependency.getChanges().isEmpty()) {
             return false;
         }
+        long repairStart = new Date().getTime();
         applyRepairs(repairForDependency, scenario);
+        long repairEnd = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.EGD_REPAIR_TIME, repairEnd - repairStart);
         return true;
     }
 

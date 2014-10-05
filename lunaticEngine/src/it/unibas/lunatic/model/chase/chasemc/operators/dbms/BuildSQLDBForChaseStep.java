@@ -55,6 +55,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
 
     @Override
     public IDatabase extractDatabaseWithDistinct(String stepId, IDatabase deltaDB, IDatabase originalDB) {
+        if (logger.isDebugEnabled()) logger.debug("Extracting database with distinct for step " + stepId);
         return extractDatabase(stepId, deltaDB, originalDB, true);
     }
 
@@ -396,4 +397,5 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
             }
         }
     }
+
 }
