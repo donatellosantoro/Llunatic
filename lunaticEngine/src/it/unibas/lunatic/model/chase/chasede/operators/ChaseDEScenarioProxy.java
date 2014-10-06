@@ -28,7 +28,6 @@ public class ChaseDEScenarioProxy implements IDEChaser {
         List<Dependency> egds = scenario.getEGDs();
         if(egds.isEmpty()){
             logger.warn("ChaseDEScenarioProxy without EGDs is slow. Please use the classic DEChaser.");
-            throw new IllegalArgumentException();
         }
         scenario.setEGDs(new ArrayList<Dependency>());
         scenario.setExtEGDs(egds);
