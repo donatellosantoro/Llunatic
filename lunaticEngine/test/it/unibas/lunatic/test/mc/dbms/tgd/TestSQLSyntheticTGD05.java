@@ -16,7 +16,7 @@ public class TestSQLSyntheticTGD05 extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLSyntheticTGD05.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.synthetic_T05_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T05_dbms);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);

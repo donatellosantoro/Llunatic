@@ -14,7 +14,7 @@ public class TestDoctors extends CheckExpectedSolutionsTest {
     private static Logger logger = LoggerFactory.getLogger(TestDoctors.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.doctors);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.doctors);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);

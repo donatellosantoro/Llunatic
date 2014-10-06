@@ -15,7 +15,7 @@ public class TestSQLPersons extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLPersons.class);
     
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.persons_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_dbms);
         setConfigurationForTest(scenario);
 //        setCheckEGDsAfterEachStep(scenario);
 //        scenario.getCostManager().setDoBackward(false);

@@ -15,7 +15,7 @@ public class TestSamplingPersons extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSamplingPersons.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.persons);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons);
         scenario.setCostManager(new SamplingCostManager(1));
         setConfigurationForTest(scenario);
 //        setCheckEGDsAfterEachStep(scenario);

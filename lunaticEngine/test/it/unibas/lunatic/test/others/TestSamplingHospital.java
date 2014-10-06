@@ -16,7 +16,7 @@ public class TestSamplingHospital extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSamplingHospital.class);
     
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.hospital);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital);
         scenario.setCostManager(new SamplingCostManager(5));
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);

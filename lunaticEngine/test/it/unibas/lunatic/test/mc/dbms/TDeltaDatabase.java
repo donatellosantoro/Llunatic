@@ -23,7 +23,7 @@ public class TDeltaDatabase extends CheckTest {
     private BuildSQLDBForChaseStep stepBuilder = new BuildSQLDBForChaseStep();
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.hospital_0_2p_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital_0_2p_dbms);
         new AnalyzeDependencies().prepareDependenciesAndGenerateStratification(scenario);
         IDatabase deltaDB = deltaBuilder.generate((DBMSDB)scenario.getTarget(), scenario,LunaticConstants.CHASE_STEP_ROOT);
         AccessConfiguration accessConfiguration = ((DBMSDB) scenario.getTarget()).getAccessConfiguration().clone();

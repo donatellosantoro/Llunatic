@@ -17,7 +17,7 @@ public class TestPersonsNoPermutations extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestPersonsNoPermutations.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.persons_fr_sp);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_fr_sp);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         Assert.assertTrue(scenario.getPartialOrder() instanceof FrequencyPartialOrder);

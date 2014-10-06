@@ -5,6 +5,7 @@ import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import it.unibas.lunatic.persistence.relational.QueryManager;
+import it.unibas.lunatic.persistence.relational.QueryStatManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -23,7 +24,7 @@ public class DBMSTupleIterator implements ITupleIterator {
         this.resultSet = resultSet;
         this.tableName = tableName;
         try {
-            firstTupleRead = resultSet.next();
+            firstTupleRead = moveResultSet(resultSet);
             if (!firstTupleRead) {
                 empty = true;
             }
@@ -56,7 +57,7 @@ public class DBMSTupleIterator implements ITupleIterator {
             if (firstTupleRead) {
                 firstTupleRead = false;
             } else {
-                resultSet.next();
+                moveResultSet(resultSet);
             }
             Tuple tuple = DBMSUtility.createTuple(resultSet, tableName);
             return tuple;
@@ -80,5 +81,10 @@ public class DBMSTupleIterator implements ITupleIterator {
 
     public void close() {
         QueryManager.closeResultSet(resultSet);
+    }
+
+    private boolean moveResultSet(ResultSet resultSet) throws SQLException {
+        QueryStatManager.getInstance().addReadTuple();
+        return resultSet.next();
     }
 }

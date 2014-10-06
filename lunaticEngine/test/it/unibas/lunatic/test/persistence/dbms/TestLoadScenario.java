@@ -1,10 +1,8 @@
 package it.unibas.lunatic.test.persistence.dbms;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.persistence.DAOMCScenario;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
-import java.io.File;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
@@ -13,13 +11,10 @@ import org.slf4j.LoggerFactory;
 public class TestLoadScenario extends TestCase {
 
     private static Logger logger = LoggerFactory.getLogger(TestLoadScenario.class);
-    private DAOMCScenario daoScenario;
 
     public void testLoadDBMS() {
         try {
-            String fileScenario = new File(this.getClass().getResource(References.bookPublisher_dbms).toURI()).getAbsolutePath();
-            daoScenario = new DAOMCScenario();
-            Scenario scenario = daoScenario.loadScenario(fileScenario);
+            Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_dbms);
 //            DBMSUtility.emptyTables(((DBMSDB)scenario.getTarget()).getAccessConfiguration());
             Assert.assertNotNull(scenario);
             Assert.assertNotNull(scenario.getSource());

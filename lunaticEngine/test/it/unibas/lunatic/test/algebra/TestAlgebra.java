@@ -26,7 +26,7 @@ public class TestAlgebra extends TestCase {
     private static Logger logger = LoggerFactory.getLogger(TestAlgebra.class);
 
     public void testScan() {
-        Scenario scenario = UtilityTest.loadScenario(References.bookPublisher_plain);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
         TableAlias tableAlias = new TableAlias("IBDBookSet", true);
         Scan scan = new Scan(tableAlias);
         if (logger.isTraceEnabled()) logger.debug(scan.toString());
@@ -37,7 +37,7 @@ public class TestAlgebra extends TestCase {
     }
 
     public void testEmptySelect() {
-        Scenario scenario = UtilityTest.loadScenario(References.bookPublisher_plain);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
         TableAlias tableAlias = new TableAlias("IBDBookSet", true);
         Scan scan = new Scan(tableAlias);
         Select select = new Select(Collections.EMPTY_LIST);
@@ -50,7 +50,7 @@ public class TestAlgebra extends TestCase {
     }
 
     public void testSelect() {
-        Scenario scenario = UtilityTest.loadScenario(References.bookPublisher_plain);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
         List<Expression> expressions = new ArrayList<Expression>();
         Expression expression = new Expression("t == \"TheHobbit\"");
         TableAlias tableAlias = new TableAlias("IBDBookSet", true);
@@ -70,7 +70,7 @@ public class TestAlgebra extends TestCase {
     }
 
     public void testSelectIn() {
-        Scenario scenario = UtilityTest.loadScenario(References.bookPublisher_plain);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
         TableAlias innerTableAlias = new TableAlias("IBDBookSet", true);
         List<AttributeRef> attributeToProject = new ArrayList<AttributeRef>();
         attributeToProject.add(new AttributeRef(innerTableAlias, "title"));
@@ -90,7 +90,7 @@ public class TestAlgebra extends TestCase {
     }
 
     public void testProjectSingleAttribute() {
-        Scenario scenario = UtilityTest.loadScenario(References.employees_rew);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_rew);
         TableAlias tableAlias = new TableAlias("S_Employee", true);
         List<AttributeRef> attributes = new ArrayList<AttributeRef>();
         attributes.add(new AttributeRef(tableAlias, "name"));
@@ -105,7 +105,7 @@ public class TestAlgebra extends TestCase {
     }
 
     public void testProjectMultipleAttribute() {
-        Scenario scenario = UtilityTest.loadScenario(References.employees_rew);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_rew);
         TableAlias tableAlias = new TableAlias("S_Employee", true);
         List<AttributeRef> attributes = new ArrayList<AttributeRef>();
         attributes.add(new AttributeRef(tableAlias, "name"));
@@ -120,7 +120,7 @@ public class TestAlgebra extends TestCase {
     }
 
     public void testJoinProjectRS() {
-        Scenario scenario = UtilityTest.loadScenario(References.testRS);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testRS);
         TableAlias tableAliasR = new TableAlias("R");
         TableAlias tableAliasS = new TableAlias("S");
         List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>();
@@ -144,7 +144,7 @@ public class TestAlgebra extends TestCase {
     }
 
     public void testCount() {
-        Scenario scenario = UtilityTest.loadScenario(References.employees_egd);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_egd);
         TableAlias tableAlias = new TableAlias("S_Employee", true);
         Scan scan = new Scan(tableAlias);
         List<AttributeRef> groupingAttribute = new ArrayList<AttributeRef>();
@@ -163,7 +163,7 @@ public class TestAlgebra extends TestCase {
     }
 
     public void testHaving() {
-        Scenario scenario = UtilityTest.loadScenario(References.employees_egd);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_egd);
         TableAlias tableAlias = new TableAlias("S_Employee", true);
         Scan scan = new Scan(tableAlias);
         List<AttributeRef> groupingAttribute = new ArrayList<AttributeRef>();
@@ -191,7 +191,7 @@ public class TestAlgebra extends TestCase {
     }
 
     public void testViolation() {
-        Scenario scenario = UtilityTest.loadScenario(References.algebra_employees);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.algebra_employees);
         TableAlias tableAlias = new TableAlias("S_Employee", true);
         Scan violationScan = new Scan(tableAlias);
         List<AttributeRef> firstGroupingAttribute = new ArrayList<AttributeRef>();

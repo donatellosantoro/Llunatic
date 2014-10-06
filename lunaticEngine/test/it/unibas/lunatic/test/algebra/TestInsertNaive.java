@@ -17,7 +17,7 @@ public class TestInsertNaive extends CheckTest {
     private ChaseMainMemorySTTGDs stChaser = new ChaseMainMemorySTTGDs();
 
     public void testRemoveDuplicate() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.testR);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testR);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

@@ -21,7 +21,7 @@ public class TestSynthetic08 extends CheckExpectedSolutionsTest {
     private static Logger logger = LoggerFactory.getLogger(TestSynthetic08.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.synthetic_08);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_08);
         setConfigurationForTest(scenario);
         scenario.getCostManager().setDoBackward(false);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);

@@ -19,7 +19,7 @@ public class TestUnion extends TestCase{
     private static Logger logger = LoggerFactory.getLogger(TestUnion.class);
 
     public void testMultipleAttributeUnion() {
-        Scenario scenario = UtilityTest.loadScenario(References.testR);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testR);
         Union union = new Union();
         union.addChild(new Scan(new TableAlias("R1", true)));
         union.addChild(new Scan(new TableAlias("R2", true)));
@@ -31,7 +31,7 @@ public class TestUnion extends TestCase{
     }
     
     public void testSingleAttributeUnion() {
-        Scenario scenario = UtilityTest.loadScenario(References.testR);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testR);
         Union union = new Union();
         union.addChild(new Scan(new TableAlias("R3", true)));
         union.addChild(new Scan(new TableAlias("R4", true)));
@@ -43,7 +43,7 @@ public class TestUnion extends TestCase{
     }
     
     public void testFullUnion() {
-        Scenario scenario = UtilityTest.loadScenario(References.testR);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testR);
         Union union = new Union();
         union.addChild(new Scan(new TableAlias("R3", true)));
         union.addChild(new Scan(new TableAlias("R5", true)));
@@ -55,7 +55,7 @@ public class TestUnion extends TestCase{
     }
     
     public void testSelfUnion() {
-        Scenario scenario = UtilityTest.loadScenario(References.testR);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testR);
         Union union = new Union();
         union.addChild(new Scan(new TableAlias("R3", true)));
         union.addChild(new Scan(new TableAlias("R3", true)));

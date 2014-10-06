@@ -15,7 +15,7 @@ public class TestSQLCustomers extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLCustomers.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.customers_cfd_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.customers_cfd_dbms, true);
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setDebugMode(true);
 //        scenario.getConfiguration().setRemoveDuplicates(true);

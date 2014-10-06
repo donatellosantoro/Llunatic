@@ -14,14 +14,14 @@ public class TestSQLChaseExtTgds extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLChaseExtTgds.class);
 
     public void testRSTC() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.RS_tc_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.RS_tc_dbms);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }
     
     public void testJoin() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.RS_join_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.RS_join_dbms, true);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

@@ -13,10 +13,11 @@ public class QueryStatManager {
 
     private static QueryStatManager singleton = new QueryStatManager();
     private List<QueryStat> statistics = new ArrayList<QueryStat>();
-    private int TOP_K_QUERIES = 0;
+    private long readTuples = 0;
+    private int TOP_K_QUERIES = 0; //0 Disabled
     private int QUERY_PREVIEW_LENGHT = -1; //-1 to print the whole query
     private Date lastPrint;
-    private int SEC = -1; //-1 to disable printAfterSeconds
+    private int SEC = -1; //-1 disabled
 
     private QueryStatManager() {
     }
@@ -43,6 +44,11 @@ public class QueryStatManager {
 
     public void printStatistics() {
         printStatistics("");
+    }
+
+    public void addReadTuple() {
+        if (!logger.isDebugEnabled()) return;
+        readTuples++;
     }
 
     public void printStatistics(String prefix) {
@@ -72,6 +78,7 @@ public class QueryStatManager {
         sb.append("\t").append("Insert").append("\t").append(insert).append("\n");
         sb.append("\t").append("Update").append("\t").append(update).append("\n");
         sb.append("\t").append("Delete").append("\t").append(delete).append("\n");
+        sb.append("Read tuples:\t").append(readTuples).append("\n");
         if (TOP_K_QUERIES > 0) sb.append("Most expensive queries:").append("\n");
         for (int i = 0; i < Math.min(TOP_K_QUERIES, statistics.size()); i++) {
             QueryStat query = statistics.get(i);

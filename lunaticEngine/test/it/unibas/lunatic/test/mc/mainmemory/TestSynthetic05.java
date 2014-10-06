@@ -15,7 +15,7 @@ public class TestSynthetic05 extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSynthetic05.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.synthetic_05);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_05);
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setUseLimit1(true);
         scenario.getCostManager().setDoBackward(false);

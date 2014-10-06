@@ -50,7 +50,7 @@ public class TChaseExtTGDSingleTuple extends CheckTest {
     }
     
     private Scenario prepareScenario() {
-        Scenario scenario = UtilityTest.loadScenario(References.RS_tgd, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.RS_tgd, true);
         System.out.print("Generating target... ");
         int toInsert = (SIZE * ALREADY_INSERT) / 100;
         for (int i = 0; i < SIZE; i++) {

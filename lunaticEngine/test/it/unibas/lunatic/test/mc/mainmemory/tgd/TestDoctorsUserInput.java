@@ -22,8 +22,8 @@ public class TestDoctorsUserInput extends CheckTest {
     private AddUserNode userNodeCreator;
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.doctors_usermanager);
-//        Scenario scenario = UtilityTest.loadScenario(References.treatments_usermanager);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.doctors_usermanager);
+//        Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_usermanager);
         userNodeCreator = OperatorFactory.getInstance().getUserNodeCreator(scenario);
         scenario.getCostManager().setDoBackward(false);
         scenario.getCostManager().setDoPermutations(false);

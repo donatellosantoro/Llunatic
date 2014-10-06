@@ -28,7 +28,7 @@ public class TDeltaDatabase extends CheckTest {
     private InsertTuple insertOperator = new InsertTuple();
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.persons);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons);
         MainMemoryDB deltaDB = new BuildMainMemoryDeltaDB().generate((MainMemoryDB) scenario.getTarget(), scenario, LunaticConstants.CHASE_STEP_ROOT);
         insertOperator.execute((MainMemoryTable) deltaDB.getTable("person_name"), buildTuple(new TupleOID(new OID(10)), "r.f", new ConstantValue("JACK"), "person_name", "name"));
         insertOperator.execute((MainMemoryTable) deltaDB.getTable("person_name"), buildTuple(new TupleOID(new OID(10)), "r.f.f", new ConstantValue("JOE"), "person_name", "name"));

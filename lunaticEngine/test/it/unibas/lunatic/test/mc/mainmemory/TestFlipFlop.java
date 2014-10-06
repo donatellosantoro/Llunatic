@@ -15,7 +15,7 @@ public class TestFlipFlop extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestFlipFlop.class);
     
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.flipflop);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.flipflop);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);

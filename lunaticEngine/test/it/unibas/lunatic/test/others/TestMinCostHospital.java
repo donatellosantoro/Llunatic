@@ -15,7 +15,7 @@ public class TestMinCostHospital extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestMinCostHospital.class);
     
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.hospital);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital);
         scenario.setCostManager(new MinCostRepairCostManager());
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);

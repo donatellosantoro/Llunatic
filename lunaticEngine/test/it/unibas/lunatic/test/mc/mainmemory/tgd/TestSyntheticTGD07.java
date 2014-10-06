@@ -15,7 +15,7 @@ public class TestSyntheticTGD07 extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSyntheticTGD07.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.synthetic_T07);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T07);
         setConfigurationForTest(scenario);
 //        scenario.getCostManager().setDoBackward(false);
 //        scenario.getConfiguration().setRemoveDuplicates(false);

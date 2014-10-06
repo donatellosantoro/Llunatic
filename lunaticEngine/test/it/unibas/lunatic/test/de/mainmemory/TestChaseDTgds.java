@@ -14,7 +14,7 @@ public class TestChaseDTgds extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestChaseDTgds.class);
 
     public void testEmployeesDTGDs() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.employees_dtgd);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_dtgd);
         try {
             DEChaserFactory.getChaser(scenario).doChase(scenario);
             fail();

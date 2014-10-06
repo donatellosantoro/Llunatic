@@ -1,16 +1,12 @@
 package it.unibas.lunatic.model.chase.chaseded.dbms;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chaseded.IDatabaseManager;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import it.unibas.lunatic.persistence.relational.QueryManager;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SQLDatabaseManager implements IDatabaseManager {
 
@@ -28,7 +24,8 @@ public class SQLDatabaseManager implements IDatabaseManager {
         cloneSchema(originalWorkSchema, cloneWorkSchema, workConfiguration);
         AccessConfiguration cloneAccessConfiguration = targetConfiguration.clone();
         cloneAccessConfiguration.setSchemaName(cloneTargetSchemaName);
-        DBMSDB clone = new DBMSDB(target, cloneAccessConfiguration); //shallow copy
+//        DBMSDB clone = new DBMSDB(target, cloneAccessConfiguration); //shallow copy
+        DBMSDB clone = new DBMSDB(cloneAccessConfiguration);
         return clone;
     }
 

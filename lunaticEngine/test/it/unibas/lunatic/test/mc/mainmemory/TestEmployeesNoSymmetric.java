@@ -16,8 +16,8 @@ public class TestEmployeesNoSymmetric extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestEmployeesNoSymmetric.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.employees_comparisons_nosymmetric);
-//        Scenario scenario = UtilityTest.loadScenario(References.employees_comparisons_nosymmetric_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_comparisons_nosymmetric);
+//        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_comparisons_nosymmetric_dbms);
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setUseSymmetricOptimization(false);
 //        scenario.getConfiguration().setUseLimit1(true);

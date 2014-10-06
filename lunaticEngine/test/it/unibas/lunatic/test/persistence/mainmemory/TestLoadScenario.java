@@ -17,9 +17,7 @@ public class TestLoadScenario extends TestCase {
 
     public void testLoadXML() {
         try {
-            String fileScenario = new File(this.getClass().getResource(References.bookPublisher).toURI()).getAbsolutePath();
-            daoScenario = new DAOMCScenario();
-            Scenario scenario = daoScenario.loadScenario(fileScenario);
+            Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher);
             Assert.assertNotNull(scenario);
             Assert.assertNotNull(scenario.getSource());
             Assert.assertEquals(4, scenario.getSource().getTableNames().size());
@@ -41,9 +39,7 @@ public class TestLoadScenario extends TestCase {
 
     public void testLoadPlain() {
         try {
-            String fileScenario = new File(this.getClass().getResource(References.bookPublisher_plain).toURI()).getAbsolutePath();
-            daoScenario = new DAOMCScenario();
-            Scenario scenario = daoScenario.loadScenario(fileScenario);
+            Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
             Assert.assertNotNull(scenario);
             Assert.assertNotNull(scenario.getSource());
             Assert.assertEquals(4, scenario.getSource().getTableNames().size());
@@ -69,9 +65,7 @@ public class TestLoadScenario extends TestCase {
 
     public void testLoadOnlyTarget() {
         try {
-            String fileScenario = new File(this.getClass().getResource(References.expenseDB).toURI()).getAbsolutePath();
-            daoScenario = new DAOMCScenario();
-            Scenario scenario = daoScenario.loadScenario(fileScenario);
+            Scenario scenario = UtilityTest.loadScenarioFromResources(References.expenseDB);
             Assert.assertNotNull(scenario);
             Assert.assertNotNull(scenario.getSource());
             Assert.assertEquals(0, scenario.getSource().getTableNames().size());
@@ -92,9 +86,7 @@ public class TestLoadScenario extends TestCase {
 
     public void testLoadFunction() {
         try {
-            String fileScenario = new File(this.getClass().getResource(References.employees_rew).toURI()).getAbsolutePath();
-            daoScenario = new DAOMCScenario();
-            Scenario scenario = daoScenario.loadScenario(fileScenario);
+            Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_rew);
             Assert.assertNotNull(scenario);
             Assert.assertNotNull(scenario.getSource());
             Assert.assertEquals(1, scenario.getSource().getTableNames().size());
@@ -113,9 +105,7 @@ public class TestLoadScenario extends TestCase {
     
     public void testLoadNegation() {
         try {
-            String fileScenario = new File(this.getClass().getResource(References.companies_rew).toURI()).getAbsolutePath();
-            daoScenario = new DAOMCScenario();
-            Scenario scenario = daoScenario.loadScenario(fileScenario);
+            Scenario scenario = UtilityTest.loadScenarioFromResources(References.companies_rew);
             Assert.assertNotNull(scenario);
             Assert.assertNotNull(scenario.getSource());
             Assert.assertEquals(5, scenario.getSource().getTableNames().size());

@@ -15,21 +15,21 @@ public class TestSQLEmployees extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLEmployees.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.employees_rew_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_rew_dbms);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }
 
     public void testScenarioEGD() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.employees_egd_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_egd_dbms);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }
 
     public void testScenarioDenial() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.employees_dtgd_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_dtgd_dbms);
         try {
             DEChaserFactory.getChaser(scenario).doChase(scenario);
             fail();

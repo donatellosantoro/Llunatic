@@ -20,7 +20,7 @@ public class TestSQLTreatments extends CheckTest {
     protected GenerateModifiedCells modifiedCellsGenerator = new GenerateModifiedCells(new SQLRunQuery());
 
     public void testScenarioFRSPScript() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.treatments_fr_sp_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_sp_dbms, true);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
@@ -36,7 +36,7 @@ public class TestSQLTreatments extends CheckTest {
     }
 
     public void testScenarioPOFRS5() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.treatments_fr_s5_poset_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_s5_poset_dbms, true);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
@@ -52,7 +52,7 @@ public class TestSQLTreatments extends CheckTest {
     }
 
     public void testScenarioPOS50() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.treatments_poset_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_poset_dbms, true);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);

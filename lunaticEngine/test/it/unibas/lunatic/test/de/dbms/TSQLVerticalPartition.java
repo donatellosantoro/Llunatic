@@ -16,7 +16,7 @@ public class TSQLVerticalPartition extends CheckTest {
 
 
 //    public void testScenario10k() throws Exception {
-//        Scenario scenario = UtilityTest.loadScenario(References.verticalPartition_10k_dbms);
+//        Scenario scenario = UtilityTest.loadScenarioFromResources(References.verticalPartition_10k_dbms);
 //        long start = new Date().getTime();
 //        DBMSDB result = (DBMSDB) DEChaserFactory.getChaser(scenario).doChase(scenario);
 //        long end = new Date().getTime();
@@ -26,7 +26,7 @@ public class TSQLVerticalPartition extends CheckTest {
 //        //checkExpectedInstances(result, scenario); // 177 minutes 51 seconds)
 //    }
     public void testScenario100k() throws Exception { //64% redundancy
-        Scenario scenario = UtilityTest.loadScenario(References.verticalPartition_100k_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.verticalPartition_100k_dbms);
         long start = new Date().getTime();
         DBMSDB result = (DBMSDB) DEChaserFactory.getChaser(scenario).doChase(scenario);
         long end = new Date().getTime();

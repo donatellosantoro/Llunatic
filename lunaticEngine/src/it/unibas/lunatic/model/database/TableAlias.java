@@ -91,7 +91,7 @@ public class TableAlias implements Cloneable, Serializable {
 
     @Override
     public String toString() {
-        return (source ? "Source." : "") + tableName + (alias.equals("") ? "" : "_" + alias);
+        return (source ? "Source." : "") + tableName + (!isAliased() ? "" : "_" + alias);
     }
 
     public String toStringWithoutSource() {

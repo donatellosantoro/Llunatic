@@ -15,7 +15,7 @@ public class TestSynthetic03 extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSynthetic03.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.synthetic_03);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_03);
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);

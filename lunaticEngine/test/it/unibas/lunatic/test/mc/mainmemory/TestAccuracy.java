@@ -14,7 +14,7 @@ public class TestAccuracy extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestAccuracy.class);
 
 //    public void testScenarioPO() throws Exception {
-//        Scenario scenario = UtilityTest.loadScenario(References.accuracy);
+//        Scenario scenario = UtilityTest.loadScenarioFromResources(References.accuracy);
 //        setConfigurationForTest(scenario);
 //        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
 //        DeltaChaseStep result = chaser.doChase(scenario);
@@ -26,7 +26,7 @@ public class TestAccuracy extends CheckTest {
 //    }
 
     public void testScenarioOrderingAttribute() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.accuracy_poset);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.accuracy_poset);
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setRemoveDuplicates(true);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);

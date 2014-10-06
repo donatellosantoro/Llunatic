@@ -14,7 +14,7 @@ public class TestSQLBookPublisher extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLBookPublisher.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.bookPublisher_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_dbms, true);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

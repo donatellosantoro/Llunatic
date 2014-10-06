@@ -64,7 +64,7 @@ public class TTGDScalability extends CheckTest {
 ////        Assert.assertEquals(SIZE, scenario.getTarget().getTable("s").getSize());
 //    }
     private Scenario prepareScenario() {
-        Scenario scenario = UtilityTest.loadScenario(References.synthetic_TScal_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_TScal_dbms, true);
         System.out.print("Generating target... ");
         int toInsert = (SIZE * ALREADY_INSERT) / 100;
         for (int i = 0; i < SIZE; i++) {

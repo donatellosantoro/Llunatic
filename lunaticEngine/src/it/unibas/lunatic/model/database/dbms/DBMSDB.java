@@ -5,6 +5,7 @@ import it.unibas.lunatic.model.database.ForeignKey;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.ITable;
 import it.unibas.lunatic.model.database.Key;
+import it.unibas.lunatic.model.database.dbms.operators.ExecuteInitDB;
 import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import it.unibas.lunatic.persistence.relational.QueryManager;
@@ -13,28 +14,28 @@ import java.util.List;
 
 public class DBMSDB implements IDatabase {
 
+    private static ExecuteInitDB initDBExecutor = new ExecuteInitDB();
     private AccessConfiguration accessConfiguration;
-    private String initDBScript;
     private List<String> tableNames;
     private List<Key> keys;
     private List<ForeignKey> foreignKeys;
     private boolean initialized = false;
     private List<DBMSTable> tables = new ArrayList<DBMSTable>();
+    private InitDBConfiguration initDBConfiguration = new InitDBConfiguration();
 
     public DBMSDB(AccessConfiguration accessConfiguration) {
         this.accessConfiguration = accessConfiguration;
     }
 
-    public DBMSDB(DBMSDB db, AccessConfiguration accessConfiguration) {
-        this.accessConfiguration = accessConfiguration;
-        this.initDBScript = db.initDBScript;
-        this.tableNames = db.tableNames;
-        this.keys = db.keys;
-        this.foreignKeys = db.foreignKeys;
-        this.initialized = db.initialized;
-        this.tables = db.tables;
-    }
-
+//    public DBMSDB(DBMSDB db, AccessConfiguration accessConfiguration) {
+//        this.accessConfiguration = accessConfiguration;
+//        this.initDBConfiguration = db.initDBConfiguration;
+//        this.tableNames = db.tableNames;
+//        this.keys = db.keys;
+//        this.foreignKeys = db.foreignKeys;
+//        this.initialized = db.initialized;
+//        this.tables = db.tables;
+//    }
     private void initDBMS() {
         if (initialized) {
             return;
@@ -42,8 +43,8 @@ public class DBMSDB implements IDatabase {
         if (!DBMSUtility.isDBExists(accessConfiguration)) {
             DBMSUtility.createDB(accessConfiguration);
         }
-        if (initDBScript != null && !DBMSUtility.isSchemaExists(accessConfiguration)) {
-            QueryManager.executeScript(initDBScript, accessConfiguration, false, true, false);
+        if (!initDBConfiguration.isEmpty() && !DBMSUtility.isSchemaExists(accessConfiguration)) {
+            initDBExecutor.execute(this);
         }
         initialized = true;
         loadTables();
@@ -128,12 +129,8 @@ public class DBMSDB implements IDatabase {
         return accessConfiguration;
     }
 
-    public String getInitDBScript() {
-        return initDBScript;
-    }
-
-    public void setInitDBScript(String initDBScript) {
-        this.initDBScript = initDBScript;
+    public InitDBConfiguration getInitDBConfiguration() {
+        return initDBConfiguration;
     }
 
     public int getSize() {

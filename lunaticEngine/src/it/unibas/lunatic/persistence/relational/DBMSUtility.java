@@ -395,19 +395,19 @@ public class DBMSUtility {
     }
 
     public static String convertDataSourceTypeToDBType(String columnType) {
-        if(columnType.equals(Types.DATE)){
+        if (columnType.equals(Types.DATE)) {
             return "date";
         }
-        if(columnType.equals(Types.DATETIME)){
+        if (columnType.equals(Types.DATETIME)) {
             return "datetime";
         }
-        if(columnType.equals(Types.INTEGER)){
+        if (columnType.equals(Types.INTEGER)) {
             return "bigint";
         }
-        if(columnType.equals(Types.DOUBLE)){
+        if (columnType.equals(Types.DOUBLE)) {
             return "float";
         }
-        if(columnType.equals(Types.BOOLEAN)){
+        if (columnType.equals(Types.BOOLEAN)) {
             return "bool";
         }
         return "text";

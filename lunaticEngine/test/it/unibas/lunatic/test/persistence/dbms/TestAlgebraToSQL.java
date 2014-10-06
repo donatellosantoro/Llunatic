@@ -34,7 +34,7 @@ public class TestAlgebraToSQL extends CheckTest {
     @Override
     protected void setUp() throws Exception {
         if (scenario == null) {
-            scenario = UtilityTest.loadScenario(References.bookPublisher_dbms);
+            scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_dbms);
         }
     }
 

@@ -13,7 +13,7 @@ public class TestSynth extends TestCase {
     private static Logger logger = LoggerFactory.getLogger(TestSynth.class);
 
     public void testScenarioST() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario("/resources/de/synt/synt25-mcscenario-0k.xml");
+        Scenario scenario = UtilityTest.loadScenarioFromResources("/de/synt/synt25-mcscenario-0k.xml");
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
     }

@@ -22,7 +22,7 @@ public class TestJoin extends TestCase{
     private static Logger logger = LoggerFactory.getLogger(TestJoin.class);
 
     public void testJoin() {
-        Scenario scenario = UtilityTest.loadScenario(References.bookPublisher_plain);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
         TableAlias bookSet = new TableAlias("IBLBookSet", true);
         TableAlias publisherSet = new TableAlias("IBLPublisherSet", true);
         List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>();
@@ -39,7 +39,7 @@ public class TestJoin extends TestCase{
     }
     
     public void testJoinRS() {
-        Scenario scenario = UtilityTest.loadScenario(References.testRS);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testRS);
         TableAlias r = new TableAlias("R");
         TableAlias s = new TableAlias("S");
         List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>();
@@ -57,7 +57,7 @@ public class TestJoin extends TestCase{
     }
     
     public void testMultipleJoinRS() {
-        Scenario scenario = UtilityTest.loadScenario(References.testRS);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testRS);
         TableAlias r = new TableAlias("R");
         TableAlias s = new TableAlias("S");
         List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>();

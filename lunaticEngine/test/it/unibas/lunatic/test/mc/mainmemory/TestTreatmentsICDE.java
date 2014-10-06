@@ -18,7 +18,7 @@ public class TestTreatmentsICDE extends CheckTest {
     protected GenerateModifiedCells modifiedCellsGenerator = new GenerateModifiedCells(new MainMemoryRunQuery());
 
     public void testScenarioICDE() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.treatments_icde);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_icde);
         scenario.getCostManager().setDoBackward(false);
         scenario.getCostManager().setDoPermutations(false);
         setConfigurationForTest(scenario);

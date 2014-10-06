@@ -15,7 +15,7 @@ public class TestSQLEmployees extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLEmployees.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.employees_comparisons_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_comparisons_dbms);
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setUseSymmetricOptimization(false);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);

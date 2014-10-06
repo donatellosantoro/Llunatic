@@ -16,7 +16,7 @@ public class TestSQLHospital extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLHospital.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.hospital_0_2p_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital_0_2p_dbms, true);
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);

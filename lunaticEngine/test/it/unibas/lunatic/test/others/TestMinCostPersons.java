@@ -15,7 +15,7 @@ public class TestMinCostPersons extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestMinCostPersons.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.persons);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons);
         scenario.setCostManager(new MinCostRepairCostManager());
         setConfigurationForTest(scenario);
 //        setCheckEGDsAfterEachStep(scenario);

@@ -2,55 +2,66 @@ package it.unibas.lunatic.test;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.database.ITable;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.persistence.DAOMCScenario;
+import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import it.unibas.lunatic.persistence.relational.QueryManager;
+import it.unibas.lunatic.persistence.xml.DAOXmlUtility;
+import it.unibas.lunatic.test.comparator.repairs.DAOException;
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import junit.framework.Assert;
+import org.jdom.Document;
+import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UtilityTest {
 
     private static Logger logger = LoggerFactory.getLogger(UtilityTest.class);
+    private static DAOXmlUtility daoUtility = new DAOXmlUtility();
+    public static final String RESOURCES_FOLDER = "/resources/";
 
-    public static Scenario loadScenario(String scenarioName) {
-        return loadScenario(scenarioName, false);
+    public static Scenario loadScenarioFromResources(String fileScenario) {
+        return loadScenarioFromResources(fileScenario, false);
     }
 
-    public static Scenario loadScenarioFromAbsolutePath(String scenarioName) {
-        return loadScenarioFromAbsolutePath(scenarioName, false);
+    public static Scenario loadScenarioFromAbsolutePath(String fileScenario) {
+        return loadScenarioFromAbsolutePath(fileScenario, false);
     }
 
-    public static Scenario loadScenario(String scenarioName, boolean recreateDB) {
-        return loadScenario(scenarioName, recreateDB, false);
-    }
-
-    public static Scenario loadScenarioFromAbsolutePath(String scenarioName, boolean recreateDB) {
-        return loadScenario(scenarioName, recreateDB, true);
-    }
-
-    private static Scenario loadScenario(String scenarioPath, boolean recreateDB, boolean absolutePath) {
-        Assert.assertNotNull(scenarioPath);
+    public static Scenario loadScenarioFromResources(String fileScenario, boolean recreateDB) {
         try {
-            String fileScenario;
-            if (absolutePath) {
-                fileScenario = scenarioPath;
-            } else {
-                URL url = UtilityTest.class.getResource(scenarioPath);
-                Assert.assertNotNull("File " + scenarioPath + " doesn't exist", url);
-                fileScenario = new File(url.toURI()).getAbsolutePath();
+            fileScenario = RESOURCES_FOLDER + fileScenario;
+            URL scenarioURL = UtilityTest.class.getResource(fileScenario);
+            Assert.assertNotNull("Load scenario " + fileScenario, scenarioURL);
+            fileScenario = new File(scenarioURL.toURI()).getAbsolutePath();
+            return loadScenario(fileScenario, recreateDB);
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace();
+            Assert.fail(ex.getLocalizedMessage());
+            return null;
+        }
+    }
+
+    public static Scenario loadScenarioFromAbsolutePath(String fileScenario, boolean recreateDB) {
+        return loadScenario(fileScenario, recreateDB);
+    }
+
+    private static Scenario loadScenario(String fileScenario, boolean recreateDB) {
+        Assert.assertNotNull(fileScenario);
+        try {
+            if (recreateDB) {
+                deleteDB(loadTargetAccessConfiguration(fileScenario));
             }
+        } catch (Exception ex) {
+            logger.warn("Unable to drop database.\n" + ex.getLocalizedMessage()); //Fail if DBMS error and continue if not exists
+        }
+        try {
             DAOMCScenario daoScenario = new DAOMCScenario();
             Scenario scenario = daoScenario.loadScenario(fileScenario);
-            if (recreateDB) {
-                deleteDB(scenario);
-                scenario = daoScenario.loadScenario(fileScenario);
-            }
             scenario.setAbsolutePath(fileScenario);
-            if (logger.isDebugEnabled()) logger.debug(scenario.toString());
             return scenario;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -59,10 +70,10 @@ public class UtilityTest {
         }
     }
 
-    public static void deleteDB(Scenario scenario) {
-        String script = "DROP DATABASE " + ((DBMSDB) scenario.getTarget()).getAccessConfiguration().getDatabaseName() + ";\n";
+    public static void deleteDB(AccessConfiguration accessConfiguration) {
+        String script = "DROP DATABASE " + accessConfiguration.getDatabaseName() + ";\n";
         if (logger.isDebugEnabled()) logger.debug("Executing script " + script);
-        QueryManager.executeScript(script, DBMSUtility.getTempAccessConfiguration(((DBMSDB) scenario.getTarget()).getAccessConfiguration()), true, true, true);
+        QueryManager.executeScript(script, DBMSUtility.getTempAccessConfiguration(accessConfiguration), true, true, true);
     }
 
     public static String getAbsoluteFileName(String fileName) {
@@ -78,5 +89,22 @@ public class UtilityTest {
 
     public static int getSize(ITable table) {
         return table.getSize();
+    }
+
+    private static AccessConfiguration loadTargetAccessConfiguration(String fileScenario) {
+        Document document = daoUtility.buildDOM(fileScenario);
+        Element rootElement = document.getRootElement();
+        Element databaseElement = rootElement.getChild("target");
+        Element dbmsElement = databaseElement.getChild("access-configuration");
+        if (dbmsElement == null) {
+            throw new DAOException("Unable to load scenario from file " + fileScenario + ". Missing tag <access-configuration>");
+        }
+        AccessConfiguration accessConfiguration = new AccessConfiguration();
+        accessConfiguration.setDriver(dbmsElement.getChildText("driver").trim());
+        accessConfiguration.setUri(dbmsElement.getChildText("uri").trim());
+        accessConfiguration.setSchemaName(dbmsElement.getChildText("schema").trim());
+        accessConfiguration.setLogin(dbmsElement.getChildText("login").trim());
+        accessConfiguration.setPassword(dbmsElement.getChildText("password").trim());
+        return accessConfiguration;
     }
 }

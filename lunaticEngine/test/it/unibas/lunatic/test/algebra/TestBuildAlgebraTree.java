@@ -20,7 +20,7 @@ public class TestBuildAlgebraTree extends TestCase {
     private BuildAlgebraTree buildAlgebraTree = new BuildAlgebraTree();
 
     public void testBuiltInCondition() {
-        Scenario scenario = UtilityTest.loadScenario(References.employees_rew);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_rew);
         List<Dependency> dependencies = scenario.getSTTgds();
         dependencies.addAll(scenario.getExtTGDs());
         dependencies.addAll(scenario.getExtEGDs());
@@ -34,7 +34,7 @@ public class TestBuildAlgebraTree extends TestCase {
     }
 
     public void testJoinNegation() {
-        Scenario scenario = UtilityTest.loadScenario(References.companies_rew);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.companies_rew);
         List<Dependency> dependencies = scenario.getSTTgds();
         dependencies.addAll(scenario.getExtTGDs());
         dependencies.addAll(scenario.getExtEGDs());
@@ -48,7 +48,7 @@ public class TestBuildAlgebraTree extends TestCase {
     }
 
     public void testRSETGD() {
-        Scenario scenario = UtilityTest.loadScenario(References.testRS);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testRS);
         List<Dependency> eTGD = scenario.getExtTGDs();
         for (Dependency dependency : eTGD) {
             IAlgebraOperator operator = buildAlgebraTree.buildTreeForPremise(dependency, scenario);

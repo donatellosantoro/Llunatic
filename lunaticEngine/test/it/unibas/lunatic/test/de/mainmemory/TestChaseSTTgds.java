@@ -17,21 +17,21 @@ public class TestChaseSTTgds extends CheckTest {
     private ChaseMainMemorySTTGDs stChaser = new ChaseMainMemorySTTGDs();
 
 //    public void testPublisher() throws Exception {
-//        Scenario scenario = UtilityTest.loadScenario(References.bookPublisher_plain);
+//        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
 //        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
 //        if (logger.isDebugEnabled()) logger.debug(result.toString());
 //        checkExpectedInstances(result, scenario);
 //    }
 //
 //    public void testEmployees() throws Exception {
-//        Scenario scenario = UtilityTest.loadScenario(References.employees_rew);
+//        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_rew);
 //        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
 //        if (logger.isDebugEnabled()) logger.debug(result.toString());
 //        checkExpectedInstances(result, scenario);
 //    }
 
     public void testCompanies() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.companies_rew);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.companies_rew);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

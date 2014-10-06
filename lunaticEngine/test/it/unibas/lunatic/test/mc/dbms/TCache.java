@@ -56,18 +56,18 @@ public class TCache extends CheckTest {
 //    }
 
     private void testScenario(String scenarioPath) throws Exception {
-        Scenario scenarioNoCache = UtilityTest.loadScenario(scenarioPath, true);
+        Scenario scenarioNoCache = UtilityTest.loadScenarioFromResources(scenarioPath, true);
         scenarioNoCache.getConfiguration().setUseCache(LunaticConstants.NO_CACHE);
         Results resultNoCache = executeTest(scenarioNoCache);
 
-        Scenario scenarioWithCache = UtilityTest.loadScenario(scenarioPath, true);
+        Scenario scenarioWithCache = UtilityTest.loadScenarioFromResources(scenarioPath, true);
         scenarioWithCache.getConfiguration().setUseCache(STRATEGY_TO_TEST);
         Results resultWithCache = executeTest(scenarioWithCache);
 
         Assert.assertEquals("Solutions", resultSizer.getPotentialSolutions(resultNoCache.getResult()), resultSizer.getPotentialSolutions(resultWithCache.getResult()));
         Assert.assertEquals("Solutions", resultSizer.getDuplicates(resultNoCache.getResult()), resultSizer.getDuplicates(resultWithCache.getResult()));
 
-        Scenario scenarioNoCacheExpectedRepair = UtilityTest.loadScenario(scenarioPath, true);
+        Scenario scenarioNoCacheExpectedRepair = UtilityTest.loadScenarioFromResources(scenarioPath, true);
         scenarioNoCacheExpectedRepair.getCostManager().setDoBackward(false); //NoCache is the expected solution, and so must be a single repair
         scenarioNoCacheExpectedRepair.getCostManager().setDoPermutations(false);
         scenarioNoCacheExpectedRepair.getConfiguration().setUseCache(LunaticConstants.NO_CACHE);

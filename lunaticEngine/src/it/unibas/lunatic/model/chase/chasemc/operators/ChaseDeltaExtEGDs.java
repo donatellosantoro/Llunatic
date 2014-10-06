@@ -82,8 +82,8 @@ public class ChaseDeltaExtEGDs {
     }
 
     private boolean chaseNode(DeltaChaseStep currentNode, Scenario scenario, IChaseState chaseState, List<Dependency> egds, Map<Dependency, IAlgebraOperator> premiseTreeMap) {
-        this.occurrenceHandler.generateCellGroupStats(currentNode);
         if (scenario.getConfiguration().isRemoveDuplicates()) {
+            this.occurrenceHandler.generateCellGroupStats(currentNode);
             duplicateChecker.findDuplicates(currentNode, scenario);
         }
         if (currentNode.isDuplicate() || currentNode.isInvalid()) {

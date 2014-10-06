@@ -15,7 +15,7 @@ public class TestCustomers extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestCustomers.class);
 
     public void testScenarioDelta() throws Exception {
-        Scenario scenario = UtilityTest.loadScenario(References.customers_cfd);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.customers_cfd);
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);

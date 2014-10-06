@@ -4,14 +4,11 @@ import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.CartesianProduct;
 import it.unibas.lunatic.model.algebra.Scan;
-import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
@@ -22,7 +19,7 @@ public class TestCartesianProduct extends TestCase {
     private static Logger logger = LoggerFactory.getLogger(TestCartesianProduct.class);
 
     public void testCartesianProduct() {
-        Scenario scenario = UtilityTest.loadScenario(References.bookPublisher_plain);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
         TableAlias bookSet = new TableAlias("IBLBookSet", true);
         TableAlias publisherSet = new TableAlias("IBLPublisherSet", true);
         CartesianProduct cartesianProduct = new CartesianProduct();
@@ -35,7 +32,7 @@ public class TestCartesianProduct extends TestCase {
     }
 
     public void testCartesianProductRS() {
-        Scenario scenario = UtilityTest.loadScenario(References.testRS);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testRS);
         TableAlias r = new TableAlias("R");
         TableAlias s = new TableAlias("S");
         CartesianProduct cartesianProduct = new CartesianProduct();
@@ -49,7 +46,7 @@ public class TestCartesianProduct extends TestCase {
     }
 
     public void testMultipleCartesianProduct() {
-        Scenario scenario = UtilityTest.loadScenario(References.bookPublisher_plain);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
         TableAlias bookSet = new TableAlias("IBLBookSet", true);
         TableAlias publisherSet = new TableAlias("IBLPublisherSet", true);
         TableAlias locSet = new TableAlias("LOCSet", true);

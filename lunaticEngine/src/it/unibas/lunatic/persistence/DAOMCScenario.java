@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.script.ScriptException;
+import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
@@ -174,7 +175,20 @@ public class DAOMCScenario {
             Element initDbElement = databaseElement.getChild("init-db");
             DBMSDB database = new DBMSDB(accessConfiguration);
             if (initDbElement != null) {
-                database.setInitDBScript(initDbElement.getValue());
+                database.getInitDBConfiguration().setInitDBScript(initDbElement.getValue());
+            }
+            Element importXmlElement = databaseElement.getChild("import-xml");
+            if (importXmlElement != null) {
+                Attribute createTableAttribute = importXmlElement.getAttribute("createTables");
+                if (createTableAttribute != null) {
+                    database.getInitDBConfiguration().setCreateTablesFromXML(Boolean.parseBoolean(createTableAttribute.getValue()));
+                }
+                for (Object inputFileObj : importXmlElement.getChildren("input")) {
+                    Element inputFileElement = (Element) inputFileObj;
+                    String xmlFile = inputFileElement.getText();
+                    xmlFile = filePathTransformator.expand(fileScenario, xmlFile);
+                    database.getInitDBConfiguration().addXmlFileToImport(xmlFile);
+                }
             }
             return database;
         } else {

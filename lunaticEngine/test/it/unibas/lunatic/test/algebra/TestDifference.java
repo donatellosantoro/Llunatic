@@ -19,7 +19,7 @@ public class TestDifference extends TestCase{
     private static Logger logger = LoggerFactory.getLogger(TestDifference.class);
 
     public void testMultipleAttributeDifference() {
-        Scenario scenario = UtilityTest.loadScenario(References.testR);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testR);
         Difference difference = new Difference();
         difference.addChild(new Scan(new TableAlias("R1", true)));
         difference.addChild(new Scan(new TableAlias("R2", true)));
@@ -30,7 +30,7 @@ public class TestDifference extends TestCase{
     }
     
     public void testSingleAttributeDifference() {
-        Scenario scenario = UtilityTest.loadScenario(References.testR);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testR);
         Difference difference = new Difference();
         difference.addChild(new Scan(new TableAlias("R3", true)));
         difference.addChild(new Scan(new TableAlias("R4", true)));
@@ -41,7 +41,7 @@ public class TestDifference extends TestCase{
     }
     
     public void testFullDifference() {
-        Scenario scenario = UtilityTest.loadScenario(References.testR);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testR);
         Difference difference = new Difference();
         difference.addChild(new Scan(new TableAlias("R3", true)));
         difference.addChild(new Scan(new TableAlias("R5", true)));
@@ -53,7 +53,7 @@ public class TestDifference extends TestCase{
     }
     
     public void testEmptyDifference() {
-        Scenario scenario = UtilityTest.loadScenario(References.testR);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.testR);
         Difference difference = new Difference();
         difference.addChild(new Scan(new TableAlias("R3", true)));
         difference.addChild(new Scan(new TableAlias("R3", true)));

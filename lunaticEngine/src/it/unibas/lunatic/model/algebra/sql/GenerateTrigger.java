@@ -21,10 +21,9 @@ public class GenerateTrigger {
     
     public String generateScript(Scenario scenario) {
         StringBuilder result = new StringBuilder();
-//        if(scenario.getSTTgds().isEmpty() ||
-//           scenario.getEGDs().isEmpty() && scenario.getExtEGDs().isEmpty()){
-//            return "";
-//        }
+        if(scenario.getEGDs().isEmpty() && scenario.getExtEGDs().isEmpty()){
+            return "";
+        }
         result.append("----- Generating trigger for skolem occurrences -----\n");
         result.append("CREATE TABLE ").append(getSchema(scenario)).append(".").append(LunaticConstants.SKOLEM_OCC_TABLE).append("(").append("\n");
         result.append(LunaticConstants.INDENT).append("skolem text,").append("\n");
