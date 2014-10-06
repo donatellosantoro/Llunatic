@@ -20,14 +20,14 @@ public class TestDed extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }
-    
+
     public void testRSSTTGDs() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.deds_rs_sttgds);
         IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }
-    
+
     public void setUp(){
         ChaseStats.getInstance().resetStatistics();
     }

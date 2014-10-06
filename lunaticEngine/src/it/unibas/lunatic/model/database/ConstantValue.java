@@ -7,7 +7,7 @@ public class ConstantValue implements IValue {
     private Object value;
 
     public ConstantValue(Object value) {
-        if(value==null){
+        if(value==null || value.toString().startsWith(LunaticConstants.SKOLEM_PREFIX)){
             throw new IllegalArgumentException("Unable to set NULL as constant value");
         }
         this.value = value;

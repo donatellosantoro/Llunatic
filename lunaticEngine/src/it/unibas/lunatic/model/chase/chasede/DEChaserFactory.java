@@ -21,7 +21,7 @@ import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryRemo
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 
 public class DEChaserFactory {
-
+    
     public static IDEChaser getChaser(Scenario scenario) {
         String deChaserStrategy = scenario.getConfiguration().getDeChaser();
         if (deChaserStrategy.equals(LunaticConstants.CLASSIC_DE_CHASER)) {

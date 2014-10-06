@@ -26,6 +26,10 @@ public class ChaseDEScenarioProxy implements IDEChaser {
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
         List<Dependency> egds = scenario.getEGDs();
+        if(egds.isEmpty()){
+            logger.warn("ChaseDEScenarioProxy without EGDs is slow. Please use the classic DEChaser.");
+            throw new IllegalArgumentException();
+        }
         scenario.setEGDs(new ArrayList<Dependency>());
         scenario.setExtEGDs(egds);
         ICostManager forwardOnlyCostManager = new StandardCostManager();
@@ -42,7 +46,7 @@ public class ChaseDEScenarioProxy implements IDEChaser {
             throw new ChaseException("MCChaser returns more then one solution");
         }
         DeltaChaseStep solution = getSolution(chaseStep);
-        if(solution.isInvalid()){
+        if (solution.isInvalid()) {
             throw new ChaseFailedException("Chase fails. No solutions...");
         }
         IBuildDatabaseForChaseStep databaseBuilder = OperatorFactory.getInstance().getDatabaseBuilder(scenario);

@@ -12,6 +12,7 @@ public class References {
     public static final String RS = "de/RS/RS-mcscenario.xml";
     public static final String RS_tc = "de/RS/RS-tc-mcscenario.xml";
     public static final String RS_tgd = "de/RS/RS-tgd-mcscenario-dbms.xml";
+    public static final String RS_egd = "de/RS/RS-egd-mcscenario.xml";
     public static final String RS_tc_dbms = "de/RS/RS-tc-mcscenario-dbms.xml";
     public static final String RS_join = "de/RS/RS-join-mcscenario.xml";
     public static final String RS_join_dbms = "de/RS/RS-join-mcscenario-dbms.xml";

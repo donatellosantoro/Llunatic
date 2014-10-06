@@ -21,11 +21,8 @@ public class TestEmployeesNoSymmetric extends CheckTest {
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setUseSymmetricOptimization(false);
 //        scenario.getConfiguration().setUseLimit1(true);
-        try {
-            ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
-            DeltaChaseStep result = chaser.doChase(scenario);
-            Assert.fail();
-        } catch (Exception error) {
-        }
+        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        DeltaChaseStep result = chaser.doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toStringLeavesOnlyWithSort());
     }
 }

@@ -1,9 +1,12 @@
 package it.unibas.lunatic.model.generators;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.algebra.operators.EvaluateExpression;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.model.database.ConstantValue;
+import it.unibas.lunatic.model.database.LLUNValue;
+import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.expressions.Expression;
 
 public class ExpressionGenerator implements IValueGenerator {
@@ -20,7 +23,14 @@ public class ExpressionGenerator implements IValueGenerator {
 
     public IValue generateValue(Tuple sourceTuple) {
         EvaluateExpression evaluator = new EvaluateExpression();
-        return new ConstantValue(evaluator.evaluateFunction(expression, sourceTuple));
+        Object result = evaluator.evaluateFunction(expression, sourceTuple);
+        if (result == null || result.toString().startsWith(LunaticConstants.SKOLEM_PREFIX)) {
+            return new NullValue(result);
+        }
+        if (result.toString().startsWith(LunaticConstants.LLUN_PREFIX)) {
+            return new LLUNValue(result);
+        }
+        return new ConstantValue(result);
     }
 
     public String toString() {

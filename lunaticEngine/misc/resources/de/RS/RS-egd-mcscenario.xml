@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <source>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+R(a, b)
+INSTANCE:
+R(a: 1, b: 2)
+R(a: 1, b: 3)
+]]>
+        </generate>
+    </source>
+    <target>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+S(a, b)
+]]>
+        </generate>
+    </target>
+    <dependencies>
+<![CDATA[
+STTGDs:
+R(a: $a, b: $b) -> S(a: $a, b: $N).
+//R(a: $a, b: $b) -> S(a: $a, b: $b).
+EGDs:
+S(a: $a, b: $b) -> $a == $b.
+]]>
+    </dependencies>
+</scenario>
