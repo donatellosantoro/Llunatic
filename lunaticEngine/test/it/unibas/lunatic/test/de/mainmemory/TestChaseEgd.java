@@ -19,4 +19,11 @@ public class TestChaseEgd extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }
+
+    public void testRSTgdEgd() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.RS_tgd_egd);
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        checkExpectedInstances(result, scenario);
+    }
 }

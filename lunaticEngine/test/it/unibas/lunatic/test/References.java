@@ -13,6 +13,9 @@ public class References {
     public static final String RS_tc = "de/RS/RS-tc-mcscenario.xml";
     public static final String RS_tgd = "de/RS/RS-tgd-mcscenario-dbms.xml";
     public static final String RS_egd = "de/RS/RS-egd-mcscenario.xml";
+    public static final String RS_egd_dbms = "de/RS/RS-egd-mcscenario-dbms.xml";
+    public static final String RS_tgd_egd = "de/RS/RS-tgd-egd-mcscenario.xml";
+    public static final String RS_tgd_egd_dbms = "de/RS/RS-tgd-egd-mcscenario-dbms.xml";
     public static final String RS_tc_dbms = "de/RS/RS-tc-mcscenario-dbms.xml";
     public static final String RS_join = "de/RS/RS-join-mcscenario.xml";
     public static final String RS_join_dbms = "de/RS/RS-join-mcscenario-dbms.xml";
@@ -115,4 +118,5 @@ public class References {
     public static final String deds_rs_dbms = "deds/RS/RS-mcscenario-dbms.xml";
     public static final String deds_rs_sttgds = "deds/RS-STTGDs/RS-STTGDs-mcscenario.xml";
     public static final String deds_rs_sttgds_dbms = "deds/RS-STTGDs/RS-STTGDs-mcscenario-dbms.xml";
+    public static final String deds_workers = "deds/workers/example-workers-unfolded.xml";
 }

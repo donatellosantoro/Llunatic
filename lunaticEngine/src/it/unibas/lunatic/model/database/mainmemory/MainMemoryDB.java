@@ -21,7 +21,6 @@ public class MainMemoryDB implements IDatabase {
 
     private DataSource dataSource;
     private Map<NullValue, List<CellRef>> skolemOccurrences = new HashMap<NullValue, List<CellRef>>();
-    private Map<LLUNValue, List<CellRef>> llunccurrences = new HashMap<LLUNValue, List<CellRef>>();
 
     public MainMemoryDB(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -37,10 +36,6 @@ public class MainMemoryDB implements IDatabase {
 
     public Map<NullValue, List<CellRef>> getSkolemOccurrences() {
         return skolemOccurrences;
-    }
-
-    public Map<LLUNValue, List<CellRef>> getLlunccurrences() {
-        return llunccurrences;
     }
 
     public List<String> getTableNames() {
@@ -184,9 +179,6 @@ public class MainMemoryDB implements IDatabase {
         result.append(printInstances());
         if (!skolemOccurrences.isEmpty()) {
             result.append("Null Occurrences:\n").append(LunaticUtility.printMap(skolemOccurrences));
-        }
-        if (!llunccurrences.isEmpty()) {
-            result.append("LLUN Occurrences:\n").append(LunaticUtility.printMap(llunccurrences));
         }
         return result.toString();
     }

@@ -64,9 +64,13 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
                 result = doChase(scenario, dedScenario, chaseState);
                 //Solution found
                 if (logger.isDebugEnabled()) logger.debug("DED Scenario " + dedScenario.getId() + " generates a solution!");
+                if (scenario.getConfiguration().isChaseDEDGreedyExecuteAllScenarios()) {
+                    continue;
+                }
                 break;
             } catch (ChaseFailedException ex) {
                 if (logger.isDebugEnabled()) logger.debug("DED Scenario " + dedScenario.getId() + " failed!");
+                ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS, 1);
                 databaseManager.restoreTarget(originalTarget, scenario);
             }
         }

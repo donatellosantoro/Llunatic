@@ -1,5 +1,6 @@
 package it.unibas.lunatic.test.de.mainmemory;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
@@ -15,6 +16,7 @@ public class TestChaseDTgds extends CheckTest {
 
     public void testEmployeesDTGDs() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_dtgd);
+        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         try {
             DEChaserFactory.getChaser(scenario).doChase(scenario);
             fail();

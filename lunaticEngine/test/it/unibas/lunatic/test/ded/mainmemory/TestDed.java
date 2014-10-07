@@ -1,5 +1,6 @@
 package it.unibas.lunatic.test.ded.mainmemory;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chaseded.DEDChaserFactory;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
@@ -16,6 +17,7 @@ public class TestDed extends CheckTest {
 
     public void testRS() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.deds_rs);
+        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
@@ -23,6 +25,7 @@ public class TestDed extends CheckTest {
 
     public void testRSSTTGDs() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.deds_rs_sttgds);
+        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

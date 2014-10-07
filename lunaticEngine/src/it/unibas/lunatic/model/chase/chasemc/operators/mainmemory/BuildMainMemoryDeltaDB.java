@@ -126,6 +126,11 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         INode instanceNode = new TupleNode(PersistenceConstants.DATASOURCE_ROOT_LABEL, IntegerOIDGenerator.getNextOID());
         instanceNode.setRoot(true);
         initOccurrenceTables(instanceNode);
+        insertTargetTablesIntoDeltaDB(database, instanceNode, affectedAttributes, rootName);
+        dataSource.addInstanceWithCheck(instanceNode);
+    }
+
+    private void insertTargetTablesIntoDeltaDB(MainMemoryDB database, INode instanceNode, List<AttributeRef> affectedAttributes, String rootName) {
         for (String tableName : database.getTableNames()) {
             ITable table = database.getTable(tableName);
             initInstanceNode(table, instanceNode, affectedAttributes);
@@ -152,7 +157,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
                         IValue value = cell.getValue();
                         tupleNodeInstance.addChild(createAttributeInstance(cell.getAttribute(), value));
                         if (value instanceof NullValue && ((NullValue) value).isLabeledNull()) {
-                            CellRef cellRef = new CellRef(new TupleOID(oid), new AttributeRef(table.getName(), cell.getAttribute()));
+                            CellRef cellRef = new CellRef(tupleOID, new AttributeRef(table.getName(), cell.getAttribute()));
                             addTupleForNullOccurrence(value, cellRef, instanceNode);
                         }
                         setNodeInstance.addChild(tupleNodeInstance);
@@ -166,7 +171,6 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
             }
             it.close();
         }
-        dataSource.addInstanceWithCheck(instanceNode);
     }
 
     private void initInstanceNode(ITable table, INode instanceNode, List<AttributeRef> affectedAttributes) {
@@ -229,4 +233,5 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.CELL_TABLE, cellRef.getAttributeRef().getTableName()));
         nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.CELL_ATTRIBUTE, cellRef.getAttributeRef().getName()));
     }
+
 }

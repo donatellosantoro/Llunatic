@@ -15,6 +15,7 @@ public class LunaticConfiguration {
     private boolean checkAllNodesForEGDSatisfaction = false;
     private boolean forceMCChaserInTests = false;
     private boolean useSymmetricOptimization = true;
+    private boolean chaseDEDGreedyExecuteAllScenarios = false;
 //
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
     private String deChaser = LunaticConstants.PROXY_MC_CHASER;
@@ -144,6 +145,14 @@ public class LunaticConfiguration {
 
     public void setUseSymmetricOptimization(boolean useSymmetricOptimization) {
         this.useSymmetricOptimization = useSymmetricOptimization;
+    }
+
+    public boolean isChaseDEDGreedyExecuteAllScenarios() {
+        return chaseDEDGreedyExecuteAllScenarios;
+    }
+
+    public void setChaseDEDGreedyExecuteAllScenarios(boolean chaseDEDGreedyExecuteAllScenarios) {
+        this.chaseDEDGreedyExecuteAllScenarios = chaseDEDGreedyExecuteAllScenarios;
     }
 
     @Override

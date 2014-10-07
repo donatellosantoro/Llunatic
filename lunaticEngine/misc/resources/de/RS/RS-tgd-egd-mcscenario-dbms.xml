@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario> 
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:rs_tgd_egd</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+
+create table r1 (
+  a varchar(50)
+) with oids;
+
+create table r2 (
+  a varchar(50),
+  b varchar(50)
+) with oids;
+
+insert into r1 values ('1');
+insert into r2 values ('1', '2');
+]]>
+    </init-db>
+  </source>
+  <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:rs_tgd_egd</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table s (
+  a varchar(50),
+  b varchar(50)
+) with oids;
+
+create table t (
+  a varchar(50),
+  b varchar(50)
+) with oids;
+]]>
+    </init-db>
+  </target>
+    <dependencies>
+<![CDATA[
+STTGDs:
+r1(a: $x) -> s(a: $x, b: $N).
+r2(a: $x, b: $y) -> s(a: $x, b: $y).
+
+ExtTGDs:
+s(a: $x, b: $y1), s(a: $x, b: $y2) -> t(a: $y1, b: $y2).
+
+EGDs:
+t(a: $x, b: $y) -> $x == $y.
+]]>
+    </dependencies>
+</scenario>

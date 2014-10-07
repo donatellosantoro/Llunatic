@@ -9,6 +9,8 @@ import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
+import it.unibas.lunatic.persistence.relational.QueryStatManager;
 import it.unibas.lunatic.test.GenerateModifiedCells;
 import it.unibas.lunatic.test.comparator.repairs.RepairsComparator;
 import it.unibas.lunatic.test.comparator.repairs.PrecisionAndRecall;
@@ -20,9 +22,24 @@ public class CheckTest extends TestCase {
 
     protected ChaseTreeSize resultSizer = new ChaseTreeSize();
     protected RepairsComparator comparator = new RepairsComparator();
+    protected ChaseStats chaseStats = ChaseStats.getInstance();
 
     protected GenerateModifiedCells getModifiedCellGenerator(Scenario scenario) {
         return new GenerateModifiedCells(OperatorFactory.getInstance().getQueryRunner(scenario));
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        IntegerOIDGenerator.resetCounter();
+        IntegerOIDGenerator.clearCache();
+        CellGroupIDGenerator.resetCounter();
+        OperatorFactory.getInstance().reset();
+        ChaseStats.getInstance().resetStatistics();
+        QueryStatManager.getInstance().resetStatistics();
     }
 
     protected void setConfigurationForTest(Scenario scenario) {
@@ -107,18 +124,6 @@ public class CheckTest extends TestCase {
         return fileName + "." + suffix + ".out";
     }
 
-    @Override
-    protected void setUp() throws Exception {
-    }
-
     public void testDummy() {
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        IntegerOIDGenerator.resetCounter();
-        IntegerOIDGenerator.clearCache();
-        CellGroupIDGenerator.resetCounter();
-        OperatorFactory.getInstance().reset();
     }
 }

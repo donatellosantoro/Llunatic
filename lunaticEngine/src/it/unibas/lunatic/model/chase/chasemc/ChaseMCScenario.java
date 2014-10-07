@@ -111,7 +111,9 @@ public class ChaseMCScenario {
                 iterations++;
             }
             if (iterations > ITERATION_LIMIT) {
-                throw new ChaseException("Reached iteration limit " + ITERATION_LIMIT + " with no solution...");
+                StringBuilder errorMessage = new StringBuilder("Reached iteration limit " + ITERATION_LIMIT + " with no solution...");
+                if (logger.isDebugEnabled()) errorMessage.append("\nScenario: ").append(scenario).append("\nChase tree:\n" + root).append("\nDelta db:\n" + root.getDeltaDB());
+                throw new ChaseException(errorMessage.toString());
             }
         }
         if (!scenario.getConfiguration().isCheckSolutions() && !userInteractionRequired) {

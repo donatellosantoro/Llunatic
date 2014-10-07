@@ -253,7 +253,7 @@ public abstract class AbstractCostManager implements ICostManager {
 
     @Override
     public String toLongString() {
-        return toString() + "\tdoBackward=" + doBackward
+        return toString() + "\n\tdoBackward=" + doBackward
                 + "\n\tdoPermutations=" + doPermutations
                 + "\n\tchaseTreeSizeThreshold=" + chaseBranchingThreshold
                 + "\n\tpotentialSolutionsThreshold=" + potentialSolutionsThreshold

@@ -11,12 +11,15 @@ import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class AbstractBuildDeltaDB implements IBuildDeltaDB {
 
     protected List<AttributeRef> findAllAffectedAttributes(Scenario scenario) {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
+        result.addAll(findAllAttributesWithSkolem(scenario.getSTTgds()));
         for (Dependency egd : scenario.getExtEGDs()) {
             List<AttributeRef> affectedAttributes = egd.getAffectedAttributes();
             for (AttributeRef affectedAttribute : affectedAttributes) {
@@ -43,5 +46,20 @@ public abstract class AbstractBuildDeltaDB implements IBuildDeltaDB {
 
     protected boolean isAffected(AttributeRef attributeRef, List<AttributeRef> affectedAttributes) {
         return affectedAttributes.contains(attributeRef);
+    }
+
+    private List<AttributeRef> findAllAttributesWithSkolem(List<Dependency> stTgds) {
+        List<AttributeRef> result = new ArrayList<AttributeRef>();
+        for (Dependency stTgd : stTgds) {
+            for (FormulaVariable v : stTgd.getConclusion().getLocalVariables()) {
+                if(v.isUniversal()){
+                    continue;
+                }
+                for (FormulaVariableOccurrence variableOccurrence :v.getConclusionRelationalOccurrences() ) {
+                    LunaticUtility.addIfNotContained(result, variableOccurrence.getAttributeRef());
+                }
+            }
+        }
+        return result;
     }
 }
