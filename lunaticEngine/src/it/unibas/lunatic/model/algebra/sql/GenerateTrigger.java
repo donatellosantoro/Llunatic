@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
 public class GenerateTrigger {
 
     private static Logger logger = LoggerFactory.getLogger(GenerateTrigger.class);
-    
+
     public String generateScript(Scenario scenario) {
         StringBuilder result = new StringBuilder();
-        if(scenario.getEGDs().isEmpty() && scenario.getExtEGDs().isEmpty()){
+        if (scenario.getEGDs().isEmpty() && scenario.getExtEGDs().isEmpty()) {
             return "";
         }
         result.append("----- Generating trigger for skolem occurrences -----\n");
@@ -159,10 +159,11 @@ public class GenerateTrigger {
         }
         return result;
     }
-    private String getSchema(Scenario scenario){
+
+    private String getSchema(Scenario scenario) {
         return LunaticConstants.WORK_SCHEMA;
 //        DBMSDB target = (DBMSDB)scenario.getTarget();
 //        return target.getAccessConfiguration().getSchemaName();
     }
-    
+
 }

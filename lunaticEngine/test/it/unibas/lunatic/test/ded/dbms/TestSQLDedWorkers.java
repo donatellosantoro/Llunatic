@@ -1,6 +1,5 @@
 package it.unibas.lunatic.test.ded.dbms;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chaseded.DEDChaserFactory;
@@ -72,7 +71,7 @@ public class TestSQLDedWorkers extends CheckTest {
         Assert.assertEquals(16, success);
         Assert.assertEquals(4, failed);
     }
-//
+
 
     public void testAllSolutions5() { //0 Success, 20 Failed
         testAllSolutions(References.deds_workers_5_dbms, true);
@@ -89,7 +88,7 @@ public class TestSQLDedWorkers extends CheckTest {
     private void testAllSolutions(String fileScenario, boolean recreateDB) {
         Scenario scenario = UtilityTest.loadScenarioFromResources(fileScenario, recreateDB);
         scenario.getConfiguration().setChaseDEDGreedyExecuteAllScenarios(true);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
+//        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         try {
             IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
             Assert.assertNotNull(result);

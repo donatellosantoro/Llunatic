@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.nfunk.jep.Variable;
 import org.slf4j.Logger;
@@ -37,9 +38,10 @@ public class DBMSUtility {
         List<String> tableNames = new ArrayList<String>();
         String schemaName = accessConfiguration.getSchemaName();
         ResultSet tableResultSet = null;
+        Connection connection = null;
         try {
             if (logger.isDebugEnabled()) logger.debug("Loading table names: " + accessConfiguration);
-            Connection connection = QueryManager.getConnection(accessConfiguration);
+             connection = QueryManager.getConnection(accessConfiguration);
             String catalog = connection.getCatalog();
             if (catalog == null) {
                 catalog = accessConfiguration.getUri();
@@ -57,6 +59,7 @@ public class DBMSUtility {
             throw new DBMSException("Error connecting to database.\n" + accessConfiguration + "\n" + sqle.getLocalizedMessage());
         } finally {
             QueryManager.closeResultSet(tableResultSet);
+            QueryManager.closeConnection(connection);
         }
         return tableNames;
     }
@@ -94,6 +97,7 @@ public class DBMSUtility {
             throw new DBMSException("Error connecting to database.\n" + accessConfiguration + "\n" + sqle.getLocalizedMessage());
         } finally {
             QueryManager.closeResultSet(tableResultSet);
+            QueryManager.closeConnection(connection);
         }
         return result;
     }
@@ -200,34 +204,6 @@ public class DBMSUtility {
             scriptRunner.runScript(new StringReader(createQuery));
         } catch (Exception daoe) {
             throw new DBMSException("Unable to create new database " + accessConfiguration.getDatabaseName() + ".\n" + tempAccessConfiguration + "\n" + daoe.getLocalizedMessage());
-        } finally {
-            QueryManager.closeConnection(connection);
-        }
-    }
-
-    public static void emptyTables(AccessConfiguration accessConfiguration) {
-        String schemaName = accessConfiguration.getSchemaName();
-        Connection connection = null;
-        try {
-            if (logger.isDebugEnabled()) logger.debug("Empty tables: " + accessConfiguration);
-            connection = QueryManager.getConnection(accessConfiguration);
-            String catalog = connection.getCatalog();
-            if (catalog == null) {
-                catalog = accessConfiguration.getUri();
-                if (logger.isDebugEnabled()) logger.debug("Catalog is null. Catalog name will be: " + catalog);
-            }
-            DatabaseMetaData databaseMetaData = connection.getMetaData();
-            ResultSet tableResultSet = databaseMetaData.getTables(catalog, schemaName, null, new String[]{"TABLE"});
-            while (tableResultSet.next()) {
-                String tableName = tableResultSet.getString("TABLE_NAME");
-                String emptyQuery = "delete from " + accessConfiguration.getSchemaName() + "." + tableName + ";";
-                ScriptRunner scriptRunner = getScriptRunner(connection);
-                scriptRunner.setAutoCommit(true);
-                scriptRunner.setStopOnError(false);
-                scriptRunner.runScript(new StringReader(emptyQuery));
-            }
-        } catch (Exception sqle) {
-            throw new DBMSException("Unable to empty tables.\n" + accessConfiguration + "\n" + sqle.getLocalizedMessage());
         } finally {
             QueryManager.closeConnection(connection);
         }
