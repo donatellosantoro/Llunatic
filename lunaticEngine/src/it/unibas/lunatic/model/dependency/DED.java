@@ -24,9 +24,6 @@ public class DED implements Cloneable {
     }
 
     public void setId(String id) {
-        if (this.id != null) {
-            return;
-        }
         this.id = id;
         for (int i = 0; i < associatedDependencies.size(); i++) {
             Dependency dependency = associatedDependencies.get(i);

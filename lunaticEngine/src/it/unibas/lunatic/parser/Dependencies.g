@@ -94,11 +94,10 @@ dependency:	 (id = IDENTIFIER':')? {  dependency = new Dependency();
 		 {  formulaStack.clear(); } 
                   conclusionFormula) '.' ;
 		    
-ded:	         (id = IDENTIFIER':')? {  ded = new DED(); 
+ded:	         {  ded = new DED(); 
                     formulaWN = new FormulaWithNegations(); 
                     formulaStack.push(formulaWN);
-                    dedPremise = formulaWN;
-                    if(id!=null) dependency.setId(id.getText()); }
+                    dedPremise = formulaWN;}
 		 positiveFormula  ( negatedFormula   )* '->' 
 		 dedConclusion ('|' dedConclusion)* '.';
 

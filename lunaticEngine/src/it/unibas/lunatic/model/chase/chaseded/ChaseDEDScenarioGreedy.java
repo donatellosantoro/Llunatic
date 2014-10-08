@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chaseded;
 
+import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.exceptions.ChaseFailedException;
@@ -65,13 +66,14 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
                 //Solution found
                 if (logger.isDebugEnabled()) logger.debug("DED Scenario " + dedScenario.getId() + " generates a solution!");
                 if (scenario.getConfiguration().isChaseDEDGreedyExecuteAllScenarios()) {
+                    rollbackChase(originalTarget, scenario);
                     continue;
                 }
                 break;
             } catch (ChaseFailedException ex) {
                 if (logger.isDebugEnabled()) logger.debug("DED Scenario " + dedScenario.getId() + " failed!");
                 ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS, 1);
-                databaseManager.restoreTarget(originalTarget, scenario);
+                rollbackChase(originalTarget, scenario);
             }
         }
         databaseManager.removeClone(originalTarget, scenario);
@@ -81,6 +83,11 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
         }
         if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
         return result;
+    }
+
+    private void rollbackChase(IDatabase originalTarget, Scenario scenario) {
+        databaseManager.restoreTarget(originalTarget, scenario);
+        OperatorFactory.getInstance().reset();
     }
 
     private IDatabase doChase(Scenario scenario, GreedyDEDScenario dedScenario, IChaseState chaseState) {

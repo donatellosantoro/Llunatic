@@ -17,7 +17,7 @@
         <!--<appender-ref ref="file"/>-->
     </root>
     <!--     TEST     -->
-    <logger name="it.unibas.lunatic.test" level="DEBUG"/>
+    <!--<logger name="it.unibas.lunatic.test" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.test.BatchTest" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.persistence.relational.QueryStatManager" level="DEBUG"/>-->
@@ -40,6 +40,7 @@
     <!--<logger name="it.unibas.lunatic.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.NormalizeDependency" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.algebra.sql.AlgebraTreeToSQL" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.algebra.sql.GenerateTrigger" level="DEBUG"/>-->
 
     <!--     CHASE DE     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs" level="DEBUG"/>-->
@@ -48,6 +49,8 @@
 
     <!--     CHASE MC     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChangeCell" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDsWithoutCellGroups" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseEGDEquivalenceClass" level="DEBUG"/>-->
 

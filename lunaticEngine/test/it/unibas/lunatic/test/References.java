@@ -118,5 +118,9 @@ public class References {
     public static final String deds_rs_dbms = "deds/RS/RS-mcscenario-dbms.xml";
     public static final String deds_rs_sttgds = "deds/RS-STTGDs/RS-STTGDs-mcscenario.xml";
     public static final String deds_rs_sttgds_dbms = "deds/RS-STTGDs/RS-STTGDs-mcscenario-dbms.xml";
-    public static final String deds_workers = "deds/workers/example-workers-unfolded.xml";
+    public static final String deds_workers_1 = "deds/workers/example-workers-instance1.xml";
+    public static final String deds_workers_2 = "deds/workers/example-workers-instance2.xml";
+    public static final String deds_workers_3 = "deds/workers/example-workers-instance3.xml";
+    public static final String deds_workers_4 = "deds/workers/example-workers-instance4.xml";
+    public static final String deds_workers_5 = "deds/workers/example-workers-instance5.xml";
 }

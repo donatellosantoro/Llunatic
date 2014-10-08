@@ -2,7 +2,7 @@ package it.unibas.lunatic.model.chase.chasede.operators;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.exceptions.ChaseException;
+import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForEGD;
 import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
@@ -12,7 +12,6 @@ import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
-import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
@@ -181,7 +180,8 @@ public class ChaseEGDs {
             CellGroup group = cellGroups.get(i);
             IValue val = group.getValue();
             if (newValue instanceof ConstantValue && val instanceof ConstantValue) {
-                throw new ChaseException("EGD chase failed: Unable to equate " + newValue + " and " + val + " in cell groups: " + cellGroups);
+//                throw new ChaseException("EGD chase failed: Unable to equate " + newValue + " and " + val + " in cell groups: " + cellGroups);
+                throw new ChaseFailedException("EGD chase failed: Unable to equate " + newValue + " and " + val + " in cell groups: " + cellGroups);
             }
             if (val instanceof ConstantValue) {
                 newValue = val;

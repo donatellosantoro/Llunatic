@@ -23,6 +23,7 @@ public class CheckTest extends TestCase {
     protected ChaseTreeSize resultSizer = new ChaseTreeSize();
     protected RepairsComparator comparator = new RepairsComparator();
     protected ChaseStats chaseStats = ChaseStats.getInstance();
+    protected QueryStatManager queryStats = QueryStatManager.getInstance();
 
     protected GenerateModifiedCells getModifiedCellGenerator(Scenario scenario) {
         return new GenerateModifiedCells(OperatorFactory.getInstance().getQueryRunner(scenario));
@@ -38,8 +39,8 @@ public class CheckTest extends TestCase {
         IntegerOIDGenerator.clearCache();
         CellGroupIDGenerator.resetCounter();
         OperatorFactory.getInstance().reset();
-        ChaseStats.getInstance().resetStatistics();
-        QueryStatManager.getInstance().resetStatistics();
+        chaseStats.resetStatistics();
+        queryStats.resetStatistics();
     }
 
     protected void setConfigurationForTest(Scenario scenario) {
