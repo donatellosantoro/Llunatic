@@ -126,9 +126,10 @@ public class ExecuteInitDB {
                 if (attributeElement == null) {
                     throw new DAOException("Error importing " + xmlFile + ". Attribute " + attribute.getName() + " in table " + tableName + " is missing");
                 }
-                if (attribute.getType().equals(Types.STRING)) sb.append("'");
-                sb.append(cleanValue(attributeElement.getText()));
-                if (attribute.getType().equals(Types.STRING)) sb.append("'");
+                String value = attributeElement.getText();
+                if (notNull(value) && attribute.getType().equals(Types.STRING)) sb.append("'");
+                sb.append(cleanValue(value));
+                if (notNull(value) && attribute.getType().equals(Types.STRING)) sb.append("'");
                 sb.append(", ");
             }
             LunaticUtility.removeChars(", ".length(), sb);
@@ -152,6 +153,10 @@ public class ExecuteInitDB {
         StringBuilder sb = new StringBuilder();
         sb.append("create schema ").append(schemaName).append(";\n");
         return sb.toString();
+    }
+
+    private boolean notNull(String value) {
+        return value!=null && !value.equalsIgnoreCase("NULL");
     }
 
 }

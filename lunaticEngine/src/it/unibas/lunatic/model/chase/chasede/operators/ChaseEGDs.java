@@ -103,24 +103,29 @@ public class ChaseEGDs {
         ChaseStats.getInstance().addStat(ChaseStats.EGD_VIOLATION_QUERY_TIME, violationQueryEnd - violationQueryStart);
 //        List<Repair> repairsForDependency = new ArrayList<Repair>();
         Repair repairForDependency = new Repair();
-        while (true) {
-            if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
-            EquivalenceClass equivalenceClass = readNextEquivalenceClass(it, egd, scenario, chaseState);
-            if (equivalenceClass == null) {
-                break;
-            }
-            if (logger.isDebugEnabled()) logger.debug("Equivalence class: " + equivalenceClass);
-            Repair repairForEquivalenceClass = generateRepair(equivalenceClass);
-            if (repairForEquivalenceClass != null) {
+        try {
+            while (true) {
+                if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
+                EquivalenceClass equivalenceClass = readNextEquivalenceClass(it, egd, scenario, chaseState);
+                if (equivalenceClass == null) {
+                    break;
+                }
+                if (logger.isDebugEnabled()) logger.debug("Equivalence class: " + equivalenceClass);
+                Repair repairForEquivalenceClass = generateRepair(equivalenceClass);
+                if (repairForEquivalenceClass != null) {
 //                repairsForDependency = accumulateRepairs(repairsForDependency, repairForEquivalenceClass, equivalenceClass);
-                accumulateRepairs(repairForDependency, repairForEquivalenceClass);
-                if (logger.isDebugEnabled()) logger.debug("########### Accumulate repairs " + repairForDependency);
+                    accumulateRepairs(repairForDependency, repairForEquivalenceClass);
+                    if (logger.isDebugEnabled()) logger.debug("########### Accumulate repairs " + repairForDependency);
+                }
+                if (noMoreTuples(it)) {
+                    break;
+                }
             }
-            if (noMoreTuples(it)) {
-                break;
-            }
+        } catch (ChaseFailedException e) {
+            throw e;
+        } finally {
+            it.close();
         }
-        it.close();
         if (logger.isDebugEnabled()) logger.debug("Repair for dependency: " + repairForDependency);
         if (repairForDependency.getChanges().isEmpty()) {
             return false;

@@ -1,80 +1,32 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><scenario>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE doc [
+<!ENTITY dependencies SYSTEM "dependencies.xml">
+<!ENTITY targetschema SYSTEM "target_schema_mainmemory.xml">
+]>
+<scenario>
     <source>
         <type>GENERATE</type>
         <generate>
 <![CDATA[
 SCHEMA:
-sworker(worker_id, worker_name, project, semester, year, grade)
+sworker(workerid, workername, project, semester, year, grade)
 sprojects(name, responsible)
-sstats(worker, min_grade, max_grade)
+sstats(worker, mingrade, maxgrade)
 INSTANCE:
-sworker(worker_id: 1, worker_name: "worker1", project: "project1", semester: 1, year: 2012, grade: 6)
-sworker(worker_id: 2, worker_name: "worker2", project: "project1", semester: 1, year: 2012, grade: 9)
+sworker(workerid: 1, workername: "worker1", project: "project1", semester: 1, year: 2012, grade: 6)
+sworker(workerid: 2, workername: "worker2", project: "project1", semester: 1, year: 2012, grade: 9)
 sprojects(name: "project1", responsible: 2)
-sstats(worker: 1, min_grade: 6, max_grade: 6)
-sstats(worker: 2, min_grade: 9, max_grade: 9)
-// CASE 2 - TGD_3, WARNED
-sworker(worker_id: 4, worker_name: "worker3", project: "project1", semester: 1, year: 2012, grade: 5)
-sworker(worker_id: #NULL#, worker_name: "worker3", project: "project1", semester: 2, year: 2012, grade: 5)
-sstats(worker: 4, min_grade: 9, max_grade: 9)
+sstats(worker: 1, mingrade: 6, maxgrade: 6)
+sstats(worker: 2, mingrade: 9, maxgrade: 9)
+// CASE 2 - TGD3, WARNED
+sworker(workerid: 4, workername: "worker3", project: "project1", semester: 1, year: 2012, grade: 5)
+sworker(workerid: #NULL#, workername: "worker3", project: "project1", semester: 2, year: 2012, grade: 5)
+sstats(worker: 4, mingrade: 9, maxgrade: 9)
 ]]>
         </generate>
     </source>
     <target>
-        <type>GENERATE</type>
-        <generate>
-<![CDATA[
-SCHEMA:
-employees(id, name)
-warned(employee, semester_number, semester_year)
-has_positive_evals(employee, semester_number, semester_year)
-responsibles(project, employee)
-penalized(employee, semester_number, semester_year)
-evaluations(employee, semester_number, semester_year)
-TGD_2(attr1, attr2, attr3)
-works_in(employee, project)
-TGD_3(attr1)
-TGD_4(attr1)
-TGD_5(attr1, attr2, attr3)
-TGD_1(attr1, attr2)
-TGD_6(attr1, attr2, attr3)
-TGD_7(attr1, attr2, attr3)
-TGD_8(attr1, attr2)
-]]>
-        </generate>
+        &targetschema;
     </target>
-    <dependencies>
-<![CDATA[
-DED-STTGDs:
-sworker(worker_id: $x1, worker_name: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), {isNull($x1)} -> [employees(id: $N, name: $x2)].
-sworker(worker_id: $x1, worker_name: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), sstats(worker: $x1, min_grade: $x7, max_grade: $x8), $x8 > 4, $x7 < 9 -> [employees(id: $x1, name: $x2), TGD_1(attr1: $x1, attr2: $x2)].
-sworker(worker_id: $x1, worker_name: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), sstats(worker: $x1, min_grade: $x7, max_grade: $x8), $x7 >= 9 -> [employees(id: $x1, name: $x2), TGD_3(attr1: $x1)].
-sworker(worker_id: $x1, worker_name: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), sstats(worker: $x1, min_grade: $x7, max_grade: $x8), $x8 <= 4 -> [employees(id: $x1, name: $x2), penalized(employee: $x1, semester_number: $x9, semester_year: $x10)] | [employees(id: $x1, name: $x2), TGD_4(attr1: $x1)].
-sworker(worker_id: $x1, worker_name: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), $x6 >= 5 -> [evaluations(employee: $x1, semester_number: $x4, semester_year: $x5), has_positive_evals(employee: $x1, semester_number: $x4, semester_year: $x5)].
-sworker(worker_id: $x1, worker_name: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), $x6 < 5 -> [evaluations(employee: $x1, semester_number: $x4, semester_year: $x5), TGD_5(attr1: $x1, attr2: $x4, attr3: $x5)].
-sworker(worker_id: $x1, worker_name: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6) -> [works_in(employee: $x1, project: $x3)].
-sworker(worker_id: $x1, worker_name: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6) -> [works_in(employee: $x7, project: $x3)].
-sprojects(name: $x1, responsible: $x2) -> [responsibles(project: $x1, employee: $x2)].
-
-DED-ExtTGDs:
-TGD_1(attr1: $x1, attr2: $x2), employees(id: $x1, name: $x2) -> [evaluations(employee: $x1, semester_number: $x3, semester_year: $x4), TGD_2(attr1: $x1, attr2: $x3, attr3: $x4)] | [warned(employee: $x1, semester_number: $x5, semester_year: $x6)].
-TGD_1(attr1: $x1, attr2: $x2), employees(id: $x1, name: $x2) -> [evaluations(employee: $x1, semester_number: $x3, semester_year: $x4), has_positive_evals(employee: $x1, semester_number: $x3, semester_year: $x4)].
-TGD_3(attr1: $x1), evaluations(employee: $x1, semester_number: $x2, semester_year: $x3) -> [evaluations(employee: $x1, semester_number: $x2, semester_year: $x3), has_positive_evals(employee: $x1, semester_number: $x2, semester_year: $x3)].
-employees(id: $x1, name: $x2), employees(id: $x3, name: $x2) -> [TGD_8(attr1: $x1, attr2: $x3)] | [evaluations(employee: $x1, semester_number: $x4, semester_year: $x5), TGD_6(attr1: $x1, attr2: $x4, attr3: $x5)] | [warned(employee: $x1, semester_number: $x6, semester_year: $x7)] | [evaluations(employee: $x3, semester_number: $x8, semester_year: $x9), TGD_7(attr1: $x3, attr2: $x8, attr3: $x9)] | [warned(employee: $x3, semester_number: $x10, semester_year: $x11)].
-
-DED-EGDs:
-employees(id: $x1, name: $x2), employees(id: $x1, name: $x3) -> [$x2 == $x3].
-TGD_8(attr1: $x1, attr2: $x2) -> [$x1 == $x2].
-responsibles(project: $x1, employee: $x2), responsibles(project: $x1, employee: $x3) -> [$x2 == $x3].
-
-DCs:
-TGD_2(attr1: $x1, attr2: $x2, attr3: $x3), evaluations(employee: $x1, semester_number: $x2, semester_year: $x3), has_positive_evals(employee: $x1, semester_number: $x2, semester_year: $x3) -> #fail.
-TGD_1(attr1: $x1, attr2: $x2), employees(id: $x1, name: $x2), penalized(employee: $x1, semester_number: $x3, semester_year: $x4) -> #fail.
-TGD_3(attr1: $x1), warned(employee: $x1, semester_number: $x2, semester_year: $x3) -> #fail.
-TGD_4(attr1: $x1), evaluations(employee: $x1, semester_number: $x2, semester_year: $x3), has_positive_evals(employee: $x1, semester_number: $x2, semester_year: $x3) -> #fail.
-TGD_5(attr1: $x1, attr2: $x2, attr3: $x3), evaluations(employee: $x1, semester_number: $x2, semester_year: $x3), has_positive_evals(employee: $x1, semester_number: $x2, semester_year: $x3) -> #fail.
-TGD_6(attr1: $x1, attr2: $x2, attr3: $x3), evaluations(employee: $x1, semester_number: $x2, semester_year: $x3), has_positive_evals(employee: $x1, semester_number: $x2, semester_year: $x3) -> #fail.
-TGD_7(attr1: $x1, attr2: $x2, attr3: $x3), evaluations(employee: $x1, semester_number: $x2, semester_year: $x3), has_positive_evals(employee: $x1, semester_number: $x2, semester_year: $x3) -> #fail.
-]]>
-    </dependencies>
+  &dependencies;
 </scenario>

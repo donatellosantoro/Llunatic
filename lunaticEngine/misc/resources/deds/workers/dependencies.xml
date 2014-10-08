@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dependencies>
+<![CDATA[
+DED-STTGDs:
+sworker(workerid: $x1, workername: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), {isNull($x1)} -> [employees(id: $n, name: $x2)].
+sworker(workerid: $x1, workername: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), sstats(worker: $x1, mingrade: $x7, maxgrade: $x8), $x8 > 4, $x7 < 9 -> [employees(id: $x1, name: $x2), tgd1(attr1: $x1, attr2: $x2)].
+sworker(workerid: $x1, workername: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), sstats(worker: $x1, mingrade: $x7, maxgrade: $x8), $x7 >= 9 -> [employees(id: $x1, name: $x2), tgd3(attr1: $x1)].
+sworker(workerid: $x1, workername: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), sstats(worker: $x1, mingrade: $x7, maxgrade: $x8), $x8 <= 4 -> [employees(id: $x1, name: $x2), penalized(employee: $x1, semesternumber: $x9, semesteryear: $x10)] | [employees(id: $x1, name: $x2), tgd4(attr1: $x1)].
+sworker(workerid: $x1, workername: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), $x6 >= 5 -> [evaluations(employee: $x1, semesternumber: $x4, semesteryear: $x5), haspositiveevals(employee: $x1, semesternumber: $x4, semesteryear: $x5)].
+sworker(workerid: $x1, workername: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6), $x6 < 5 -> [evaluations(employee: $x1, semesternumber: $x4, semesteryear: $x5), tgd5(attr1: $x1, attr2: $x4, attr3: $x5)].
+sworker(workerid: $x1, workername: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6) -> [worksin(employee: $x1, project: $x3)].
+sworker(workerid: $x1, workername: $x2, project: $x3, semester: $x4, year: $x5, grade: $x6) -> [worksin(employee: $x7, project: $x3)].
+sprojects(name: $x1, responsible: $x2) -> [responsibles(project: $x1, employee: $x2)].
+
+DED-ExtTGDs:
+tgd1(attr1: $x1, attr2: $x2), employees(id: $x1, name: $x2) -> [evaluations(employee: $x1, semesternumber: $x3, semesteryear: $x4), tgd2(attr1: $x1, attr2: $x3, attr3: $x4)] | [warned(employee: $x1, semesternumber: $x5, semesteryear: $x6)].
+tgd1(attr1: $x1, attr2: $x2), employees(id: $x1, name: $x2) -> [evaluations(employee: $x1, semesternumber: $x3, semesteryear: $x4), haspositiveevals(employee: $x1, semesternumber: $x3, semesteryear: $x4)].
+tgd3(attr1: $x1), evaluations(employee: $x1, semesternumber: $x2, semesteryear: $x3) -> [evaluations(employee: $x1, semesternumber: $x2, semesteryear: $x3), haspositiveevals(employee: $x1, semesternumber: $x2, semesteryear: $x3)].
+employees(id: $x1, name: $x2), employees(id: $x3, name: $x2) -> [tgd8(attr1: $x1, attr2: $x3)] | [evaluations(employee: $x1, semesternumber: $x4, semesteryear: $x5), tgd6(attr1: $x1, attr2: $x4, attr3: $x5)] | [warned(employee: $x1, semesternumber: $x6, semesteryear: $x7)] | [evaluations(employee: $x3, semesternumber: $x8, semesteryear: $x9), tgd7(attr1: $x3, attr2: $x8, attr3: $x9)] | [warned(employee: $x3, semesternumber: $x10, semesteryear: $x11)].
+
+DED-EGDs:
+employees(id: $x1, name: $x2), employees(id: $x1, name: $x3) -> [$x2 == $x3].
+tgd8(attr1: $x1, attr2: $x2) -> [$x1 == $x2].
+responsibles(project: $x1, employee: $x2), responsibles(project: $x1, employee: $x3) -> [$x2 == $x3].
+
+DCs:
+tgd2(attr1: $x1, attr2: $x2, attr3: $x3), evaluations(employee: $x1, semesternumber: $x2, semesteryear: $x3), haspositiveevals(employee: $x1, semesternumber: $x2, semesteryear: $x3) -> #fail.
+tgd1(attr1: $x1, attr2: $x2), employees(id: $x1, name: $x2), penalized(employee: $x1, semesternumber: $x3, semesteryear: $x4) -> #fail.
+tgd3(attr1: $x1), warned(employee: $x1, semesternumber: $x2, semesteryear: $x3) -> #fail.
+tgd4(attr1: $x1), evaluations(employee: $x1, semesternumber: $x2, semesteryear: $x3), haspositiveevals(employee: $x1, semesternumber: $x2, semesteryear: $x3) -> #fail.
+tgd5(attr1: $x1, attr2: $x2, attr3: $x3), evaluations(employee: $x1, semesternumber: $x2, semesteryear: $x3), haspositiveevals(employee: $x1, semesternumber: $x2, semesteryear: $x3) -> #fail.
+tgd6(attr1: $x1, attr2: $x2, attr3: $x3), evaluations(employee: $x1, semesternumber: $x2, semesteryear: $x3), haspositiveevals(employee: $x1, semesternumber: $x2, semesteryear: $x3) -> #fail.
+tgd7(attr1: $x1, attr2: $x2, attr3: $x3), evaluations(employee: $x1, semesternumber: $x2, semesteryear: $x3), haspositiveevals(employee: $x1, semesternumber: $x2, semesteryear: $x3) -> #fail.
+]]>
+</dependencies>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<type>GENERATE</type>
+<generate>
+  <![CDATA[
+  SCHEMA:
+  employees(id, name)
+  warned(employee, semesternumber, semesteryear)
+  haspositiveevals(employee, semesternumber, semesteryear)
+  responsibles(project, employee)
+  penalized(employee, semesternumber, semesteryear)
+  evaluations(employee, semesternumber, semesteryear)
+  tgd2(attr1, attr2, attr3)
+  worksin(employee, project)
+  tgd3(attr1)
+  tgd4(attr1)
+  tgd5(attr1, attr2, attr3)
+  tgd1(attr1, attr2)
+  tgd6(attr1, attr2, attr3)
+  tgd7(attr1, attr2, attr3)
+  tgd8(attr1, attr2)
+  ]]>
+</generate>

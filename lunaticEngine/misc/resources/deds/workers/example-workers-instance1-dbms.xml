@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE doc [
+<!ENTITY dependencies SYSTEM "dependencies.xml">
+<!ENTITY targetschema SYSTEM "target_schema_dbms.xml">
+<!ENTITY instance "1">
+]>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:ded_workers</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <import-xml createTables="true">
+      <input>xml/instance&instance;_sworkers.xml</input>
+      <input>xml/instance&instance;_sstats.xml</input>
+      <input>xml/instance&instance;_sprojects.xml</input>
+    </import-xml>
+  </source>
+  <target> 
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:ded_workers</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+      &targetschema;
+  </target>
+  &dependencies;
+</scenario>

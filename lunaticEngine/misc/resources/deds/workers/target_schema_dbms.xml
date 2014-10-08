@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table employees(id text, name text) with oids;
+create table warned(employee text, semesternumber text, semesteryear text) with oids;
+create table haspositiveevals(employee text, semesternumber text, semesteryear text) with oids;
+create table responsibles(project text, employee text) with oids;
+create table penalized(employee text, semesternumber text, semesteryear text) with oids;
+create table evaluations(employee text, semesternumber text, semesteryear text) with oids;
+create table TGD2(attr1 text, attr2 text, attr3 text) with oids;
+create table worksin(employee text, project text) with oids;
+create table TGD3(attr1 text) with oids;
+create table TGD4(attr1 text) with oids;
+create table TGD5(attr1 text, attr2 text, attr3 text) with oids;
+create table TGD1(attr1 text, attr2 text) with oids;
+create table TGD6(attr1 text, attr2 text, attr3 text) with oids;
+create table TGD7(attr1 text, attr2 text, attr3 text) with oids;
+create table TGD8(attr1 text, attr2 text) with oids;
+]]>
+    </init-db>

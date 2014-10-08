@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<sstats>
+	<sstats>
+		<worker>1</worker>
+		<mingrade type="integer">6</mingrade>
+		<maxgrade type="integer">6</maxgrade>
+	</sstats>
+	<sstats>
+		<worker>2</worker>
+		<mingrade type="integer">9</mingrade>
+		<maxgrade type="integer">9</maxgrade>
+	</sstats>
+	<sstats>
+		<worker>3</worker>
+		<mingrade type="integer">3</mingrade>
+		<maxgrade type="integer">4</maxgrade>
+	</sstats>
+</sstats>

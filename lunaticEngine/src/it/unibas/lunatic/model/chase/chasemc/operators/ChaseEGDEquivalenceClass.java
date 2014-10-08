@@ -3,6 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
@@ -65,24 +66,29 @@ public class ChaseEGDEquivalenceClass {
         long violationQueryEnd = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.EGD_VIOLATION_QUERY_TIME, violationQueryEnd - violationQueryStart);
         List<Repair> repairsForDependency = new ArrayList<Repair>();
-        while (true) {
-            long equivalenceClassStart = new Date().getTime();
-            EquivalenceClass equivalenceClass = readNextEquivalenceClass(it, egd, currentNode.getDeltaDB(), currentNode.getId(), chaseState);
-            long equivalenceClasEnd = new Date().getTime();
-            ChaseStats.getInstance().addStat(ChaseStats.EGD_EQUIVALENCE_CLASS_TIME, equivalenceClasEnd - equivalenceClassStart);
-            if (equivalenceClass == null) {
-                break;
+        try {
+            while (true) {
+                long equivalenceClassStart = new Date().getTime();
+                EquivalenceClass equivalenceClass = readNextEquivalenceClass(it, egd, currentNode.getDeltaDB(), currentNode.getId(), chaseState);
+                long equivalenceClasEnd = new Date().getTime();
+                ChaseStats.getInstance().addStat(ChaseStats.EGD_EQUIVALENCE_CLASS_TIME, equivalenceClasEnd - equivalenceClassStart);
+                if (equivalenceClass == null) {
+                    break;
+                }
+                if (logger.isDebugEnabled()) logger.debug("Equivalence class: " + equivalenceClass);
+                List<Repair> repairsForEquivalenceClass = scenario.getCostManager().chooseRepairStrategy(equivalenceClass, currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
+                if (logger.isDebugEnabled()) logger.debug("Repairs for equivalence class: " + LunaticUtility.printCollection(repairsForEquivalenceClass));
+                repairsForDependency = accumulateRepairs(repairsForDependency, repairsForEquivalenceClass, equivalenceClass);
+                if (noMoreTuples(it)) {
+                    break;
+                }
+                if (logger.isDebugEnabled()) logger.debug("Repairs for equivalence classes so far: " + repairsForDependency.size());
             }
-            if (logger.isDebugEnabled()) logger.debug("Equivalence class: " + equivalenceClass);
-            List<Repair> repairsForEquivalenceClass = scenario.getCostManager().chooseRepairStrategy(equivalenceClass, currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
-            if (logger.isDebugEnabled()) logger.debug("Repairs for equivalence class: " + LunaticUtility.printCollection(repairsForEquivalenceClass));
-            repairsForDependency = accumulateRepairs(repairsForDependency, repairsForEquivalenceClass, equivalenceClass);
-            if (noMoreTuples(it)) {
-                break;
-            }
-            if (logger.isDebugEnabled()) logger.debug("Repairs for equivalence classes so far: " + repairsForDependency.size());
+        } catch (ChaseFailedException e) {
+            throw e;
+        } finally {
+            it.close();
         }
-        it.close();
         if (logger.isDebugEnabled()) logger.debug("Total repairs for dependency: " + LunaticUtility.printCollection(repairsForDependency));
         long repairStart = new Date().getTime();
         NewChaseSteps newSteps = applyRepairs(currentNode, repairsForDependency, egd, premiseTreeMap, scenario);

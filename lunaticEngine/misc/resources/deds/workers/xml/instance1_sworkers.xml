@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<sworker>
+	<sworker>
+		<workerid>1</workerid>
+		<workername>worker1</workername>
+		<project>project1</project>
+		<semester>1</semester>
+		<year>2012</year>
+		<grade type="integer">6</grade>
+	</sworker>
+	<sworker>
+		<workerid>2</workerid>
+		<workername>worker2</workername>
+		<project>project1</project>
+		<semester>1</semester>
+		<year>2012</year>
+		<grade>9</grade>
+	</sworker>
+	<sworker>
+		<workerid>3</workerid>
+		<workername>worker3</workername>
+		<project>project1</project>
+		<semester>1</semester>
+		<year>2012</year>
+		<grade>5</grade>
+	</sworker>
+	<sworker>
+		<workerid>4</workerid>
+		<workername>worker4</workername>
+		<project>project1</project>
+		<semester>1</semester>
+		<year>2012</year>
+		<grade>5</grade>
+	</sworker>
+	<sworker>
+		<workerid>5</workerid>
+		<workername>worker5</workername>
+		<project>project2</project>
+		<semester>1</semester>
+		<year>2012</year>
+		<grade>3</grade>
+	</sworker>
+	<sworker>
+		<workerid>6</workerid>
+		<workername>worker6</workername>
+		<project>project2</project>
+		<semester>1</semester>
+		<year>2012</year>
+		<grade>3</grade>
+	</sworker>
+</sworker>

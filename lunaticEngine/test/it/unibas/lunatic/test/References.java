@@ -123,4 +123,9 @@ public class References {
     public static final String deds_workers_3 = "deds/workers/example-workers-instance3.xml";
     public static final String deds_workers_4 = "deds/workers/example-workers-instance4.xml";
     public static final String deds_workers_5 = "deds/workers/example-workers-instance5.xml";
+    public static final String deds_workers_1_dbms = "deds/workers/example-workers-instance1-dbms.xml";
+    public static final String deds_workers_2_dbms = "deds/workers/example-workers-instance2-dbms.xml";
+    public static final String deds_workers_3_dbms = "deds/workers/example-workers-instance3-dbms.xml";
+    public static final String deds_workers_4_dbms = "deds/workers/example-workers-instance4-dbms.xml";
+    public static final String deds_workers_5_dbms = "deds/workers/example-workers-instance5-dbms.xml";
 }
