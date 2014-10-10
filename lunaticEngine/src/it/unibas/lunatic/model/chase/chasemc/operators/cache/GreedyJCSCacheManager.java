@@ -30,7 +30,6 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
             logger.error("Unable to create JCS Cache. " + ex.getLocalizedMessage());
             throw new IllegalStateException("Unable to create JCS Cache. " + ex.getLocalizedMessage());
         }
-            System.out.println("############################ NEW JCS CACHE");
     }
 
     public CellGroup getCellGroup(IValue value, String stepId, IDatabase deltaDB) {
@@ -92,7 +91,6 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
 
     public void reset() {
         try {
-            System.out.println("############################ RESETTING JCS CACHE");
             //New step to cache... cleaning old step
             cellGroupCache.clear();
             clusterIdCache.clear();

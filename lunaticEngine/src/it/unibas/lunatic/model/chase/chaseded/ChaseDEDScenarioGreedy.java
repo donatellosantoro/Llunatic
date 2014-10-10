@@ -17,6 +17,7 @@ import it.unibas.lunatic.model.dependency.operators.NormalizeDependency;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.utility.combinatorial.GenericListGenerator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,10 +136,10 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
         deds.addAll(scenario.getDEDstTGDs());
         deds.addAll(scenario.getDEDextTGDs());
         deds.addAll(scenario.getDEDEGDs());
-        return generateCombinations(deds);
+        return generateCombinations(deds, scenario);
     }
 
-    private List<GreedyDEDScenario> generateCombinations(List<DED> deds) {
+    private List<GreedyDEDScenario> generateCombinations(List<DED> deds, Scenario scenario) {
         List<List<Dependency>> lists = new ArrayList<List<Dependency>>();
         for (DED ded : deds) {
             lists.add(ded.getAssociatedDependencies());
@@ -147,8 +148,11 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
         List<GreedyDEDScenario> scenarios = new ArrayList<GreedyDEDScenario>();
         for (int i = 0; i < result.size(); i++) {
             List<Dependency> combinations = result.get(i);
-            GreedyDEDScenario scenario = generateScenario(deds, combinations, i);
-            scenarios.add(scenario);
+            GreedyDEDScenario greedyScenario = generateScenario(deds, combinations, i);
+            scenarios.add(greedyScenario);
+        }
+        if (scenario.getConfiguration().isChaseDEDGreedyRandomScenarios()) {
+            Collections.shuffle(scenarios);
         }
         return scenarios;
     }

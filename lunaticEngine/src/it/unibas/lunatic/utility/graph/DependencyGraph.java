@@ -2,6 +2,7 @@ package it.unibas.lunatic.utility.graph;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.database.TableAlias;
+import it.unibas.lunatic.model.dependency.DED;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
@@ -33,6 +34,21 @@ public class DependencyGraph {
         }
         for (Dependency dependency : scenario.getExtTGDs()) {
             handleDependency(graph, dependency);
+        }
+        for (DED ded : scenario.getDEDstTGDs()) {
+            for (Dependency dependency : ded.getAssociatedDependencies()) {
+                handleDependency(graph, dependency);
+            }
+        }
+        for (DED ded : scenario.getDEDEGDs()) {
+            for (Dependency dependency : ded.getAssociatedDependencies()) {
+                handleDependency(graph, dependency);
+            }
+        }
+        for (DED ded : scenario.getDEDextTGDs()) {
+            for (Dependency dependency : ded.getAssociatedDependencies()) {
+                handleDependency(graph, dependency);
+            }
         }
         return graph;
     }
@@ -85,8 +101,12 @@ public class DependencyGraph {
                     //Exclude edge between universal variable in conclusion
                     continue;
                 }
-                graph.addEdge(atomi, atomj, new LabeledVariableEdge(atomi, atomj, formulaVariable.getId()));
+//                if(graph.containsEdge(atomi, atomj) || graph.containsEdge(atomj, atomi)){
+                if(atomi.equals(atomj)){
+                    continue;
+                }
                 if (logger.isDebugEnabled()) logger.debug("Adding edge between: " + atomi + " and " + atomj + " on variable " + formulaVariable.getId());
+                graph.addEdge(atomi, atomj, new LabeledVariableEdge(atomi, atomj, formulaVariable.getId()));
             }
         }
     }

@@ -82,6 +82,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 if (chaseState.isCancelled()) {
                     ChaseUtility.stopChase(chaseState);
                 }
+                long startTgd = new Date().getTime();
                 String localId = ChaseUtility.generateChaseStepIdForTGDs(eTgd);
                 DeltaChaseStep newStep = new DeltaChaseStep(scenario, node, localId, LunaticConstants.CHASE_STEP_TGD);
                 if (logger.isDebugEnabled()) logger.debug("----Chasing tgd: " + eTgd);
@@ -106,6 +107,8 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                     node = newStep;
                     newNode = true;
                 }
+                long endTgd = new Date().getTime();
+                ChaseStats.getInstance().addDepenendecyStat(eTgd, endTgd - startTgd);
             }
             if (!newNode) {
                 if (logger.isDebugEnabled()) logger.debug("***** No new nodes, exit tgd chase...");

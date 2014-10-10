@@ -4,6 +4,7 @@ import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
+import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForEGD;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForTGD;
@@ -61,21 +62,26 @@ public class ChaseMCScenario {
 
     public DeltaChaseStep doChase(Scenario scenario, IChaseState chaseState) {
         long start = new Date().getTime();
-        stChaser.doChase(scenario, false);
-        ChaseTree chaseTree = new ChaseTree(scenario);
-        IDatabase targetDB = scenario.getTarget();
+        try {
+            stChaser.doChase(scenario, false);
+            ChaseTree chaseTree = new ChaseTree(scenario);
+            IDatabase targetDB = scenario.getTarget();
 //        insertOperatorForTgds.initializeOIDs(targetDB);
-        if (logger.isDebugEnabled()) logger.debug("-------------------Chasing dependencies on mc scenario: " + scenario);
-        //Generate stratification (must be first step because affects other steps)
-        stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
-        IDatabase deltaDB = deltaBuilder.generate(targetDB, scenario, LunaticConstants.CHASE_STEP_ROOT);
-        if (logger.isDebugEnabled()) logger.debug("DeltaDB: " + deltaDB);
-        DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);
-        DeltaChaseStep result = doChase(root, scenario, chaseState);
-        long end = new Date().getTime();
-        ChaseStats.getInstance().addStat(ChaseStats.TOTAL_TIME, end - start);
-        if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
-        return result;
+            if (logger.isDebugEnabled()) logger.debug("-------------------Chasing dependencies on mc scenario: " + scenario);
+            //Generate stratification (must be first step because affects other steps)
+            stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
+            IDatabase deltaDB = deltaBuilder.generate(targetDB, scenario, LunaticConstants.CHASE_STEP_ROOT);
+            if (logger.isDebugEnabled()) logger.debug("DeltaDB: " + deltaDB);
+            DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);
+            DeltaChaseStep result = doChase(root, scenario, chaseState);
+            return result;
+        } catch (ChaseFailedException e) {
+            throw e;
+        } finally {
+            long end = new Date().getTime();
+            ChaseStats.getInstance().addStat(ChaseStats.TOTAL_TIME, end - start);
+            if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
+        }
     }
 
     public DeltaChaseStep doChase(DeltaChaseStep root, Scenario scenario, IChaseState chaseState) {
@@ -104,6 +110,9 @@ public class ChaseMCScenario {
             if (newTgdNodes && logger.isDebugEnabled()) logger.debug("Chase tree after tgd enforcement:\n" + root);
             ChaserResult egdResult = egdChaser.doChase(root, scenario, chaseState, egdQueryMap);
             userInteractionRequired = egdResult.isUserInteractionRequired();
+            if (scenario.getConfiguration().isCheckDCDuringChase()) {
+                dChaser.doChase(root, scenario, chaseState, dQueryMap);
+            }
             if (egdResult.isNewNodes() && logger.isDebugEnabled()) logger.debug("Chase tree after egd enforcement:\n" + root);
             if (!newTgdNodes && !egdResult.isNewNodes()) {
                 break;

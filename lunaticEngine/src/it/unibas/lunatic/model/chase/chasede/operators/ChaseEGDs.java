@@ -73,7 +73,10 @@ public class ChaseEGDs {
             boolean modifiedCellsInLastStep = false;
             for (Dependency egd : scenario.getEGDs()) {
                 if (logger.isDebugEnabled()) logger.debug("----Chasing egd: " + egd);
+                long startEgd = new Date().getTime();
                 modifiedCellsInLastStep = chaseDependency(egd, scenario, chaseState, premiseTreeMap.get(egd)) || modifiedCellsInLastStep;
+                long endEgd = new Date().getTime();
+                ChaseStats.getInstance().addDepenendecyStat(egd, endEgd - startEgd);
             }
             if (!modifiedCellsInLastStep) {
                 break;

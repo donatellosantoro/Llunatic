@@ -74,12 +74,15 @@ public class ChaseDeltaExtTGDsWithoutCellGroups implements IChaseDeltaExtTGDs {
             IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB());
             for (Dependency eTgd : scenario.getExtTGDs()) {
                 if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
+                long startTgd = new Date().getTime();
                 if (logger.isDebugEnabled()) logger.debug("----Chasing tgd: " + eTgd);
                 if (logger.isDebugEnabled()) logger.debug("----Current leaf: " + newStep);
                 IAlgebraOperator tgdQuery = tgdTreeMap.get(eTgd);
                 if (logger.isDebugEnabled()) logger.debug("----TGD Query: " + tgdQuery);
 //                insertedTuples = insertTuples.execute(tgdQuery, newStep, eTgd, scenario) || insertedTuples;
                 insertedTuples = insertTuples.execute(tgdQuery, newStep, eTgd, scenario, databaseForStep) || insertedTuples;
+                long endTgd = new Date().getTime();
+                ChaseStats.getInstance().addDepenendecyStat(eTgd, endTgd - startTgd);
             }
             if (!insertedTuples) {
                 break;

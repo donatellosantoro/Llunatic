@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.chase.commons;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
@@ -44,19 +43,26 @@ public class ChaseDeltaDCs {
     }
 
     private void chaseNode(DeltaChaseStep node, Scenario scenario, IChaseState chaseState, Map<Dependency, IAlgebraOperator> tgdTreeMap) {
-        if (logger.isDebugEnabled()) logger.trace("Chasing dcs on scenario: " + scenario);
+        if (node.isDuplicate() || node.isInvalid()) {
+            return;
+        }
+        if (logger.isTraceEnabled()) logger.trace("Chasing dcs on scenario: " + scenario);
         IDatabase databaseForStep = databaseBuilder.extractDatabase(node.getId(), node.getDeltaDB(), node.getOriginalDB());
         for (Dependency dc : scenario.getDCs()) {
             if (chaseState.isCancelled()) {
                 ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
             }
-            if (logger.isDebugEnabled()) logger.debug("----Chasing dc: " + dc);
-            if (logger.isDebugEnabled()) logger.debug("----Current leaf: " + node.getId());
+            long startDc = new Date().getTime();
+            if (logger.isTraceEnabled()) logger.trace("----Chasing dc: " + dc);
+            if (logger.isTraceEnabled()) logger.trace("----Current leaf: " + node.getId());
             IAlgebraOperator tgdQuery = tgdTreeMap.get(dc);
-            if (logger.isDebugEnabled()) logger.debug("----DC Query: " + tgdQuery);
+            if (logger.isTraceEnabled()) logger.trace("----DC Query: " + tgdQuery);
             ITupleIterator it = queryRunner.run(tgdQuery, scenario.getSource(), databaseForStep);
+            long endDc = new Date().getTime();
+            ChaseStats.getInstance().addDepenendecyStat(dc, endDc - startDc);
             if (it.hasNext()) {
                 node.setInvalid(true);
+                if (logger.isDebugEnabled()) logger.debug("Chase fails. Denial constraint \n" + dc + "\nis violated");
 //                throw new ChaseException("Chase fails. Denial constraint \n" + dc + "\nis violated on node \n" + node);
             }
             it.close();

@@ -35,11 +35,14 @@ public class ChaseExtTGDs {
         while (true) {
             boolean insertedTuples = false;
             for (Dependency eTgd : scenario.getExtTGDs()) {
+                long startTgd = new Date().getTime();
                 if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
                 if (logger.isDebugEnabled()) logger.debug("----Chasing tgd: " + eTgd);
                 if (logger.isDebugEnabled()) logger.debug("----Target: " + scenario.getTarget().printInstances(true));
                 IAlgebraOperator treeRoot = treeMap.get(eTgd);
                 insertedTuples = naiveInsert.execute(eTgd, treeRoot, scenario.getSource(), scenario.getTarget()) || insertedTuples;
+                long endTgd = new Date().getTime();
+                ChaseStats.getInstance().addDepenendecyStat(eTgd, endTgd - startTgd);
             }
             if (!insertedTuples) {
                 break;

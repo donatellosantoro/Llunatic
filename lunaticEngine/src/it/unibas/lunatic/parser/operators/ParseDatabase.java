@@ -94,7 +94,6 @@ public class ParseDatabase {
             INode setNodeInstance = findSetNode(parserFact.getSet(), rootInstance);
             if (setNodeInstance == null) {
                 setNodeInstance = new SetNode(parserFact.getSet(), oidGenerator.getNextOID());
-                System.out.println("### AGGIUNGO SET NODE " + setNodeInstance);
                 rootInstance.addChild(setNodeInstance);
             }
             TupleNode tupleNodeInstance = new TupleNode(parserFact.getSet() + "Tuple", oidGenerator.getNextOID());

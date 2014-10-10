@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.commons;
 
+import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ public class ChaseStats {
     private static Logger logger = LoggerFactory.getLogger(ChaseStats.class);
     private static ChaseStats singleton = new ChaseStats();
     private Map<String, Long> stats = new HashMap<String, Long>();
+    /////
+    private Map<Dependency, Long> dependencyStats = new HashMap<Dependency, Long>();
 
     public static ChaseStats getInstance() {
         return singleton;
@@ -64,8 +67,17 @@ public class ChaseStats {
         long totalTime = previousTime + newTime;
         stats.put(statName, totalTime);
     }
-    
-    public Long getStat(String statName){
+
+    public void addDepenendecyStat(Dependency dependency, long newTime) {
+        long previousTime = 0;
+        if (dependencyStats.containsKey(dependency)) {
+            previousTime = dependencyStats.get(dependency);
+        }
+        long totalTime = previousTime + newTime;
+        dependencyStats.put(dependency, totalTime);
+    }
+
+    public Long getStat(String statName) {
         return stats.get(statName);
     }
 
@@ -101,6 +113,11 @@ public class ChaseStats {
         if (stats.containsKey(DELTA_DB_STEP_BUILDER)) sb.append(DELTA_DB_STEP_BUILDER + ": ").append(stats.get(DELTA_DB_STEP_BUILDER)).append(" ms").append("\n");
         if (stats.containsKey(DUPLICATE_TIME)) sb.append(DUPLICATE_TIME + ": ").append(stats.get(DUPLICATE_TIME)).append(" ms").append("\n");
         if (stats.containsKey(REMOVE_DUPLICATE_TIME)) sb.append(REMOVE_DUPLICATE_TIME + ": ").append(stats.get(REMOVE_DUPLICATE_TIME)).append(" ms").append("\n");
+        sb.append("-------------------------").append("\n");
+        sb.append("------ CHASE STATS ------").append("\n");
+        for (Dependency d : dependencyStats.keySet()) {
+            sb.append(d.getId()).append(": ").append(dependencyStats.get(d)).append(" ms").append("\n");
+        }
         sb.append("-------------------------").append("\n");
         return sb.toString();
     }

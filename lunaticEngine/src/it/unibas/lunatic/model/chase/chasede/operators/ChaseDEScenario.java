@@ -61,6 +61,9 @@ public class ChaseDEScenario implements IDEChaser {
             if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState);
             boolean newTuples = extTgdChaser.doChase(scenario, chaseState);
             boolean cellChanges = egdChaser.doChase(scenario, chaseState);
+            if (scenario.getConfiguration().isCheckDCDuringChase()) {
+                dChaser.doChase(scenario, chaseState);
+            }
             if (!newTuples && !cellChanges) {
                 break;
             } else {

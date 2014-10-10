@@ -296,6 +296,12 @@ public class Scenario {
         if (!this.authoritativeSources.isEmpty()) {
             result.append("Authoritative sources: ").append(this.authoritativeSources).append("\n");
         }
+        result.append(toStringDependencies());
+        return result.toString();
+    }
+
+    public String toStringDependencies() {
+        StringBuilder result = new StringBuilder();
         if (!this.stTgds.isEmpty()) {
             result.append("================ ST Tgds ===================\n");
             for (Dependency tgd : this.stTgds) {

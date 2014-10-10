@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.chase.chasede.operators;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
@@ -28,14 +27,18 @@ public class ChaseDCs {
 
     public void doChase(Scenario scenario, IChaseState chaseState) {
         long start = new Date().getTime();
-        if (logger.isDebugEnabled()) logger.debug("Chasing dtgds on scenario: " + scenario);
+        if (logger.isTraceEnabled()) logger.trace("Chasing dtgds on scenario: " + scenario);
         for (Dependency dc : scenario.getDCs()) {
             if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
-            if (logger.isDebugEnabled()) logger.debug("----Chasing denial constraint: " + dc);
+            long startDc = new Date().getTime();
+            if (logger.isTraceEnabled()) logger.trace("----Chasing denial constraint: " + dc);
             IAlgebraOperator treeRoot = treeBuilder.buildTreeForPremise(dc, scenario);
             ITupleIterator result = queryRunner.run(treeRoot, scenario.getSource(), scenario.getTarget());
+            long endDc = new Date().getTime();
+            ChaseStats.getInstance().addDepenendecyStat(dc, endDc - startDc);
             if (result.hasNext()) {
                 result.close();
+                if (logger.isDebugEnabled()) logger.debug("Chase fails. Denial constraint \n" + dc + "\nis violated");
                 throw new ChaseFailedException("Chase fails. Denial constraint is violated: " + dc);
             }
             result.close();

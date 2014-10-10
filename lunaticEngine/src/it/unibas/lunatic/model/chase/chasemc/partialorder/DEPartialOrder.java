@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 public class DEPartialOrder extends AbstractPartialOrder {
 
     private static Logger logger = LoggerFactory.getLogger(DEPartialOrder.class);
-    
 
     public CellGroup mergeCellGroups(CellGroup group1, CellGroup group2, IValue newValue, Scenario scenario) {
         CellGroup newGroup = new CellGroup(newValue, true);
