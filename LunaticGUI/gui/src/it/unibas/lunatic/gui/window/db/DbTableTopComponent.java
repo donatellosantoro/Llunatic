@@ -1,10 +1,8 @@
 package it.unibas.lunatic.gui.window.db;
 
 import it.unibas.lunatic.gui.R;
-import it.unibas.lunatic.gui.node.BatchTupleFactory;
 import it.unibas.lunatic.gui.node.ITupleFactory;
 import it.unibas.lunatic.gui.node.TableNode;
-import it.unibas.lunatic.gui.node.TableNodeWithTuples;
 import it.unibas.lunatic.gui.node.TableTupleNode;
 import it.unibas.lunatic.gui.node.TupleGenerationStrategy;
 import it.unibas.lunatic.gui.table.TablePopupFactory;
@@ -14,7 +12,6 @@ import org.netbeans.swing.etable.ETable;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.Outline;
 import org.openide.explorer.ExplorerManager;
-import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;

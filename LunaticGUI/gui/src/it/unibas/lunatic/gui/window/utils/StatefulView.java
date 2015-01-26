@@ -1,6 +1,5 @@
 package it.unibas.lunatic.gui.window.utils;
 
-import it.unibas.lunatic.gui.node.chase.mc.ChaseTreeRoot;
 import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import org.openide.nodes.Node;
 import org.openide.nodes.NodeNotFoundException;
 import org.openide.nodes.NodeOp;
 
+@SuppressWarnings("rawtypes")
 public class StatefulView extends BeanTreeView {
 
     private Log logger = LogFactory.getLog(getClass());

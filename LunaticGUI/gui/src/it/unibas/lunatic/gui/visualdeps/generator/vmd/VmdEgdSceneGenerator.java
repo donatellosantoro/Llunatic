@@ -81,11 +81,11 @@ class VmdEgdSceneGenerator implements IVmdSceneGenerator {
         VMDNodeWidget node = (VMDNodeWidget) scene.addNode(conclusion.toString());
         node.setNodeName(conclusion.toString());
         node.setBorder(conclusionBorder);
-        for (FormulaVariableOccurrence occ : leftVar.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occ : leftVar.getPremiseRelationalOccurrences()) {
             VMDPinWidget pin = (VMDPinWidget) scene.addPin(conclusion.toString(), occ.toString());
             pin.setPinName(occ.toLongString());
         }
-        for (FormulaVariableOccurrence occ : rightVar.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occ : rightVar.getPremiseRelationalOccurrences()) {
             VMDPinWidget pin = (VMDPinWidget) scene.addPin(conclusion.toString(), occ.toString());
             pin.setPinName(occ.toLongString());
         }

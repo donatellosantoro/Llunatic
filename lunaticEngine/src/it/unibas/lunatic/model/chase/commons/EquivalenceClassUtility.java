@@ -26,8 +26,7 @@ public class EquivalenceClassUtility {
         List<AttributeRef> joinAttributes = getTargetJoinAttributes(egd);
         joinAttributes = ChaseUtility.filterConclusionOccurrences(joinAttributes, egd);
         if (logger.isDebugEnabled()) logger.debug("Target join attributes: " + joinAttributes);
-        for (int i = 0; i < joinAttributes.size(); i++) {
-            AttributeRef attribute = joinAttributes.get(i);
+        for (AttributeRef attribute : joinAttributes) {
             IValue tupleValue = tuple.getCell(attribute).getValue();
             IValue lastTupleValue = lastTuple.getCell(attribute).getValue();
             if (!tupleValue.equals(lastTupleValue)) {
@@ -38,7 +37,8 @@ public class EquivalenceClassUtility {
     }
 
     public static void addTuple(Tuple tuple, EquivalenceClass equivalenceClass) {
-        if (logger.isDebugEnabled()) logger.trace("Adding tuple to equivalence class: " + equivalenceClass);
+        if (logger.isDebugEnabled()) logger.trace("Adding tuple " + tuple + " to equivalence class: " + equivalenceClass);
+        if (logger.isDebugEnabled()) logger.debug("OccurrenceAttributesForConclusionVariable: " + equivalenceClass.getOccurrenceAttributesForConclusionVariable());
         for (AttributeRef occurrenceAttributesForConclusionVariable : equivalenceClass.getOccurrenceAttributesForConclusionVariable()) {
             Cell cellToChangeForForwardChasing = tuple.getCell(occurrenceAttributesForConclusionVariable);
             if (logger.isDebugEnabled()) logger.trace("Attribute: " + occurrenceAttributesForConclusionVariable + " - Cell: " + cellToChangeForForwardChasing);

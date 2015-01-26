@@ -14,13 +14,24 @@ public class TestFlipFlop extends CheckTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestFlipFlop.class);
     
-    public void testScenario() throws Exception {
+    public void testScenarioFlipFlop() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.flipflop);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toShortString());
         Assert.assertEquals(2, resultSizer.getPotentialSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
+        checkSolutions(result);
+    }
+    
+    public void testScenarioContraddicting() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.contraddicting);
+        setConfigurationForTest(scenario);
+        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        DeltaChaseStep result = chaser.doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toShortString());
+        Assert.assertEquals(32, resultSizer.getPotentialSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
     }

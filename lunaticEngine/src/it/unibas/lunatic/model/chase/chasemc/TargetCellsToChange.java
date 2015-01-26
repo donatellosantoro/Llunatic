@@ -81,4 +81,5 @@ public class TargetCellsToChange {
         sb.append((suspicious ? "Suspicious" : ""));
         return sb.toString();
     }
+
 }

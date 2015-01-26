@@ -7,6 +7,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Children;
 
+@SuppressWarnings("rawtypes")
 public class StepCellGroupsRootNode extends AbstractNode {
 
     private final ChildFactory factory;

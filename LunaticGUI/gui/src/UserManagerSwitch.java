@@ -1,5 +1,3 @@
-
-
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.core.UserManagerProvider;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.IUserManager;
@@ -41,6 +39,7 @@ public class UserManagerSwitch extends PropertyEditorSupport implements ExProper
         return ed;
     }
 
+    @SuppressWarnings("rawtypes")
     private static class InplaceUserManagerSwitch implements InplaceEditor {
 
         private Log logger = LogFactory.getLog(getClass());
@@ -49,6 +48,7 @@ public class UserManagerSwitch extends PropertyEditorSupport implements ExProper
         private final JComboBox comboBox;
         private PropertyEditor editor = null;
 
+        @SuppressWarnings("unchecked")
         private InplaceUserManagerSwitch(Scenario scenario) {
             Collection<IUserManager> userManagers = userManagerProvider.getAll(scenario);
 //            comboBox = new JComboBox<IUserManager>(userManagers.toArray(new IUserManager[userManagers.size()]));

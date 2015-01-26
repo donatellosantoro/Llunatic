@@ -47,6 +47,7 @@ public class PagedBatchTupleFactory extends Children.Keys<Tuple> implements ITup
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void removeNotify() {
         logger.debug("Removed");
         setKeys(Collections.EMPTY_SET);

@@ -27,15 +27,14 @@
                 <pathelement location="${lib.dir}/jdom.jar" />
                 <pathelement location="${lib.dir}/xercesImpl.jar" />
                 <pathelement location="${lib.dir}/antlr-3.1.1-runtime.jar" />            
-                <pathelement location="${lib.dir}/mybatis-3.1.1.jar" />
                 <pathelement location="${lib.dir}/jep-${jep.ver}.jar" />    
                 <pathelement location="${lib.dir}/js.jar" />  
                 <pathelement location="${lib.dir}/js-engine.jar" />  
                 <pathelement location="${lib.dir}/simmetrics-1.6.2.jar" />  
                 <pathelement location="${lib.dir}/jgrapht-jdk1.6.jar" />  
                 <pathelement location="${lib.dir}/jgraph.jar" />  
-                <pathelement location="${lib.dir}/c3p0-0.9.2.1.jar" />  
-                <pathelement location="${lib.dir}/mchange-commons-java-0.2.3.4.jar" />  
+                <pathelement location="${lib.dir}/c3p0-${c3p0.ver}.jar" />  
+                <pathelement location="${lib.dir}/mchange-commons-java-${mchange.ver}.jar" />  
                 <pathelement location="${lib.dir}/commons-io-2.4.jar" /> 
                 <pathelement location="${lib.dir}/slf4j-api-${slf4j.ver}.jar" /> 
                 <pathelement location="${lib.dir}/logback-core-${logback.ver}.jar" />

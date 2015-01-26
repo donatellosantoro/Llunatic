@@ -10,6 +10,7 @@ import org.openide.explorer.propertysheet.ExPropertyEditor;
 import org.openide.explorer.propertysheet.InplaceEditor;
 import org.openide.explorer.propertysheet.PropertyEnv;
 
+@SuppressWarnings("rawtypes")
 public class UserManagerEditor extends PropertyEditorSupport implements ExPropertyEditor, InplaceEditor.Factory {
 
     private UserManagerProvider userManagerProvider = UserManagerProvider.getInstance();
@@ -26,6 +27,7 @@ public class UserManagerEditor extends PropertyEditorSupport implements ExProper
     private InplaceEditor ed = null;
 
     @Override
+    @SuppressWarnings("unchecked")
     public InplaceEditor getInplaceEditor() {
         if (ed == null) {
             Collection<IUserManager> userManagers = userManagerProvider.getAll(scenario);

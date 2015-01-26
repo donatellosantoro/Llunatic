@@ -66,6 +66,7 @@ public class References {
     public static final String persons_dbms = "mc/persons/person-mcscenario-dbms.xml";
     
     public static final String flipflop = "mc/flipflop/flipflop-mcscenario.xml";
+    public static final String contraddicting = "mc/flipflop/contradictingcfd-mcscenario.xml";
     
     public static final String synthetic_01 = "mc/synthetic/synthetic-01-mcscenario.xml";
     public static final String synthetic_01_dbms = "mc/synthetic/synthetic-01-mcscenario-dbms.xml";

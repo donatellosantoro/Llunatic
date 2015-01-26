@@ -9,6 +9,7 @@ import org.openide.explorer.propertysheet.ExPropertyEditor;
 import org.openide.explorer.propertysheet.InplaceEditor;
 import org.openide.explorer.propertysheet.PropertyEnv;
 
+@SuppressWarnings("rawtypes")
 public class CostManagerEditor extends PropertyEditorSupport implements ExPropertyEditor, InplaceEditor.Factory {
 
     private CostManagerProvider costManagerProvider = CostManagerProvider.getInstance();
@@ -20,6 +21,7 @@ public class CostManagerEditor extends PropertyEditorSupport implements ExProper
     private InplaceEditor ed = null;
 
     @Override
+    @SuppressWarnings("unchecked")
     public InplaceEditor getInplaceEditor() {
         if (ed == null) {
             Collection<ICostManager> costManager = costManagerProvider.getAll();

@@ -69,10 +69,10 @@ public class EgdSceneGenerator implements IDependencySceneGenerator {
         GraphNode graphNode = new GraphNode(conclusion.toString());
         VMDNodeWidget node = scene.createNode(graphNode, true);
         node.setBorder(conclusionBorder);
-        for (FormulaVariableOccurrence occ : leftVar.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occ : leftVar.getPremiseRelationalOccurrences()) {
             scene.createPin(new PinNode(graphNode, occ.toString(), occ.toLongString()));
         }
-        for (FormulaVariableOccurrence occ : rightVar.getPremiseOccurrences()) {
+        for (FormulaVariableOccurrence occ : rightVar.getPremiseRelationalOccurrences()) {
             scene.createPin(new PinNode(graphNode, occ.toString(), occ.toLongString()));
         }
         return graphNode;

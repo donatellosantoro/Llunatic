@@ -12,6 +12,7 @@ import org.openide.explorer.propertysheet.InplaceEditor;
 import org.openide.explorer.propertysheet.PropertyEnv;
 import org.openide.explorer.propertysheet.PropertyModel;
 
+@SuppressWarnings("rawtypes")
 public class InplaceComboBoxEditor implements InplaceEditor {
 
     private Log logger = LogFactory.getLog(getClass());

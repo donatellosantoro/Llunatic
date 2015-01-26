@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+cst1(a, b)
+cst2(a, b)
+INSTANCE:
+cst1(a: "a", b: "v1")
+cst2(a: "a", b: "v2")
+]]>
+    </generate>
+  </source>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+r(a, b)
+INSTANCE:
+r(a: "a", b: "1")
+r(a: "a", b: "2")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+//FD: A -> B 
+fd1: r(a: $a, b: $b1), r(a: $a, b: $b2) -> $b1 == $b2.
+
+//CFD: R['a'] -> R['v1']
+cfd1: r(a: $a, b: $b1), cst1(a: $a, b: $b2) -> $b1 == $b2.
+
+//CFD: R['a'] -> R['v2']
+cfd2: r(a: $a, b: $b1), cst2(a: $a, b: $b2) -> $b1 == $b2.
+
+]]>
+  </dependencies>
+  <orderingAttributes>
+    <orderingAttribute>
+      <attribute>r.b</attribute>
+      <associatedAttribute>r.b</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+    </orderingAttribute> 
+  </orderingAttributes>
+  <configuration>
+      <removeDuplicates>false</removeDuplicates>
+  </configuration>
+<!--  <userManager>
+    <type>AfterLLUN</type>
+  </userManager>
+  <costManager>
+      <type>Standard</type>
+      <doPermutations>false</doPermutations>
+  </costManager>-->
+</scenario>
+
