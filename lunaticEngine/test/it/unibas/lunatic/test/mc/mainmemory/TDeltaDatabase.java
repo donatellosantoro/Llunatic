@@ -30,14 +30,13 @@ public class TDeltaDatabase extends CheckTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons);
         MainMemoryDB deltaDB = new BuildMainMemoryDeltaDB().generate((MainMemoryDB) scenario.getTarget(), scenario, LunaticConstants.CHASE_STEP_ROOT);
-        insertOperator.execute((MainMemoryTable) deltaDB.getTable("person_name"), buildTuple(new TupleOID(new OID(10)), "r.f", new ConstantValue("JACK"), "person_name", "name"));
-        insertOperator.execute((MainMemoryTable) deltaDB.getTable("person_name"), buildTuple(new TupleOID(new OID(10)), "r.f.f", new ConstantValue("JOE"), "person_name", "name"));
-        insertOperator.execute((MainMemoryTable) deltaDB.getTable("person_ssn"), buildTuple(new TupleOID(new OID(10)), "r.f.f", new ConstantValue("321"), "person_ssn", "ssn"));
+        insertOperator.execute((MainMemoryTable) deltaDB.getTable("person_name"), buildTuple(new TupleOID(new OID(10)), "r.f", new ConstantValue("JACK"), "person_name", "name"), scenario.getSource(), scenario.getTarget());
+        insertOperator.execute((MainMemoryTable) deltaDB.getTable("person_name"), buildTuple(new TupleOID(new OID(10)), "r.f.f", new ConstantValue("JOE"), "person_name", "name"), scenario.getSource(), scenario.getTarget());
+        insertOperator.execute((MainMemoryTable) deltaDB.getTable("person_ssn"), buildTuple(new TupleOID(new OID(10)), "r.f.f", new ConstantValue("321"), "person_ssn", "ssn"), scenario.getSource(), scenario.getTarget());
         if (logger.isDebugEnabled()) logger.debug(deltaDB.toString());
         new BuildMainMemoryDBForChaseStep().extractDatabase("r.f", deltaDB, (MainMemoryDB) scenario.getTarget());
     }
-    
-    
+
     private Tuple buildTuple(TupleOID tid, String stepId, IValue newValue, String tableName, String attributeName) {
         TupleOID oid = new TupleOID(IntegerOIDGenerator.getNextOID());
         Tuple tuple = new Tuple(oid);

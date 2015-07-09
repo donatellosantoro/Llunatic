@@ -28,4 +28,6 @@ public interface ITable {
     public ITupleIterator getTupleIterator(int offset, int limit);
 
     public String getPaginationQuery(int offset, int limit);
+
+    public Attribute getAttribute(String name);
 }

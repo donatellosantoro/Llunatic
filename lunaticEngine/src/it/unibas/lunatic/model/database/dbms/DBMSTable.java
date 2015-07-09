@@ -44,6 +44,15 @@ public class DBMSTable implements ITable {
         return attributes;
     }
 
+    public Attribute getAttribute(String name) {
+        for (Attribute attribute : getAttributes()) {
+            if (attribute.getName().equals(name)) {
+                return attribute;
+            }
+        }
+        throw new IllegalArgumentException("Table " + tableName + " doesn't contain attribute " + name);
+    }
+
     public ITupleIterator getTupleIterator(int offset, int limit) {
         String query = getPaginationQuery(offset, limit);
         ResultSet resultSet = QueryManager.executeQuery(query, accessConfiguration);

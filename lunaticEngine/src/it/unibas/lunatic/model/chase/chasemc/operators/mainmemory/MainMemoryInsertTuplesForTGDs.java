@@ -80,7 +80,7 @@ public class MainMemoryInsertTuplesForTGDs implements IInsertTuplesForTGDs {
                     Tuple targetTuple = buildTargetTuple(deltaTableName, newTupleOID, attribute.getName(), attributeValue, currentNode.getId());
                     if (logger.isDebugEnabled()) logger.debug("----Target tuple: " + targetTuple);
                     ITable deltaTable = currentNode.getDeltaDB().getTable(deltaTableName);
-                    insertOperator.execute(deltaTable, targetTuple);
+                    insertOperator.execute(deltaTable, targetTuple, scenario.getSource(), scenario.getTarget());
                     IValue groupId = CellGroupIDGenerator.generateNewId(attributeValue);
                     occurrenceHandler.updateOccurrencesForNewTuple(targetTuple, groupId, currentNode.getDeltaDB(), table.getName(), attribute.getName(), true);
 //                    generateCellGroupForNulls(targetTuple, cellGroupsForNull);

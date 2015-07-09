@@ -351,6 +351,8 @@
         <echo file="nbproject/nbproject.properties">
             src.dir            = src
             build.top.dir      = build
+            resources.dir      = misc/resources
+            experiments.dir    = misc/experiments
             build.dir          = build/classes
             test.src.dir       = test
             test.build.dir     = build/test/classes

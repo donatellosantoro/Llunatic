@@ -48,6 +48,15 @@ public class MainMemoryVirtualTable implements ITable {
         }
         return result;
     }
+    
+    public Attribute getAttribute(String name){
+        for (Attribute attribute : getAttributes()) {
+            if(attribute.getName().equals(name)){
+                return attribute;
+            }
+        }
+        throw new IllegalArgumentException("Table " + name + " doesn't contain attribute " + name);
+    }
 
     public int getSize() {
         int size = 0;

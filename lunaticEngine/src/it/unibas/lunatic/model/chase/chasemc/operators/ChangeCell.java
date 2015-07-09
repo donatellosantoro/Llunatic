@@ -74,7 +74,7 @@ public class ChangeCell {
         if (logger.isDebugEnabled()) logger.debug("Inserting new value in TableName: " + tableName + " AttributeName: " + attributeName);
         String deltaTableName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
         Tuple tupleToInsert = ChaseUtility.buildTuple(tid, stepId, newValue, groupID, tableName, attributeName);
-        insertOperator.execute(deltaDB.getTable(deltaTableName), tupleToInsert);
+        insertOperator.execute(deltaDB.getTable(deltaTableName), tupleToInsert, null, deltaDB);
 //        occurrenceHandler.handleNewTuple(tupleToInsert, occurrenceValue, deltaDB, tableName, attributeName);
     }
 

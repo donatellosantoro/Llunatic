@@ -308,20 +308,26 @@ public class LunaticUtility {
         }
         return result;
     }
-    
+
     public static String printNodeIds(List<DeltaChaseStep> nodes) {
         StringBuilder result = new StringBuilder();
         for (DeltaChaseStep node : nodes) {
             result.append(node.getId()).append(", ");
-        }        
+        }
         return result.toString();
-    }    
+    }
 //    public static String extractValueFromLabel(String label) {
 //        if (!label.contains(LunaticConstants.VALUE_LABEL)) {
 //            return label;
 //        }
 //        return label.substring(0, label.indexOf(LunaticConstants.VALUE_LABEL));
 //    }
+
+    public static Attribute getAttribute(AttributeRef attributeRef, IDatabase db) {
+        ITable table = db.getTable(attributeRef.getTableName());
+        return table.getAttribute(attributeRef.getName());
+    }
+
 }
 
 class StringComparator implements Comparator<Object> {

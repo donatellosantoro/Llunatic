@@ -16,3 +16,8 @@ hs_err_pid*
 /lunaticEngine/build/test/classes/
 /lunaticEngine/build/
 /LunaticGUI/res/nbproject/private/
+jep-2.4.1/nbproject/private
+nbproject.properties
+lunaticEngine/dist
+LunaticGUI/commons/release
+LunaticGUI/wrapper/release

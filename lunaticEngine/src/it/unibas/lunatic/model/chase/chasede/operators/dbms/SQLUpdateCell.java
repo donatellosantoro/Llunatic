@@ -2,12 +2,15 @@ package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 
 import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.model.database.Attribute;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.dbms.DBMSDB;
+import it.unibas.lunatic.persistence.Types;
 import it.unibas.lunatic.persistence.relational.QueryManager;
+import it.unibas.lunatic.utility.LunaticUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +27,14 @@ public class SQLUpdateCell implements IUpdateCell {
         query.append(((DBMSDB) database).getAccessConfiguration().getSchemaName()).append(".");
         query.append(cellRef.getAttributeRef().getTableName());
         query.append(" SET ").append(attributeRef.getName()).append("=");
-        query.append("'").append(cleanValue(value.toString())).append("'");
+        Attribute attribute = LunaticUtility.getAttribute(attributeRef, database);
+        if(attribute.getType().equals(Types.STRING)){
+            query.append("'");
+        }
+        query.append(cleanValue(value.toString()));
+        if(attribute.getType().equals(Types.STRING)){
+            query.append("'");
+        }
         query.append(" WHERE ").append(LunaticConstants.OID).append("=");
         query.append(cellRef.getTupleOID());
         query.append(";");

@@ -46,6 +46,15 @@ public class DBMSVirtualTable implements ITable {
         return attributes;
     }
 
+    public Attribute getAttribute(String name) {
+        for (Attribute attribute : getAttributes()) {
+            if (attribute.getName().equals(name)) {
+                return attribute;
+            }
+        }
+        throw new IllegalArgumentException("Table " + tableName + " doesn't contain attribute " + name);
+    }
+
     public ITupleIterator getTupleIterator() {
         ResultSet resultSet = DBMSUtility.getTableResultSet(tableName + suffix, accessConfiguration);
         return new DBMSTupleIterator(resultSet, tableName);

@@ -19,48 +19,6 @@
                     <type>java</type>
                     <location>${test.src.dir}</location>
                 </source-folder>
-                <!-- 
-                <source-folder>
-                    <label>Spicy Experiments Sources</label>
-                    <type>java</type>
-                    <location>../spicyExperiments/src</location>
-                </source-folder>
-                <source-folder>
-                    <label>Spicy Experiments Tests</label>
-                    <type>java</type>
-                    <location>../spicyExperiments/test</location>
-                </source-folder>
-                <source-folder>
-                    <label>Spicy Verifier Sources</label>
-                    <type>java</type>
-                    <location>../spicyVerifier/src</location>
-                </source-folder>
-                <source-folder>
-                    <label>Spicy Verifier Tests</label>
-                    <type>java</type>
-                    <location>../spicyVerifier/test</location>
-                </source-folder>
-                <source-folder>
-                    <label>SpicyBenchmark Sources</label>
-                    <type>java</type>
-                    <location>../spicyBenchmark/src</location>
-                </source-folder>
-                <source-folder>
-                    <label>SpicyBenchmark Tests</label>
-                    <type>java</type>
-                    <location>../spicyBenchmark/test</location>
-                </source-folder>
-                <source-folder>
-                    <label>Spicy GUI Sources</label>
-                    <type>java</type>
-                    <location>../spicyGUI/spicygui/src</location>
-                </source-folder>
-                <source-folder>
-                    <label>Spicy GUI Tests</label>
-                    <type>java</type>
-                    <location>../spicyGUI/spicygui/test</location>
-                </source-folder>
-                 -->
                 <build-folder>
                     <location>${build.top.dir}</location>
                 </build-folder>
@@ -162,6 +120,14 @@
                     <source-folder style="packages">
                         <label>Tests</label>
                         <location>${test.src.dir}</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>Resources</label>
+                        <location>${resources.dir}</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>Experiments</label>
+                        <location>${experiments.dir}</location>
                     </source-folder>
                     <source-file>
                         <location>build.xml</location>

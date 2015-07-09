@@ -187,7 +187,7 @@ public class StandardOccurrenceHandlerMC implements IValueOccurrenceHandlerMC {
         tuple.addCell(tableCell);
         tuple.addCell(attributeCell);
         ITable table = deltaDB.getTable(LunaticConstants.OCCURRENCE_TABLE);
-        insertOperator.execute(table, tuple);
+        insertOperator.execute(table, tuple, null, deltaDB);
     }
 
     protected void addProvenance(IDatabase deltaDB, IValue groupId, Cell cell, String stepId, boolean synchronizeCache) {
@@ -207,7 +207,7 @@ public class StandardOccurrenceHandlerMC implements IValueOccurrenceHandlerMC {
         tuple.addCell(attributeCell);
         tuple.addCell(occurrenceValueCell);
         ITable table = deltaDB.getTable(LunaticConstants.PROVENANCE_TABLE);
-        insertOperator.execute(table, tuple);
+        insertOperator.execute(table, tuple, null, deltaDB);
     }
 
     /////////////////////////////////////////////////////////////////////////
