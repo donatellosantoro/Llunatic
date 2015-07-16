@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.database;
 
+import it.unibas.lunatic.Scenario;
 import java.io.Serializable;
 
 public class AttributeRef implements Serializable, Cloneable {
@@ -41,11 +42,11 @@ public class AttributeRef implements Serializable, Cloneable {
     public boolean isTarget() {
         return !isSource();
     }
-    
-    public boolean isAuthoritative(){
+
+    public boolean isAuthoritative() {
         return this.tableAlias.isAuthoritative();
     }
-    
+
     public String getName() {
         return name;
     }
@@ -73,8 +74,8 @@ public class AttributeRef implements Serializable, Cloneable {
     }
 
     @Override
-    public AttributeRef clone()  {
-        try { 
+    public AttributeRef clone() {
+        try {
             AttributeRef c = (AttributeRef) super.clone();
             c.tableAlias = this.tableAlias.clone();
             return c;

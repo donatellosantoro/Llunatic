@@ -1,9 +1,11 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
+import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.operators.IDelete;
 import it.unibas.lunatic.model.algebra.operators.IInsertTuple;
-import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.ICacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.SimpleCacheManagerForLazyOccurrenceHandler;
 import it.unibas.lunatic.model.database.Cell;
@@ -14,101 +16,65 @@ import it.unibas.lunatic.model.database.IDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OccurrenceHandlerWithCacheLazy extends StandardOccurrenceHandlerMC {
+public class OccurrenceHandlerWithCacheLazy extends Standard {
 
     private static Logger logger = LoggerFactory.getLogger(OccurrenceHandlerWithCacheLazy.class);
-    
+
     private ICacheManager cacheManager;
 
-    public OccurrenceHandlerWithCacheLazy(ICacheManager cacheManager, IRunQuery queryRunner, IInsertTuple insertOperator, IDelete deleteOperator, IUpdateCell cellUpdater) {
-        super(queryRunner, insertOperator, deleteOperator, cellUpdater);
+    public OccurrenceHandlerWithCacheLazy(ICacheManager cacheManager, IRunQuery queryRunner, IInsertTuple insertOperator, IDelete deleteOperator) {
+        super(queryRunner, insertOperator, deleteOperator);
         this.cacheManager = cacheManager;
         assert (cacheManager instanceof SimpleCacheManagerForLazyOccurrenceHandler);
     }
 
     @Override
-    public CellGroup loadCellGroupFromId(IValue cellGroupId, IDatabase deltaDB, String stepId) {
-        CellGroup cellGroup = this.cacheManager.getCellGroup(cellGroupId, stepId, deltaDB);
+    public CellGroup loadCellGroupFromId(IValue cellGroupId, IDatabase deltaDB, String stepId, Scenario scenario) {
+        CellGroup cellGroup = this.cacheManager.loadCellGroupFromId(cellGroupId, stepId, deltaDB, scenario);
         if (cellGroup != null) {
             return cellGroup;
         }
-        cellGroup = super.loadCellGroupFromId(cellGroupId, deltaDB, stepId);
-        this.cacheManager.putCellGroup(cellGroup, stepId, deltaDB);
+        cellGroup = super.loadCellGroupFromId(cellGroupId, deltaDB, stepId, scenario);
+        this.cacheManager.putCellGroup(cellGroup, stepId, deltaDB, scenario);
         return cellGroup;
     }
 
     @Override
-    public IValue findClusterId(CellRef cellRef, String stepId, IDatabase deltaDB) {
-        IValue value = this.cacheManager.getClusterId(cellRef, stepId, deltaDB);
+    public IValue findClusterId(CellRef cellRef, String stepId, IDatabase deltaDB, Scenario scenario) {
+        IValue value = this.cacheManager.getClusterId(cellRef, stepId, deltaDB, scenario);
         if (value != null) {
             return value;
         }
-        value = super.findClusterId(cellRef, stepId, deltaDB);
-        this.cacheManager.putClusterId(cellRef, value, stepId, deltaDB);
+        value = super.findClusterId(cellRef, stepId, deltaDB, scenario);
+        this.cacheManager.putClusterId(cellRef, value, stepId, deltaDB, scenario);
         return value;
     }
 
     @Override
-    protected void addProvenance(IDatabase deltaDB, IValue value, Cell cell, String stepId, boolean synchronizeCache) {
-        CellGroup cellGroup = this.cacheManager.getCellGroup(value, stepId, deltaDB);
-        if (cellGroup != null) {
-            cellGroup.addProvenanceCell(cell);
-        }
-        super.addProvenance(deltaDB, value, cell, stepId, synchronizeCache);
+    public void saveNewCellGroup(CellGroup cellGroup, IDatabase deltaDB, String stepId, Scenario scenario) {
+        this.cacheManager.putCellGroup(cellGroup, stepId, deltaDB, scenario);
+        super.saveNewCellGroup(cellGroup, deltaDB, stepId, scenario);
     }
 
     @Override
-    protected void addOccurrence(IDatabase deltaDB, IValue value, CellRef cellRef, String stepId, boolean synchronizeCache) {
-        CellGroup cellGroup = this.cacheManager.getCellGroup(value, stepId, deltaDB);
-        if (cellGroup != null) {
-            cellGroup.addOccurrenceCell(cellRef);
+    protected void saveCellGroupCell(IDatabase deltaDB, IValue groupId, CellGroupCell cell, String stepId, String type, Scenario scenario) {
+        if (LunaticConstants.TYPE_OCCURRENCE.equals(type) && groupId instanceof ConstantValue) {
+            this.cacheManager.putClusterId(new CellRef(cell), groupId, stepId, deltaDB, scenario);
         }
-        if (value instanceof ConstantValue) {
-            this.cacheManager.putClusterId(cellRef, value, stepId, deltaDB);
-        }
-        super.addOccurrence(deltaDB, value, cellRef, stepId, synchronizeCache);
+        super.saveCellGroupCell(deltaDB, groupId, cell, stepId, type, scenario);
     }
 
     @Override
-    public void deleteCellGroup(CellGroup cellGroup, IDatabase deltaDB, String stepId, boolean synchronizeCache) {
+    public void deleteCellGroup(CellGroup cellGroup, IDatabase deltaDB, String stepId) {
         this.cacheManager.removeCellGroup(cellGroup.getValue(), stepId);
         if (cellGroup.getValue() instanceof ConstantValue) {
-            for (CellRef cellRef : cellGroup.getOccurrences()) {
-                this.cacheManager.removeClusterId(cellRef, stepId);
+            for (Cell cell : cellGroup.getOccurrences()) {
+                this.cacheManager.removeClusterId(new CellRef(cell), stepId);
             }
         }
-        super.deleteCellGroup(cellGroup, deltaDB, stepId, synchronizeCache);
+        super.deleteCellGroup(cellGroup, deltaDB, stepId);
     }
-
-    @Override
-    public void updateCellGroup(CellGroup cellGroup, IValue newValue, IDatabase deltaDB, String stepId, boolean synchronizeCache) {
-        CellGroup oldCellGroup = this.cacheManager.getCellGroup(cellGroup.getValue(), stepId, deltaDB);
-        IValue oldValue = cellGroup.getValue();
-        if (oldCellGroup != null) {
-            this.cacheManager.removeCellGroup(oldValue, stepId);
-            if (oldValue instanceof ConstantValue) {
-                for (CellRef cellRef : cellGroup.getOccurrences()) {
-                    this.cacheManager.removeClusterId(cellRef, stepId);
-                }
-            }
-        }
-        CellGroup newCellGroup = this.cacheManager.getCellGroup(newValue, stepId, deltaDB);
-        if (newCellGroup == null) {
-            newCellGroup = cellGroup.clone();
-            newCellGroup.setValue(newValue);
-            this.cacheManager.putCellGroup(newCellGroup, stepId, deltaDB);
-        } else {
-            newCellGroup.getOccurrences().addAll(cellGroup.getOccurrences());
-            newCellGroup.getProvenances().addAll(cellGroup.getProvenances());
-        }
-        if (newValue instanceof ConstantValue) {
-            for (CellRef cellRef : cellGroup.getOccurrences()) {
-                this.cacheManager.putClusterId(cellRef, newValue, stepId, deltaDB);
-            }
-        }
-        super.updateCellGroup(cellGroup, newValue, deltaDB, stepId, synchronizeCache);
-    }
-
+    
     @Override
     public void reset() {
         this.cacheManager.reset();

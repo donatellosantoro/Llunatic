@@ -20,7 +20,7 @@ import java.util.Map;
 public class MainMemoryDB implements IDatabase {
 
     private DataSource dataSource;
-    private Map<NullValue, List<CellRef>> skolemOccurrences = new HashMap<NullValue, List<CellRef>>();
+    private Map<NullValue, List<Cell>> skolemOccurrences = new HashMap<NullValue, List<Cell>>();
 
     public MainMemoryDB(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -34,7 +34,7 @@ public class MainMemoryDB implements IDatabase {
         return dataSource;
     }
 
-    public Map<NullValue, List<CellRef>> getSkolemOccurrences() {
+    public Map<NullValue, List<Cell>> getSkolemOccurrences() {
         return skolemOccurrences;
     }
 

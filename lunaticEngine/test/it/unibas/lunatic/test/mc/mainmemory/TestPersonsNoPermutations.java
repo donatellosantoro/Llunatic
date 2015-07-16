@@ -29,6 +29,7 @@ public class TestPersonsNoPermutations extends CheckExpectedSolutionsTest {
         Assert.assertTrue(scenario.getCostManager() instanceof SimilarityToMostFrequentCostManager);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         DeltaChaseStep result = chaser.doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.getDeltaDB().printInstances(false));
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));

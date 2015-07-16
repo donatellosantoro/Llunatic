@@ -66,7 +66,6 @@ public class ChaseMCScenario {
             stChaser.doChase(scenario, false);
             ChaseTree chaseTree = new ChaseTree(scenario);
             IDatabase targetDB = scenario.getTarget();
-//        insertOperatorForTgds.initializeOIDs(targetDB);
             if (logger.isDebugEnabled()) logger.debug("-------------------Chasing dependencies on mc scenario: " + scenario);
             //Generate stratification (must be first step because affects other steps)
             stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);

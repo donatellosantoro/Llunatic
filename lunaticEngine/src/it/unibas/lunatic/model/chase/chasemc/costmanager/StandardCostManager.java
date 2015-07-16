@@ -31,9 +31,6 @@ public class StandardCostManager extends AbstractCostManager {
     public List<Repair> chooseRepairStrategy(EquivalenceClass equivalenceClass, DeltaChaseStep chaseTreeRoot,
             List<Repair> repairsForDependency, Scenario scenario, String stepId,
             IValueOccurrenceHandlerMC occurrenceHandler) {
-//        if (isDoBackward() && !isDoPermutations()) {
-//            throw new ChaseException("Single permutation must return singleton a repair. Configuration with doBackward and not doPermutations is not allowed with StandardCostManager");
-//        }
         if (logger.isDebugEnabled()) logger.debug("########Current node: " + chaseTreeRoot.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("########Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<TargetCellsToChange> tupleGroupsWithSameConclusionValue = equivalenceClass.getTupleGroups();
@@ -79,7 +76,6 @@ public class StandardCostManager extends AbstractCostManager {
                 continue;
             }
             if (logger.isDebugEnabled()) logger.debug("Generating backward repairs for subset:\n" + LunaticUtility.printCollection(subset));
-//            for (BackwardAttribute backwardAttribute : getBackwardAttributes(subset)) {
             for (BackwardAttribute backwardAttribute : equivalenceClass.getAttributesToChangeForBackwardChasing()) {
                 if (!allGroupsCanBeBackwardChasedForAttribute(subset, backwardAttribute)) {
                     break;
@@ -87,7 +83,7 @@ public class StandardCostManager extends AbstractCostManager {
                 List<TargetCellsToChange> forwardGroups = new ArrayList<TargetCellsToChange>(tupleGroups);
                 List<TargetCellsToChange> backwardGroups = new ArrayList<TargetCellsToChange>();
                 for (TargetCellsToChange tupleGroup : subset) {
-                    CellGroup cellGroup = tupleGroup.getCellGroupsForBackwardAttributes().get(backwardAttribute);
+                    CellGroup cellGroup = tupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute);
                     if (backwardIsAllowed(cellGroup)) {
                         backwardGroups.add(tupleGroup);
                         forwardGroups.remove(tupleGroup);
@@ -106,7 +102,7 @@ public class StandardCostManager extends AbstractCostManager {
 
     protected boolean allGroupsCanBeBackwardChasedForAttribute(List<TargetCellsToChange> subset, BackwardAttribute backwardAttribute) {
         for (TargetCellsToChange tupleGroup : subset) {
-            if (tupleGroup.getCellGroupsForBackwardAttributes().get(backwardAttribute) == null) {
+            if (tupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute) == null) {
                 return false;
             }
         }
@@ -115,7 +111,7 @@ public class StandardCostManager extends AbstractCostManager {
 
     protected boolean backwardIsAllowed(CellGroup cellGroup) {
         // never change LLUNs backward L(L(x)) = L(x)            
-        if (cellGroup.getValue() instanceof LLUNValue) {
+        if (cellGroup.getValue() instanceof LLUNValue || cellGroup.hasInvalidCell()) {
             if (logger.isDebugEnabled()) logger.debug("Backward on LLUN (" + cellGroup.getValue() + ") is not allowed");
             return false;
         }
@@ -124,8 +120,12 @@ public class StandardCostManager extends AbstractCostManager {
             if (logger.isDebugEnabled()) logger.debug("Backward on Null (" + cellGroup.getValue() + ") is not allowed");
             return false;
         }
-        if (!cellGroup.getProvenances().isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with provenance " + cellGroup.getProvenances() + " is not allowed");
+        if (!cellGroup.getAuthoritativeJustifications().isEmpty()) {
+            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with authoritative justification " + cellGroup.getAuthoritativeJustifications() + " is not allowed");
+            return false;
+        }
+        if (!cellGroup.getUserCells().isEmpty()) {
+            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with user cell " + cellGroup.getUserCells() + " is not allowed");
             return false;
         }
         if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " is allowed");
@@ -140,14 +140,11 @@ public class StandardCostManager extends AbstractCostManager {
             repair.addChanges(forwardChanges);
         }
         for (TargetCellsToChange backwardTupleGroup : backwardTupleGroups) {
-            CellGroup backwardCellGroup = backwardTupleGroup.getCellGroupsForBackwardAttributes().get(backwardAttribute);
-//            int llunId = ChaseUtility.generateLLUNId(backwardCellGroup);
-//            LLUNValue llunValue = new LLUNValue(LunaticConstants.LLUN_PREFIX + LunaticConstants.CHASE_BACKWARD + llunId);
+            CellGroup backwardCellGroup = backwardTupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute).clone();
             LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
-            CellGroup cellsTochange = new CellGroup(llunValue, true);
-            cellsTochange.getOccurrences().addAll(backwardCellGroup.getOccurrences());
-            ChangeSet backwardChangesForGroup = new ChangeSet(cellsTochange, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardTupleGroups));
-//            ChangeSet backwardChangesForGroup = new ChangeSet(cellsTochange, LunaticConstants.CHASE_BACKWARD, premiseAttribute);
+            backwardCellGroup.setValue(llunValue);
+            backwardCellGroup.setInvalidCell(LunaticConstants.INVALID_CELL);
+            ChangeSet backwardChangesForGroup = new ChangeSet(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardTupleGroups));
             repair.addChanges(backwardChangesForGroup);
             if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {
                 backwardTupleGroup.setSuspicious(true);

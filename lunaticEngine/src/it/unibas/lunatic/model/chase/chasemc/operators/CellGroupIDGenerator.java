@@ -30,7 +30,7 @@ public class CellGroupIDGenerator {
         return new LLUNValue(LunaticConstants.LLUN_PREFIX + (counter++));
     }
 
-    public static IValue getValue(IValue cellGroupId) {
+    public static IValue getCellGroupValueFromGroupID(IValue cellGroupId) {
         IValue value = cellGroupId;
         if (cellGroupId instanceof ConstantValue) {
             if (cellGroupId.toString().contains(LunaticConstants.VALUE_LABEL)) {

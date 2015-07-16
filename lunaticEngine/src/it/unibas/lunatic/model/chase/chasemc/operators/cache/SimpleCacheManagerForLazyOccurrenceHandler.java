@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.cache;
 
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.database.CellRef;
@@ -13,12 +14,12 @@ public class SimpleCacheManagerForLazyOccurrenceHandler implements ICacheManager
     private Map<String, CellGroup> cellGroupCache = new HashMap<String, CellGroup>();
     private Map<String, IValue> clusterIdCache = new HashMap<String, IValue>();
 
-    public CellGroup getCellGroup(IValue value, String stepId, IDatabase deltaDB) {
+    public CellGroup loadCellGroupFromId(IValue value, String stepId, IDatabase deltaDB, Scenario scenario) {
         String key = buildKey(value, stepId);
         return cellGroupCache.get(key);
     }
 
-    public void putCellGroup(CellGroup cellGroup, String stepId, IDatabase deltaDB) {
+    public void putCellGroup(CellGroup cellGroup, String stepId, IDatabase deltaDB, Scenario scenario) {
         String key = buildKey(cellGroup.getValue(), stepId);
         cellGroupCache.put(key, cellGroup);
     }
@@ -28,12 +29,12 @@ public class SimpleCacheManagerForLazyOccurrenceHandler implements ICacheManager
         this.cellGroupCache.remove(key);
     }
 
-    public IValue getClusterId(CellRef cellRef, String stepId, IDatabase deltaDB) {
+    public IValue getClusterId(CellRef cellRef, String stepId, IDatabase deltaDB, Scenario scenario) {
         String key = buildKey(cellRef, stepId);
         return clusterIdCache.get(key);
     }
 
-    public void putClusterId(CellRef cellRef, IValue value, String stepId, IDatabase deltaDB) {
+    public void putClusterId(CellRef cellRef, IValue value, String stepId, IDatabase deltaDB, Scenario scenario) {
         String key = buildKey(cellRef, stepId);
         this.clusterIdCache.put(key, value);
     }

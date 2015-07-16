@@ -2,44 +2,45 @@ package it.unibas.lunatic.model.chase.chasemc.partialorder;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
+import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FrequencyPartialOrder extends AbstractPartialOrder {
+public class FrequencyPartialOrder extends StandardPartialOrder {
 
     private static Logger logger = LoggerFactory.getLogger(FrequencyPartialOrder.class);
 
-    public CellGroup mergeCellGroups(CellGroup group1, CellGroup group2, IValue newValue, Scenario scenario) {
-        CellGroup newGroup = new CellGroup(newValue, true);
-        mergeCells(group1, group2, newGroup);
-        if (newValue instanceof LLUNValue) {
-            IValue frequencyValue = checkFrequency(group1, group2);
-            if (frequencyValue != null) {
-                newGroup.setValue(frequencyValue);
-            } else {
-//                int llunId = ChaseUtility.generateLLUNId(newGroup);
-//                newValue = new LLUNValue(LunaticConstants.LLUN_PREFIX + LunaticConstants.CHASE_FORWARD + llunId);
-                newGroup.setValue(CellGroupIDGenerator.getNextLLUNID());
-            }
+    @Override
+    public IValue generalizeNonAuthoritativeConstantCells(Set<CellGroupCell> constantCells, CellGroup cellGroup, Scenario scenario) {
+        IValue lubValue = super.generalizeNonAuthoritativeConstantCells(constantCells, cellGroup, scenario);
+        if (!(lubValue instanceof LLUNValue)) {
+            return lubValue;
         }
-        return newGroup;
+        Map<IValue, Integer> occurrenceHistogram = buildOccurrenceHistogram(constantCells);
+        IValue mostFrequentValue = ChaseUtility.findMostFrequentValueIfAny(occurrenceHistogram);
+        if(mostFrequentValue != null){
+            return mostFrequentValue;
+        }
+        return lubValue;
     }
 
-    private IValue checkFrequency(CellGroup group1, CellGroup group2) {
-        if(group1.getOccurrences().isEmpty() || group2.getOccurrences().isEmpty()){
-            return null;
+    private Map<IValue, Integer> buildOccurrenceHistogram(Set<CellGroupCell> nonAuthoritativeCells) {
+        Map<IValue, Integer> result = new HashMap<IValue, Integer>();
+        for (CellGroupCell nonAuthoritativeCell : nonAuthoritativeCells) {
+            Integer occurrences = result.get(nonAuthoritativeCell.getOriginalValue());
+            if (occurrences == null) {
+                result.put(nonAuthoritativeCell.getOriginalValue(), 1);
+            } else {
+                result.put(nonAuthoritativeCell.getOriginalValue(), occurrences++);
+            }
         }
-//        if (group1.getOccurrences().size() >= group2.getOccurrences().size()) {
-        if (group1.getOccurrences().size() > group2.getOccurrences().size()) {
-            return group1.getValue();
-        }
-        if (group1.getOccurrences().size() < group2.getOccurrences().size()) {
-            return group2.getValue();
-        }
-        return null;
+        return result;
     }
 
     public String toString() {

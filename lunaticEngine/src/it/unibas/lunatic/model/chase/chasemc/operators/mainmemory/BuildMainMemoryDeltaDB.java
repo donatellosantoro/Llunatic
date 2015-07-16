@@ -68,6 +68,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
                     tupleNodeSchema.addChild(createAttributeSchema(LunaticConstants.STEP));
                     tupleNodeSchema.addChild(createAttributeSchema(LunaticConstants.TID));
                     tupleNodeSchema.addChild(createAttributeSchema(attribute.getName()));
+                    tupleNodeSchema.addChild(createAttributeSchema(LunaticConstants.CELL_ORIGINAL_VALUE));
                     tupleNodeSchema.addChild(createAttributeSchema(LunaticConstants.GROUP_ID));
                 } else {
                     tableNonAffectedAttributes.add(attribute);
@@ -77,7 +78,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
                 createTableForNonAffected(schemaNode, table.getName(), tableNonAffectedAttributes);
             }
         }
-        createOccurrenceTables(schemaNode);
+        createCellGroupTable(schemaNode);
     }
 
     private void createTableForNonAffected(INode schemaNode, String tableName, List<Attribute> tableNonAffectedAttributes) {
@@ -92,26 +93,18 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         }
     }
 
-    private void createOccurrenceTables(INode schemaNode) {
-        INode occurrenceSet = new SetNode(LunaticConstants.OCCURRENCE_TABLE);
-        TupleNode occurrenceTuple = new TupleNode(LunaticConstants.OCCURRENCE_TABLE + "Tuple");
-        occurrenceSet.addChild(occurrenceTuple);
+    private void createCellGroupTable(INode schemaNode) {
+        INode cellGroupTableSet = new SetNode(LunaticConstants.CELLGROUP_TABLE);
+        TupleNode occurrenceTuple = new TupleNode(LunaticConstants.CELLGROUP_TABLE + "Tuple");
+        cellGroupTableSet.addChild(occurrenceTuple);
         occurrenceTuple.addChild(createAttributeSchema(LunaticConstants.STEP));
         occurrenceTuple.addChild(createAttributeSchema(LunaticConstants.GROUP_ID));
         occurrenceTuple.addChild(createAttributeSchema(LunaticConstants.CELL_OID));
         occurrenceTuple.addChild(createAttributeSchema(LunaticConstants.CELL_TABLE));
         occurrenceTuple.addChild(createAttributeSchema(LunaticConstants.CELL_ATTRIBUTE));
-        schemaNode.addChild(occurrenceSet);
-        INode provenanceSet = new SetNode(LunaticConstants.PROVENANCE_TABLE);
-        TupleNode provenanceTuple = new TupleNode(LunaticConstants.PROVENANCE_TABLE + "Tuple");
-        provenanceSet.addChild(provenanceTuple);
-        provenanceTuple.addChild(createAttributeSchema(LunaticConstants.STEP));
-        provenanceTuple.addChild(createAttributeSchema(LunaticConstants.GROUP_ID));
-        provenanceTuple.addChild(createAttributeSchema(LunaticConstants.CELL_OID));
-        provenanceTuple.addChild(createAttributeSchema(LunaticConstants.CELL_TABLE));
-        provenanceTuple.addChild(createAttributeSchema(LunaticConstants.CELL_ATTRIBUTE));
-        provenanceTuple.addChild(createAttributeSchema(LunaticConstants.PROVENANCE_CELL_VALUE));
-        schemaNode.addChild(provenanceSet);
+        occurrenceTuple.addChild(createAttributeSchema(LunaticConstants.CELL_ORIGINAL_VALUE));
+        occurrenceTuple.addChild(createAttributeSchema(LunaticConstants.CELL_TYPE));
+        schemaNode.addChild(cellGroupTableSet);
     }
 
     private AttributeNode createAttributeSchema(String attributeName) {
@@ -125,7 +118,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         DataSource dataSource = deltaDB.getDataSource();
         INode instanceNode = new TupleNode(PersistenceConstants.DATASOURCE_ROOT_LABEL, IntegerOIDGenerator.getNextOID());
         instanceNode.setRoot(true);
-        initOccurrenceTables(instanceNode);
+        instanceNode.addChild(new SetNode(LunaticConstants.CELLGROUP_TABLE, IntegerOIDGenerator.getNextOID()));
         insertTargetTablesIntoDeltaDB(database, instanceNode, affectedAttributes, rootName);
         dataSource.addInstanceWithCheck(instanceNode);
     }
@@ -156,6 +149,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
                         tupleNodeInstance.addChild(createAttributeInstance(LunaticConstants.STEP, rootName));
                         IValue value = cell.getValue();
                         tupleNodeInstance.addChild(createAttributeInstance(cell.getAttribute(), value));
+                        tupleNodeInstance.addChild(createAttributeInstance(LunaticConstants.CELL_ORIGINAL_VALUE, value));
                         if (value instanceof NullValue && ((NullValue) value).isLabeledNull()) {
                             CellRef cellRef = new CellRef(tupleOID, new AttributeRef(table.getName(), cell.getAttribute()));
                             addTupleForNullOccurrence(value, cellRef, instanceNode);
@@ -184,11 +178,6 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
                 instanceNode.addChild(setNodeInstance);
             }
         }
-    }
-
-    private void initOccurrenceTables(INode instanceNode) {
-        instanceNode.addChild(new SetNode(LunaticConstants.OCCURRENCE_TABLE, IntegerOIDGenerator.getNextOID()));
-        instanceNode.addChild(new SetNode(LunaticConstants.PROVENANCE_TABLE, IntegerOIDGenerator.getNextOID()));
     }
 
     private AttributeNode createAttributeInstance(String attributeName, Object value) {
@@ -224,14 +213,16 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
     }
 
     private void addTupleForNullOccurrence(IValue value, CellRef cellRef, INode instanceNode) {
-        INode nullInsertSet = getSetNodeInstance(LunaticConstants.OCCURRENCE_TABLE, instanceNode);
-        TupleNode nullInsertTuple = new TupleNode(LunaticConstants.OCCURRENCE_TABLE + "Tuple", IntegerOIDGenerator.getNextOID());
+        INode nullInsertSet = getSetNodeInstance(LunaticConstants.CELLGROUP_TABLE, instanceNode);
+        TupleNode nullInsertTuple = new TupleNode(LunaticConstants.CELLGROUP_TABLE + "Tuple", IntegerOIDGenerator.getNextOID());
         nullInsertSet.addChild(nullInsertTuple);
         nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.GROUP_ID, value));
         nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.STEP, LunaticConstants.CHASE_STEP_ROOT));
         nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.CELL_OID, cellRef.getTupleOID()));
         nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.CELL_TABLE, cellRef.getAttributeRef().getTableName()));
         nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.CELL_ATTRIBUTE, cellRef.getAttributeRef().getName()));
+        nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.CELL_ORIGINAL_VALUE, value));
+        nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.CELL_TYPE, LunaticConstants.TYPE_OCCURRENCE));
     }
 
 }

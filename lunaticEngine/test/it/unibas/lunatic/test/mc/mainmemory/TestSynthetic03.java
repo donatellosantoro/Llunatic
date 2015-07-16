@@ -17,10 +17,11 @@ public class TestSynthetic03 extends CheckTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_03);
         setConfigurationForTest(scenario);
+        if (logger.isDebugEnabled()) logger.debug("Scenario\n" + scenario.toString());
 //        scenario.getConfiguration().setRemoveDuplicates(true);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
-        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
 //        Assert.assertEquals(10, resultSizer.getSolutions(result));

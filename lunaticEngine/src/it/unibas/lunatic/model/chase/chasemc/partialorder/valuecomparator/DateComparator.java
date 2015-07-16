@@ -1,12 +1,13 @@
 package it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator;
 
 import it.unibas.lunatic.exceptions.ChaseException;
+import it.unibas.lunatic.model.database.IValue;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateComparator extends StandardValueComparator {
+public class DateComparator extends StringComparator {
 
     private DateFormat dateFormat;
 
@@ -15,7 +16,7 @@ public class DateComparator extends StandardValueComparator {
     }
 
     @Override
-    public Integer compare(String v1, String v2) {
+    public int compare(IValue v1, IValue v2) {
         try {
             Date d1 = dateFormat.parse(v1.toString());
             Date d2 = dateFormat.parse(v2.toString());

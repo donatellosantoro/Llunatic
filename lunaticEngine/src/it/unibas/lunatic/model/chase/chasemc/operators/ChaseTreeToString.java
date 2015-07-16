@@ -95,7 +95,7 @@ public class ChaseTreeToString {
             }
         }
     }
-    
+
     private boolean isLeaf(DeltaChaseStep node) {
         return node.getChildren().isEmpty();
     }
@@ -116,7 +116,7 @@ public class ChaseTreeToString {
 
     public String printStep(DeltaChaseStep step, boolean sort, boolean longFormat) {
         StringBuilder result = new StringBuilder();
-        result.append("----------------   CHASE STEP  ").append(step.getId()).append(" ").append((step.isDuplicate() ? "(duplicate)" : "" )).append(" ----------------------\n");
+        result.append("----------------   CHASE STEP  ").append(step.getId()).append(" ").append((step.isDuplicate() ? "(duplicate)" : "")).append(" ----------------------\n");
         result.append(step.isSolution() ? "SOLUTION " : "INTERMEDIATE ");
         result.append(step.isGround() ? "GROUND " : "");
         result.append(step.isInvalid() ? "INVALID " : "");
@@ -137,9 +137,11 @@ public class ChaseTreeToString {
         result.append(database.printInstances(sort));
         if (longFormat) {
             result.append((step.getCellGroupStats() != null ? step.getCellGroupStats() : ""));
-            List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroups(deltaDB, step.getId());
+            List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsInStepForDebugging(deltaDB, step.getId(), step.getScenario());
             result.append("--------------- CELL GROUPS -----------------\n");
-            result.append(LunaticUtility.printCollection(cellGroups));
+            for (CellGroup cellGroup : cellGroups) {
+                result.append(cellGroup.toLongString()).append("\n");
+            }
             result.append("\n");
         }
         return result.toString();

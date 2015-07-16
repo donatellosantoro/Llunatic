@@ -23,6 +23,12 @@ public class TableAlias implements Cloneable, Serializable {
         this.source = source;
     }
 
+    public TableAlias(String tableName, boolean source, boolean authoritative) {
+        this.tableName = tableName;
+        this.source = source;
+        this.authoritative = authoritative;
+    }
+
     public boolean isSource() {
         return source;
     }

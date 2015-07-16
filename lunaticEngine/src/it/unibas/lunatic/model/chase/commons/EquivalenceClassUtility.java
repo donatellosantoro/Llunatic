@@ -1,7 +1,9 @@
 package it.unibas.lunatic.model.chase.commons;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
 import it.unibas.lunatic.model.database.AttributeRef;
@@ -43,35 +45,37 @@ public class EquivalenceClassUtility {
             Cell cellToChangeForForwardChasing = tuple.getCell(occurrenceAttributesForConclusionVariable);
             if (logger.isDebugEnabled()) logger.trace("Attribute: " + occurrenceAttributesForConclusionVariable + " - Cell: " + cellToChangeForForwardChasing);
             IValue conclusionValue = cellToChangeForForwardChasing.getValue();
-            TargetCellsToChange targetCellsToChange = equivalenceClass.getTupleGroupsWithSameConclusionValue().get(conclusionValue);
-            if (logger.isDebugEnabled()) logger.trace("Target cells to change: " + targetCellsToChange);
-            if (targetCellsToChange == null) {
-                targetCellsToChange = new TargetCellsToChange(conclusionValue);
-                equivalenceClass.getTupleGroupsWithSameConclusionValue().put(conclusionValue, targetCellsToChange);
-            }
+            TargetCellsToChange targetCellsToChange = getOrCreateTargetCellsToChange(equivalenceClass, conclusionValue);
             TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, occurrenceAttributesForConclusionVariable));
-            if (occurrenceAttributesForConclusionVariable.isTarget()) {
-                targetCellsToChange.getCellGroupForForwardRepair().addOccurrenceCell(new CellRef(originalOid, ChaseUtility.unAlias(occurrenceAttributesForConclusionVariable)));
-            } else {
-                Cell sourceCell = new Cell(new CellRef(originalOid, ChaseUtility.unAlias(occurrenceAttributesForConclusionVariable)), conclusionValue);
-                targetCellsToChange.getCellGroupForForwardRepair().addProvenanceCell(sourceCell);
-            }
-            if (occurrenceAttributesForConclusionVariable.getTableAlias().isSource()) {
+            CellRef cellRef = new CellRef(originalOid, ChaseUtility.unAlias(occurrenceAttributesForConclusionVariable));
+            if (occurrenceAttributesForConclusionVariable.isSource()) {
+                CellGroupCell sourceCell = new CellGroupCell(cellRef, conclusionValue, conclusionValue, LunaticConstants.TYPE_JUSTIFICATION, null);
+                targetCellsToChange.getCellGroupForForwardRepair().addJustificationCell(sourceCell);
                 continue;
             }
+            CellGroupCell targetCell = new CellGroupCell(cellRef, conclusionValue, null, LunaticConstants.TYPE_OCCURRENCE, null);
+            targetCellsToChange.getCellGroupForForwardRepair().addOccurrenceCell(targetCell);
             for (BackwardAttribute backwardAttribute : equivalenceClass.getAttributesToChangeForBackwardChasing()) {
                 AttributeRef attributeForBackwardChasing = backwardAttribute.getAttributeRef();
                 Cell cellForBackward = tuple.getCell(attributeForBackwardChasing);
-//                if (attributeForBackwardChasing.getTableAlias().equals(occurrenceAttributesForConclusionVariable.getTableAlias())) {
-//                    CellGroup cellGroupForBackward = tupleGroupForValue.getPremiseGroup(ChaseUtility.unAlias(attributeForBackwardChasing), cellForBackward.getValue());
-                CellGroup cellGroupForBackward = targetCellsToChange.getCellGroupForBackwardAttribute(backwardAttribute, cellForBackward.getValue());
+                CellGroup cellGroupForBackward = targetCellsToChange.getOrCreateCellGroupForBackwardRepair(backwardAttribute, cellForBackward.getValue());
                 TupleOID tupleOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, attributeForBackwardChasing));
-                cellGroupForBackward.addOccurrenceCell(new CellRef(tupleOid, ChaseUtility.unAlias(attributeForBackwardChasing)));
-//                }
+                CellGroupCell backwardCell = new CellGroupCell(tupleOid, ChaseUtility.unAlias(attributeForBackwardChasing), cellForBackward.getValue(), null, LunaticConstants.TYPE_OCCURRENCE, null);
+                cellGroupForBackward.addOccurrenceCell(backwardCell);
             }
             addAdditionalAttributes(targetCellsToChange, originalOid, tuple, equivalenceClass);
         }
         if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
+    }
+
+    private static TargetCellsToChange getOrCreateTargetCellsToChange(EquivalenceClass equivalenceClass, IValue conclusionValue) {
+        TargetCellsToChange targetCellsToChange = equivalenceClass.getTupleGroupsWithSameConclusionValue().get(conclusionValue);
+        if (logger.isDebugEnabled()) logger.trace("Target cells to change: " + targetCellsToChange);
+        if (targetCellsToChange == null) {
+            targetCellsToChange = new TargetCellsToChange(conclusionValue);
+            equivalenceClass.getTupleGroupsWithSameConclusionValue().put(conclusionValue, targetCellsToChange);
+        }
+        return targetCellsToChange;
     }
 
     private static void addAdditionalAttributes(TargetCellsToChange targetCellsToChange, TupleOID originalOIDForConclusionValue, Tuple tuple, EquivalenceClass equivalenceClass) {
@@ -85,7 +89,8 @@ public class EquivalenceClassUtility {
                 if (!originalOIDForCell.equals(originalOIDForConclusionValue)) {
                     continue;
                 }
-                targetCellsToChange.getCellGroupForForwardRepair().addAdditionalCell(additionalAttribute, new Cell(originalOIDForCell, unaliasedAttribute, additionalCell.getValue()));
+                CellGroupCell additionalCellGroupCell = new CellGroupCell(originalOIDForCell, unaliasedAttribute, additionalCell.getValue(), null, LunaticConstants.TYPE_ADDITIONAL, null);
+                targetCellsToChange.getCellGroupForForwardRepair().addAdditionalCell(additionalAttribute, additionalCellGroupCell);
             }
         }
     }

@@ -1,15 +1,17 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.Scan;
 import it.unibas.lunatic.model.algebra.Select;
 import it.unibas.lunatic.model.algebra.operators.IDelete;
 import it.unibas.lunatic.model.algebra.operators.IInsertTuple;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
 import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.CellRef;
+import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.TableAlias;
@@ -34,35 +36,30 @@ public class ChangeCell {
         this.occurrenceHandler = occurrenceHandler;
     }
 
-    public void changeCells(ChangeSet changeSet, IDatabase deltaDB, String stepId, boolean synchronizeCache) {
+    public void changeCells(ChangeSet changeSet, IDatabase deltaDB, String stepId, Scenario scenario) {
         CellGroup cellGroup = changeSet.getCellGroup();
-        IValue newValue = changeSet.getNewValue();
+        occurrenceHandler.saveNewCellGroup(cellGroup, deltaDB, stepId, scenario);
+        IValue newValue = cellGroup.getValue();
         IValue groupID = cellGroup.getId();
-//        if (newValue instanceof ConstantValue) {
-//            IValue occurrenceValue = LunaticUtility.generateClusterId(changeSet.getCellGroup());
-//            cellGroup.setValue(occurrenceValue);
-//        }
-        Set<CellRef> cellsToChange = cellGroup.getOccurrences();
+        Set<CellGroupCell> cellsToChange = cellGroup.getOccurrences();
         if (logger.isDebugEnabled()) logger.debug("Changing cells " + cellsToChange + " with " + newValue);
-        occurrenceHandler.saveNewCellGroup(cellGroup, deltaDB, stepId, synchronizeCache);
-        for (CellRef cell : cellsToChange) {
+        for (CellGroupCell cell : cellsToChange) {
+            if (cell.isToSave() != null && !cell.isToSave()) {
+                continue;
+            }
             String tableName = cell.getAttributeRef().getTableName();
             String attributeName = cell.getAttributeRef().getName();
             TupleOID tid = cell.getTupleOID();
             insertNewValue(tableName, attributeName, tid, stepId, newValue, groupID, deltaDB);
         }
-//        Set<Cell> provenances = changeSet.getCellGroup().getProvenances();
-//        for (Cell cell : provenances) {
-//            occurrenceHandler.addProvenance(deltaDB, occurrenceValue, cell, stepId);
-//        }
         if (logger.isDebugEnabled()) logger.debug("New target: " + deltaDB.printInstances());
     }
 
-    public void deleteCells(ChangeSet changeSet, IDatabase deltaDB, String stepId, boolean synchronizeCache) {
+    public void deleteCells(ChangeSet changeSet, IDatabase deltaDB, String stepId) {
         CellGroup cellGroup = changeSet.getCellGroup();
-        occurrenceHandler.deleteCellGroup(cellGroup, deltaDB, stepId, synchronizeCache);
-        Set<CellRef> cellsToChange = cellGroup.getOccurrences();
-        for (CellRef cell : cellsToChange) {
+        occurrenceHandler.deleteCellGroup(cellGroup, deltaDB, stepId);
+        Set<CellGroupCell> cellsToChange = cellGroup.getOccurrences();
+        for (Cell cell : cellsToChange) {
             String tableName = cell.getAttributeRef().getTableName();
             String attributeName = cell.getAttributeRef().getName();
             delete(tableName, attributeName, stepId, deltaDB);

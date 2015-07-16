@@ -1,10 +1,8 @@
 package it.unibas.lunatic.model.chase.chasemc;
 
-import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ChangeSet {
 
@@ -20,14 +18,6 @@ public class ChangeSet {
 
     public CellGroup getCellGroup() {
         return cellGroup;
-    }
-
-    public IValue getNewValue() {
-        return cellGroup.getValue();
-    }
-
-    public void setNewValue(IValue value) {
-        cellGroup.setValue(value);
     }
 
     public String getChaseMode() {

@@ -126,21 +126,22 @@ public class InsertTuplesForTgdsWithoutCellGroups {
         return tuple;
     }
 
-    private void generateCellGroupForNulls(Tuple targetTuple, Map<NullValue, CellGroup> cellGroupsForNull) {
-        // tgds may generate new nulls
-        for (Cell cell : targetTuple.getCells()) {
-            IValue cellValue = cell.getValue();
-            if (cellValue instanceof NullValue) {
-                NullValue nullValue = (NullValue) cellValue;
-                CellGroup cellGroupForNull = cellGroupsForNull.get(nullValue);
-                if (cellGroupForNull == null) {
-                    cellGroupForNull = new CellGroup(nullValue, true);
-                    cellGroupsForNull.put(nullValue, cellGroupForNull);
-                }
-                cellGroupForNull.addOccurrenceCell(new CellRef(cell));
-            }
-        }
-    }
+    //TODO++ (TGD)
+//    private void generateCellGroupForNulls(Tuple targetTuple, Map<NullValue, CellGroup> cellGroupsForNull) {
+//        // tgds may generate new nulls
+//        for (Cell cell : targetTuple.getCells()) {
+//            IValue cellValue = cell.getValue();
+//            if (cellValue instanceof NullValue) {
+//                NullValue nullValue = (NullValue) cellValue;
+//                CellGroup cellGroupForNull = cellGroupsForNull.get(nullValue);
+//                if (cellGroupForNull == null) {
+//                    cellGroupForNull = new CellGroup(nullValue, true);
+//                    cellGroupsForNull.put(nullValue, cellGroupForNull);
+//                }
+//                cellGroupForNull.addOccurrenceCell(new CellRef(cell));
+//            }
+//        }
+//    }
 
     public void initializeOIDs(IDatabase database) {
         oidGenerator.initializeOIDs(database);

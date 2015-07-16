@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.cache;
 
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import static it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager.GROUPID;
@@ -32,19 +33,18 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
         }
     }
 
-    public CellGroup getCellGroup(IValue value, String stepId, IDatabase deltaDB) {
-        loadCacheForStep(stepId, deltaDB);
+    @Override
+    public CellGroup loadCellGroupFromId(IValue value, String stepId, IDatabase deltaDB, Scenario scenario) {
+        loadCacheForStep(stepId, deltaDB, scenario);
         String key = buildKey(value, stepId);
         CellGroup cellGroup = (CellGroup) cellGroupCache.getFromGroup(key, GROUPID);
-        if (cellGroup == null) {
-            return null;
-        }
         return cellGroup;
     }
 
-    public void putCellGroup(CellGroup cellGroup, String stepId, IDatabase deltaDB) {
+    @Override
+    public void putCellGroup(CellGroup cellGroup, String stepId, IDatabase deltaDB, Scenario scenario) {
         try {
-            loadCacheForStep(stepId, deltaDB);
+            loadCacheForStep(stepId, deltaDB, scenario);
             String key = buildKey(cellGroup.getId(), stepId);
             cellGroupCache.putInGroup(key, GROUPID, cellGroup);
         } catch (CacheException ex) {
@@ -53,13 +53,15 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
         }
     }
 
+    @Override
     public void removeCellGroup(IValue value, String stepId) {
         String key = buildKey(value, stepId);
         this.cellGroupCache.remove(key, GROUPID);
     }
 
-    public IValue getClusterId(CellRef cellRef, String stepId, IDatabase deltaDB) {
-        loadCacheForStep(stepId, deltaDB);
+    @Override
+    public IValue getClusterId(CellRef cellRef, String stepId, IDatabase deltaDB, Scenario scenario) {
+        loadCacheForStep(stepId, deltaDB, scenario);
         String key = buildKey(cellRef, stepId);
         IValue value = (IValue) clusterIdCache.get(key);
         if (value == null) {
@@ -68,9 +70,10 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
         return value;
     }
 
-    public void putClusterId(CellRef cellRef, IValue value, String stepId, IDatabase deltaDB) {
+    @Override
+    public void putClusterId(CellRef cellRef, IValue value, String stepId, IDatabase deltaDB, Scenario scenario) {
         try {
-            loadCacheForStep(stepId, deltaDB);
+            loadCacheForStep(stepId, deltaDB, scenario);
             String key = buildKey(cellRef, stepId);
             this.clusterIdCache.put(key, value);
         } catch (CacheException ex) {
@@ -79,6 +82,7 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
         }
     }
 
+    @Override
     public void removeClusterId(CellRef cellRef, String stepId) {
         try {
             String key = buildKey(cellRef, stepId);
@@ -101,14 +105,13 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
     }
 
     @Override
-    protected void loadCacheForStep(String stepId, IDatabase deltaDB) {
+    protected void loadCacheForStep(String stepId, IDatabase deltaDB, Scenario scenario) {
         if (cachedStepIds.contains(stepId)) {
             return;
         }
         //LOAD CACHE
         cachedStepIds.add(stepId);
-        loadCellGroupsAndOccurrences(stepId, deltaDB);
-        loadProvenances(stepId, deltaDB);
+        loadCellGroups(stepId, deltaDB, scenario);
         if (logger.isDebugEnabled()) logger.debug("Cache loaded...\n"
                     + "\tStep loaded: " + cachedStepIds.size() + "\n"
                     + "\tCluster id cache max objects: " + clusterIdCache.getCacheAttributes().getMaxObjects() + "\n"

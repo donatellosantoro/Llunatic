@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TGraphs extends TestCase {
-    
+
     private static Logger logger = LoggerFactory.getLogger(TGraphs.class);
 
     public TGraphs(String testName) {
@@ -28,10 +28,7 @@ public class TGraphs extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
-    // TODO add test methods here. The name must begin with 'test'. For example:
-    // public void testHello() {}
-    
-    
+
     public void testGraph() {
         UndirectedGraph<String, LabeledEdge> graph = new SimpleGraph<String, LabeledEdge>(LabeledEdge.class);
         Set<String> vertices = new HashSet<String>();
@@ -93,6 +90,7 @@ public class TGraphs extends TestCase {
         return false;
     }
 }
+
 class LabeledEdge extends DefaultEdge {
 
     private String v1;

@@ -10,6 +10,7 @@ import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
@@ -17,6 +18,7 @@ import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.database.AttributeRef;
+import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.model.database.IDatabase;
@@ -36,6 +38,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//TODO (DE) Refactoring. Merge with ChaseEGDEqClass?
 public class ChaseEGDs {
 
     private static Logger logger = LoggerFactory.getLogger(ChaseEGDs.class);
@@ -213,32 +216,20 @@ public class ChaseEGDs {
         return cellGroups;
     }
 
+    //TODO++ Avoid changing values for unchanged cells
     private void applyRepairs(Repair repair, Scenario scenario) {
         for (ChangeSet changeSet : repair.getChanges()) {
-            IValue newValue = changeSet.getNewValue();
-            Set<CellRef> cellsToChange = changeSet.getCellGroup().getOccurrences();
+            IValue newValue = changeSet.getCellGroup().getValue();
+            Set<CellRef> cellsToChange = ChaseUtility.createCellRefsFromCells(changeSet.getCellGroup().getOccurrences());
             for (CellRef cell : cellsToChange) {
                 if (newValue instanceof NullValue) {
-                    valueOccurrenceHandler.addOccurrenceForNull(scenario.getTarget(), (NullValue) newValue, cell);
+                    //TODO++
+//                    valueOccurrenceHandler.addOccurrenceForNull(scenario.getTarget(), (NullValue) newValue, cell);
                 }
                 cellUpdater.execute(cell, newValue, scenario.getTarget());
             }
         }
     }
-//    private void applyRepairs(List<Repair> repairs, Scenario scenario) {
-//        for (Repair repair : repairs) {
-//            for (ChangeSet changeSet : repair.getChanges()) {
-//                IValue newValue = changeSet.getNewValue();
-//                Set<CellRef> cellsToChange = changeSet.getCellGroup().getOccurrences();
-//                for (CellRef cell : cellsToChange) {
-//                    if (newValue instanceof NullValue) {
-//                        valueOccurrenceHandler.addOccurrenceForNull(scenario.getTarget(), (NullValue) newValue, cell);
-//                    }
-//                    cellUpdater.execute(cell, newValue, scenario.getTarget());
-//                }
-//            }
-//        }
-//    }
 
     private EquivalenceClass readNextEquivalenceClass(ITupleIterator it, Dependency egd, Scenario scenario, IChaseState chaseState) {
         if (!it.hasNext() && (this.lastTupleHandled || this.lastTuple == null)) {
@@ -288,9 +279,14 @@ public class ChaseEGDs {
         if (!(cellGroup.getValue() instanceof NullValue)) {
             return;
         }
-        List<CellRef> cellRefs = valueOccurrenceHandler.getOccurrencesForNull(target, (NullValue) cellGroup.getValue());
-        if (cellRefs != null) {
-            cellGroup.getOccurrences().addAll(cellRefs);
+        List<Cell> cells = valueOccurrenceHandler.getOccurrencesForNull(target, (NullValue) cellGroup.getValue());
+        if (cells != null) {
+            for (Cell cell : cells) {
+                IValue value = cell.getValue();
+                //TODO++ Check
+                CellGroupCell cellGroupCell = new CellGroupCell(cell.getTupleOID(), cell.getAttributeRef(), value, null, LunaticConstants.TYPE_OCCURRENCE, false);
+                cellGroup.addOccurrenceCell(cellGroupCell);
+            }
         }
     }
 

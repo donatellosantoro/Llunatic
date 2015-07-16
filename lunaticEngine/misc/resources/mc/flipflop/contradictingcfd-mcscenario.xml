@@ -8,8 +8,8 @@ SCHEMA:
 cst1(a, b)
 cst2(a, b)
 INSTANCE:
-cst1(a: "a", b: "v1")
-cst2(a: "a", b: "v2")
+cst1(a: "a", b: "14")
+cst2(a: "a", b: "13")
 ]]>
     </generate>
   </source>
@@ -39,6 +39,10 @@ cfd2: r(a: $a, b: $b1), cst2(a: $a, b: $b2) -> $b1 == $b2.
 
 ]]>
   </dependencies>
+  <authoritativeSources>
+    <source>cst1</source>
+    <source>cst2</source>
+  </authoritativeSources>
   <orderingAttributes>
     <orderingAttribute>
       <attribute>r.b</attribute>

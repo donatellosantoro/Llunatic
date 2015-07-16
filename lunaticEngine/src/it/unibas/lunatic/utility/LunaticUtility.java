@@ -31,21 +31,21 @@ import java.util.Map;
 import org.apache.commons.io.FilenameUtils;
 
 public class LunaticUtility {
-
+    
     @SuppressWarnings("unchecked")
     public static void addIfNotContained(List list, Object object) {
         if (!list.contains(object)) {
             list.add(object);
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     public static void addAllIfNotContained(List dst, Collection src) {
         for (Object object : src) {
             addIfNotContained(dst, object);
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     public static boolean equalLists(List list1, List list2) {
         if (list1.size() != list2.size()) {
@@ -61,12 +61,12 @@ public class LunaticUtility {
         }
         return (list2Clone.isEmpty());
     }
-
+    
     @SuppressWarnings("unchecked")
     public static boolean areEqualConsideringOrder(List listA, List listB) {
         return !areDifferentConsideringOrder(listA, listB);
     }
-
+    
     @SuppressWarnings("unchecked")
     public static boolean areDifferentConsideringOrder(List listA, List listB) {
         if (listA.size() != listB.size()) {
@@ -81,7 +81,7 @@ public class LunaticUtility {
         }
         return false;
     }
-
+    
     @SuppressWarnings("unchecked")
     public static boolean contained(Collection list1, Collection list2) {
         if (list1.isEmpty()) {
@@ -89,14 +89,14 @@ public class LunaticUtility {
         }
         return (list2.containsAll(list1));
     }
-
+    
     public static INode createRootNode(INode node) {
         String type = node.getClass().getSimpleName();
         INode rootNode = createNode(type, node.getLabel(), IntegerOIDGenerator.getNextOID());
         rootNode.setRoot(true);
         return rootNode;
     }
-
+    
     public static INode createNode(String nodeType, String label, Object value) {
         if (nodeType.equals("SetNode")) {
             return new SetNode(label, value);
@@ -118,23 +118,23 @@ public class LunaticUtility {
         }
         return null;
     }
-
+    
     public static String removeRootLabel(String pathString) {
         return pathString.substring(pathString.indexOf(".") + 1);
     }
-
+    
     public static String generateFolderPath(String filePath) {
         return FilenameUtils.getFullPath(filePath);
     }
-
+    
     public static String generateSetNodeLabel() {
         return "Set";
     }
-
+    
     public static String generateTupleNodeLabel() {
         return "Tuple";
     }
-
+    
     public static Object findAttributeValue(INode tuple, String attributeLabel) {
         INode attribute = tuple.getChild(attributeLabel);
         if (attribute == null) {
@@ -143,11 +143,11 @@ public class LunaticUtility {
         INode leaf = attribute.getChild(0);
         return leaf.getValue();
     }
-
+    
     public static FormulaVariable findPremiseVariableInDepedency(FormulaVariableOccurrence occurrence, Dependency dependency) {
         return findVariableInList(occurrence, dependency.getPremise().getLocalVariables());
     }
-
+    
     public static FormulaVariable findVariableInList(FormulaVariableOccurrence occurrence, List<FormulaVariable> variables) {
         for (FormulaVariable formulaVariable : variables) {
             if (formulaVariable.getId().equals(occurrence.getVariableId())) {
@@ -156,7 +156,7 @@ public class LunaticUtility {
         }
         return null;
     }
-
+    
     public static Tuple createTuple(INode tupleNode, String tableName) {
         TupleOID tupleOID = new TupleOID(tupleNode.getValue());
         Tuple tuple = new Tuple(tupleOID);
@@ -185,7 +185,7 @@ public class LunaticUtility {
     public static String printCollection(Collection l) {
         return printCollection(l, "");
     }
-
+    
     public static String printCollection(Collection l, String indent) {
         if (l == null) {
             return indent + "(null)";
@@ -200,7 +200,7 @@ public class LunaticUtility {
         result.deleteCharAt(result.length() - 1);
         return result.toString();
     }
-
+    
     public static String printDependencyIds(List<Dependency> dependencies) {
         StringBuilder result = new StringBuilder();
         for (Dependency dependency : dependencies) {
@@ -208,7 +208,7 @@ public class LunaticUtility {
         }
         return result.toString();
     }
-
+    
     @SuppressWarnings("unchecked")
     public static String printMap(Map m) {
         String indent = "    ";
@@ -228,7 +228,7 @@ public class LunaticUtility {
         }
         return result.toString();
     }
-
+    
     public static String printVariablesWithOccurrences(List<FormulaVariable> variables) {
         StringBuilder result = new StringBuilder();
         for (FormulaVariable formulaVariable : variables) {
@@ -236,7 +236,7 @@ public class LunaticUtility {
         }
         return result.toString();
     }
-
+    
     public static String printTupleIterator(Iterator<Tuple> iterator) {
         StringBuilder result = new StringBuilder();
         int counter = 0;
@@ -248,14 +248,14 @@ public class LunaticUtility {
         result.insert(0, "Number of tuples: " + counter + "\n");
         return result.toString();
     }
-
+    
     public static void removeChars(int charsToRemove, StringBuilder result) {
         if (charsToRemove > result.length()) {
             throw new IllegalArgumentException("Unable to remove " + charsToRemove + " chars from a string with " + result.length() + " char!");
         }
         result.delete(result.length() - charsToRemove, result.length());
     }
-
+    
     public static IValue getAttributevalueInTuple(Tuple tuple, String attribute) {
         for (Cell cell : tuple.getCells()) {
             if (cell.getAttribute().equalsIgnoreCase(attribute)) {
@@ -264,7 +264,7 @@ public class LunaticUtility {
         }
         throw new IllegalArgumentException("Unable to find attribute " + attribute + "  in tuple " + tuple);
     }
-
+    
     public static List<Cell> createCellsFromCellRefs(List<CellRef> cellRefs, IValue value) {
         List<Cell> result = new ArrayList<Cell>();
         for (CellRef cellRef : cellRefs) {
@@ -272,7 +272,7 @@ public class LunaticUtility {
         }
         return result;
     }
-
+    
     public static void addAll(List<Cell> allCells, List<Cell> newCells) {
         for (Cell cell : newCells) {
             if (!allCells.contains(cell)) {
@@ -280,7 +280,7 @@ public class LunaticUtility {
             }
         }
     }
-
+    
     public static String printIterator(ITupleIterator iterator) {
         StringBuilder result = new StringBuilder();
         while (iterator.hasNext()) {
@@ -289,26 +289,26 @@ public class LunaticUtility {
         iterator.reset();
         return result.toString();
     }
-
+    
     public static boolean canDoBackward(Scenario scenario) {
         if (!scenario.getCostManager().isDoBackward()) {
             return false;
         }
         return true;
     }
-
+    
     public static List<AttributeRef> extractAttributesInCellGroups(List<CellGroup> cellGroups) {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
         for (CellGroup cellGroup : cellGroups) {
-            for (CellRef cellRef : cellGroup.getOccurrences()) {
-                if (!result.contains(cellRef.getAttributeRef())) {
-                    result.add(cellRef.getAttributeRef());
+            for (Cell cell : cellGroup.getOccurrences()) {
+                if (!result.contains(cell.getAttributeRef())) {
+                    result.add(cell.getAttributeRef());
                 }
             }
         }
         return result;
     }
-
+    
     public static String printNodeIds(List<DeltaChaseStep> nodes) {
         StringBuilder result = new StringBuilder();
         for (DeltaChaseStep node : nodes) {
@@ -327,11 +327,15 @@ public class LunaticUtility {
         ITable table = db.getTable(attributeRef.getTableName());
         return table.getAttribute(attributeRef.getName());
     }
-
+    
+    public static boolean isAuthoritative(String tableName, Scenario scenario) {
+        return scenario.getAuthoritativeSources().contains(tableName);
+    }
+    
 }
 
 class StringComparator implements Comparator<Object> {
-
+    
     public int compare(Object o1, Object o2) {
         return o1.toString().compareTo(o2.toString());
     }

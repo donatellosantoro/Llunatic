@@ -9,6 +9,7 @@ import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
@@ -23,9 +24,8 @@ import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.chasemc.operators.IValueOccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.ScriptPartialOrder;
 import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.CellRef;
+import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -70,19 +70,33 @@ public abstract class AbstractCostManager implements ICostManager {
         if (differentValues.size() > 1) {
             return false;
         }
-        return checkIfLUBIsIdempotent(cellGroups, scenario);
+        return checkContainment(cellGroups, scenario);
     }
 
-    public boolean checkIfLUBIsIdempotent(List<CellGroup> cellGroups, Scenario scenario) {
-        CellGroup scriptLUB = getLUB(cellGroups, scenario.getScriptPartialOrder(), scenario);
-        CellGroup baseLUB = getLUB(cellGroups, scenario.getPartialOrder(), scenario);
-        if (logger.isDebugEnabled()) logger.debug("Base LUB: " + baseLUB + "\nScript LUB: " + scriptLUB);
-        if (cellGroups.contains(scriptLUB) || cellGroups.contains(baseLUB)) {
-            if (logger.isDebugEnabled()) logger.debug("Tuple groups are not a violation.");
-            return true;
+    public boolean checkContainment(List<CellGroup> cellGroups, Scenario scenario) {
+        Set<CellGroupCell> allCells = new HashSet<CellGroupCell>();
+        for (CellGroup cellGroup : cellGroups) {
+            allCells.addAll(cellGroup.getAllCells());
+        }
+        for (CellGroup cellGroup : cellGroups) {
+            if (cellGroup.getAllCells().equals(allCells)) {
+                return true;
+            }
         }
         return false;
     }
+
+//    public boolean checkIfLUBIsIdempotent(List<CellGroup> cellGroups, Scenario scenario) {
+//    public boolean checkContainment(List<CellGroup> cellGroups, Scenario scenario) {
+//        CellGroup scriptLUB = getLUB(cellGroups, scenario.getScriptPartialOrder(), scenario);
+//        CellGroup baseLUB = getLUB(cellGroups, scenario.getPartialOrder(), scenario);
+//        if (logger.isDebugEnabled()) logger.debug("Base LUB: " + baseLUB + "\nScript LUB: " + scriptLUB);
+//        if (cellGroups.contains(scriptLUB) || cellGroups.contains(baseLUB)) {
+//            if (logger.isDebugEnabled()) logger.debug("Tuple groups are not a violation.");
+//            return true;
+//        }
+//        return false;
+//    }
 
     protected Set<IValue> findDifferentValuesInCellGroupsWithOccurrences(List<CellGroup> cellGroups) {
         Set<IValue> result = new HashSet<IValue>();
@@ -102,7 +116,7 @@ public abstract class AbstractCostManager implements ICostManager {
         if (variable.getPremiseRelationalOccurrences().size() > cellGroup.getOccurrences().size()) {
             return false;
         }
-        List<CellRef> occurrences = new ArrayList<CellRef>(cellGroup.getOccurrences());
+        List<Cell> occurrences = new ArrayList<Cell>(cellGroup.getOccurrences());
         for (FormulaVariableOccurrence occurrence : variable.getPremiseRelationalOccurrences()) {
             if (logger.isDebugEnabled()) logger.debug("Variable occurrence: " + occurrence.toLongString());
             if (occurrence.getAttributeRef().isSource()) {
@@ -118,10 +132,10 @@ public abstract class AbstractCostManager implements ICostManager {
         return true;
     }
 
-    private boolean containsAndRemove(List<CellRef> occurrences, AttributeRef attributeRef) {
-        for (Iterator<CellRef> it = occurrences.iterator(); it.hasNext();) {
-            CellRef cellRef = it.next();
-            if (cellRef.getAttributeRef().equals(attributeRef)) {
+    private boolean containsAndRemove(List<Cell> occurrences, AttributeRef attributeRef) {
+        for (Iterator<Cell> it = occurrences.iterator(); it.hasNext();) {
+            Cell cell = it.next();
+            if (cell.getAttributeRef().equals(attributeRef)) {
                 it.remove();
                 return true;
             }
@@ -143,26 +157,6 @@ public abstract class AbstractCostManager implements ICostManager {
         return isBelow;
     }
 
-    protected CellGroup getLUB(List<CellGroup> cellGroups, IPartialOrder po, Scenario scenario) {
-        if (po == null) {
-            return null;
-        }
-        if (po instanceof ScriptPartialOrder) {
-            if (!((ScriptPartialOrder) po).canHandleAttributes(LunaticUtility.extractAttributesInCellGroups(cellGroups))) {
-                return null;
-            }
-        }
-        return po.findLUB(cellGroups, scenario);
-    }
-
-    protected List<CellGroup> extractCellGroups(List<TargetCellsToChange> tupleGroups) {
-        List<CellGroup> cellGroups = new ArrayList<CellGroup>();
-        for (TargetCellsToChange tupleGroup : tupleGroups) {
-            cellGroups.add(tupleGroup.getCellGroupForForwardRepair());
-        }
-        return cellGroups;
-    }
-
     protected ChangeSet generateForwardRepair(List<TargetCellsToChange> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
         List<CellGroup> cellGroups = extractCellGroups(tupleGroups);
         // give preference to the script partial order, that may have additional rules to solve the violation
@@ -174,12 +168,34 @@ public abstract class AbstractCostManager implements ICostManager {
         return changeSet;
     }
 
+    protected List<CellGroup> extractCellGroups(List<TargetCellsToChange> tupleGroups) {
+        List<CellGroup> cellGroups = new ArrayList<CellGroup>();
+        for (TargetCellsToChange tupleGroup : tupleGroups) {
+            cellGroups.add(tupleGroup.getCellGroupForForwardRepair().clone());
+        }
+        return cellGroups;
+    }
+
+    protected CellGroup getLUB(List<CellGroup> cellGroups, IPartialOrder po, Scenario scenario) {
+        if (po == null) {
+            return null;
+        }
+        if (!po.canHandleAttributes(LunaticUtility.extractAttributesInCellGroups(cellGroups))) {
+            return null;
+        }
+        return po.findLUB(cellGroups, scenario);
+    }
+
     protected List<CellGroup> buildWitnessCellGroups(List<TargetCellsToChange> tupleGroups) {
         List<CellGroup> witnessCellGroups = new ArrayList<CellGroup>();
         for (TargetCellsToChange targetCellsToChange : tupleGroups) {
-            LunaticUtility.addAllIfNotContained(witnessCellGroups, targetCellsToChange.getCellGroupsForBackwardAttributes().values());
+            LunaticUtility.addAllIfNotContained(witnessCellGroups, targetCellsToChange.getCellGroupsForBackwardRepairs().values());
         }
-        return witnessCellGroups;
+        List<CellGroup> result = new ArrayList<CellGroup>();
+        for (CellGroup cellGroup : witnessCellGroups) {
+            result.add(cellGroup.clone());
+        }
+        return result;
     }
 
     public List<Dependency> selectDependenciesToChase(List<Dependency> unsatisfiedDependencies, DeltaChaseStep chaseRoot) {

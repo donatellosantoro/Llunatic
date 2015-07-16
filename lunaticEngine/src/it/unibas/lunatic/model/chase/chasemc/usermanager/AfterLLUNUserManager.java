@@ -31,7 +31,7 @@ public class AfterLLUNUserManager implements IUserManager {
     }
 
     private boolean containsLLUN(DeltaChaseStep step) {
-        List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroups(step.getDeltaDB(), step.getId());
+        List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsForDebugging(step.getDeltaDB(), step.getId(), step.getScenario());
         for (CellGroup cellGroup : cellGroups) {
             IValue cellValue = cellGroup.getValue();
             if (cellValue instanceof LLUNValue) {

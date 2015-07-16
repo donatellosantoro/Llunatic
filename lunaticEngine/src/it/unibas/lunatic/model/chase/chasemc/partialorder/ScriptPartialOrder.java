@@ -4,10 +4,12 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.PartialOrderConstants;
 import it.unibas.lunatic.exceptions.PartialOrderException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.IValue;
 import java.io.*;
 import java.util.List;
+import java.util.Set;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -15,10 +17,9 @@ import javax.script.ScriptException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ScriptPartialOrder extends AbstractPartialOrder {
+public class ScriptPartialOrder extends StandardPartialOrder {
 
     private static Logger logger = LoggerFactory.getLogger(ScriptPartialOrder.class);
-    private IPartialOrder standardPO = new StandardPartialOrder();
     private String scriptFile;
     private InputStream scriptInputStream;
     private ScriptEngine jsEngine;
@@ -31,6 +32,31 @@ public class ScriptPartialOrder extends AbstractPartialOrder {
             throw new ScriptException("Unable to load script file. " + ex);
         }
         loadScript();
+    }
+
+    @Override
+    public boolean canHandleAttributes(List<AttributeRef> attributes) {
+        try {
+            Invocable invocableEngine = (Invocable) jsEngine;
+            return (Boolean) invocableEngine.invokeFunction("canHandleAttributes", attributes);
+        } catch (ScriptException ex) {
+            throw new PartialOrderException("Unable to execute canHandleAttributes(attributes) " + ex);
+        } catch (NoSuchMethodException ex) {
+            throw new PartialOrderException("Partial order script must implement canHandleAttributes(attributes) " + ex);
+        }
+    }
+
+    @Override
+    public IValue generalizeNonAuthoritativeConstantCells(Set<CellGroupCell> nonAuthoritativeCells, CellGroup cellGroup, Scenario scenario) {
+        IValue standardValue = super.generalizeNonAuthoritativeConstantCells(nonAuthoritativeCells, cellGroup, scenario);
+        try {
+            Invocable invocableEngine = (Invocable) jsEngine;
+            return (IValue) invocableEngine.invokeFunction("generalizeNonAuthoritativeCells", nonAuthoritativeCells, cellGroup, standardValue, scenario);
+        } catch (ScriptException ex) {
+            throw new PartialOrderException("Unable to compare cells. " + ex);
+        } catch (NoSuchMethodException ex) {
+            throw new PartialOrderException("Partial order script must implement generalizeNonAuthoritativeCells(nonAuthoritativeCells, cellGroup, standardValue, scenario) " + ex);
+        }
     }
 
     private void loadScript() throws ScriptException {
@@ -47,30 +73,6 @@ public class ScriptPartialOrder extends AbstractPartialOrder {
         Reader reader = new InputStreamReader(scriptInputStream);
         jsEngine.put("Constant", new PartialOrderConstants());
         jsEngine.eval(reader);
-    }
-
-    public boolean canHandleAttributes(List<AttributeRef> attributes) {
-        try {
-            Invocable invocableEngine = (Invocable) jsEngine;
-            return (Boolean) invocableEngine.invokeFunction("canHandleAttributes", attributes);
-        } catch (ScriptException ex) {
-            throw new PartialOrderException("Unable to execute canHandleAttributes(attributes) " + ex);
-        } catch (NoSuchMethodException ex) {
-            throw new PartialOrderException("Partial order script must implement canHandleAttributes(attributes) " + ex);
-        }
-    }
-
-    public CellGroup mergeCellGroups(CellGroup group1, CellGroup group2, IValue newValue, Scenario scenario) {
-        CellGroup standardResult = standardPO.mergeCellGroups(group1, group2, newValue, scenario);
-        try {
-            Invocable invocableEngine = (Invocable) jsEngine;
-            CellGroup result = (CellGroup) invocableEngine.invokeFunction("mergeGroups", group1, group2, standardResult, scenario);
-            return result;
-        } catch (ScriptException ex) {
-            throw new PartialOrderException("Unable to compare cells. " + ex);
-        } catch (NoSuchMethodException ex) {
-            throw new PartialOrderException("Unable to compare cells. " + ex);
-        }
     }
 
     public String getScriptFile() {

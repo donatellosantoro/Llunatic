@@ -57,7 +57,7 @@ public class CheckSolution {
         if (!scenario.getConfiguration().isCheckGroundSolutions()) {
             return;
         }
-        List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroups(step.getDeltaDB(), step.getId());
+        List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsForDebugging(step.getDeltaDB(), step.getId(), scenario);
         for (CellGroup cellGroup : cellGroups) {
             IValue cellValue = cellGroup.getValue();
             if (cellValue instanceof LLUNValue) {

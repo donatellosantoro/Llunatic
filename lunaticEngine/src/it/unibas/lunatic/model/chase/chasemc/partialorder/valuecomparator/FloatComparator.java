@@ -1,11 +1,12 @@
 package it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator;
 
 import it.unibas.lunatic.exceptions.ChaseException;
+import it.unibas.lunatic.model.database.IValue;
 
-public class FloatComparator extends StandardValueComparator {
+public class FloatComparator extends StringComparator {
 
     @Override
-    public Integer compare(String v1, String v2) {
+    public int compare(IValue v1, IValue v2) {
         try {
             Float f1 = Float.parseFloat(v1.toString());
             Float f2 = Float.parseFloat(v2.toString());

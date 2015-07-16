@@ -3,26 +3,29 @@ package it.unibas.lunatic.model.chase.chasemc.partialorder;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
+import it.unibas.lunatic.utility.LunaticUtility;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DEPartialOrder extends AbstractPartialOrder {
-
+public class DEPartialOrder extends StandardPartialOrder {
+    
     private static Logger logger = LoggerFactory.getLogger(DEPartialOrder.class);
-
-    public CellGroup mergeCellGroups(CellGroup group1, CellGroup group2, IValue newValue, Scenario scenario) {
-        CellGroup newGroup = new CellGroup(newValue, true);
-        mergeCells(group1, group2, newGroup);
-        if (newValue instanceof LLUNValue) {
-            throw new ChaseFailedException("Unable to equate cell groups " + group1 + " and " + group2);
+    
+    @Override
+    public IValue generalizeNonAuthoritativeConstantCells(Set<CellGroupCell> nonAuthoritativeCells, CellGroup cellGroup, Scenario scenario) {
+        IValue lubValue = super.generalizeNonAuthoritativeConstantCells(nonAuthoritativeCells, cellGroup, scenario);
+        if (lubValue instanceof LLUNValue) {
+            throw new ChaseFailedException("Unable to equate cells " + LunaticUtility.printCollection(nonAuthoritativeCells));
         }
-        return newGroup;
+        return lubValue;
     }
-
+    
     @Override
     public String toString() {
-        return "Standard";
+        return "DEPartialOrder";
     }
 }

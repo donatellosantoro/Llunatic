@@ -30,13 +30,11 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         accessConfiguration.setSchemaName(LunaticConstants.WORK_SCHEMA);
         DBMSDB deltaDB = new DBMSDB(accessConfiguration);
         DBMSUtility.createWorkSchema(accessConfiguration);
-//        DBMSUtility.deleteSkolemOccurrencesTable((DBMSDB) scenario.getTarget(), accessConfiguration);
         StringBuilder script = new StringBuilder();
         script.append(createOccurrencesAndProvenancesTable(accessConfiguration));
         List<AttributeRef> affectedAttributes = findAllAffectedAttributes(scenario);
         script.append(createDeltaRelationsSchema(database, accessConfiguration, affectedAttributes));
         script.append(insertIntoDeltaRelations(database, accessConfiguration, rootName, affectedAttributes));
-//        script.append(dropTriggers(database, accessConfiguration));
         QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_BUILDER, end - start);
@@ -46,24 +44,16 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
     private String createOccurrencesAndProvenancesTable(AccessConfiguration accessConfiguration) {
         StringBuilder script = new StringBuilder();
         script.append("----- Generating occurrences tables -----\n");
-        script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(LunaticConstants.OCCURRENCE_TABLE).append("(").append("\n");
-        script.append(LunaticConstants.INDENT).append(LunaticConstants.STEP).append(" text,").append("\n");
-        script.append(LunaticConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text,").append("\n");
-        script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_OID).append(" bigint,").append("\n");
-        script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_TABLE).append(" text,").append("\n");
-        script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_ATTRIBUTE).append(" text").append("\n");
-        script.append(") WITH OIDS;").append("\n\n");
-        script.append("----- Generating provenances tables -----\n");
-        script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(LunaticConstants.PROVENANCE_TABLE).append("(").append("\n");
+        script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(LunaticConstants.CELLGROUP_TABLE).append("(").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.STEP).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_OID).append(" bigint,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_TABLE).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_ATTRIBUTE).append(" text,").append("\n");
-        script.append(LunaticConstants.INDENT).append(LunaticConstants.PROVENANCE_CELL_VALUE).append(" text").append("\n");
+        script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_ORIGINAL_VALUE).append(" text,").append("\n");
+        script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_TYPE).append(" text").append("\n");
         script.append(") WITH OIDS;").append("\n\n");
         if (logger.isDebugEnabled()) logger.debug("----Generating occurrences tables: " + script);
-//        QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true);
         return script.toString();
     }
 
@@ -87,7 +77,6 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
             script.append(createTableForNonAffected(deltaDBSchema, table.getName(), tableNonAffectedAttributes));
         }
         if (logger.isDebugEnabled()) logger.debug("\n----Generating Delta Relations Schema: " + script);
-//        QueryManager.executeScript(script.toString(), ((DBMSDB) database).getAccessConfiguration(), true, true, true);
         return script.toString();
     }
 
@@ -98,6 +87,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         script.append(LunaticConstants.INDENT).append(LunaticConstants.STEP).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.TID).append(" bigint,").append("\n");
         script.append(LunaticConstants.INDENT).append(attributeName).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
+        script.append(LunaticConstants.INDENT).append(LunaticConstants.CELL_ORIGINAL_VALUE).append(" text,").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text").append("\n");
         script.append(") WITH OIDS;").append("\n\n");
 //        script.append("CREATE INDEX ").append(attributeName).append("_oid  ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append(" USING btree(tid ASC);\n");
@@ -113,7 +103,6 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         StringBuilder script = new StringBuilder();
         script.append("CREATE TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
         script.append(LunaticConstants.INDENT).append(LunaticConstants.TID).append(" bigint,").append("\n");
-//        script.append(LunaticConstants.INDENT).append(LunaticConstants.OID).append(" integer,").append("\n");
         for (Attribute attribute : tableNonAffectedAttributes) {
             script.append(LunaticConstants.INDENT).append(attribute.getName()).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attribute.getType())).append(",\n");
         }
@@ -150,14 +139,12 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
     private String insertIntoDeltaRelation(String originalDBSchema, String deltaDBSchema, String tableName, String attributeName, String rootStepId) {
         StringBuilder script = new StringBuilder();
         String deltaRelationName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
+        //NOTE: Insert is done from select. To initalize cellGroupId and original value, we need to use the trigger
         script.append("INSERT INTO ").append(deltaDBSchema).append(".").append(deltaRelationName).append("\n");
         script.append("SELECT cast('").append(rootStepId).append("' AS varchar) AS step, " + LunaticConstants.OID + ", ").append(attributeName);
         script.append("\n").append(LunaticConstants.INDENT);
         script.append("FROM ").append(originalDBSchema).append(".").append(tableName).append(";");
         script.append("\n");
-//        script.append("ALTER TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName);
-//        script.append(" ADD UNIQUE (\"" + LunaticConstants.STEP + "\", \"" + LunaticConstants.TID + "\");");
-//        script.append("\n\n");
         return script.toString();
     }
 
@@ -182,7 +169,6 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         result.append("DROP TRIGGER IF EXISTS trigg_update_occurrences_").append(deltaRelationName);
         result.append(" ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append(";").append("\n\n");
         result.append("CREATE TRIGGER trigg_update_occurrences_").append(deltaRelationName).append("\n");
-//        result.append("AFTER INSERT OR UPDATE OF ").append(attributeName);
         result.append("BEFORE INSERT OR UPDATE OF ").append(attributeName);
         result.append(" OR DELETE ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append("\n");
         result.append("FOR EACH ROW EXECUTE PROCEDURE ").append(deltaDBSchema).append(".update_occurrences_");
@@ -216,7 +202,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         StringBuilder result = new StringBuilder();
         String longIndent = indent + LunaticConstants.INDENT;
         result.append(longIndent).append("DELETE FROM ");
-        result.append(deltaDBSchema).append(".").append(LunaticConstants.OCCURRENCE_TABLE).append(" WHERE ");
+        result.append(deltaDBSchema).append(".").append(LunaticConstants.CELLGROUP_TABLE).append(" WHERE ");
         result.append(LunaticConstants.STEP).append(" = ");
         result.append("OLD.").append(LunaticConstants.STEP).append(" AND ");
         result.append(LunaticConstants.CELL_OID).append(" = ");
@@ -230,77 +216,31 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
 
     private String createInsertPart(String deltaDBSchema, String tableName, String attributeName, String indent) {
         StringBuilder result = new StringBuilder();
-        String longIndent = indent + LunaticConstants.INDENT;
+        result.append(indent).append("NEW.").append(LunaticConstants.CELL_ORIGINAL_VALUE).append(" = NEW.").append(attributeName).append(";\n");
         //If is NULL or LLUN and the cluster id is not defined, copy its value as cluster id
 //        result.append(indent).append("IF NEW.").append(LunaticConstants.GROUP_ID).append(" IS NULL AND ");
+        String longIndent = indent + LunaticConstants.INDENT;
         result.append(indent).append("IF POSITION ('").append(LunaticConstants.SKOLEM_PREFIX).append("' IN NEW.").append(attributeName).append(") = 1 ");
         result.append("OR POSITION ('").append(LunaticConstants.LLUN_PREFIX).append("' IN NEW.").append(attributeName).append(") = 1 ");
         result.append("THEN").append("\n");
         result.append(longIndent).append("NEW.").append(LunaticConstants.GROUP_ID).append(" = NEW.").append(attributeName).append(";\n");
-        result.append(indent).append("ELSIF NEW.").append(LunaticConstants.GROUP_ID).append(" = '").append(LunaticConstants.GEN_GROUP_ID).append("' THEN\n");
-        result.append(longIndent).append("NEW.").append(LunaticConstants.GROUP_ID).append(" = '");
-        result.append(LunaticConstants.LLUN_PREFIX).append("' || ").append("NEW.").append(LunaticConstants.TID).append(" || '").append(attributeName);
-        result.append("' || NEW.").append(attributeName).append(";\n");
+//        result.append(indent).append("ELSIF NEW.").append(LunaticConstants.GROUP_ID).append(" = '").append(LunaticConstants.GEN_GROUP_ID).append("' THEN\n");
+//        result.append(longIndent).append("NEW.").append(LunaticConstants.GROUP_ID).append(" = '");
+//        result.append(LunaticConstants.LLUN_PREFIX).append("' || ").append("NEW.").append(LunaticConstants.TID).append(" || '").append(attributeName);
+//        result.append("' || NEW.").append(attributeName).append(";\n");
         result.append(indent).append("END IF;").append("\n");
         //Using cluster id value to update skolem table
         result.append(indent).append("IF NEW.").append(LunaticConstants.GROUP_ID).append(" IS NOT NULL THEN").append("\n");
         result.append(longIndent).append("INSERT INTO ");
-        result.append(deltaDBSchema).append(".").append(LunaticConstants.OCCURRENCE_TABLE).append(" VALUES(");
+        result.append(deltaDBSchema).append(".").append(LunaticConstants.CELLGROUP_TABLE).append(" VALUES(");
         result.append("NEW.").append(LunaticConstants.STEP).append(", ");
         result.append("NEW.").append(LunaticConstants.GROUP_ID).append(", ");
         result.append("NEW.").append(LunaticConstants.TID).append(", ");
-//        result.append("NEW.").append(LunaticConstants.OID).append(", ");
         result.append("'").append(tableName).append("'").append(", ");
-        result.append("'").append(attributeName).append("'").append(");\n");
+        result.append("'").append(attributeName).append("'").append(", ");
+        result.append("NEW.").append(LunaticConstants.CELL_ORIGINAL_VALUE).append(", ");
+        result.append("'").append(LunaticConstants.TYPE_OCCURRENCE).append("'").append(");\n");
         result.append(indent).append("END IF;").append("\n");
-        return result.toString();
-    }
-//    private String createInsertPart(String deltaDBSchema, String tableName, String attributeName, String indent) {
-//        StringBuilder result = new StringBuilder();
-//        String longIndent = indent + LunaticConstants.INDENT;
-//        result.append(indent).append("IF POSITION ('").append(LunaticConstants.SKOLEM_PREFIX).append("' IN NEW.").append(attributeName).append(") = 1");
-//        result.append("OR POSITION ('").append(LunaticConstants.LLUN_PREFIX).append("' IN NEW.").append(attributeName).append(") = 1 ");
-//        result.append("THEN").append("\n");
-////        result.append(indent).append("IF (NEW.").append(attributeName);
-////        result.append(" LIKE '").append(LunaticConstants.SKOLEM_PREFIX).append("%') OR").append("\n");
-////        result.append(indent).append(" (NEW.").append(attributeName);
-////        result.append(" LIKE '").append(LunaticConstants.LLUN_PREFIX).append("%') THEN").append("\n");
-//        result.append(longIndent).append("INSERT INTO ");
-//        result.append(deltaDBSchema).append(".").append(LunaticConstants.OCCURRENCE_TABLE).append(" VALUES(");
-//        result.append("NEW.").append(LunaticConstants.STEP).append(", ");
-//        result.append("NEW.").append(attributeName).append(", ");
-//        result.append("NEW.").append(LunaticConstants.TID).append(", ");
-////        result.append("NEW.").append(LunaticConstants.OID).append(", ");
-//        result.append("'").append(tableName).append("'").append(", ");
-//        result.append("'").append(attributeName).append("'").append(");\n");
-//        result.append(indent).append("END IF;").append("\n");
-//        return result.toString();
-//    }
-
-    private String dropTriggers(IDatabase database, AccessConfiguration accessConfiguration) {
-        String deltaDBSchema = accessConfiguration.getSchemaName();
-        StringBuilder script = new StringBuilder();
-        script.append("----- Drop triggers -----\n");
-        for (String tableName : database.getTableNames()) {
-            DBMSTable table = (DBMSTable) database.getTable(tableName);
-            for (Attribute attribute : table.getAttributes()) {
-                if (attribute.getName().equals(LunaticConstants.OID)) {
-                    continue;
-                }
-                script.append(dropTrigger(deltaDBSchema, table.getName(), attribute.getName()));
-            }
-//            table.closeConnection();
-        }
-        if (logger.isDebugEnabled()) logger.debug("----Drop triggers: " + script);
-//        QueryManager.executeScript(script.toString(), ((DBMSDB) database).getAccessConfiguration(), true, true, true);
-        return script.toString();
-    }
-
-    private String dropTrigger(String deltaDBSchema, String tableName, String attributeName) {
-        StringBuilder result = new StringBuilder();
-        String deltaRelationName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
-        result.append("DROP FUNCTION ").append(deltaDBSchema).append(".update_occurrences_");
-        result.append(deltaRelationName).append("() CASCADE;\n");
         return result.toString();
     }
 }

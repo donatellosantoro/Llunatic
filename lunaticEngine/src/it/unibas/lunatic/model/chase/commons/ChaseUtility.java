@@ -6,11 +6,13 @@ import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.Scan;
 import it.unibas.lunatic.model.algebra.Select;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
+import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.database.Tuple;
@@ -27,13 +29,19 @@ import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
 import it.unibas.lunatic.model.expressions.Expression;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ChaseUtility {
-    
+
     private static Logger logger = LoggerFactory.getLogger(ChaseUtility.class);
 
     public static List<Cell> findCellsForVariable(FormulaVariable variable, Tuple premiseTuple) {
@@ -159,12 +167,12 @@ public class ChaseUtility {
     }
 
     public static AttributeRef unAlias(AttributeRef attribute) {
-        TableAlias unaliasedTable = new TableAlias(attribute.getTableName(), attribute.getTableAlias().isSource());
+        TableAlias unaliasedTable = new TableAlias(attribute.getTableName(), attribute.getTableAlias().isSource(),attribute.isAuthoritative());
         return new AttributeRef(unaliasedTable, attribute.getName());
     }
 
     public static TableAlias unAlias(TableAlias alias) {
-        TableAlias unaliasedTable = new TableAlias(alias.getTableName(), alias.isSource());
+        TableAlias unaliasedTable = new TableAlias(alias.getTableName(), alias.isSource(),alias.isAuthoritative());
         return unaliasedTable;
     }
 
@@ -281,4 +289,60 @@ public class ChaseUtility {
         }
         return tableName;
     }
+
+    public static Set<CellRef> createCellRefsFromCells(Collection<CellGroupCell> cells) {
+        Set<CellRef> result = new HashSet<CellRef>();
+        for (Cell cell : cells) {
+            result.add(new CellRef(cell));
+        }
+        return result;
+    }
+
+    public static boolean haveAllEqualValues(Set<CellGroupCell> cells) {
+        IValue firstValue = cells.iterator().next().getValue();
+        for (CellGroupCell cell : cells) {
+            if (cell.getValue().equals(firstValue)) {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public static IValue findFirstOrderedValue(Map<IValue, Integer> occurrenceHistogram) {
+        List<Entry<IValue, Integer>> entryList = sortEntriesWithValues(occurrenceHistogram);
+        return entryList.get(0).getKey();
+    }
+
+    public static IValue findMostFrequentValueIfAny(Map<IValue, Integer> occurrenceHistogram) {
+        List<Entry<IValue, Integer>> entryList = sortEntriesWithValues(occurrenceHistogram);
+        IValue firstMaxValue = entryList.get(0).getKey();
+        Integer firstMax = entryList.get(0).getValue();
+        Integer secondMax = null;
+        if (entryList.size() > 1) {
+            secondMax = entryList.get(1).getValue();
+        }
+        if (secondMax == null || firstMax > secondMax) {
+            return firstMaxValue;
+        }
+        return null;
+    }
+
+    private static List<Entry<IValue, Integer>> sortEntriesWithValues(Map<IValue, Integer> occurrenceHistogram) {
+        List<Entry<IValue, Integer>> entryList = new ArrayList<Entry<IValue, Integer>>(occurrenceHistogram.entrySet());
+        Collections.sort(entryList, new Comparator<Entry<IValue, Integer>>() {
+            public int compare(Entry<IValue, Integer> o1, Entry<IValue, Integer> o2) {
+                return -1 * o1.getValue().compareTo(o2.getValue());
+            }
+        });
+        return entryList;
+    }
+
+    public static AttributeRef extractAttributeRef(String key) {
+        String attributeRefString = key.substring(LunaticConstants.TYPE_ADDITIONAL.length() + 1);
+        String tableName = attributeRefString.substring(0, attributeRefString.indexOf("."));
+        String attributeName = attributeRefString.substring(attributeRefString.indexOf(".") + 1);
+        return new AttributeRef(tableName, attributeName);
+    }
+
 }

@@ -119,13 +119,13 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
         List<Repair> result = new ArrayList<Repair>();
         if (logger.isDebugEnabled()) logger.debug("Generating backward repairs for groups:\n" + "High frequency:\n" + highFrequencyGroups + "Medium frequency:\n" + mediumFrequencyGroups + "Low frequency:\n" + lowFrequencyGroups);
         for (TargetCellsToChange lowFrequencyGroup : lowFrequencyGroups) {
-            for (BackwardAttribute premiseAttribute : lowFrequencyGroup.getCellGroupsForBackwardAttributes().keySet()) {
+            for (BackwardAttribute premiseAttribute : lowFrequencyGroup.getCellGroupsForBackwardRepairs().keySet()) {
                 List<TargetCellsToChange> forwardGroups = new ArrayList<TargetCellsToChange>();
                 forwardGroups.addAll(mediumFrequencyGroups);
                 forwardGroups.addAll(highFrequencyGroups);
                 forwardGroups.addAll(lowFrequencyGroups);
                 List<TargetCellsToChange> backwardGroups = new ArrayList<TargetCellsToChange>();
-                CellGroup cellGroup = lowFrequencyGroup.getCellGroupsForBackwardAttributes().get(premiseAttribute);
+                CellGroup cellGroup = lowFrequencyGroup.getCellGroupsForBackwardRepairs().get(premiseAttribute);
                 if (backwardIsAllowed(cellGroup, occurrenceHandler, deltaDB, stepId)) {
                     backwardGroups.add(lowFrequencyGroup);
                     forwardGroups.remove(lowFrequencyGroup);
@@ -151,8 +151,8 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
             if (logger.isDebugEnabled()) logger.debug("Backward on Null (" + cellGroup.getValue() + ") is not allowed");
             return false;
         }
-        if (!cellGroup.getProvenances().isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with provenance " + cellGroup.getProvenances() + " is not allowed");
+        if (!cellGroup.getJustifications().isEmpty()) {
+            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with provenance " + cellGroup.getJustifications() + " is not allowed");
             return false;
         }
         if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " is allowed");
@@ -167,7 +167,7 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
             repair.addChanges(forwardChanges);
         }
         for (TargetCellsToChange backwardGroup : backwardGroups) {
-            CellGroup cellGroup = backwardGroup.getCellGroupsForBackwardAttributes().get(premiseAttribute);
+            CellGroup cellGroup = backwardGroup.getCellGroupsForBackwardRepairs().get(premiseAttribute);
 //            int llunId = ChaseUtility.generateLLUNId(cellGroup);
 //            LLUNValue llunValue = new LLUNValue(LunaticConstants.LLUN_PREFIX + LunaticConstants.CHASE_BACKWARD + llunId);
             LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();

@@ -125,7 +125,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
     }
 
     protected Repair generateRepairWithBackwards(List<TargetCellsToChange> forwardGroups, List<TargetCellsToChange> backwardGroups, Scenario scenario, IDatabase deltaDB, String stepId, EquivalenceClass equivalenceClass) {
-        if (logger.isDebugEnabled()) logger.debug("Generating repair for groups \nForward: " + forwardGroups + "\nBackward: " + backwardGroups);
+        if (logger.isTraceEnabled()) logger.trace("Generating repair for groups \nForward: " + forwardGroups + "\nBackward: " + backwardGroups);
         Repair repair = new Repair();
         if (forwardGroups.size() > 1) {
             ChangeSet forwardChanges = generateForwardRepair(forwardGroups, scenario, deltaDB, stepId);
@@ -135,8 +135,8 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             }
         }
         for (TargetCellsToChange backwardGroup : backwardGroups) {
-            for (BackwardAttribute backwardAttribute : backwardGroup.getCellGroupsForBackwardAttributes().keySet()) {
-                CellGroup cellGroup = backwardGroup.getCellGroupsForBackwardAttributes().get(backwardAttribute);
+            for (BackwardAttribute backwardAttribute : backwardGroup.getCellGroupsForBackwardRepairs().keySet()) {
+                CellGroup cellGroup = backwardGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute);
                 if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(cellGroup, backwardAttribute, equivalenceClass)) {
                     backwardGroup.setSuspicious(true);
                 }
@@ -165,8 +165,8 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
     }
 
     private boolean canDoBackward(TargetCellsToChange tupleGroup) {
-        for (BackwardAttribute premiseAttribute : tupleGroup.getCellGroupsForBackwardAttributes().keySet()) {
-            CellGroup cellGroup = tupleGroup.getCellGroupsForBackwardAttributes().get(premiseAttribute);
+        for (BackwardAttribute premiseAttribute : tupleGroup.getCellGroupsForBackwardRepairs().keySet()) {
+            CellGroup cellGroup = tupleGroup.getCellGroupsForBackwardRepairs().get(premiseAttribute);
             if (cellGroup.getValue() instanceof LLUNValue) {
                 return false;
             }
@@ -174,7 +174,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             if (cellGroup.getValue() instanceof NullValue) {
                 return false;
             }
-            if (!cellGroup.getProvenances().isEmpty()) {
+            if (!cellGroup.getJustifications().isEmpty()) {
                 return false;
             }
         }

@@ -6,6 +6,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
+import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility;
@@ -18,7 +19,7 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
 import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.CellRef;
+import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
@@ -54,7 +55,6 @@ public class ChaseEGDEquivalenceClass {
     }
 
     public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, Map<Dependency, IAlgebraOperator> premiseTreeMap, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
-//        this.occurrenceHandler.generateCellGroupStats(currentNode);
         if (logger.isDebugEnabled()) logger.debug("***** Chasing dependency: " + egd);
         this.lastTuple = null;
         this.lastTupleHandled = false;
@@ -69,7 +69,7 @@ public class ChaseEGDEquivalenceClass {
         try {
             while (true) {
                 long equivalenceClassStart = new Date().getTime();
-                EquivalenceClass equivalenceClass = readNextEquivalenceClass(it, egd, currentNode.getDeltaDB(), currentNode.getId(), chaseState);
+                EquivalenceClass equivalenceClass = readNextEquivalenceClass(it, egd, currentNode.getDeltaDB(), currentNode.getId(), chaseState, scenario);
                 long equivalenceClasEnd = new Date().getTime();
                 ChaseStats.getInstance().addStat(ChaseStats.EGD_EQUIVALENCE_CLASS_TIME, equivalenceClasEnd - equivalenceClassStart);
                 if (equivalenceClass == null) {
@@ -111,7 +111,7 @@ public class ChaseEGDEquivalenceClass {
         return (!it.hasNext() && lastTupleHandled);
     }
 
-    private EquivalenceClass readNextEquivalenceClass(ITupleIterator it, Dependency egd, IDatabase deltaDB, String stepId, IChaseState chaseState) {
+    private EquivalenceClass readNextEquivalenceClass(ITupleIterator it, Dependency egd, IDatabase deltaDB, String stepId, IChaseState chaseState, Scenario scenario) {
         if (!it.hasNext() && (this.lastTupleHandled || this.lastTuple == null)) {
             return null;
         }
@@ -141,7 +141,7 @@ public class ChaseEGDEquivalenceClass {
             }
         }
         if (logger.isDebugEnabled()) logger.debug("Equivalence class loaded");
-        addOccurrencesAndProvenances(equivalenceClass, deltaDB, stepId);
+        completeCellGroup(equivalenceClass, deltaDB, stepId, scenario);
         if (logger.isDebugEnabled()) logger.debug("-------- Equivalence class:\n" + equivalenceClass + "\n---------------");
         return equivalenceClass;
     }
@@ -173,11 +173,14 @@ public class ChaseEGDEquivalenceClass {
         return new EquivalenceClass(egd, occurrenceAttributesForConclusionVariable, egd.getAttributesForBackwardChasing());
     }
 
-    private void addOccurrencesAndProvenances(EquivalenceClass equivalenceClass, IDatabase deltaDB, String stepId) {
+    private void completeCellGroup(EquivalenceClass equivalenceClass, IDatabase deltaDB, String stepId, Scenario scenario) {
         for (TargetCellsToChange tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
-            this.occurrenceHandler.enrichOccurrencesAndProvenances(tupleGroup.getCellGroupForForwardRepair(), deltaDB, stepId);
-            for (CellGroup premiseGroup : tupleGroup.getCellGroupsForBackwardAttributes().values()) {
-                this.occurrenceHandler.enrichOccurrencesAndProvenances(premiseGroup, deltaDB, stepId);
+            CellGroup forwardCellGroup = this.occurrenceHandler.enrichCellGroups(tupleGroup.getCellGroupForForwardRepair(), deltaDB, stepId, scenario);
+            tupleGroup.setCellGroupForForwardRepair(forwardCellGroup);
+            for (BackwardAttribute backwardAttribute : tupleGroup.getCellGroupsForBackwardRepairs().keySet()) {
+                CellGroup oldBackwardCellGroup = tupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute);
+                CellGroup newBackwardCellGroup = this.occurrenceHandler.enrichCellGroups(oldBackwardCellGroup, deltaDB, stepId, scenario);
+                tupleGroup.setCellGroupForBackwardRepair(backwardAttribute, newBackwardCellGroup);
             }
         }
     }
@@ -217,12 +220,12 @@ public class ChaseEGDEquivalenceClass {
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, currentNode, localId, egd, repair, repair.getChaseModes());
             for (ChangeSet changeSet : repair.getChanges()) {
-                this.cellChanger.changeCells(changeSet, newStep.getDeltaDB(), newStep.getId(), false);
+                this.cellChanger.changeCells(changeSet, newStep.getDeltaDB(), newStep.getId(), scenario);
             }
             if (repair.isSuspicious() && !dependencyIsSatisfied(newStep, premiseTreeMap.get(egd), egd, scenario)) {
                 if (logger.isDebugEnabled()) logger.debug("Generated step is not a solution \n" + newStep);
                 for (ChangeSet changeSet : repair.getChanges()) {
-                    this.cellChanger.deleteCells(changeSet, newStep.getDeltaDB(), newStep.getId(), false);
+                    this.cellChanger.deleteCells(changeSet, newStep.getDeltaDB(), newStep.getId());
                 }
                 continue;
             }
@@ -245,14 +248,13 @@ public class ChaseEGDEquivalenceClass {
         if (egd.hasSymmetricAtoms() || scenario.getConfiguration().isUseLimit1()) {
             return false;
         }
-//        logger.warn("Checking inconsistency for egd " + egd);
+        if (logger.isDebugEnabled()) logger.debug("Checking inconsistency for egd " + egd);
         boolean consistent = true;
-        Set<CellRef> cellsToChange = new HashSet<CellRef>();
+        Set<Cell> cellsToChange = new HashSet<Cell>();
         for (Iterator<ChangeSet> it = repair.getChanges().iterator(); it.hasNext();) {
             ChangeSet changeSet = it.next();
             if (inconsistentChanges(changeSet, cellsToChange) || inconsistentWitness(changeSet, cellsToChange)) {
                 if (logger.isDebugEnabled()) logger.debug("Change set not consistent " + changeSet);
-//                logger.warn("Change set not consistent " + changeSet + "\nwith respect to:\n" + cellsToChange);
                 it.remove();
                 consistent = false;
             } else {
@@ -262,7 +264,7 @@ public class ChaseEGDEquivalenceClass {
         return consistent;
     }
 
-    private boolean inconsistentChanges(ChangeSet changeSet, Set<CellRef> cellsToChange) {
+    private boolean inconsistentChanges(ChangeSet changeSet, Set<Cell> cellsToChange) {
         CellGroup cellGroup = changeSet.getCellGroup();
         boolean inconsistent = containsCells(cellGroup, cellsToChange);
         if (inconsistent && logger.isDebugEnabled()) logger.debug("Inconsistent changes:\n" + changeSet);
@@ -270,7 +272,7 @@ public class ChaseEGDEquivalenceClass {
         return inconsistent;
     }
 
-    private boolean inconsistentWitness(ChangeSet changeSet, Set<CellRef> cellsToChange) {
+    private boolean inconsistentWitness(ChangeSet changeSet, Set<Cell> cellsToChange) {
         if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
             return false;
         }
@@ -285,8 +287,8 @@ public class ChaseEGDEquivalenceClass {
         return false;
     }
 
-    private boolean containsCells(CellGroup cellGroup, Set<CellRef> cellsToChange) {
-        for (CellRef cellRef : cellGroup.getOccurrences()) {
+    private boolean containsCells(CellGroup cellGroup, Set<Cell> cellsToChange) {
+        for (Cell cellRef : cellGroup.getOccurrences()) {
             if (cellsToChange.contains(cellRef)) {
                 return true;
             }
@@ -303,7 +305,7 @@ public class ChaseEGDEquivalenceClass {
         List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
         for (ChangeSet changeSet : repair.getChanges()) {
             CellGroup cellGroupToChange = changeSet.getCellGroup();
-            for (CellRef occurrenceCell : cellGroupToChange.getOccurrences()) {
+            for (Cell occurrenceCell : cellGroupToChange.getOccurrences()) {
                 if (!affectedAttributes.contains(occurrenceCell.getAttributeRef())) {
                     affectedAttributes.add(occurrenceCell.getAttributeRef());
                 }

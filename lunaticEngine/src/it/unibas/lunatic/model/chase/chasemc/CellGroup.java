@@ -3,8 +3,6 @@ package it.unibas.lunatic.model.chase.chasemc;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
@@ -19,12 +17,11 @@ public class CellGroup implements Cloneable, Serializable {
 
     private IValue value;
     private IValue id;
-//    private Set<CellRef> occurrences = Collections.newSetFromMap(new ConcurrentHashMap<CellRef, Boolean>());
-//    private Set<Cell> provenances = Collections.newSetFromMap(new ConcurrentHashMap<Cell, Boolean>());
-//    private Map<AttributeRef, Set<Cell>> additionalCells = new ConcurrentHashMap<AttributeRef, Set<Cell>>();
-    private Set<CellRef> occurrences = new HashSet<CellRef>();
-    private Set<Cell> provenances = new HashSet<Cell>();
-    private Map<AttributeRef, Set<Cell>> additionalCells = new HashMap<AttributeRef, Set<Cell>>();
+    private Set<CellGroupCell> occurrences = new HashSet<CellGroupCell>();
+    private Set<CellGroupCell> justifications = new HashSet<CellGroupCell>();
+    private Set<CellGroupCell> userCells = new HashSet<CellGroupCell>();
+    private CellGroupCell invalidCell;
+    private Map<AttributeRef, Set<CellGroupCell>> additionalCells = new HashMap<AttributeRef, Set<CellGroupCell>>();
 
     public CellGroup(IValue value, boolean newCellGroup) {
         if (newCellGroup) {
@@ -34,8 +31,12 @@ public class CellGroup implements Cloneable, Serializable {
         }
     }
 
-    public void addOccurrenceCell(CellRef cellRef) {
-        this.occurrences.add(cellRef);
+    public void addOccurrenceCell(CellGroupCell cell) {
+        this.occurrences.add(cell);
+    }
+
+    public void addUserCell(CellGroupCell cell) {
+        this.userCells.add(cell);
     }
 
     public IValue getValue() {
@@ -46,10 +47,54 @@ public class CellGroup implements Cloneable, Serializable {
         return this.id;
     }
 
+    public Set<CellGroupCell> getOccurrences() {
+        return occurrences;
+    }
+
+    public void setOccurrences(Set<CellGroupCell> occurrences) {
+        this.occurrences = occurrences;
+    }
+
+    public Set<CellGroupCell> getJustifications() {
+        return justifications;
+    }
+
+    public void setJustifications(Set<CellGroupCell> justifications) {
+        this.justifications = justifications;
+    }
+
+    public void addJustificationCell(CellGroupCell cell) {
+        this.justifications.add(cell);
+    }
+
+    public Set<CellGroupCell> getUserCells() {
+        return userCells;
+    }
+
+    public void setUserCells(Set<CellGroupCell> userCells) {
+        this.userCells = userCells;
+    }
+
+    public void setInvalidCell(CellGroupCell invalidCell) {
+        this.invalidCell = invalidCell;
+    }
+
+    public boolean hasInvalidCell() {
+        return this.invalidCell != null;
+    }
+
+    public Map<AttributeRef, Set<CellGroupCell>> getAdditionalCells() {
+        return additionalCells;
+    }
+
+    public void setAdditionalCells(Map<AttributeRef, Set<CellGroupCell>> additionalCells) {
+        this.additionalCells = additionalCells;
+    }
+
     public final void setId(IValue value) {
         assert (value instanceof LLUNValue || value instanceof NullValue || value.toString().contains(LunaticConstants.VALUE_LABEL)) : "Trying to build a cell group with value in place of id: " + value;
         this.id = value;
-        this.value = CellGroupIDGenerator.getValue(value);
+        this.value = CellGroupIDGenerator.getCellGroupValueFromGroupID(value);
     }
 
     public final void setValue(IValue value) {
@@ -58,56 +103,78 @@ public class CellGroup implements Cloneable, Serializable {
         this.id = CellGroupIDGenerator.generateNewId(value);
     }
 
-    public Set<CellRef> getOccurrences() {
-        return occurrences;
-    }
-
-    public void setOccurrences(Set<CellRef> occurrences) {
-        this.occurrences = occurrences;
-    }
-
-    public Set<Cell> getProvenances() {
-        return provenances;
-    }
-
-    public void setProvenances(Set<Cell> provenances) {
-        this.provenances = provenances;
-    }
-
-    public void addProvenanceCell(Cell cell) {
-        this.provenances.add(cell);
-    }
-
-    public Map<AttributeRef, Set<Cell>> getAdditionalCells() {
-        return additionalCells;
-    }
-
-    public void addAdditionalCell(AttributeRef additionalAttribute, Cell additionalCell) {
-        Set<Cell> cells = this.additionalCells.get(additionalAttribute);
+    public void addAdditionalCell(AttributeRef additionalAttribute, CellGroupCell additionalCell) {
+        Set<CellGroupCell> cells = this.additionalCells.get(additionalAttribute);
         if (cells == null) {
-            cells = new HashSet<Cell>();
+            cells = new HashSet<CellGroupCell>();
             this.additionalCells.put(additionalAttribute, cells);
         }
         cells.add(additionalCell);
     }
 
-    public void addAllAdditionalCells(Map<AttributeRef, Set<Cell>> additionalCells) {
+    public void addAllAdditionalCells(Map<AttributeRef, Set<CellGroupCell>> additionalCells) {
         for (AttributeRef attributeRef : additionalCells.keySet()) {
-            for (Cell cell : additionalCells.get(attributeRef)) {
+            for (CellGroupCell cell : additionalCells.get(attributeRef)) {
                 this.addAdditionalCell(attributeRef, cell);
             }
         }
+    }
+
+    public Set<CellGroupCell> getAuthoritativeJustifications() {
+        Set<CellGroupCell> result = new HashSet<CellGroupCell>();
+        for (CellGroupCell justification : this.justifications) {
+            if (justification.isAuthoritative()) {
+                result.add(justification);
+            }
+        }
+        return result;
+    }
+
+    public Set<CellGroupCell> getNonAuthoritativeJustifications() {
+        Set<CellGroupCell> result = new HashSet<CellGroupCell>();
+        for (CellGroupCell justification : this.justifications) {
+            if (!justification.isAuthoritative()) {
+                result.add(justification);
+            }
+        }
+        return result;
+    }
+
+    public Set<CellGroupCell> getAllCells() {
+        Set<CellGroupCell> result = new HashSet<CellGroupCell>();
+        result.addAll(this.occurrences);
+        result.addAll(this.justifications);
+        result.addAll(this.userCells);
+        if (hasInvalidCell()) {
+            result.add(this.invalidCell);
+        }
+        return result;
     }
 
     @Override
     public CellGroup clone() {
         try {
             CellGroup c = (CellGroup) super.clone();
-            c.occurrences = new HashSet<CellRef>(this.occurrences);
-            c.provenances = new HashSet<Cell>(this.provenances);
-            c.additionalCells = new HashMap<AttributeRef, Set<Cell>>();
+            c.occurrences = new HashSet<CellGroupCell>();
+            for (CellGroupCell occurrence : occurrences) {
+                c.occurrences.add((CellGroupCell) occurrence.clone());
+            }
+            c.justifications = new HashSet<CellGroupCell>();
+            for (CellGroupCell just : justifications) {
+                c.justifications.add((CellGroupCell) just.clone());
+            }
+            c.userCells = new HashSet<CellGroupCell>();
+            for (CellGroupCell user : userCells) {
+                c.userCells.add((CellGroupCell) user.clone());
+            }
+            c.invalidCell = this.invalidCell;
+            c.additionalCells = new HashMap<AttributeRef, Set<CellGroupCell>>();
             for (AttributeRef key : this.additionalCells.keySet()) {
-                c.additionalCells.put(key, new HashSet<Cell>(this.additionalCells.get(key)));
+                Set<CellGroupCell> additionalCellsForAttribute = new HashSet<CellGroupCell>();
+                for (CellGroupCell additionalCell : this.additionalCells.get(key)) {
+                    additionalCellsForAttribute.add((CellGroupCell) additionalCell.clone());
+                }
+                c.additionalCells.put(key, additionalCellsForAttribute);
             }
             return c;
         } catch (CloneNotSupportedException ex) {
@@ -120,7 +187,9 @@ public class CellGroup implements Cloneable, Serializable {
         int hash = 7;
         hash = 23 * hash + (this.value != null ? this.value.hashCode() : 0);
         hash = 23 * hash + (this.occurrences != null ? this.occurrences.hashCode() : 0);
-        hash = 23 * hash + (this.provenances != null ? this.provenances.hashCode() : 0);
+        hash = 23 * hash + (this.justifications != null ? this.justifications.hashCode() : 0);
+        hash = 23 * hash + (this.userCells != null ? this.userCells.hashCode() : 0);
+        hash = 23 * hash + (this.invalidCell != null ? this.invalidCell.hashCode() : 0);
         return hash;
     }
 
@@ -133,7 +202,9 @@ public class CellGroup implements Cloneable, Serializable {
         if (!this.value.getType().equals(other.value.getType())) return false;
         if (this.value instanceof ConstantValue && !this.value.equals(other.value)) return false;
         if (this.occurrences != other.occurrences && (this.occurrences == null || !this.occurrences.equals(other.occurrences))) return false;
-        if (this.provenances != other.provenances && (this.provenances == null || !this.provenances.equals(other.provenances))) return false;
+        if (this.justifications != other.justifications && (this.justifications == null || !this.justifications.equals(other.justifications))) return false;
+        if (this.userCells != other.userCells && (this.userCells == null || !this.userCells.equals(other.userCells))) return false;
+        if (this.invalidCell != other.invalidCell && (this.invalidCell == null || !this.invalidCell.equals(other.invalidCell))) return false;
         return true;
     }
 
@@ -142,12 +213,16 @@ public class CellGroup implements Cloneable, Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append("<" + "v=").append(value);
         if (!occurrences.isEmpty()) {
-//            sb.append("\n\tocc=").append(occurrences);
             sb.append(" occ:").append(occurrences);
         }
-        if (!provenances.isEmpty()) {
-//            sb.append("\n\tprov=").append(provenances);
-            sb.append(" just:").append(provenances);
+        if (!justifications.isEmpty()) {
+            sb.append(" just:").append(justifications);
+        }
+        if (!userCells.isEmpty()) {
+            sb.append(" user:").append(userCells);
+        }
+        if (hasInvalidCell()) {
+            sb.append(" invalid");
         }
         sb.append('>');
         return sb.toString();
@@ -155,7 +230,7 @@ public class CellGroup implements Cloneable, Serializable {
 
     public String toStringWithAdditionalCells() {
         StringBuilder sb = new StringBuilder();
-        sb.append(toString());
+        sb.append(toLongString());
         if (!additionalCells.isEmpty()) {
             sb.append("\n\tadditional:\n");
             for (AttributeRef attributeRef : additionalCells.keySet()) {
@@ -165,4 +240,30 @@ public class CellGroup implements Cloneable, Serializable {
         sb.append(']');
         return sb.toString();
     }
+
+    public String toLongString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<" + "v=").append(value);
+        sb.append(" occ: [").append((occurrences.isEmpty() ? "" : "\n"));
+        for (CellGroupCell occurrence : occurrences) {
+            sb.append("\t").append(occurrence.toLongString()).append("\n");
+        }
+        sb.append("]").append((occurrences.isEmpty() ? "" : "\n"));
+        sb.append(" just: [").append((justifications.isEmpty() ? "" : "\n"));
+        for (CellGroupCell just : justifications) {
+            sb.append("\t").append(just.toLongString()).append("\n");
+        }
+        sb.append("]").append((justifications.isEmpty() ? "" : "\n"));
+        sb.append(" user: [").append((userCells.isEmpty() ? "" : "\n"));
+        for (CellGroupCell user : userCells) {
+            sb.append("\t").append(user.toLongString()).append("\n");
+        }
+        sb.append("]").append((userCells.isEmpty() ? "" : "\n"));
+        if (hasInvalidCell()) {
+            sb.append(" invalid");
+        }
+        sb.append('>');
+        return sb.toString();
+    }
+
 }

@@ -52,10 +52,15 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityToMostFrequentCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility" level="TRACE"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.AbstractOccurrenceHandlerMC" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChangeCell" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.AbstractCacheManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDsWithoutCellGroups" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseEGDEquivalenceClass" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies" level="DEBUG"/>-->
 
     <!--     CHASE DED     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chaseded.ChaseDEDScenarioGreedy" level="DEBUG"/>-->

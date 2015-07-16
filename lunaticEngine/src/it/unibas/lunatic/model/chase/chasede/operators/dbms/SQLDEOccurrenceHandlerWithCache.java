@@ -4,6 +4,7 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.exceptions.DBMSException;
 import it.unibas.lunatic.model.chase.chasede.operators.IValueOccurrenceHandlerDE;
 import it.unibas.lunatic.model.database.AttributeRef;
+import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.NullValue;
@@ -24,15 +25,15 @@ public class SQLDEOccurrenceHandlerWithCache implements IValueOccurrenceHandlerD
 
     private static Logger logger = LoggerFactory.getLogger(SQLDEOccurrenceHandlerWithCache.class);
 
-    private Map<String, List<CellRef>> cache;
+    private Map<String, List<Cell>> cache;
     private boolean useCache = true;
 
-    public List<CellRef> getOccurrencesForNull(IDatabase database, NullValue value) {
+    public List<Cell> getOccurrencesForNull(IDatabase database, NullValue value) {
         AccessConfiguration accessConfiguration = ((DBMSDB) database).getAccessConfiguration();
         String skolem = value.toString();
         if (useCache) {
             loadCache(accessConfiguration);
-            List<CellRef> cachedValue = cache.get(skolem);
+            List<Cell> cachedValue = cache.get(skolem);
             if (cachedValue != null) {
                 return cachedValue;
             }
@@ -41,14 +42,16 @@ public class SQLDEOccurrenceHandlerWithCache implements IValueOccurrenceHandlerD
         ResultSet rs = null;
         String query = "SELECT * FROM " + getSchema(accessConfiguration) + "." + LunaticConstants.SKOLEM_OCC_TABLE + " WHERE skolem = '" + skolem + "'";
         try {
-            List<CellRef> result = new ArrayList<CellRef>();
+            List<Cell> result = new ArrayList<Cell>();
             rs = QueryManager.executeQuery(query, accessConfiguration);
             while (rs.next()) {
                 String tableName = rs.getString("table_name");
                 String attribute = rs.getString("attribute");
                 Object tupleOID = rs.getString("tuple_oid");
                 CellRef cellRef = new CellRef(new TupleOID(tupleOID), new AttributeRef(tableName, attribute));
-                result.add(cellRef);
+                //TODO++ Check null value
+                Cell cell = new Cell(cellRef, new NullValue(skolem));
+                result.add(cell);
             }
             return result;
         } catch (SQLException ex) {
@@ -58,26 +61,26 @@ public class SQLDEOccurrenceHandlerWithCache implements IValueOccurrenceHandlerD
         }
     }
 
-    public void addOccurrenceForNull(IDatabase database, NullValue value, CellRef cellRef) {
-        if(!useCache){
+    public void addOccurrenceForNull(IDatabase database, NullValue value, Cell cell) {
+        if (!useCache) {
             //Occurrences over DB are handled by triggers
             return;
         }
-        addCacheOccurrence(value.toString(), cellRef);
+        addCacheOccurrence(value.toString(), cell);
     }
 
-    public void removeOccurrenceForNull(IDatabase database, NullValue value, CellRef cellRef) {
-        if(!useCache){
+    public void removeOccurrenceForNull(IDatabase database, NullValue value, Cell cell) {
+        if (!useCache) {
             return;
         }
-        removeCacheOccurrence(value.toString(), cellRef);
+        removeCacheOccurrence(value.toString(), cell);
     }
 
     public void removeOccurrencesForNull(IDatabase database, NullValue value) {
-       if(!useCache){
+        if (!useCache) {
             return;
         }
-       cache.remove(value.toString());
+        cache.remove(value.toString());
     }
 
     private void loadCache(AccessConfiguration accessConfiguration) {
@@ -85,7 +88,7 @@ public class SQLDEOccurrenceHandlerWithCache implements IValueOccurrenceHandlerD
             return;
         }
         if (logger.isDebugEnabled()) logger.debug("Creating cache for skolem occurrences...");
-        cache = new HashMap<String, List<CellRef>>();
+        cache = new HashMap<String, List<Cell>>();
         ResultSet rs = null;
         String query = "SELECT * FROM " + getSchema(accessConfiguration) + "." + LunaticConstants.SKOLEM_OCC_TABLE;
         try {
@@ -96,7 +99,9 @@ public class SQLDEOccurrenceHandlerWithCache implements IValueOccurrenceHandlerD
                 String attribute = rs.getString("attribute");
                 Object tupleOID = rs.getString("tuple_oid");
                 CellRef cellRef = new CellRef(new TupleOID(tupleOID), new AttributeRef(tableName, attribute));
-                addCacheOccurrence(skolem, cellRef);
+                //TODO++ Check null value
+                Cell cell = new Cell(cellRef, new NullValue(skolem));
+                addCacheOccurrence(skolem, cell);
             }
         } catch (SQLException ex) {
             throw new DBMSException("Unable to read skolem occurrences. " + ex.getLocalizedMessage());
@@ -106,22 +111,22 @@ public class SQLDEOccurrenceHandlerWithCache implements IValueOccurrenceHandlerD
         if (logger.isDebugEnabled()) logger.debug("Cache loaded...");
 
     }
-
-    private void addCacheOccurrence(String skolem, CellRef cellRef) {
-        List<CellRef> result = cache.get(skolem);
+    
+    private void addCacheOccurrence(String skolem, Cell cell) {
+        List<Cell> result = cache.get(skolem);
         if (result == null) {
-            result = new ArrayList<CellRef>();
+            result = new ArrayList<Cell>();
             cache.put(skolem, result);
         }
-        result.add(cellRef);
+        result.add(cell);
     }
 
-    private void removeCacheOccurrence(String skolem, CellRef cellRef) {
-        List<CellRef> result = cache.get(skolem);
+    private void removeCacheOccurrence(String skolem, Cell cell) {
+        List<Cell> result = cache.get(skolem);
         if (result == null) {
             return;
         }
-        result.remove(cellRef);
+        result.remove(cell);
     }
 
     private String getSchema(AccessConfiguration accessConfiguration) {

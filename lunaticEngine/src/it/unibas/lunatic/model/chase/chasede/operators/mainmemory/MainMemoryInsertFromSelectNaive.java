@@ -10,7 +10,6 @@ import it.unibas.lunatic.model.chase.chasede.operators.IValueOccurrenceHandlerDE
 import it.unibas.lunatic.model.database.Attribute;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.ITable;
 import it.unibas.lunatic.model.database.IValue;
@@ -58,7 +57,7 @@ public class MainMemoryInsertFromSelectNaive implements IInsertFromSelectNaive {
                 for (Cell cell : targetTuple.getCells()) {
                     IValue cellValue = cell.getValue();
                     if (cellValue instanceof NullValue) {
-                        occurrenceHandlerDE.addOccurrenceForNull(target, (NullValue) cellValue, new CellRef(cell));
+                        occurrenceHandlerDE.addOccurrenceForNull(target, (NullValue) cellValue, cell);
                     }
                 }
             }

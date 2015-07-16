@@ -1,9 +1,10 @@
 package it.unibas.lunatic.model.database;
 
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import java.io.Serializable;
 
-public class Cell implements Serializable{
+public class Cell implements Serializable, Cloneable {
 
     private TupleOID tupleOid;
     private AttributeRef attributeRef;
@@ -49,29 +50,21 @@ public class Cell implements Serializable{
         return tupleOid;
     }
 
-//    @Override
-//    public int hashCode() {
-//        int hash = 5;
-//        hash = 71 * hash + (this.tupleOid != null ? this.tupleOid.hashCode() : 0);
-//        hash = 71 * hash + (this.attributeRef != null ? this.attributeRef.hashCode() : 0);
-//        hash = 71 * hash + (this.value != null ? this.value.hashCode() : 0);
-//        return hash;
-//    }
-//
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj == null) return false;
-//        if (getClass() != obj.getClass()) return false;
-//        final Cell other = (Cell) obj;
-//        if (this.tupleOid != other.tupleOid && (this.tupleOid == null || !this.tupleOid.equals(other.tupleOid))) return false;
-//        if (this.attributeRef != other.attributeRef && (this.attributeRef == null || !this.attributeRef.equals(other.attributeRef))) return false;
-//        if (this.value != other.value && (this.value == null || !this.value.equals(other.value))) return false;
-//        return true;
-//    }
+    public boolean isSource() {
+        return this.attributeRef.isSource();
+    }
+
+    public boolean isTarget() {
+        return !isSource();
+    }
+
+    public boolean isAuthoritative() {
+        return this.attributeRef.isAuthoritative();
+    }
 
     @Override
     public boolean equals(Object obj) {
-        if ( obj == null ){
+        if (obj == null) {
             return false;
         }
         return this.toString().equals(obj.toString());
@@ -83,8 +76,17 @@ public class Cell implements Serializable{
     }
 
     @Override
+    public Cell clone() {
+        try {
+            return (Cell) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new IllegalArgumentException(ex.getLocalizedMessage());
+        }
+    }
+
+    @Override
     public String toString() {
-        return tupleOid + ":" + attributeRef + "-" + value;
+        return tupleOid + ":" + attributeRef + "-" + value + (isAuthoritative() ? " (Auth)" : "");
     }
 
     public String toShortString() {

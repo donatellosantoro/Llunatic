@@ -9,6 +9,7 @@ import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForTGD;
 import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.CellRef;
@@ -119,7 +120,7 @@ public class CheckUnsatisfiedDependencies {
         ITupleIterator it = queryRunner.run(violationQuery, scenario.getSource(), databaseForStep);
         while (it.hasNext()) {
             Tuple tuple = it.next();
-            if (!isSatisfied(egd, tuple, currentNode)) {
+            if (!isSatisfiedAfterRepairs(egd, tuple, currentNode)) {
                 logger.error("EGD " + egd + " is violated... Node " + currentNode.getId() + " is not a solution\nViolation tuple: " + tuple.toStringWithAlias());
                 it.close();
                 return false;
@@ -129,7 +130,7 @@ public class CheckUnsatisfiedDependencies {
         return true;
     }
 
-    private boolean isSatisfied(Dependency egd, Tuple tuple, DeltaChaseStep currentNode) {
+    private boolean isSatisfiedAfterRepairs(Dependency egd, Tuple tuple, DeltaChaseStep currentNode) {
         for (IFormulaAtom atom : egd.getConclusion().getAtoms()) {
             if (!(atom instanceof ComparisonAtom)) {
                 throw new ChaseException("Illegal egd. Only comparisons are allowed in the conclusion: " + egd);
@@ -140,14 +141,14 @@ public class CheckUnsatisfiedDependencies {
             }
             FormulaVariable v1 = comparison.getVariables().get(0);
             FormulaVariable v2 = comparison.getVariables().get(1);
-            if (!comparisonIsSatisfied(v1, v2, tuple, currentNode)) {
+            if (!comparisonIsSatisfiedAfterRepairs(v1, v2, tuple, currentNode)) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean comparisonIsSatisfied(FormulaVariable v1, FormulaVariable v2, Tuple tuple, DeltaChaseStep currentNode) {
+    private boolean comparisonIsSatisfiedAfterRepairs(FormulaVariable v1, FormulaVariable v2, Tuple tuple, DeltaChaseStep currentNode) {
         if (logger.isDebugEnabled()) logger.debug("Checking satisfaction on tuple\n" + tuple.toStringWithAlias());
         IValue val1 = ChaseUtility.findValueForVariable(v1, tuple);
         IValue val2 = ChaseUtility.findValueForVariable(v2, tuple);
@@ -167,13 +168,27 @@ public class CheckUnsatisfiedDependencies {
             return false;
         }
         List<CellGroup> cellGroups = Arrays.asList(new CellGroup[]{cellGroupForV1, cellGroupForV2});
-        boolean lubIsIdempotent = currentNode.getScenario().getCostManager().checkIfLUBIsIdempotent(cellGroups, currentNode.getScenario());
+        boolean lubIsIdempotent = currentNode.getScenario().getCostManager().checkContainment(cellGroups, currentNode.getScenario());
         if (logger.isDebugEnabled()) logger.debug("LUB is idempotent? " + lubIsIdempotent);
         if (logger.isDebugEnabled() && !lubIsIdempotent) logger.debug("Delta db:\n" + currentNode.getDeltaDB().printInstances());
         return lubIsIdempotent;
     }
 
     private CellGroup findCellGroup(List<Cell> cells, IValue value, DeltaChaseStep chaseStep) {
+        Cell targetCell = getFirstTargetCell(cells);
+        if (targetCell == null) {
+            return buildCellGroupForJustifications(value, cells);
+        }
+        if (logger.isTraceEnabled()) logger.debug("Reading cell group for cell " + targetCell + " on step " + chaseStep.getId() + " in \n" + chaseStep.getDeltaDB());
+        CellGroup cellGroup = occurrenceHandler.loadCellGroupFromValue(targetCell, chaseStep.getDeltaDB(), chaseStep.getId(), chaseStep.getScenario());
+        if (cellGroup == null) {
+            cellGroup = CellGroupUtility.createNewCellGroupFromCell(targetCell);
+        }
+        if (logger.isDebugEnabled()) logger.debug("Result: " + cellGroup);
+        return cellGroup;
+    }
+
+    private Cell getFirstTargetCell(List<Cell> cells) {
         Cell targetCell = null;
         for (Cell cell : cells) {
             if (cell.getAttributeRef().isTarget()) {
@@ -181,18 +196,15 @@ public class CheckUnsatisfiedDependencies {
                 break;
             }
         }
-        if (targetCell == null) {
-            CellGroup cellGroup = new CellGroup(value, true);
-            cellGroup.getProvenances().addAll(cells);
-            return cellGroup;
+        return targetCell;
+    }
+
+    private CellGroup buildCellGroupForJustifications(IValue value, List<Cell> justifications) {
+        CellGroup cellGroup = new CellGroup(value, true);
+        for (Cell just : justifications) {
+            CellGroupCell cellGroupCell = new CellGroupCell(just.getTupleOID(), just.getAttributeRef(), value, value, LunaticConstants.TYPE_JUSTIFICATION, true);
+            cellGroup.addJustificationCell(cellGroupCell);
         }
-        if (logger.isTraceEnabled()) logger.debug("Reading cell group for cell " + targetCell + " on step " + chaseStep.getId() + " in \n" + chaseStep.getDeltaDB());
-        CellRef targetCellRef = new CellRef(targetCell);
-        CellGroup cellGroup = occurrenceHandler.loadCellGroupFromValue(value, targetCellRef, chaseStep.getDeltaDB(), chaseStep.getId());
-        if (cellGroup == null) {
-            cellGroup = CellGroupUtility.createNewCellGroupFromCell(value, targetCellRef);
-        }
-        if (logger.isDebugEnabled()) logger.debug("Result: " + cellGroup);
         return cellGroup;
     }
 

@@ -73,7 +73,7 @@ public class MainMemoryMaintainCellGroupsForTGD implements IMaintainCellGroupsFo
             if (lastUniversalValues == null || LunaticUtility.areDifferentConsideringOrder(lastUniversalValues, universalValuesInConclusion)) {
                 //New equivalence class
                 if (!cellGroupsForVariable.isEmpty()) {
-                    updateCellGroupsInDeltaDB(cellGroupsForVariable, deltaDB, stepId);
+                    updateCellGroupsInDeltaDB(cellGroupsForVariable, deltaDB, stepId, scenario);
                     cellGroupsForVariable.clear();
                 }
                 lastUniversalValues = universalValuesInConclusion;
@@ -82,7 +82,7 @@ public class MainMemoryMaintainCellGroupsForTGD implements IMaintainCellGroupsFo
                 CellGroupUtility.addCellGroupsForTGDVariableOccurrences(tuple, formulaVariable, cellGroupsForVariable, deltaDB, stepId, occurrenceHandler);
             }
         }
-        updateCellGroupsInDeltaDB(cellGroupsForVariable, deltaDB, stepId);
+        updateCellGroupsInDeltaDB(cellGroupsForVariable, deltaDB, stepId, scenario);
         it.close();
     }
 
@@ -95,27 +95,29 @@ public class MainMemoryMaintainCellGroupsForTGD implements IMaintainCellGroupsFo
         return false;
     }
 
-    private void updateCellGroupsInDeltaDB(Map<FormulaVariable, List<CellGroup>> cellGroupsForVariable, IDatabase deltaDB, String stepId) {
+    private void updateCellGroupsInDeltaDB(Map<FormulaVariable, List<CellGroup>> cellGroupsForVariable, IDatabase deltaDB, String stepId, Scenario scenario) {
         for (FormulaVariable formulaVariable : cellGroupsForVariable.keySet()) {
             List<CellGroup> cellGroups = cellGroupsForVariable.get(formulaVariable);
             CellGroup mergedCellGroup = CellGroupUtility.mergeCellGroupsForTGDs(cellGroups);
             if (logger.isDebugEnabled()) logger.debug("Creating new cell group in step " + stepId + ":\n" + mergedCellGroup);
             deleteCellGroups(cellGroups, deltaDB, stepId);
-            saveNewCellGroup(mergedCellGroup, deltaDB, stepId);
+            saveNewCellGroup(mergedCellGroup, deltaDB, stepId, scenario);
         }
     }
 
     private void deleteCellGroups(List<CellGroup> cellGroups, IDatabase deltaDB, String stepId) {
         for (CellGroup cellGroup : cellGroups) {
-            occurrenceHandler.deleteCellGroup(cellGroup, deltaDB, stepId, true);
+            //TODO++ (TGD) SyncronizeCache TRUE
+            occurrenceHandler.deleteCellGroup(cellGroup, deltaDB, stepId);
         }
     }
 
-    private void saveNewCellGroup(CellGroup mergedCellGroup, IDatabase deltaDB, String stepId) {
+    private void saveNewCellGroup(CellGroup mergedCellGroup, IDatabase deltaDB, String stepId, Scenario scenario) {
 //        for (CellRef cellRef : mergedCellGroup.getOccurrences()) {
 //            String deltaTableName = ChaseUtility.getDeltaRelationName(cellRef.getAttributeRef().getTableName(), cellRef.getAttributeRef().getName());
 //            cellUpdater.execute(deltaTableName, cellRef.getTupleOID(), stepId, mergedCellGroup.getId(), deltaDB);
 //        }
-        occurrenceHandler.saveNewCellGroup(mergedCellGroup, deltaDB, stepId, true);
+        //TODO++ (TGD) SyncronizeCache TRUE
+        occurrenceHandler.saveNewCellGroup(mergedCellGroup, deltaDB, stepId, scenario);
     }
 }

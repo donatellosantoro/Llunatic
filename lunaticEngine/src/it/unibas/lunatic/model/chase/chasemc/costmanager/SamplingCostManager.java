@@ -4,13 +4,14 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
 import it.unibas.lunatic.model.chase.chasemc.operators.IValueOccurrenceHandlerMC;
-import it.unibas.lunatic.model.database.CellRef;
+import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -99,7 +100,7 @@ public class SamplingCostManager extends StandardCostManager {
         List<TargetCellsToChange> forwardGroups = new ArrayList<TargetCellsToChange>(tupleGroups);
         List<TargetCellsToChange> backwardGroups = new ArrayList<TargetCellsToChange>();
         for (TargetCellsToChange tupleGroup : subset) {
-            CellGroup cellGroup = tupleGroup.getCellGroupsForBackwardAttributes().get(backwardAttribute);
+            CellGroup cellGroup = tupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute);
             if (backwardIsAllowed(cellGroup)) {
                 backwardGroups.add(tupleGroup);
                 forwardGroups.remove(tupleGroup);
@@ -150,17 +151,17 @@ public class SamplingCostManager extends StandardCostManager {
                 continue;
             }
             CellGroup cellGroup = changeSet.getCellGroup();
-            CellRef randomCell = selectRandomCell(cellGroup.getOccurrences());
+            CellGroupCell randomCell = selectRandomCell(cellGroup.getOccurrences());
             IValue originalValue = findOriginalValue(randomCell, equivalenceClass);
             cellGroup.setValue(originalValue);
         }
     }
 
-    private CellRef selectRandomCell(Set<CellRef> occurrences) {
-        return new ArrayList<CellRef>(occurrences).get(random.nextInt(occurrences.size()));
+    private CellGroupCell selectRandomCell(Set<CellGroupCell> occurrences) {
+        return new ArrayList<CellGroupCell>(occurrences).get(random.nextInt(occurrences.size()));
     }
 
-    private IValue findOriginalValue(CellRef randomCell, EquivalenceClass equivalenceClass) {
+    private IValue findOriginalValue(Cell randomCell, EquivalenceClass equivalenceClass) {
         for (IValue value : equivalenceClass.getTupleGroupsWithSameConclusionValue().keySet()) {
             TargetCellsToChange targetCells = equivalenceClass.getTupleGroupsWithSameConclusionValue().get(value);
             if (targetCells.getCellGroupForForwardRepair().getOccurrences().contains(randomCell)) {

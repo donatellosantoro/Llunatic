@@ -43,6 +43,17 @@ public class OrderingAttribute {
     }
 
     @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        return this.toString().equals(obj.toString());
+    }
+
+    @Override
     public String toString() {
         return "Attribute " + attribute + " orderedBy " + associatedAttribute + " using " + valueComparator;
     }

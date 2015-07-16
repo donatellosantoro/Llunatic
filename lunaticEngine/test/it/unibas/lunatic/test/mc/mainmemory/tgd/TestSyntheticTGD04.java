@@ -19,7 +19,7 @@ public class TestSyntheticTGD04 extends CheckTest {
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
-        if (logger.isDebugEnabled()) logger.debug(result.getDeltaDB().getTable(LunaticConstants.OCCURRENCE_TABLE).toString());
+        if (logger.isDebugEnabled()) logger.debug(result.getDeltaDB().getTable(LunaticConstants.CELLGROUP_TABLE).toString());
         if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getSolutions(result));
 //        Assert.assertEquals(4, OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario).loadAllCellGroupsInStep(result.getDeltaDB(), "r").size());

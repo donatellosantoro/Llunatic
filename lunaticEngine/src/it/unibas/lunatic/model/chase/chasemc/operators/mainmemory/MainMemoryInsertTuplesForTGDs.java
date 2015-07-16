@@ -82,13 +82,14 @@ public class MainMemoryInsertTuplesForTGDs implements IInsertTuplesForTGDs {
                     ITable deltaTable = currentNode.getDeltaDB().getTable(deltaTableName);
                     insertOperator.execute(deltaTable, targetTuple, scenario.getSource(), scenario.getTarget());
                     IValue groupId = CellGroupIDGenerator.generateNewId(attributeValue);
-                    occurrenceHandler.updateOccurrencesForNewTuple(targetTuple, groupId, currentNode.getDeltaDB(), table.getName(), attribute.getName(), true);
+                    //TODO++ (TGD) Force Save TRUE
+                    occurrenceHandler.updateOccurrencesForNewTuple(targetTuple, groupId, currentNode.getDeltaDB(), table.getName(), attribute.getName());
 //                    generateCellGroupForNulls(targetTuple, cellGroupsForNull);
                 }
             }
 //            if (logger.isDebugEnabled()) logger.debug("Cell groups for null value:\n" + LunaticUtility.printMap(cellGroupsForNull));
 //            for (CellGroup cellGroupForNull : cellGroupsForNull.values()) {
-//                occurrenceHandler.enrichOccurrencesAndProvenances(cellGroupForNull, currentNode.getDeltaDB(), currentNode.getId());
+//                occurrenceHandler.enrichCellGroups(cellGroupForNull, currentNode.getDeltaDB(), currentNode.getId());
 //            }
         }
         it.close();
@@ -126,7 +127,7 @@ public class MainMemoryInsertTuplesForTGDs implements IInsertTuplesForTGDs {
 //    private void generateCellGroupForNulls(Tuple targetTuple, Map<NullValue, CellGroup> cellGroupsForNull) {
 //        // tgds may generate new nulls
 //        for (Cell cell : targetTuple.getCells()) {
-//            IValue cellValue = cell.getValue();
+//            IValue cellValue = cell.getCellGroupValueFromGroupID();
 //            if (cellValue instanceof NullValue) {
 //                NullValue nullValue = (NullValue) cellValue;
 //                CellGroup cellGroupForNull = cellGroupsForNull.get(nullValue);

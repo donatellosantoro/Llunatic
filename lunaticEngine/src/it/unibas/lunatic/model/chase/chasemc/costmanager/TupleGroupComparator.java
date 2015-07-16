@@ -25,9 +25,9 @@ class TupleGroupComparator implements Comparator<TargetCellsToChange> {
 
     private int getOccurrencesAndProvenances(TargetCellsToChange t) {
         int count = 0;
-        for (CellGroup cellGroup : t.getCellGroupsForBackwardAttributes().values()) {
+        for (CellGroup cellGroup : t.getCellGroupsForBackwardRepairs().values()) {
             count += cellGroup.getOccurrences().size();
-            count += cellGroup.getProvenances().size();
+            count += cellGroup.getJustifications().size();
         }
         return count;
     }

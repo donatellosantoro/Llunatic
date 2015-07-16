@@ -1,11 +1,12 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.cache;
 
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupStats;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.database.Cell;
+import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.model.database.IDatabase;
@@ -14,7 +15,6 @@ import it.unibas.lunatic.model.database.NullValue;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
 public abstract class AbstractGreedyCacheManager extends AbstractCacheManager {
@@ -23,7 +23,7 @@ public abstract class AbstractGreedyCacheManager extends AbstractCacheManager {
         super(queryRunner);
     }
 
-    protected abstract void loadCacheForStep(String stepId, IDatabase deltaDB);
+    protected abstract void loadCacheForStep(String stepId, IDatabase deltaDB, Scenario scenario);
 
     protected abstract Set<String> getKeySet();
 
@@ -36,7 +36,7 @@ public abstract class AbstractGreedyCacheManager extends AbstractCacheManager {
             return;
         }
 //        if (currentCachedStepId == null) {
-        loadCacheForStep(step.getId(), step.getDeltaDB());
+        loadCacheForStep(step.getId(), step.getDeltaDB(), step.getScenario());
 //        }
 //        if (!step.getId().equals(currentCachedStepId)) {
 //            throw new IllegalStateException("Unable to initialize cell group stats for chase step " + step.getId() + " with cache for step " + currentCachedStepId);
@@ -55,11 +55,11 @@ public abstract class AbstractGreedyCacheManager extends AbstractCacheManager {
             if (cellGroup.getValue() instanceof NullValue) stats.nullCellGroups++;
             if (cellGroup.getValue() instanceof ConstantValue) stats.constantCellGroups++;
             stats.totalOccurrences += cellGroup.getOccurrences().size();
-            stats.totalProvenances += cellGroup.getProvenances().size();
+            stats.totalProvenances += cellGroup.getJustifications().size();
             if (cellGroup.getOccurrences().size() > stats.maxOccurrences) stats.maxOccurrences = cellGroup.getOccurrences().size();
             if (stats.minOccurrences == -1 || cellGroup.getOccurrences().size() < stats.minOccurrences) stats.minOccurrences = cellGroup.getOccurrences().size();
-            if (cellGroup.getProvenances().size() > stats.maxProvenances) stats.maxProvenances = cellGroup.getProvenances().size();
-            if (stats.minProvenances == -1 || cellGroup.getProvenances().size() < stats.minProvenances) stats.minProvenances = cellGroup.getProvenances().size();
+            if (cellGroup.getJustifications().size() > stats.maxProvenances) stats.maxProvenances = cellGroup.getJustifications().size();
+            if (stats.minProvenances == -1 || cellGroup.getJustifications().size() < stats.minProvenances) stats.minProvenances = cellGroup.getJustifications().size();
             stats.totalCellGroupHash += cellGroupHashCode(cellGroup);
         }
         if (stats.minOccurrences == -1) stats.minOccurrences = 0;
@@ -73,22 +73,15 @@ public abstract class AbstractGreedyCacheManager extends AbstractCacheManager {
         } else if (cellGroup.getValue() instanceof NullValue) {
             valueString = "_Null_";
         }
-        List<CellRef> occurrenceList = new ArrayList<CellRef>(cellGroup.getOccurrences());
+//        List<CellRef> occurrenceList = new ArrayList<CellRef>(cellGroup.getOccurrences());
+        List<CellRef> occurrenceList = new ArrayList<CellRef>(ChaseUtility.createCellRefsFromCells(cellGroup.getOccurrences()));
         Collections.sort(occurrenceList, new CellRefStringComparator());
-        List<CellRef> provenanceList = generateCellRefs(cellGroup.getProvenances());
+        List<CellRef> provenanceList = new ArrayList<CellRef>(ChaseUtility.createCellRefsFromCells(cellGroup.getJustifications()));
         Collections.sort(provenanceList, new CellRefStringComparator());
 //        int cellGroupHash = (valueString + occurrenceList.hashCode() + provenanceList.hashCode()).hashCode();
 //        int cellGroupHash = (valueString + occurrenceList.toString().hashCode() + provenanceList.toString().hashCode()).hashCode();
         int cellGroupHash = (valueString + buildHash(occurrenceList) + buildHash(provenanceList)).hashCode();
         return cellGroupHash;
-    }
-
-    private List<CellRef> generateCellRefs(Set<Cell> provenances) {
-        List<CellRef> result = new ArrayList<CellRef>();
-        for (Cell cell : provenances) {
-            result.add(new CellRef(cell));
-        }
-        return result;
     }
 
     private int buildHash(List<CellRef> cellRefs) {

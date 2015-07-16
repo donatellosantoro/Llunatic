@@ -21,7 +21,7 @@ import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.DateComparator;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.FloatComparator;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.IValueComparator;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.StandardValueComparator;
+import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.StringComparator;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.AfterForkUserManager;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.AfterLLUNForkUserManager;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.AfterLLUNUserManager;
@@ -237,7 +237,7 @@ public class DAOMCScenario {
         }
         IValueComparator comparator = null;
         if (valueComparatorElement.getChildren().isEmpty()) {
-            comparator = new StandardValueComparator();
+            comparator = new StringComparator();
         } else {
             Element valueComparatorImplElement = (Element) valueComparatorElement.getChildren().get(0);
             String valueComparatorImplName = valueComparatorImplElement.getName();
