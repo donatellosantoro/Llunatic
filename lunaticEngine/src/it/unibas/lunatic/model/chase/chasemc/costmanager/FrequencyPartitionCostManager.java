@@ -13,7 +13,7 @@ import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
-import it.unibas.lunatic.model.chase.chasemc.operators.IValueOccurrenceHandlerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.LLUNValue;
 import it.unibas.lunatic.model.database.NullValue;
@@ -35,7 +35,7 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
     @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClass equivalenceClass, DeltaChaseStep chaseTreeRoot,
             List<Repair> repairsForDependency, Scenario scenario, String stepId,
-            IValueOccurrenceHandlerMC occurrenceHandler) {
+            OccurrenceHandlerMC occurrenceHandler) {
         if (isDoBackward() && !isDoPermutations()) {
             throw new ChaseException("SinglePermutation CostManager works must return singleton repairs. Configuration with doBackward and not doPermutations is not allowed with StandardCostManager");
         }
@@ -115,7 +115,7 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
         return (frequency >= highFrequencyThreshold && increase > highFrequencyDifferenceThreshold);
     }
 
-    private List<Repair> generateBackwardRepairs(EquivalenceClass equivalenceClass, List<TargetCellsToChange> lowFrequencyGroups, List<TargetCellsToChange> mediumFrequencyGroups, List<TargetCellsToChange> highFrequencyGroups, Scenario scenario, IDatabase deltaDB, String stepId, IValueOccurrenceHandlerMC occurrenceHandler) {
+    private List<Repair> generateBackwardRepairs(EquivalenceClass equivalenceClass, List<TargetCellsToChange> lowFrequencyGroups, List<TargetCellsToChange> mediumFrequencyGroups, List<TargetCellsToChange> highFrequencyGroups, Scenario scenario, IDatabase deltaDB, String stepId, OccurrenceHandlerMC occurrenceHandler) {
         List<Repair> result = new ArrayList<Repair>();
         if (logger.isDebugEnabled()) logger.debug("Generating backward repairs for groups:\n" + "High frequency:\n" + highFrequencyGroups + "Medium frequency:\n" + mediumFrequencyGroups + "Low frequency:\n" + lowFrequencyGroups);
         for (TargetCellsToChange lowFrequencyGroup : lowFrequencyGroups) {
@@ -140,7 +140,7 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
         return result;
     }
 
-    private boolean backwardIsAllowed(CellGroup cellGroup, IValueOccurrenceHandlerMC occurrenceHandler, IDatabase deltaDB, String stepId) {
+    private boolean backwardIsAllowed(CellGroup cellGroup, OccurrenceHandlerMC occurrenceHandler, IDatabase deltaDB, String stepId) {
         // never change LLUNs backward L(L(x)) = L(x)            
         if (cellGroup.getValue() instanceof LLUNValue) {
             if (logger.isDebugEnabled()) logger.debug("Backward on LLUN (" + cellGroup.getValue() + ") is not allowed");

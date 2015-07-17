@@ -41,13 +41,13 @@ public class ChaseEGDEquivalenceClass {
     private static Logger logger = LoggerFactory.getLogger(ChaseEGDEquivalenceClass.class);
 
     private IRunQuery queryRunner;
-    private IValueOccurrenceHandlerMC occurrenceHandler;
+    private OccurrenceHandlerMC occurrenceHandler;
     private IBuildDatabaseForChaseStep databaseBuilder;
     private ChangeCell cellChanger;
     private Tuple lastTuple;
     private boolean lastTupleHandled;
 
-    public ChaseEGDEquivalenceClass(IRunQuery queryRunner, IValueOccurrenceHandlerMC occurrenceHandler, IBuildDatabaseForChaseStep databaseBuilder, ChangeCell cellChanger) {
+    public ChaseEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, IBuildDatabaseForChaseStep databaseBuilder, ChangeCell cellChanger) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
         this.databaseBuilder = databaseBuilder;

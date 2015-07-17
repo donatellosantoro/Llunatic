@@ -32,10 +32,10 @@ public class ChaseDeltaExtEGDs {
     private ChangeCell cellChanger;
     private CheckDuplicates duplicateChecker;
     private ChaseEGDEquivalenceClass dependencyChaser;
-    private IValueOccurrenceHandlerMC occurrenceHandler;
+    private OccurrenceHandlerMC occurrenceHandler;
 
     public ChaseDeltaExtEGDs(IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
-            IInsertTuple insertOperator, IDelete deleteOperator, IValueOccurrenceHandlerMC occurrenceHandler, CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker) {
+            IInsertTuple insertOperator, IDelete deleteOperator, OccurrenceHandlerMC occurrenceHandler, CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker) {
         this.databaseBuilder = stepBuilder;
         this.cellChanger = new ChangeCell(insertOperator, deleteOperator, occurrenceHandler);
         this.duplicateChecker = new CheckDuplicates(queryRunner);

@@ -12,7 +12,6 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.Tuple;
@@ -36,10 +35,10 @@ public class CheckUnsatisfiedDependencies {
     private BuildAlgebraTreeForTGD treeBuilderForTGD = new BuildAlgebraTreeForTGD();
     private BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
     private IBuildDatabaseForChaseStep databaseBuilder;
-    private IValueOccurrenceHandlerMC occurrenceHandler;
+    private OccurrenceHandlerMC occurrenceHandler;
     private IRunQuery queryRunner;
 
-    public CheckUnsatisfiedDependencies(IBuildDatabaseForChaseStep databaseBuilder, IValueOccurrenceHandlerMC occurrenceHandler, IRunQuery queryRunner) {
+    public CheckUnsatisfiedDependencies(IBuildDatabaseForChaseStep databaseBuilder, OccurrenceHandlerMC occurrenceHandler, IRunQuery queryRunner) {
         this.databaseBuilder = databaseBuilder;
         this.occurrenceHandler = occurrenceHandler;
         this.queryRunner = queryRunner;

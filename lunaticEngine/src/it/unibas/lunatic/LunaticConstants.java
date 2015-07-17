@@ -21,17 +21,6 @@ public class LunaticConstants {
     public static final String LLUN = "llun";
     public static final String NULL_VALUE = "NULL";
 
-    // NULL OBJECTS
-    public static final AttributeRef NULL_ATTRIBUTE_REF = new AttributeRef("_NullTable_", "_NullAttribute_");
-    public static final TupleOID NULL_TUPLE_ID = new TupleOID("_NullTupleOID_");
-    public static final CellRef NULL_CELL_REF = new CellRef(NULL_TUPLE_ID, NULL_ATTRIBUTE_REF);
-    public static final TupleOID USER_TUPLE_ID = new TupleOID("_UserupleOID_");
-    public static final AttributeRef USER_ATTRIBUTE_REF = new AttributeRef("_User_", "_User_");
-    public static final CellRef USER_CELL_REF = new CellRef(USER_TUPLE_ID, USER_ATTRIBUTE_REF);
-    public static final IValue BOTTOM_VALUE = new ConstantValue("_BottomValue_");
-    public static final CellGroupCell INVALID_CELL = new CellGroupCell(NULL_CELL_REF, BOTTOM_VALUE, BOTTOM_VALUE, LunaticConstants.TYPE_INVALID, true);
-    public static final IValue NULL_IVALUE = new ConstantValue(NULL_VALUE);
-
     public static final String OID = "oid";
     public static final String TID = "tid";
     public static final String STEP = "step";
@@ -96,7 +85,7 @@ public class LunaticConstants {
 
     ///////////////    CACHE STRATEGIES    ///////////////////
 //    public static final String NO_CACHE = "NO_CACHE";
-    public static final String LAZY_CACHE = "SIMPLE";
+//    public static final String LAZY_CACHE = "SIMPLE";
     public static final String GREEDY_SIMPLE_CACHE = "GREEDY";
     public static final String GREEDY_EHCACHE = "EHCACHE_GREEDY";
     public static final String GREEDY_JCS = "JCS_GREEDY";
@@ -108,5 +97,16 @@ public class LunaticConstants {
     ///////////////    DE CHASER STRATEGIES    ///////////////////
     public static final String CLASSIC_DE_CHASER = "CLASSIC_DE_CHASER";
     public static final String PROXY_MC_CHASER = "PROXY_MC_CHASER";
+
+    // NULL OBJECTS
+    public static final AttributeRef NULL_ATTRIBUTE_REF = new AttributeRef("_NullTable_", "_NullAttribute_");
+    public static final TupleOID NULL_TUPLE_ID = new TupleOID("_NullTupleOID_");
+    public static final CellRef NULL_CELL_REF = new CellRef(NULL_TUPLE_ID, NULL_ATTRIBUTE_REF);
+    public static final TupleOID USER_TUPLE_ID = new TupleOID("_UserupleOID_");
+    public static final AttributeRef USER_ATTRIBUTE_REF = new AttributeRef("_User_", "_User_");
+    public static final CellRef USER_CELL_REF = new CellRef(USER_TUPLE_ID, USER_ATTRIBUTE_REF);
+    public static final IValue BOTTOM_VALUE = new ConstantValue("_BottomValue_");
+    public static final CellGroupCell INVALID_CELL = new CellGroupCell(NULL_CELL_REF, BOTTOM_VALUE, BOTTOM_VALUE, LunaticConstants.TYPE_INVALID, true);
+    public static final IValue NULL_IVALUE = new ConstantValue(NULL_VALUE);
 
 }

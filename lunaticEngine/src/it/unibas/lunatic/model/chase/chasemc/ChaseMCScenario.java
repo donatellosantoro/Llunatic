@@ -23,7 +23,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.chase.chasemc.operators.IValueOccurrenceHandlerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies;
@@ -49,7 +49,7 @@ public class ChaseMCScenario {
 
     public ChaseMCScenario(IChaseSTTGDs stChaser, IChaseDeltaExtTGDs extTgdChaser,
             IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
-            IInsertTuple insertOperatorForEgds, IInsertTuplesForTGDs insertOperatorForTgds, IValueOccurrenceHandlerMC occurrenceHandler,
+            IInsertTuple insertOperatorForEgds, IInsertTuplesForTGDs insertOperatorForTgds, OccurrenceHandlerMC occurrenceHandler,
             ChaseDeltaExtEGDs egdChaser, CheckSolution solutionChecker) {
         this.stChaser = stChaser;
         this.deltaBuilder = deltaBuilder;

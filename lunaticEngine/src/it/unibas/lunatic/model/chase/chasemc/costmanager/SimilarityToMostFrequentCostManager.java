@@ -11,7 +11,7 @@ import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
-import it.unibas.lunatic.model.chase.chasemc.operators.IValueOccurrenceHandlerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
@@ -38,7 +38,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
     @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClass equivalenceClass, DeltaChaseStep chaseTreeRoot,
             List<Repair> repairsForDependency, Scenario scenario, String stepId,
-            IValueOccurrenceHandlerMC occurrenceHandler) {
+            OccurrenceHandlerMC occurrenceHandler) {
         if (!(scenario.getPartialOrder() instanceof FrequencyPartialOrder)) {
             logger.warn("##################################################################################");
             logger.warn("   SimilarityToMostFrequentCostManager should be used with FrequencyPartialOrder");

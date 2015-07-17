@@ -7,6 +7,7 @@ import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupTableUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
@@ -54,7 +55,7 @@ public abstract class AbstractCacheManager implements ICacheManager {
                 putCellGroup(cellGroup, stepId, deltaDB, scenario);
             }
             addCellGroupCellIntoCellGroup(cellGroupCell, cellGroup);
-            if (cellGroupId instanceof ConstantValue) {
+            if (cellGroupCell.getType().equals(LunaticConstants.TYPE_OCCURRENCE) && cellGroupId instanceof ConstantValue) {
                 putClusterId(new CellRef(cellGroupCell), cellGroupId, stepId, deltaDB, scenario);
             }
         }
@@ -83,10 +84,10 @@ public abstract class AbstractCacheManager implements ICacheManager {
         TupleOID tid = new TupleOID(LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_OID));
         String table = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_TABLE) + "";
         String attribute = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_ATTRIBUTE) + "";
-        IValue currentValue = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.GROUP_ID);
+        IValue originalCellGroupId = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.GROUP_ID);
         IValue originalValue = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_ORIGINAL_VALUE);
         String type = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_TYPE) + "";
-        IValue originalCellGroupId = currentValue;
+        IValue currentValue = CellGroupIDGenerator.getCellGroupValueFromGroupID(originalCellGroupId);
         if (type.equals(LunaticConstants.TYPE_JUSTIFICATION)) {
             currentValue = originalValue;
         }

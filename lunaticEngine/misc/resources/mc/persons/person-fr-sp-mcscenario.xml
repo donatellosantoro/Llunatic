@@ -19,12 +19,12 @@ person(ssn: "321", surname: "White", name: "Frank", address: "a6")
   <dependencies>
 <![CDATA[
 ExtEGDs:
-//person(ssn: $ssn, surname: $surname1, name: $name1, address: $address1), 
-// person(ssn: $ssn, surname: $surname2, name: $name2, address: $address2)
-// -> $surname1 == $surname2.
- person(ssn: $ssn1, surname: $surname1, name: $name1, address: $address1), 
- person(ssn: $ssn2, surname: $surname2, name: $name2, address: $address2),
- $ssn1 == $ssn2 -> $surname1 == $surname2.
+person(ssn: $ssn, surname: $surname1, name: $name1, address: $address1), 
+ person(ssn: $ssn, surname: $surname2, name: $name2, address: $address2)
+ -> $surname1 == $surname2.
+// person(ssn: $ssn1, surname: $surname1, name: $name1, address: $address1), 
+// person(ssn: $ssn2, surname: $surname2, name: $name2, address: $address2),
+// $ssn1 == $ssn2 -> $surname1 == $surname2.
 
 person(ssn: $ssn1, surname: $surname, name: $name1, address: $address1), 
  person(ssn: $ssn2, surname: $surname, name: $name2, address: $address2)

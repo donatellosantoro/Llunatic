@@ -6,7 +6,7 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
-import it.unibas.lunatic.model.chase.chasemc.operators.IValueOccurrenceHandlerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
@@ -54,7 +54,7 @@ public class MinCostRepairCostManager extends StandardCostManager {
     @Override
     public List<Repair> chooseRepairStrategy(EquivalenceClass equivalenceClass, DeltaChaseStep chaseTreeRoot,
             List<Repair> repairsForDependency, Scenario scenario, String stepId,
-            IValueOccurrenceHandlerMC occurrenceHandler) {
+            OccurrenceHandlerMC occurrenceHandler) {
         assert(scenario.getPartialOrder() instanceof StandardPartialOrder && scenario.getScriptPartialOrder() == null) : "No partial order allowed in min cost repair cost manager " + scenario;
         assert(this.isDoPermutations() == false) : "No permutations allowed in min cost repair cost manager " + scenario;
         assert(this.isDoBackward() == false) : "No backward allowed in min cost repair cost manager " + scenario;

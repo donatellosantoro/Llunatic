@@ -30,7 +30,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
     private IBuildDatabaseForChaseStep databaseBuilder;
 
     public ChaseDeltaExtTGDs(IInsertTuplesForTGDs insertTuples, IRunQuery queryRunner, IBuildDatabaseForChaseStep databaseBuilder,
-            IValueOccurrenceHandlerMC occurrenceHandler, IUpdateCell cellUpdater,
+            OccurrenceHandlerMC occurrenceHandler, IUpdateCell cellUpdater,
             IMaintainCellGroupsForTGD cellGroupMantainer) {
         this.insertTuples = insertTuples;
         this.databaseBuilder = databaseBuilder;

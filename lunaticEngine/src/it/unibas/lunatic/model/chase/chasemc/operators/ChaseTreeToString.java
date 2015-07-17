@@ -13,9 +13,9 @@ public class ChaseTreeToString {
 
     private int counter;
     private IBuildDatabaseForChaseStep databaseBuilder;
-    private IValueOccurrenceHandlerMC occurrenceHandler;
+    private OccurrenceHandlerMC occurrenceHandler;
 
-    public ChaseTreeToString(IBuildDatabaseForChaseStep databaseBuilder, IValueOccurrenceHandlerMC occurrenceHandler) {
+    public ChaseTreeToString(IBuildDatabaseForChaseStep databaseBuilder, OccurrenceHandlerMC occurrenceHandler) {
         this.databaseBuilder = databaseBuilder;
         this.occurrenceHandler = occurrenceHandler;
     }

@@ -11,6 +11,7 @@ public class Cell implements Serializable, Cloneable {
     private IValue value;
 
     public Cell(TupleOID tupleOid, AttributeRef attributeRef, IValue value) {
+        assert (value == null || attributeRef.getTableName().equals(LunaticConstants.CELLGROUP_TABLE) ||  attributeRef.getName().equals(LunaticConstants.GROUP_ID) || !value.toString().contains(LunaticConstants.VALUE_LABEL)) : "Trying to build a cell group with id in place of value: " + value;
         this.tupleOid = tupleOid;
         this.attributeRef = attributeRef;
         this.value = value;

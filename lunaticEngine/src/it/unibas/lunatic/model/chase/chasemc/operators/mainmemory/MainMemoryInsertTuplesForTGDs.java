@@ -22,7 +22,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.chase.chasemc.operators.IValueOccurrenceHandlerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -38,10 +38,10 @@ public class MainMemoryInsertTuplesForTGDs implements IInsertTuplesForTGDs {
 
     private IInsertTuple insertOperator;
     private IRunQuery queryRunner;
-    private IValueOccurrenceHandlerMC occurrenceHandler;
+    private OccurrenceHandlerMC occurrenceHandler;
     private IOIDGenerator oidGenerator;
 
-    public MainMemoryInsertTuplesForTGDs(IInsertTuple insertOperator, IRunQuery queryRunner, IValueOccurrenceHandlerMC occurrenceHandler, IOIDGenerator oidGenerator) {
+    public MainMemoryInsertTuplesForTGDs(IInsertTuple insertOperator, IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, IOIDGenerator oidGenerator) {
         this.insertOperator = insertOperator;
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;

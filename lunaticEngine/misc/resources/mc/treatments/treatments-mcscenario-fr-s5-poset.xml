@@ -78,6 +78,11 @@ fd2: treatments(ssn: $ssn, salary: $salary1, insurance: $insur1, treatment: $tre
     -> $salary1 == $salary2.
 ]]>
   </dependencies>
+  <authoritativeSources>
+    <source>consttablecf1</source>
+    <source>consttablecf2</source>
+    <source>masterdata</source>
+  </authoritativeSources>
   <orderingAttributes>
     <orderingAttribute>
       <attribute>customers.phone</attribute>

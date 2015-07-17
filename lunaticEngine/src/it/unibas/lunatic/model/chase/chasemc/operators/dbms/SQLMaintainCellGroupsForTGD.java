@@ -8,7 +8,7 @@ import it.unibas.lunatic.model.chase.chasemc.TGDViolation;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.IMaintainCellGroupsForTGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.chase.chasemc.operators.IValueOccurrenceHandlerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.Tuple;
@@ -29,9 +29,9 @@ public class SQLMaintainCellGroupsForTGD implements IMaintainCellGroupsForTGD {
     private static Logger logger = LoggerFactory.getLogger(SQLMaintainCellGroupsForTGD.class);
 
     private IRunQuery queryRunner;
-    private IValueOccurrenceHandlerMC occurrenceHandler;
+    private OccurrenceHandlerMC occurrenceHandler;
 
-    public SQLMaintainCellGroupsForTGD(IRunQuery queryRunner, IValueOccurrenceHandlerMC occurrenceHandler) {
+    public SQLMaintainCellGroupsForTGD(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
     }

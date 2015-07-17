@@ -5,7 +5,6 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.Tuple;
@@ -22,7 +21,7 @@ public class CellGroupUtility {
 
     private static Logger logger = LoggerFactory.getLogger(CellGroupUtility.class);
 
-    public static void addCellGroupsForTGDVariableOccurrences(Tuple tuple, FormulaVariable formulaVariable, Map<FormulaVariable, List<CellGroup>> cellGroupsForVariable, IDatabase deltaDB, String stepId, IValueOccurrenceHandlerMC occurrenceHandler) {
+    public static void addCellGroupsForTGDVariableOccurrences(Tuple tuple, FormulaVariable formulaVariable, Map<FormulaVariable, List<CellGroup>> cellGroupsForVariable, IDatabase deltaDB, String stepId, OccurrenceHandlerMC occurrenceHandler) {
         List<CellGroup> cellGroups = cellGroupsForVariable.get(formulaVariable);
         if (cellGroups == null) {
             cellGroups = new ArrayList<CellGroup>();
@@ -41,7 +40,7 @@ public class CellGroupUtility {
     }
 
     //TODO++ (TGD)
-    private static void loadOrCreateCellGroupForTGDVariable(List<AttributeRef> occurrenceAttributes, Tuple tuple, List<CellGroup> cellGroups, IDatabase deltaDB, String stepId, IValueOccurrenceHandlerMC occurrenceHandler) {
+    private static void loadOrCreateCellGroupForTGDVariable(List<AttributeRef> occurrenceAttributes, Tuple tuple, List<CellGroup> cellGroups, IDatabase deltaDB, String stepId, OccurrenceHandlerMC occurrenceHandler) {
         throw new UnsupportedOperationException();
 //        for (AttributeRef attributeRef : occurrenceAttributes) {
 //            TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, attributeRef));

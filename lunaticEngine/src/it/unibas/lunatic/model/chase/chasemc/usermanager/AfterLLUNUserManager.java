@@ -2,17 +2,17 @@ package it.unibas.lunatic.model.chase.chasemc.usermanager;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.operators.IValueOccurrenceHandlerMC;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import java.util.List;
 
 public class AfterLLUNUserManager implements IUserManager {
 
-    private IValueOccurrenceHandlerMC occurrenceHandler;
+    private OccurrenceHandlerMC occurrenceHandler;
 
-    public AfterLLUNUserManager(IValueOccurrenceHandlerMC occurrenceHandler) {
+    public AfterLLUNUserManager(OccurrenceHandlerMC occurrenceHandler) {
         this.occurrenceHandler = occurrenceHandler;
     }
 

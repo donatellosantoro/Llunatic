@@ -13,7 +13,7 @@ import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
+import it.unibas.lunatic.model.chase.chasemc.operators.cache.ICacheManager;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.CellRef;
@@ -31,93 +31,38 @@ import it.unibas.lunatic.model.expressions.Expression;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Standard implements IValueOccurrenceHandlerMC {
+//Assumption: CellGroup ids are consistent across steps, i.e.: if C1 belongs to cell group x at step S, 
+//            it belongs to the same cell group also at step S+1
+public class OccurrenceHandlerMC {
 
-    private static Logger logger = LoggerFactory.getLogger(Standard.class);
+    private static Logger logger = LoggerFactory.getLogger(OccurrenceHandlerMC.class);
 
     private IRunQuery queryRunner;
     private IInsertTuple insertOperator;
     private IDelete deleteOperator;
+    private ICacheManager cacheManager;
 
-    public Standard(IRunQuery queryRunner, IInsertTuple insertOperator, IDelete deleteOperator) {
+    public OccurrenceHandlerMC(IRunQuery queryRunner, IInsertTuple insertOperator, IDelete deleteOperator, ICacheManager cacheManager) {
         this.queryRunner = queryRunner;
         this.insertOperator = insertOperator;
         this.deleteOperator = deleteOperator;
+        this.cacheManager = cacheManager;
     }
 
-    @Override
-    public CellGroup loadCellGroupFromId(IValue cellGroupId, IDatabase deltaDB, String stepId, Scenario scenario) {
-        CellGroup cellGroup = new CellGroup(cellGroupId, false);
-        IAlgebraOperator select = buildQuery(cellGroupId, stepId);
-        ITupleIterator resultTuples = queryRunner.run(select, null, deltaDB);
-        Map<String, Set<CellGroupCell>> cellMap = extractCellsWithType(cellGroupId, resultTuples, scenario);
-        resultTuples.close();
-        cellGroup.setOccurrences(cellMap.get(LunaticConstants.TYPE_OCCURRENCE));
-        cellGroup.setJustifications(cellMap.get(LunaticConstants.TYPE_JUSTIFICATION));
-        cellGroup.setUserCells(cellMap.get(LunaticConstants.TYPE_USER));
-        cellGroup.setInvalidCell((cellMap.get(LunaticConstants.TYPE_INVALID).isEmpty() ? null : LunaticConstants.INVALID_CELL));
-        addAdditionalCell(cellGroup, cellMap);
+    public CellGroup loadCellGroupFromId(IValue value, IDatabase deltaDB, String stepId, Scenario scenario) {
+        CellGroup cellGroup = this.cacheManager.loadCellGroupFromId(value, stepId, deltaDB, scenario);
+        if (cellGroup != null) {
+            if (logger.isDebugEnabled()) logger.debug("CellGroup for cluster id " + value + ": " + cellGroup);
+        }
         return cellGroup;
     }
 
-    private Map<String, Set<CellGroupCell>> extractCellsWithType(IValue cellGroupId, ITupleIterator resultTuples, Scenario scenario) {
-        Map<String, Set<CellGroupCell>> result = new HashMap<String, Set<CellGroupCell>>();
-        result.put(LunaticConstants.TYPE_OCCURRENCE, new HashSet<CellGroupCell>());
-        result.put(LunaticConstants.TYPE_JUSTIFICATION, new HashSet<CellGroupCell>());
-        result.put(LunaticConstants.TYPE_USER, new HashSet<CellGroupCell>());
-        result.put(LunaticConstants.TYPE_INVALID, new HashSet<CellGroupCell>());
-        while (resultTuples.hasNext()) {
-            Tuple tuple = resultTuples.next();
-            TupleOID tid = new TupleOID(LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_OID));
-            String table = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_TABLE) + "";
-            String attribute = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_ATTRIBUTE) + "";
-            CellRef cellRef = new CellRef(tid, new AttributeRef(table, attribute));
-            String type = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_TYPE) + "";
-            if (type.equals(LunaticConstants.TYPE_JUSTIFICATION)) {
-                TableAlias tableAlias = cellRef.getAttributeRef().getTableAlias();
-                tableAlias.setSource(true);
-                tableAlias.setAuthoritative(LunaticUtility.isAuthoritative(tableAlias.getTableName(), scenario));
-            }
-            IValue originalValue = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_ORIGINAL_VALUE);
-            IValue cellGroupValue = CellGroupIDGenerator.getCellGroupValueFromGroupID(cellGroupId);
-            CellGroupCell cell = new CellGroupCell(cellRef, cellGroupValue, originalValue, type, false);
-            cell.setOriginalCellGroupId(cellGroupId);
-            Set<CellGroupCell> cellForType = getCellForType(result, type);
-            cellForType.add(cell);
-        }
-        return result;
-    }
-
-    private void addAdditionalCell(CellGroup cellGroup, Map<String, Set<CellGroupCell>> cellMap) {
-        Map<AttributeRef, Set<CellGroupCell>> cellsByAttributeRef = new HashMap<AttributeRef, Set<CellGroupCell>>();
-        for (String key : cellMap.keySet()) {
-            if (!key.startsWith(LunaticConstants.TYPE_ADDITIONAL)) {
-                continue;
-            }
-            AttributeRef attributeRef = ChaseUtility.extractAttributeRef(key);
-            cellsByAttributeRef.put(attributeRef, cellMap.get(key));
-        }
-        cellGroup.addAllAdditionalCells(cellsByAttributeRef);
-    }
-
-    private Set<CellGroupCell> getCellForType(Map<String, Set<CellGroupCell>> cellsMap, String type) {
-        Set<CellGroupCell> result = cellsMap.get(type);
-        if (result == null) {
-            result = new HashSet<CellGroupCell>();
-            cellsMap.put(type, result);
-        }
-        return result;
-    }
-
-    @Override
     public CellGroup enrichCellGroups(CellGroup preliminaryCellGroup, IDatabase deltaDB, String step, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Searching occurrences and provenances for cell group: " + preliminaryCellGroup);
         IValue value = preliminaryCellGroup.getValue();
@@ -173,6 +118,7 @@ public class Standard implements IValueOccurrenceHandlerMC {
                     additionalCell.setOriginalValue(value);
                     continue;
                 }
+                if (logger.isDebugEnabled()) logger.debug("DeltaDB\n" + deltaDB);
                 IValue originalValue = findOriginalValueForAdditionalCell(additionalCell, cellGroupForAdditionalCell);
                 additionalCell.setOriginalValue(originalValue);
             }
@@ -181,12 +127,12 @@ public class Standard implements IValueOccurrenceHandlerMC {
 
     private IValue findOriginalValueForAdditionalCell(CellGroupCell cell, CellGroup cellGroup) {
         CellRef cellRef = new CellRef(cell);
-        for (CellGroupCell occurrence : cellGroup.getAllCells()) {
+        for (CellGroupCell occurrence : cellGroup.getOccurrences()) {
             if (cellRef.equals(new CellRef(occurrence))) {
                 return occurrence.getOriginalValue();
             }
         }
-        throw new IllegalArgumentException("Unable to find original value for cell " + cellRef + " in cell group\n\t" + cellGroup);
+        throw new IllegalArgumentException("Unable to find original value for cell " + cellRef + " in cell group\n\t" + cellGroup.toStringWithAdditionalCells());
     }
 
     private CellGroup findCellGroupForAdditionalCell(CellGroupCell additionalCell, IDatabase deltaDB, String step, Scenario scenario) {
@@ -198,10 +144,10 @@ public class Standard implements IValueOccurrenceHandlerMC {
         if (cellGroupId == null) {
             return null;
         }
+        if (logger.isDebugEnabled()) logger.debug("CellGroupID for additional cell " + additionalCell + ": " + cellGroupId);
         return loadCellGroupFromId(cellGroupId, deltaDB, step, scenario);
     }
 
-    @Override
     public CellGroup loadCellGroupFromValue(Cell cell, IDatabase deltaDB, String stepId, Scenario scenario) {
         IValue cellGroupId = cell.getValue();
         if (cellGroupId instanceof ConstantValue) {
@@ -213,28 +159,14 @@ public class Standard implements IValueOccurrenceHandlerMC {
         return loadCellGroupFromId(cellGroupId, deltaDB, stepId, scenario);
     }
 
-    @Override
     public IValue findClusterId(CellRef cellRef, String stepId, IDatabase deltaDB, Scenario scenario) {
-        IAlgebraOperator query = CellGroupTableUtility.buildQueryToFindCellGroupFromCellRef(cellRef, stepId);
-        if (logger.isDebugEnabled()) logger.debug("Query to extract cell value:\n" + query);
-        ITupleIterator result = queryRunner.run(query, null, deltaDB);
-        if (!result.hasNext()) {
-            if (logger.isDebugEnabled()) logger.debug("Query result is empty, returning null...");
-            result.close();
-            return null;
-        }
-        Tuple firstTuple = result.next();
-        TableAlias alias = new TableAlias(LunaticConstants.CELLGROUP_TABLE, "1");
-        AttributeRef valueInAlias = new AttributeRef(alias, LunaticConstants.GROUP_ID);
-        IValue occurrenceValue = firstTuple.getCell(valueInAlias).getValue();
-        if (logger.isDebugEnabled()) logger.debug("Result: " + occurrenceValue);
-        result.close();
-        return occurrenceValue;
+        IValue clusterId = this.cacheManager.getClusterId(cellRef, stepId, deltaDB, scenario);
+        return clusterId;
     }
 
-    @Override
     public void saveNewCellGroup(CellGroup cellGroup, IDatabase deltaDB, String stepId, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Adding new cell group " + cellGroup);
+        this.cacheManager.putCellGroup(cellGroup, stepId, deltaDB, scenario);
         for (CellGroupCell cellRef : cellGroup.getOccurrences()) {
             saveCellGroupCell(deltaDB, cellGroup.getId(), cellRef, stepId, LunaticConstants.TYPE_OCCURRENCE, scenario);
         }
@@ -257,6 +189,10 @@ public class Standard implements IValueOccurrenceHandlerMC {
     }
 
     public void deleteCellGroup(CellGroup cellGroup, IDatabase deltaDB, String stepId) {
+        this.cacheManager.removeCellGroup(cellGroup.getValue(), stepId);
+        for (Cell cell : cellGroup.getOccurrences()) {
+            this.cacheManager.removeClusterId(new CellRef(cell), stepId);
+        }
         IAlgebraOperator deleteCellGroupQuery = generateDeleteQuery(cellGroup, stepId, LunaticConstants.CELLGROUP_TABLE);
         deleteOperator.execute(LunaticConstants.CELLGROUP_TABLE, deleteCellGroupQuery, null, deltaDB);
     }
@@ -271,14 +207,19 @@ public class Standard implements IValueOccurrenceHandlerMC {
     }
 
     public void reset() {
+        this.cacheManager.reset();
     }
 
     public void generateCellGroupStats(DeltaChaseStep step) {
+        this.cacheManager.generateCellGroupStats(step);
     }
 
     /////////////////////////////////////////////////////////////////////////   
     protected void saveCellGroupCell(IDatabase deltaDB, IValue groupId, CellGroupCell cell, String stepId, String type, Scenario scenario) {
         assert (groupId != null) : "Trying to save occurrence with null groupid " + cell;
+        if (LunaticConstants.TYPE_OCCURRENCE.equals(type) && groupId instanceof ConstantValue) {
+            this.cacheManager.putClusterId(new CellRef(cell), groupId, stepId, deltaDB, scenario);
+        }
         if (cell.isToSave() != null && !cell.isToSave()) {
             return;
         }
@@ -363,7 +304,6 @@ public class Standard implements IValueOccurrenceHandlerMC {
     /////////////////////////////////////////////////////////
     //////    DEBUGGING
     /////////////////////////////////////////////////////////
-    @Override
     public List<CellGroup> loadAllCellGroupsForDebugging(IDatabase deltaDB, String stepId, Scenario scenario) {
         IAlgebraOperator query = CellGroupTableUtility.buildQueryToExtractCellGroupIds(stepId);
         if (logger.isDebugEnabled()) logger.debug("Query for extract cell groups ids\n" + query);
@@ -371,7 +311,6 @@ public class Standard implements IValueOccurrenceHandlerMC {
         return cellGroups;
     }
 
-    @Override
     public List<CellGroup> loadAllCellGroupsInStepForDebugging(IDatabase deltaDB, String stepId, Scenario scenario) {
         IAlgebraOperator query = buildQueryToExtractCellGroupIdsInSingleStep(stepId);
         if (logger.isDebugEnabled()) logger.debug("Query for extract cell groups ids in step\n" + query);

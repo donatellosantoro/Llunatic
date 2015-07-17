@@ -28,9 +28,9 @@ public class ChangeCell {
 
     private IInsertTuple insertOperator;
     private IDelete deleteOperator;
-    private IValueOccurrenceHandlerMC occurrenceHandler;
+    private OccurrenceHandlerMC occurrenceHandler;
 
-    public ChangeCell(IInsertTuple insertOperator, IDelete deleteOperator, IValueOccurrenceHandlerMC occurrenceHandler) {
+    public ChangeCell(IInsertTuple insertOperator, IDelete deleteOperator, OccurrenceHandlerMC occurrenceHandler) {
         this.insertOperator = insertOperator;
         this.deleteOperator = deleteOperator;
         this.occurrenceHandler = occurrenceHandler;
