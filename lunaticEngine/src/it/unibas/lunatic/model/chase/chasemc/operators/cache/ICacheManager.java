@@ -6,9 +6,11 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
+import java.util.Set;
 
 public interface ICacheManager {
 
+    public void loadCellGroups(String stepId, IDatabase deltaDB, Scenario scenario);
     public CellGroup loadCellGroupFromId(IValue value, String stepId, IDatabase deltaDB, Scenario scenario);
     public void putCellGroup(CellGroup cellGroup, String stepId, IDatabase deltaDB, Scenario scenario);
     public void removeCellGroup(IValue value, String stepId);
@@ -17,6 +19,8 @@ public interface ICacheManager {
     public void putClusterId(CellRef cellRef, IValue value, String stepId, IDatabase deltaDB, Scenario scenario);
     public void removeClusterId(CellRef cellRef, String stepId);
     
+    public CellGroup getCellGroup(String key);
+    public Set<String> getKeySet();
     public void reset();
     public void generateCellGroupStats(DeltaChaseStep step);
     

@@ -3,6 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.database.AttributeRef;
+import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
@@ -140,6 +141,10 @@ public class CellGroup implements Cloneable, Serializable {
         return result;
     }
 
+    public CellGroupCell getInvalidCell() {
+        return this.invalidCell;
+    }
+
     public Set<CellGroupCell> getAllCells() {
         Set<CellGroupCell> result = new HashSet<CellGroupCell>();
         result.addAll(this.occurrences);
@@ -167,7 +172,9 @@ public class CellGroup implements Cloneable, Serializable {
             for (CellGroupCell user : userCells) {
                 c.userCells.add((CellGroupCell) user.clone());
             }
-            c.invalidCell = this.invalidCell;
+            if (this.hasInvalidCell()) {
+                c.invalidCell = (CellGroupCell) this.invalidCell.clone();
+            }
             c.additionalCells = new HashMap<AttributeRef, Set<CellGroupCell>>();
             for (AttributeRef key : this.additionalCells.keySet()) {
                 Set<CellGroupCell> additionalCellsForAttribute = new HashSet<CellGroupCell>();
@@ -189,7 +196,8 @@ public class CellGroup implements Cloneable, Serializable {
         hash = 23 * hash + (this.occurrences != null ? this.occurrences.hashCode() : 0);
         hash = 23 * hash + (this.justifications != null ? this.justifications.hashCode() : 0);
         hash = 23 * hash + (this.userCells != null ? this.userCells.hashCode() : 0);
-        hash = 23 * hash + (this.invalidCell != null ? this.invalidCell.hashCode() : 0);
+//        hash = 23 * hash + (this.invalidCell != null ? this.invalidCell.hashCode() : 0);
+        hash = 23 * hash + (this.invalidCell != null ? LunaticConstants.TYPE_INVALID.hashCode() : 0);
         return hash;
     }
 
@@ -204,7 +212,8 @@ public class CellGroup implements Cloneable, Serializable {
         if (this.occurrences != other.occurrences && (this.occurrences == null || !this.occurrences.equals(other.occurrences))) return false;
         if (this.justifications != other.justifications && (this.justifications == null || !this.justifications.equals(other.justifications))) return false;
         if (this.userCells != other.userCells && (this.userCells == null || !this.userCells.equals(other.userCells))) return false;
-        if (this.invalidCell != other.invalidCell && (this.invalidCell == null || !this.invalidCell.equals(other.invalidCell))) return false;
+//        if (this.invalidCell != other.invalidCell && (this.invalidCell == null || !this.invalidCell.equals(other.invalidCell))) return false;
+        if(this.hasInvalidCell() != other.hasInvalidCell()) return false;
         return true;
     }
 
@@ -222,7 +231,7 @@ public class CellGroup implements Cloneable, Serializable {
             sb.append(" user:").append(userCells);
         }
         if (hasInvalidCell()) {
-            sb.append(" invalid");
+            sb.append(" ").append(LunaticConstants.TYPE_INVALID);
         }
         sb.append('>');
         return sb.toString();

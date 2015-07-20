@@ -65,7 +65,7 @@ public class TestTreatments extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
         checkSolutions(result);
 //        Assert.assertEquals(34, resultSizer.getSolutions(result));
-        Assert.assertEquals(22, resultSizer.getSolutions(result));
-        Assert.assertEquals(35, resultSizer.getDuplicates(result));
+        Assert.assertEquals(23, resultSizer.getSolutions(result));
+        Assert.assertEquals(34, resultSizer.getDuplicates(result));
     }
 }

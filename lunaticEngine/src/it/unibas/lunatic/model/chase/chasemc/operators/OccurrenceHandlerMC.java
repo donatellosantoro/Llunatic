@@ -57,9 +57,7 @@ public class OccurrenceHandlerMC {
 
     public CellGroup loadCellGroupFromId(IValue value, IDatabase deltaDB, String stepId, Scenario scenario) {
         CellGroup cellGroup = this.cacheManager.loadCellGroupFromId(value, stepId, deltaDB, scenario);
-        if (cellGroup != null) {
-            if (logger.isDebugEnabled()) logger.debug("CellGroup for cluster id " + value + ": " + cellGroup);
-        }
+        if (logger.isDebugEnabled()) logger.debug("CellGroup for cluster id " + value + ": " + cellGroup);
         return cellGroup;
     }
 
@@ -75,8 +73,8 @@ public class OccurrenceHandlerMC {
             addCellGroupForConstant(preliminaryCellGroup, deltaDB, step, cellGroupsToMerge, scenario);
         }
         addOriginalValuesForAdditionalCells(preliminaryCellGroup, deltaDB, step, scenario);
-        MergeCellGroup cellGroupMerger = new MergeCellGroup();
-        CellGroup mergedCG = cellGroupMerger.mergeCells(cellGroupsToMerge, value);
+        FindOriginalValuesForCellGroupCells cellGroupMerger = new FindOriginalValuesForCellGroupCells();
+        CellGroup mergedCG = cellGroupMerger.findOriginalValues(cellGroupsToMerge, value);
         if (logger.isDebugEnabled()) logger.debug("Merged cell group: " + mergedCG);
         return mergedCG;
     }
@@ -177,7 +175,7 @@ public class OccurrenceHandlerMC {
             saveCellGroupCell(deltaDB, cellGroup.getId(), cell, stepId, LunaticConstants.TYPE_USER, scenario);
         }
         if (cellGroup.hasInvalidCell()) {
-            saveCellGroupCell(deltaDB, cellGroup.getId(), LunaticConstants.INVALID_CELL, stepId, LunaticConstants.TYPE_INVALID, scenario);
+            saveCellGroupCell(deltaDB, cellGroup.getId(), cellGroup.getInvalidCell(), stepId, LunaticConstants.TYPE_INVALID, scenario);
         }
         for (AttributeRef attributeRef : cellGroup.getAdditionalCells().keySet()) {
             Set<CellGroupCell> additionalCells = cellGroup.getAdditionalCells().get(attributeRef);
@@ -193,7 +191,7 @@ public class OccurrenceHandlerMC {
         for (Cell cell : cellGroup.getOccurrences()) {
             this.cacheManager.removeClusterId(new CellRef(cell), stepId);
         }
-        IAlgebraOperator deleteCellGroupQuery = generateDeleteQuery(cellGroup, stepId, LunaticConstants.CELLGROUP_TABLE);
+        IAlgebraOperator deleteCellGroupQuery = CellGroupTableUtility.generateDeleteQuery(cellGroup, stepId, LunaticConstants.CELLGROUP_TABLE);
         deleteOperator.execute(LunaticConstants.CELLGROUP_TABLE, deleteCellGroupQuery, null, deltaDB);
     }
 
@@ -252,67 +250,37 @@ public class OccurrenceHandlerMC {
         insertOperator.execute(table, tuple, null, deltaDB);
     }
 
-    private IAlgebraOperator generateDeleteQuery(CellGroup cellGroup, String stepId, String tableName) {
-        TableAlias table = new TableAlias(tableName);
-        Scan scan = new Scan(table);
-        List<Expression> selections = new ArrayList<Expression>();
-        Expression stepExpression = new Expression(LunaticConstants.STEP + " == \"" + stepId + "\"");
-        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(table, LunaticConstants.STEP));
-//        Expression valueExpression = new Expression(LunaticConstants.CELL_ORIGINAL_VALUE + " == \"" + cellGroup.getCellGroupValueFromGroupID() + "\"");
-        Expression valueExpression = new Expression(LunaticConstants.GROUP_ID + " == \"" + cellGroup.getId() + "\"");
-        valueExpression.changeVariableDescription(LunaticConstants.GROUP_ID, new AttributeRef(table, LunaticConstants.GROUP_ID));
-        selections.add(stepExpression);
-        selections.add(valueExpression);
-        Select select = new Select(selections);
-        select.addChild(scan);
-        return select;
-    }
-
-    private IAlgebraOperator buildQuery(IValue value, String stepId) {
-        assert (value != null) : "Trying to build query for cell group value null...";
-        TableAlias table = new TableAlias(LunaticConstants.CELLGROUP_TABLE);
-        Scan scan = new Scan(table);
-        List<Expression> selections = new ArrayList<Expression>();
-        Expression stepExpression = new Expression("startswith(\"" + stepId + "\", " + LunaticConstants.STEP + ")");
-        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(table, LunaticConstants.STEP));
-        selections.add(stepExpression);
-        Expression valueExpression = new Expression(LunaticConstants.GROUP_ID + " == \"" + value + "\"");
-        valueExpression.changeVariableDescription(LunaticConstants.GROUP_ID, new AttributeRef(table, LunaticConstants.GROUP_ID));
-        selections.add(valueExpression);
-        Select select = new Select(selections);
-        select.addChild(scan);
-        return select;
-    }
-
-    private IAlgebraOperator buildQueryToExtractCellGroupIdsInSingleStep(String stepId) {
-        // select value from table where step
-        TableAlias table = new TableAlias(LunaticConstants.CELLGROUP_TABLE);
-        Scan tableScan = new Scan(table);
-        Expression stepExpression;
-        stepExpression = new Expression("\"" + stepId + "\" == " + LunaticConstants.STEP);
-        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(table, LunaticConstants.STEP));
-        Select stepSelect = new Select(stepExpression);
-        stepSelect.addChild(tableScan);
-        AttributeRef cellValue = new AttributeRef(table, LunaticConstants.GROUP_ID);
-        Project project = new Project(Arrays.asList(new AttributeRef[]{cellValue}));
-        project.addChild(stepSelect);
-        Distinct distinct = new Distinct();
-        distinct.addChild(project);
-        return distinct;
-    }
-
+//    private IAlgebraOperator buildQuery(IValue value, String stepId) {
+//        assert (value != null) : "Trying to build query for cell group value null...";
+//        TableAlias table = new TableAlias(LunaticConstants.CELLGROUP_TABLE);
+//        Scan scan = new Scan(table);
+//        List<Expression> selections = new ArrayList<Expression>();
+//        Expression stepExpression = new Expression("startswith(\"" + stepId + "\", " + LunaticConstants.STEP + ")");
+//        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(table, LunaticConstants.STEP));
+//        selections.add(stepExpression);
+//        Expression valueExpression = new Expression(LunaticConstants.GROUP_ID + " == \"" + value + "\"");
+//        valueExpression.changeVariableDescription(LunaticConstants.GROUP_ID, new AttributeRef(table, LunaticConstants.GROUP_ID));
+//        selections.add(valueExpression);
+//        Select select = new Select(selections);
+//        select.addChild(scan);
+//        return select;
+//    }
     /////////////////////////////////////////////////////////
     //////    DEBUGGING
     /////////////////////////////////////////////////////////
     public List<CellGroup> loadAllCellGroupsForDebugging(IDatabase deltaDB, String stepId, Scenario scenario) {
-        IAlgebraOperator query = CellGroupTableUtility.buildQueryToExtractCellGroupIds(stepId);
-        if (logger.isDebugEnabled()) logger.debug("Query for extract cell groups ids\n" + query);
-        List<CellGroup> cellGroups = loadCellGroupsFromQueryForDebugging(query, deltaDB, stepId, scenario);
-        return cellGroups;
+        cacheManager.loadCellGroups(stepId, deltaDB, scenario);
+        Set<String> keys = cacheManager.getKeySet();
+        List<CellGroup> result = new ArrayList<CellGroup>();
+        for (String key : keys) {
+            CellGroup cellGroup = cacheManager.getCellGroup(key);
+            result.add(cellGroup);
+        }
+        return result;
     }
 
     public List<CellGroup> loadAllCellGroupsInStepForDebugging(IDatabase deltaDB, String stepId, Scenario scenario) {
-        IAlgebraOperator query = buildQueryToExtractCellGroupIdsInSingleStep(stepId);
+        IAlgebraOperator query = CellGroupTableUtility.buildQueryToExtractCellGroupIdsInSingleStep(stepId);
         if (logger.isDebugEnabled()) logger.debug("Query for extract cell groups ids in step\n" + query);
         List<CellGroup> cellGroups = loadCellGroupsFromQueryForDebugging(query, deltaDB, stepId, scenario);
         return cellGroups;

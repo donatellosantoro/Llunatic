@@ -391,7 +391,7 @@ public class DBMSUtility {
 
     public static IValue convertDBMSValue(Object attributeValue) {
         IValue value;
-        if (attributeValue == null) {
+        if (attributeValue == null || attributeValue.toString().equalsIgnoreCase(LunaticConstants.NULL)) {
             value = new NullValue(LunaticConstants.NULL_VALUE);
         } else if (attributeValue.toString().startsWith(LunaticConstants.SKOLEM_PREFIX)) {
             value = new NullValue(attributeValue);

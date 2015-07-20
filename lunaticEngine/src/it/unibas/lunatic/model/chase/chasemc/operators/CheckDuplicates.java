@@ -15,12 +15,6 @@ public class CheckDuplicates {
 
     private static Logger logger = LoggerFactory.getLogger(CheckDuplicates.class);
 
-    private IRunQuery queryRunner;
-
-    public CheckDuplicates(IRunQuery queryRunner) {
-        this.queryRunner = queryRunner;
-    }
-
     public void findDuplicates(DeltaChaseStep chaseStep, Scenario scenario) {
         long start = new Date().getTime();
         if (logger.isDebugEnabled()) logger.debug("Finding duplicates for chase step: " + chaseStep.getId());

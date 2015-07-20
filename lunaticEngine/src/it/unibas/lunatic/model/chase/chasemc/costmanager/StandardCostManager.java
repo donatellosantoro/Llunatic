@@ -109,29 +109,6 @@ public class StandardCostManager extends AbstractCostManager {
         return true;
     }
 
-    protected boolean backwardIsAllowed(CellGroup cellGroup) {
-        // never change LLUNs backward L(L(x)) = L(x)            
-        if (cellGroup.getValue() instanceof LLUNValue || cellGroup.hasInvalidCell()) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on LLUN (" + cellGroup.getValue() + ") is not allowed");
-            return false;
-        }
-        // never change equal null values          
-        if (cellGroup.getValue() instanceof NullValue) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on Null (" + cellGroup.getValue() + ") is not allowed");
-            return false;
-        }
-        if (!cellGroup.getAuthoritativeJustifications().isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with authoritative justification " + cellGroup.getAuthoritativeJustifications() + " is not allowed");
-            return false;
-        }
-        if (!cellGroup.getUserCells().isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with user cell " + cellGroup.getUserCells() + " is not allowed");
-            return false;
-        }
-        if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " is allowed");
-        return true;
-    }
-
     protected Repair generateRepairWithBackwards(EquivalenceClass equivalenceClass, List<TargetCellsToChange> forwardTupleGroups, List<TargetCellsToChange> backwardTupleGroups, BackwardAttribute backwardAttribute,
             Scenario scenario, IDatabase deltaDB, String stepId) {
         Repair repair = new Repair();
@@ -143,7 +120,7 @@ public class StandardCostManager extends AbstractCostManager {
             CellGroup backwardCellGroup = backwardTupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute).clone();
             LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
             backwardCellGroup.setValue(llunValue);
-            backwardCellGroup.setInvalidCell(LunaticConstants.INVALID_CELL);
+            backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
             ChangeSet backwardChangesForGroup = new ChangeSet(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardTupleGroups));
             repair.addChanges(backwardChangesForGroup);
             if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {

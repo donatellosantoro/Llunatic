@@ -125,12 +125,12 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Set<String> getKeySet() {
+    public Set<String> getKeySet() {
         return cellGroupCache.getGroupKeys(GROUPID);
     }
 
     @Override
-    protected CellGroup getCellGroup(String key) {
+    public CellGroup getCellGroup(String key) {
         return (CellGroup) this.cellGroupCache.getFromGroup(key, GROUPID);
     }
 }

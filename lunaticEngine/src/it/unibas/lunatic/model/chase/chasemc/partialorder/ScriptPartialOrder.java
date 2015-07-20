@@ -51,11 +51,11 @@ public class ScriptPartialOrder extends StandardPartialOrder {
         IValue standardValue = super.generalizeNonAuthoritativeConstantCells(nonAuthoritativeCells, cellGroup, scenario);
         try {
             Invocable invocableEngine = (Invocable) jsEngine;
-            return (IValue) invocableEngine.invokeFunction("generalizeNonAuthoritativeCells", nonAuthoritativeCells, cellGroup, standardValue, scenario);
+            return (IValue) invocableEngine.invokeFunction("generalizeNonAuthoritativeConstantCells", nonAuthoritativeCells, cellGroup, standardValue, scenario);
         } catch (ScriptException ex) {
             throw new PartialOrderException("Unable to compare cells. " + ex);
         } catch (NoSuchMethodException ex) {
-            throw new PartialOrderException("Partial order script must implement generalizeNonAuthoritativeCells(nonAuthoritativeCells, cellGroup, standardValue, scenario) " + ex);
+            throw new PartialOrderException("Partial order script must implement generalizeNonAuthoritativeConstantCells(nonAuthoritativeCells, cellGroup, standardValue, scenario) " + ex);
         }
     }
 

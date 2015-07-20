@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.database.AttributeRef;
@@ -14,20 +13,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class MergeCellGroup {
+public class FindOriginalValuesForCellGroupCells {
 
-    public CellGroup mergeCells(List<CellGroup> cellGroupsToMerge, IValue value) {
+    public CellGroup findOriginalValues(List<CellGroup> cellGroupsToMerge, IValue value) {
         Map<CellRef, List<CellGroupCell>> occurrenceMap = new HashMap<CellRef, List<CellGroupCell>>();
         Map<CellRef, List<CellGroupCell>> justificationMap = new HashMap<CellRef, List<CellGroupCell>>();
         Map<AttributeRef, Map<CellRef, List<CellGroupCell>>> additionalMap = new HashMap<AttributeRef, Map<CellRef, List<CellGroupCell>>>();
         Set<CellGroupCell> userCells = new HashSet<CellGroupCell>();
-        boolean haveInvalidCell = false;
+        CellGroupCell invalidCell = null;
         for (CellGroup cellGroup : cellGroupsToMerge) {
             addCellGroupCells(occurrenceMap, cellGroup.getOccurrences());
             addCellGroupCells(justificationMap, cellGroup.getJustifications());
             userCells.addAll(cellGroup.getUserCells());
-            if (cellGroup.hasInvalidCell()) {
-                haveInvalidCell = true;
+            if (cellGroup.hasInvalidCell() && invalidCell == null) {
+                invalidCell = cellGroup.getInvalidCell();
             }
             for (AttributeRef additionalAttribute : cellGroup.getAdditionalCells().keySet()) {
                 Map<CellRef, List<CellGroupCell>> additionalAttributeMap = getOrCreateAdditionalMap(additionalAttribute, additionalMap);
@@ -41,9 +40,7 @@ public class MergeCellGroup {
         result.setOccurrences(occurrences);
         result.setJustifications(justifications);
         result.setUserCells(userCells);
-        if (haveInvalidCell) {
-            result.setInvalidCell(LunaticConstants.INVALID_CELL);
-        }
+        result.setInvalidCell(invalidCell);
         for (AttributeRef additionalAttribute : additionalMap.keySet()) {
             additionalCells.put(additionalAttribute, mergeCellGroupCells(additionalMap.get(additionalAttribute)));
         }
@@ -85,7 +82,6 @@ public class MergeCellGroup {
         String type = firstCell.getType();
         IValue originalValue = firstCell.getOriginalValue();
         IValue originalCellGroupId = firstCell.getOriginalCellGroupId();
-//        Boolean toSave = firstCell.isToSave();
         for (int i = 1; i < cells.size(); i++) {
             CellGroupCell cell = cells.get(i);
             if (cell.getOriginalValue() != null) {
@@ -94,13 +90,7 @@ public class MergeCellGroup {
             if (cell.getOriginalCellGroupId() != null) {
                 originalCellGroupId = cell.getOriginalCellGroupId();
             }
-//            if (cell.isToSave() != null) {
-//                toSave = cell.isToSave();
-//            }
         }
-//        if (toSave == null) {
-//            toSave = true;
-//        }
         if (originalValue == null) {
             originalValue = value;
         }

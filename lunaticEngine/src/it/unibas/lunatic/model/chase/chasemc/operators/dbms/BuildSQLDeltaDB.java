@@ -216,7 +216,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
 
     private String createInsertPart(String deltaDBSchema, String tableName, String attributeName, String indent) {
         StringBuilder result = new StringBuilder();
-        result.append(indent).append("NEW.").append(LunaticConstants.CELL_ORIGINAL_VALUE).append(" = NEW.").append(attributeName).append(";\n");
+//        result.append(indent).append("NEW.").append(LunaticConstants.CELL_ORIGINAL_VALUE).append(" = NEW.").append(attributeName).append(";\n");
         //If is NULL or LLUN and the cluster id is not defined, copy its value as cluster id
 //        result.append(indent).append("IF NEW.").append(LunaticConstants.GROUP_ID).append(" IS NULL AND ");
         String longIndent = indent + LunaticConstants.INDENT;

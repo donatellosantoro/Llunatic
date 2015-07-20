@@ -12,7 +12,6 @@ import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.CellCo
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.IValueComparator;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -66,6 +65,9 @@ public class StandardPartialOrder implements IPartialOrder {
         correctToSaveInCells(lubCellGroup.getOccurrences(), mostFrequentCellGroupId, lubCellGroup.getId());
         correctToSaveInCells(lubCellGroup.getJustifications(), mostFrequentCellGroupId, lubCellGroup.getId());
         correctToSaveInCells(lubCellGroup.getUserCells(), mostFrequentCellGroupId, lubCellGroup.getId());
+        if (lubCellGroup.hasInvalidCell()) {
+            correctToSaveInCell(lubCellGroup.getInvalidCell(), mostFrequentCellGroupId, lubCellGroup.getId());
+        }
         for (AttributeRef attributeRef : lubCellGroup.getAdditionalCells().keySet()) {
             Set<CellGroupCell> additionalCells = lubCellGroup.getAdditionalCells().get(attributeRef);
             correctToSaveInCells(additionalCells, mostFrequentCellGroupId, lubCellGroup.getId());
@@ -74,17 +76,21 @@ public class StandardPartialOrder implements IPartialOrder {
 
     private void correctToSaveInCells(Set<CellGroupCell> cells, IValue mostFrequentCellGroupId, IValue lubCellGroupId) {
         for (CellGroupCell cell : cells) {
-            if (mostFrequentCellGroupId != null) {
-                if (cell.getOriginalCellGroupId() != null && cell.getOriginalCellGroupId().equals(mostFrequentCellGroupId)) {
-                    cell.setToSave(false);
-                } else {
-                    cell.setToSave(true);
-                    cell.setOriginalCellGroupId(mostFrequentCellGroupId);
-                }
+            correctToSaveInCell(cell, mostFrequentCellGroupId, lubCellGroupId);
+        }
+    }
+
+    private void correctToSaveInCell(CellGroupCell cell, IValue mostFrequentCellGroupId, IValue lubCellGroupId) {
+        if (mostFrequentCellGroupId != null) {
+            if (cell.getOriginalCellGroupId() != null && cell.getOriginalCellGroupId().equals(mostFrequentCellGroupId)) {
+                cell.setToSave(false);
             } else {
                 cell.setToSave(true);
-                cell.setOriginalCellGroupId(lubCellGroupId);
+                cell.setOriginalCellGroupId(mostFrequentCellGroupId);
             }
+        } else {
+            cell.setToSave(true);
+            cell.setOriginalCellGroupId(lubCellGroupId);
         }
     }
 
@@ -92,8 +98,8 @@ public class StandardPartialOrder implements IPartialOrder {
         dest.getOccurrences().addAll(source.getOccurrences());
         dest.getJustifications().addAll(source.getJustifications());
         dest.getUserCells().addAll(source.getUserCells());
-        if (source.hasInvalidCell()) {
-            dest.setInvalidCell(LunaticConstants.INVALID_CELL);
+        if (source.hasInvalidCell() && !dest.hasInvalidCell()) {
+            dest.setInvalidCell(source.getInvalidCell());
         }
         dest.addAllAdditionalCells(source.getAdditionalCells());
     }

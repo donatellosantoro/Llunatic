@@ -24,8 +24,8 @@ public class TestSynthetic01 extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
 //        Assert.assertEquals(16, resultSizer.getSolutions(result));
-        Assert.assertEquals(9, resultSizer.getSolutions(result));
-        Assert.assertEquals(7, resultSizer.getDuplicates(result));
+        Assert.assertEquals(10, resultSizer.getSolutions(result));
+        Assert.assertEquals(6, resultSizer.getDuplicates(result));
         checkSolutions(result);
     }
 }

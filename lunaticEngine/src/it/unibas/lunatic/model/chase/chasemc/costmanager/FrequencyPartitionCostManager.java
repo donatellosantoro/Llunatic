@@ -126,7 +126,7 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
                 forwardGroups.addAll(lowFrequencyGroups);
                 List<TargetCellsToChange> backwardGroups = new ArrayList<TargetCellsToChange>();
                 CellGroup cellGroup = lowFrequencyGroup.getCellGroupsForBackwardRepairs().get(premiseAttribute);
-                if (backwardIsAllowed(cellGroup, occurrenceHandler, deltaDB, stepId)) {
+                if (backwardIsAllowed(cellGroup)) {
                     backwardGroups.add(lowFrequencyGroup);
                     forwardGroups.remove(lowFrequencyGroup);
                 }
@@ -140,25 +140,6 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
         return result;
     }
 
-    private boolean backwardIsAllowed(CellGroup cellGroup, OccurrenceHandlerMC occurrenceHandler, IDatabase deltaDB, String stepId) {
-        // never change LLUNs backward L(L(x)) = L(x)            
-        if (cellGroup.getValue() instanceof LLUNValue) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on LLUN (" + cellGroup.getValue() + ") is not allowed");
-            return false;
-        }
-        // never change equal null values          
-        if (cellGroup.getValue() instanceof NullValue) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on Null (" + cellGroup.getValue() + ") is not allowed");
-            return false;
-        }
-        if (!cellGroup.getJustifications().isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with provenance " + cellGroup.getJustifications() + " is not allowed");
-            return false;
-        }
-        if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " is allowed");
-        return true;
-    }
-
     private Repair generateRepairWithBackwards(EquivalenceClass equivalenceClass, List<TargetCellsToChange> forwardGroups, List<TargetCellsToChange> backwardGroups, BackwardAttribute premiseAttribute,
             Scenario scenario, IDatabase deltaDB, String stepId) {
         Repair repair = new Repair();
@@ -166,15 +147,12 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
             ChangeSet forwardChanges = generateForwardRepair(forwardGroups, scenario, deltaDB, stepId);
             repair.addChanges(forwardChanges);
         }
-        for (TargetCellsToChange backwardGroup : backwardGroups) {
-            CellGroup cellGroup = backwardGroup.getCellGroupsForBackwardRepairs().get(premiseAttribute);
-//            int llunId = ChaseUtility.generateLLUNId(cellGroup);
-//            LLUNValue llunValue = new LLUNValue(LunaticConstants.LLUN_PREFIX + LunaticConstants.CHASE_BACKWARD + llunId);
+        for (TargetCellsToChange backwardTupleGroup : backwardGroups) {
+            CellGroup backwardCellGroup = backwardTupleGroup.getCellGroupsForBackwardRepairs().get(premiseAttribute).clone();
             LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
-            CellGroup cellsTochange = new CellGroup(llunValue, true);
-            cellsTochange.getOccurrences().addAll(cellGroup.getOccurrences());
-            ChangeSet backwardChangesForGroup = new ChangeSet(cellsTochange, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardGroups));
-//            ChangeSet backwardChangesForGroup = new ChangeSet(cellsTochange, LunaticConstants.CHASE_BACKWARD, premiseAttribute);
+            backwardCellGroup.setValue(llunValue);
+            backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
+            ChangeSet backwardChangesForGroup = new ChangeSet(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardGroups));
             repair.addChanges(backwardChangesForGroup);
         }
         return repair;

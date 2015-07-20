@@ -47,10 +47,7 @@ public class ChangeCell {
             if (cell.isToSave() != null && !cell.isToSave()) {
                 continue;
             }
-            String tableName = cell.getAttributeRef().getTableName();
-            String attributeName = cell.getAttributeRef().getName();
-            TupleOID tid = cell.getTupleOID();
-            insertNewValue(tableName, attributeName, tid, stepId, newValue, groupID, deltaDB);
+            insertNewValue(cell, stepId, newValue, groupID, deltaDB);
         }
         if (logger.isDebugEnabled()) logger.debug("New target: " + deltaDB.printInstances());
     }
@@ -67,10 +64,14 @@ public class ChangeCell {
         if (logger.isDebugEnabled()) logger.debug("New target: " + deltaDB.printInstances());
     }
 
-    private void insertNewValue(String tableName, String attributeName, TupleOID tid, String stepId, IValue newValue, IValue groupID, IDatabase deltaDB) {
+    private void insertNewValue(CellGroupCell cell, String stepId, IValue newValue, IValue groupID, IDatabase deltaDB) {
+        String tableName = cell.getAttributeRef().getTableName();
+        String attributeName = cell.getAttributeRef().getName();
+        TupleOID tid = cell.getTupleOID();
+        IValue originalValue = cell.getOriginalValue();
         if (logger.isDebugEnabled()) logger.debug("Inserting new value in TableName: " + tableName + " AttributeName: " + attributeName);
         String deltaTableName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
-        Tuple tupleToInsert = ChaseUtility.buildTuple(tid, stepId, newValue, groupID, tableName, attributeName);
+        Tuple tupleToInsert = ChaseUtility.buildTuple(tid, stepId, newValue, originalValue, groupID, tableName, attributeName);
         insertOperator.execute(deltaDB.getTable(deltaTableName), tupleToInsert, null, deltaDB);
 //        occurrenceHandler.handleNewTuple(tupleToInsert, occurrenceValue, deltaDB, tableName, attributeName);
     }

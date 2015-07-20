@@ -31,7 +31,7 @@ public class AddUserNode {
             throw new IllegalArgumentException("Changes are allowed only into nodes edited by user");
         }
         CellGroup newCellGroup = cellGroup.clone();
-        CellGroupCell userCell = new CellGroupCell(LunaticConstants.USER_CELL_REF, newValue, newValue, LunaticConstants.TYPE_USER, true);
+        CellGroupCell userCell = CellGroupIDGenerator.getNextUserCell(newValue);
         newCellGroup.addUserCell(userCell);
         IPartialOrder po = scenario.getPartialOrder();
         po.setCellGroupValue(newCellGroup, scenario);

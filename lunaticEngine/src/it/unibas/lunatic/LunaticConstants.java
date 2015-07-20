@@ -1,12 +1,8 @@
 package it.unibas.lunatic;
 
-import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.TupleOID;
 
 public class LunaticConstants {
 
@@ -50,7 +46,7 @@ public class LunaticConstants {
     public static final String DELTA_TABLE_SEPARATOR = "__";
     public static final String NA_TABLE_SUFFIX = DELTA_TABLE_SEPARATOR + "NA";
 
-    public static String CELLGROUP_TABLE = "CellGroup";
+    public static String CELLGROUP_TABLE = "cellgroup_table";
 //    public static String OCCURRENCE_TABLE = "OccurrenceTable";
 //    public static String PROVENANCE_TABLE = "ProvenanceTable";
 
@@ -100,13 +96,14 @@ public class LunaticConstants {
 
     // NULL OBJECTS
     public static final AttributeRef NULL_ATTRIBUTE_REF = new AttributeRef("_NullTable_", "_NullAttribute_");
-    public static final TupleOID NULL_TUPLE_ID = new TupleOID("_NullTupleOID_");
-    public static final CellRef NULL_CELL_REF = new CellRef(NULL_TUPLE_ID, NULL_ATTRIBUTE_REF);
-    public static final TupleOID USER_TUPLE_ID = new TupleOID("_UserupleOID_");
+    public static final AttributeRef INVALID_ATTRIBUTE_REF = new AttributeRef("_InvalidTable_", "_InvalidAttribute_");
     public static final AttributeRef USER_ATTRIBUTE_REF = new AttributeRef("_User_", "_User_");
-    public static final CellRef USER_CELL_REF = new CellRef(USER_TUPLE_ID, USER_ATTRIBUTE_REF);
     public static final IValue BOTTOM_VALUE = new ConstantValue("_BottomValue_");
-    public static final CellGroupCell INVALID_CELL = new CellGroupCell(NULL_CELL_REF, BOTTOM_VALUE, BOTTOM_VALUE, LunaticConstants.TYPE_INVALID, true);
     public static final IValue NULL_IVALUE = new ConstantValue(NULL_VALUE);
+//    public static final TupleOID NULL_TUPLE_ID = new TupleOID(0);
+//    public static final CellRef INVALID_CELL_REF = new CellRef(NULL_TUPLE_ID, INVALID_ATTRIBUTE_REF);
+//    public static final TupleOID USER_TUPLE_ID = new TupleOID("_UserupleOID_");
+//    public static final CellRef USER_CELL_REF = new CellRef(USER_TUPLE_ID, USER_ATTRIBUTE_REF);
+//    public static final CellGroupCell INVALID_CELL = new CellGroupCell(INVALID_CELL_REF, BOTTOM_VALUE, BOTTOM_VALUE, LunaticConstants.TYPE_INVALID, true);
 
 }

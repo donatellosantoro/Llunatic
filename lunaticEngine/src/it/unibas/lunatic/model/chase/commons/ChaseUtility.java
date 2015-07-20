@@ -92,13 +92,14 @@ public class ChaseUtility {
         return select;
     }
 
-    public static Tuple buildTuple(TupleOID tid, String stepId, IValue newValue, IValue groupID, String deltaTableName, String attributeName) {
+    public static Tuple buildTuple(TupleOID tid, String stepId, IValue newValue, IValue originalValue, IValue groupID, String deltaTableName, String attributeName) {
         TupleOID oid = new TupleOID(IntegerOIDGenerator.getNextOID());
         Tuple tuple = new Tuple(oid);
         tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, LunaticConstants.TID), new ConstantValue(tid)));
         tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, LunaticConstants.STEP), new ConstantValue(stepId)));
         tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, attributeName), newValue));
         tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, LunaticConstants.GROUP_ID), groupID));
+        tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, LunaticConstants.CELL_ORIGINAL_VALUE), originalValue));
         return tuple;
     }
 
@@ -167,12 +168,12 @@ public class ChaseUtility {
     }
 
     public static AttributeRef unAlias(AttributeRef attribute) {
-        TableAlias unaliasedTable = new TableAlias(attribute.getTableName(), attribute.getTableAlias().isSource(),attribute.isAuthoritative());
+        TableAlias unaliasedTable = new TableAlias(attribute.getTableName(), attribute.getTableAlias().isSource(), attribute.isAuthoritative());
         return new AttributeRef(unaliasedTable, attribute.getName());
     }
 
     public static TableAlias unAlias(TableAlias alias) {
-        TableAlias unaliasedTable = new TableAlias(alias.getTableName(), alias.isSource(),alias.isAuthoritative());
+        TableAlias unaliasedTable = new TableAlias(alias.getTableName(), alias.isSource(), alias.isAuthoritative());
         return unaliasedTable;
     }
 

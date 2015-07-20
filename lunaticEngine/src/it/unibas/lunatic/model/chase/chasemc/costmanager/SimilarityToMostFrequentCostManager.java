@@ -136,18 +136,15 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         }
         for (TargetCellsToChange backwardGroup : backwardGroups) {
             for (BackwardAttribute backwardAttribute : backwardGroup.getCellGroupsForBackwardRepairs().keySet()) {
-                CellGroup cellGroup = backwardGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute);
-                if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(cellGroup, backwardAttribute, equivalenceClass)) {
+                CellGroup backwardCellGroup = backwardGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute).clone();
+                LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
+                backwardCellGroup.setValue(llunValue);
+                backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
+                ChangeSet backwardChangesForGroup = new ChangeSet(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardGroups));
+                repair.addChanges(backwardChangesForGroup);
+                if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {
                     backwardGroup.setSuspicious(true);
                 }
-//                int llunId = ChaseUtility.generateLLUNId(cellGroup);
-//                LLUNValue llunValue = new LLUNValue(LunaticConstants.LLUN_PREFIX + LunaticConstants.CHASE_BACKWARD + llunId);
-                LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
-                CellGroup cellsTochange = new CellGroup(llunValue, true);
-                cellsTochange.getOccurrences().addAll(cellGroup.getOccurrences());
-                ChangeSet backwardChangesForGroup = new ChangeSet(cellsTochange, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardGroups));
-//            ChangeSet backwardChangesForGroup = new ChangeSet(cellsTochange, LunaticConstants.CHASE_BACKWARD, premiseAttribute);
-                repair.addChanges(backwardChangesForGroup);
             }
         }
         if (repair.getChanges().isEmpty()) {
@@ -167,14 +164,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
     private boolean canDoBackward(TargetCellsToChange tupleGroup) {
         for (BackwardAttribute premiseAttribute : tupleGroup.getCellGroupsForBackwardRepairs().keySet()) {
             CellGroup cellGroup = tupleGroup.getCellGroupsForBackwardRepairs().get(premiseAttribute);
-            if (cellGroup.getValue() instanceof LLUNValue) {
-                return false;
-            }
-            // never change equal null values          
-            if (cellGroup.getValue() instanceof NullValue) {
-                return false;
-            }
-            if (!cellGroup.getJustifications().isEmpty()) {
+            if (!backwardIsAllowed(cellGroup)) {
                 return false;
             }
         }

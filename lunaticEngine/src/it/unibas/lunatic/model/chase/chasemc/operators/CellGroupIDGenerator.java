@@ -1,10 +1,13 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
 import it.unibas.lunatic.model.database.NullValue;
+import it.unibas.lunatic.model.database.TupleOID;
+import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +20,7 @@ public class CellGroupIDGenerator {
     public static void resetCounter() {
         counter = 0L;
     }
-        
+
     public static IValue generateNewId(IValue value) {
         if (value instanceof NullValue || value instanceof LLUNValue) {
             return value;
@@ -28,6 +31,14 @@ public class CellGroupIDGenerator {
 
     public static LLUNValue getNextLLUNID() {
         return new LLUNValue(LunaticConstants.LLUN_PREFIX + (counter++));
+    }
+
+    public static CellGroupCell getNextInvalidCell() {
+        return new CellGroupCell(new TupleOID(IntegerOIDGenerator.getNextOID()), LunaticConstants.INVALID_ATTRIBUTE_REF, LunaticConstants.BOTTOM_VALUE, LunaticConstants.BOTTOM_VALUE, LunaticConstants.TYPE_INVALID, true);
+    }
+
+    public static CellGroupCell getNextUserCell(IValue value) {
+        return new CellGroupCell(new TupleOID(IntegerOIDGenerator.getNextOID()), LunaticConstants.USER_ATTRIBUTE_REF, value, value, LunaticConstants.TYPE_USER, true);
     }
 
     public static IValue getCellGroupValueFromGroupID(IValue cellGroupId) {

@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.database;
 
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import java.io.Serializable;
 
 public class Cell implements Serializable, Cloneable {
@@ -11,7 +10,10 @@ public class Cell implements Serializable, Cloneable {
     private IValue value;
 
     public Cell(TupleOID tupleOid, AttributeRef attributeRef, IValue value) {
-        assert (value == null || attributeRef.getTableName().equals(LunaticConstants.CELLGROUP_TABLE) ||  attributeRef.getName().equals(LunaticConstants.GROUP_ID) || !value.toString().contains(LunaticConstants.VALUE_LABEL)) : "Trying to build a cell group with id in place of value: " + value;
+        assert (value == null || attributeRef.getTableName() == null || 
+                attributeRef.getTableName().equalsIgnoreCase(LunaticConstants.CELLGROUP_TABLE) ||  
+                attributeRef.getName().equalsIgnoreCase(LunaticConstants.GROUP_ID) || 
+                !value.toString().contains(LunaticConstants.VALUE_LABEL)) : "Trying to build a cell group with id in place of value: " + value + " on table " + attributeRef;
         this.tupleOid = tupleOid;
         this.attributeRef = attributeRef;
         this.value = value;

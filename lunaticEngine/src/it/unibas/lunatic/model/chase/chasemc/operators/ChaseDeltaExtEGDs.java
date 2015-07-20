@@ -38,7 +38,7 @@ public class ChaseDeltaExtEGDs {
             IInsertTuple insertOperator, IDelete deleteOperator, OccurrenceHandlerMC occurrenceHandler, CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker) {
         this.databaseBuilder = stepBuilder;
         this.cellChanger = new ChangeCell(insertOperator, deleteOperator, occurrenceHandler);
-        this.duplicateChecker = new CheckDuplicates(queryRunner);
+        this.duplicateChecker = new CheckDuplicates();
         this.dependencyChaser = new ChaseEGDEquivalenceClass(queryRunner, occurrenceHandler, databaseBuilder, cellChanger);
         this.unsatisfiedDependenciesChecker = new CheckUnsatisfiedDependencies(databaseBuilder, occurrenceHandler, queryRunner);
         this.occurrenceHandler = occurrenceHandler;

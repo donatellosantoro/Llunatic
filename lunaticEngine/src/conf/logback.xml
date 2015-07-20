@@ -2,7 +2,8 @@
 <configuration>
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d %-5p %c %n%m%n</pattern>
+            <!--<pattern>%d %-5p %c %n%m%n</pattern>-->
+            <pattern>%gray(%highlight(%-5level %logger{15})) - %msg %n</pattern>
         </encoder>
     </appender>
     <appender name="file" class="ch.qos.logback.core.FileAppender">

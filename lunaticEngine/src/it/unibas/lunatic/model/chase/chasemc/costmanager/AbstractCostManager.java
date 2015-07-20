@@ -28,6 +28,8 @@ import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
+import it.unibas.lunatic.model.database.LLUNValue;
+import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
@@ -97,7 +99,6 @@ public abstract class AbstractCostManager implements ICostManager {
 //        }
 //        return false;
 //    }
-
     protected Set<IValue> findDifferentValuesInCellGroupsWithOccurrences(List<CellGroup> cellGroups) {
         Set<IValue> result = new HashSet<IValue>();
         for (CellGroup cellGroup : cellGroups) {
@@ -222,6 +223,29 @@ public abstract class AbstractCostManager implements ICostManager {
         }
         if (logger.isDebugEnabled()) logger.debug("To chase: " + LunaticUtility.printDependencyIds(result));
         return result;
+    }
+
+    protected boolean backwardIsAllowed(CellGroup cellGroup) {
+        // never change LLUNs backward L(L(x)) = L(x)            
+        if (cellGroup.getValue() instanceof LLUNValue || cellGroup.hasInvalidCell()) {
+            if (logger.isDebugEnabled()) logger.debug("Backward on LLUN (" + cellGroup.getValue() + ") is not allowed");
+            return false;
+        }
+        // never change equal null values          
+        if (cellGroup.getValue() instanceof NullValue) {
+            if (logger.isDebugEnabled()) logger.debug("Backward on Null (" + cellGroup.getValue() + ") is not allowed");
+            return false;
+        }
+        if (!cellGroup.getAuthoritativeJustifications().isEmpty()) {
+            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with authoritative justification " + cellGroup.getAuthoritativeJustifications() + " is not allowed");
+            return false;
+        }
+        if (!cellGroup.getUserCells().isEmpty()) {
+            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with user cell " + cellGroup.getUserCells() + " is not allowed");
+            return false;
+        }
+        if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " is allowed");
+        return true;
     }
 
     public boolean isDoBackward() {
