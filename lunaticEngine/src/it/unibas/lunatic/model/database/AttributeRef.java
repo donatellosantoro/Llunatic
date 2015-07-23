@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.database;
 
-import it.unibas.lunatic.Scenario;
 import java.io.Serializable;
 
 public class AttributeRef implements Serializable, Cloneable {

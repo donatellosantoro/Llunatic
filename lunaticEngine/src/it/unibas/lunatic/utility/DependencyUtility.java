@@ -11,6 +11,7 @@ import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormula;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
+import it.unibas.lunatic.model.dependency.operators.FindSourceAtoms;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -171,5 +172,10 @@ public class DependencyUtility {
             }
         }
         return targetJoinAttributes;
+    }
+
+    public static boolean hasSourceSymbols(Dependency dependency) {
+        FindSourceAtoms sourceAtomFinder = new FindSourceAtoms();
+        return sourceAtomFinder.hasSourceAtoms(dependency);
     }
 }

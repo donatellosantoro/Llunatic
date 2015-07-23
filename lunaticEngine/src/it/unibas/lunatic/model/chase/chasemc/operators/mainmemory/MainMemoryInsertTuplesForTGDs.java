@@ -61,6 +61,7 @@ public class MainMemoryInsertTuplesForTGDs implements IInsertTuplesForTGDs {
         ITupleIterator it = queryRunner.run(violationQuery, scenario.getSource(), databaseForStep);
         //3. Perform inserts
         boolean insertedTuple = it.hasNext();
+        //TODO?? Satisfaction after upgrades with source symbols?
         while (it.hasNext()) {
 //            Map<NullValue, CellGroup> cellGroupsForNull = new HashMap<NullValue, CellGroup>();
             Tuple premiseTuple = it.next();
@@ -77,7 +78,7 @@ public class MainMemoryInsertTuplesForTGDs implements IInsertTuplesForTGDs {
                     String deltaTableName = ChaseUtility.getDeltaRelationName(table.getName(), attribute.getName());
                     if (logger.isDebugEnabled()) logger.debug("----Inserting into delta table: " + deltaTableName);
                     IValue attributeValue = computeValue(tableAlias, attribute, targetGenerators, premiseTuple);
-                    Tuple targetTuple = buildTargetTuple(deltaTableName, newTupleOID, attribute.getName(), attributeValue, currentNode.getId());
+                    Tuple targetTuple = buildTargetTupleForDeltaDB(deltaTableName, newTupleOID, attribute.getName(), attributeValue, currentNode.getId());
                     if (logger.isDebugEnabled()) logger.debug("----Target tuple: " + targetTuple);
                     ITable deltaTable = currentNode.getDeltaDB().getTable(deltaTableName);
                     insertOperator.execute(deltaTable, targetTuple, scenario.getSource(), scenario.getTarget());
@@ -112,7 +113,7 @@ public class MainMemoryInsertTuplesForTGDs implements IInsertTuplesForTGDs {
         return generator.generateValue(sourceTuple);
     }
 
-    private Tuple buildTargetTuple(String deltaTableName, TupleOID newTupleOID, String attributeName, IValue attributeValue, String id) {
+    private Tuple buildTargetTupleForDeltaDB(String deltaTableName, TupleOID newTupleOID, String attributeName, IValue attributeValue, String id) {
         TupleOID tupleOID = new TupleOID(IntegerOIDGenerator.getNextOID());
         Tuple tuple = new Tuple(tupleOID);
         Cell tidCell = new Cell(tupleOID, new AttributeRef(deltaTableName, LunaticConstants.TID), new ConstantValue(newTupleOID));

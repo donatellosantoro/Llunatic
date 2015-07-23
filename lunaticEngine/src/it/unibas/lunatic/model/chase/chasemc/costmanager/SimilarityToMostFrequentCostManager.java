@@ -21,6 +21,7 @@ import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
 import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
+import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +49,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         List<TargetCellsToChange> tupleGroups = equivalenceClass.getTupleGroups();
         Collections.sort(tupleGroups, new TupleGroupComparator());
         Collections.reverse(tupleGroups);
-        if (isNotViolation(tupleGroups, scenario)) {
+        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getDependency()) && isNotViolation(tupleGroups, scenario)) {
             if (logger.isDebugEnabled()) logger.debug("No violations... Returning empty list");
             return Collections.EMPTY_LIST;
         }
