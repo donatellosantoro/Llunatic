@@ -50,6 +50,7 @@
 
     <!--     CHASE MC     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.AbstractCostManager" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityToMostFrequentCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility" level="TRACE"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario" level="DEBUG"/>-->

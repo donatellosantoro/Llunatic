@@ -90,6 +90,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 IAlgebraOperator tgdQuery = tgdTreeMap.get(eTgd);
                 if (logger.isDebugEnabled()) logger.debug("----TGD Query: " + tgdQuery);
                 IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), eTgd);
+                //TODO++ Uniform by materializing violations in mainmemory
                 Set<TGDViolation> tgdViolations = cellGroupMantainer.extractViolationValues(eTgd, tgdQuery, databaseForStep, scenario);
                 long start = new Date().getTime();
                 boolean insertedTuples = insertTuples.execute(tgdQuery, newStep, eTgd, scenario, databaseForStep);

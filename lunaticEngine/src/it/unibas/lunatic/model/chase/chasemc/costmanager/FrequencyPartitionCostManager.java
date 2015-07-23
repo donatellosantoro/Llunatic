@@ -16,7 +16,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.LLUNValue;
-import it.unibas.lunatic.model.database.NullValue;
+import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +41,7 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
         }
         if (logger.isDebugEnabled()) logger.debug("########?Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<TargetCellsToChange> tupleGroups = equivalenceClass.getTupleGroups();
-        if (isNotViolation(tupleGroups, scenario)) {
+        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getDependency()) && isNotViolation(tupleGroups, scenario)) {
             return Collections.EMPTY_LIST;
         }
         List<Repair> result = new ArrayList<Repair>();

@@ -31,10 +31,10 @@ ExtEGDs:
 //FD: A -> B 
 fd1: r(a: $a, b: $b1), r(a: $a, b: $b2) -> $b1 == $b2.
 
-//CFD: R['a'] -> R['v1']
+//CFD: R['a'] -> R['14']
 cfd1: r(a: $a, b: $b1), cst1(a: $a, b: $b2) -> $b1 == $b2.
 
-//CFD: R['a'] -> R['v2']
+//CFD: R['a'] -> R['13']
 cfd2: r(a: $a, b: $b1), cst2(a: $a, b: $b2) -> $b1 == $b2.
 
 ]]>
@@ -43,6 +43,7 @@ cfd2: r(a: $a, b: $b1), cst2(a: $a, b: $b2) -> $b1 == $b2.
     <source>cst1</source>
     <source>cst2</source>
   </authoritativeSources>
+  <!--
   <orderingAttributes>
     <orderingAttribute>
       <attribute>r.b</attribute>
@@ -52,6 +53,7 @@ cfd2: r(a: $a, b: $b1), cst2(a: $a, b: $b2) -> $b1 == $b2.
       </valueComparator>
     </orderingAttribute> 
   </orderingAttributes>
+-->
   <configuration>
       <removeDuplicates>false</removeDuplicates>
   </configuration>

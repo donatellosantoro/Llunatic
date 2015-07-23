@@ -14,7 +14,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.LLUNValue;
-import it.unibas.lunatic.model.database.NullValue;
+import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.utility.combinatorial.GenericPowersetGenerator;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class StandardCostManager extends AbstractCostManager {
         if (logger.isDebugEnabled()) logger.debug("########Current node: " + chaseTreeRoot.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("########Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<TargetCellsToChange> tupleGroupsWithSameConclusionValue = equivalenceClass.getTupleGroups();
-        if (isNotViolation(tupleGroupsWithSameConclusionValue, scenario)) {
+        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getDependency()) && isNotViolation(tupleGroupsWithSameConclusionValue, scenario)) {
             return Collections.EMPTY_LIST;
         }
         List<Repair> result = new ArrayList<Repair>();

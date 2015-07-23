@@ -14,6 +14,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
+import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +46,7 @@ public class SamplingCostManager extends StandardCostManager {
         if (logger.isDebugEnabled()) logger.debug("########Current node: " + chaseTreeRoot.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("########Sampling repair strategy for equivalence class: " + equivalenceClass);
         List<TargetCellsToChange> tupleGroupsWithSameConclusionValue = equivalenceClass.getTupleGroups();
-        if (isNotViolation(tupleGroupsWithSameConclusionValue, scenario)) {
+        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getDependency()) && isNotViolation(tupleGroupsWithSameConclusionValue, scenario)) {
             return Collections.EMPTY_LIST;
         }
         while (true) {
