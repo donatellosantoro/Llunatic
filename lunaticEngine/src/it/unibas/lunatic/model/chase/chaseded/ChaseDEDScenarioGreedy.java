@@ -13,7 +13,7 @@ import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.DED;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.FindTargetGenerators;
-import it.unibas.lunatic.model.dependency.operators.NormalizeDependency;
+import it.unibas.lunatic.model.dependency.operators.NormalizeConclusionsInTGDs;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.utility.combinatorial.GenericListGenerator;
 import java.util.ArrayList;
@@ -117,7 +117,7 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
 
     private List<Dependency> processDEDTGDs(Scenario scenario, GreedyDEDScenario dedScenario) {
         FindTargetGenerators generatorFinder = new FindTargetGenerators();
-        NormalizeDependency dependencyNormalizer = new NormalizeDependency();
+        NormalizeConclusionsInTGDs dependencyNormalizer = new NormalizeConclusionsInTGDs();
         List<Dependency> newExtTGDs = new ArrayList<Dependency>();
         for (DED ded : scenario.getDEDextTGDs()) {
             newExtTGDs.add(dedScenario.getDependencyForDED(ded));

@@ -779,8 +779,13 @@ public class JEP implements Cloneable {
         return parser;
     }
 
+    @Override
     public String toString() {
         return new ExpressionToString().toString(this);
+    }
+
+    public String toVariableDelimitedString() {
+        return new ExpressionToString().toVariableDelimitedString(this);
     }
 
     public String toSQLString() {

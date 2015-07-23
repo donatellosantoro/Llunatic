@@ -208,7 +208,7 @@ public class SymbolTable implements Cloneable {
         return map.containsKey(identString);
     }
 
-    Object remove(String name) {
+    public Object remove(String name) {
         return map.remove(name);
     }
 

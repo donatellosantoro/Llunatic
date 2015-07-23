@@ -13,7 +13,6 @@ import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
-import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -118,7 +117,7 @@ public class BuildExtendedDependencies {
             }
             ComparisonAtom comparison = (ComparisonAtom) atom;
             if (comparison.getVariables().size() != 2) {
-                throw new ChaseException("Unable to handle extended egd: constants appear in conclusion;  " + dependency);
+                throw new ChaseException("Unable to handle extended egd: constants appear in conclusion; \n" + dependency.toLongString() + "\n - Comparison atom: " + comparison + "\n - Number of variables: " + comparison.getVariables().size());
             }
             FormulaVariable v1 = comparison.getVariables().get(0);
             if (v1.getPremiseRelationalOccurrences().size() > 1) {

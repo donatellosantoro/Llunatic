@@ -18,9 +18,9 @@ import org.jgrapht.graph.DefaultEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NormalizeDependency {
+public class NormalizeConclusionsInTGDs {
 
-    private static Logger logger = LoggerFactory.getLogger(NormalizeDependency.class);
+    private static Logger logger = LoggerFactory.getLogger(NormalizeConclusionsInTGDs.class);
 
     //////////////////////////////////////////////////////////////////////////////////////////    
     /////                             TGDS
@@ -36,34 +36,34 @@ public class NormalizeDependency {
         return normalizedTgds;
     }
 
-    private List<Dependency> normalizeTGD(Dependency dependency) {
-        if (logger.isDebugEnabled()) logger.debug("Analyzing tgd: " + dependency);
+    private List<Dependency> normalizeTGD(Dependency tgd) {
+        if (logger.isDebugEnabled()) logger.debug("Analyzing tgd: " + tgd);
         List<Dependency> normalizedTgds = new ArrayList<Dependency>();
-        if (dependency.getConclusion().getAtoms().size() == 1) {
+        if (tgd.getConclusion().getAtoms().size() == 1) {
             if (logger.isDebugEnabled()) logger.debug("Tgd has single target variable, adding...");
-            normalizedTgds.add(dependency);
+            normalizedTgds.add(tgd);
             return normalizedTgds;
         }
-        UndirectedGraph<RelationalAtom, DefaultEdge> graph = dualGaifmanGraphGenerator.getDualGaifmanGraph(dependency);
+        UndirectedGraph<RelationalAtom, DefaultEdge> graph = dualGaifmanGraphGenerator.getDualGaifmanGraph(tgd);
         ConnectivityInspector<RelationalAtom, DefaultEdge> inspector = new ConnectivityInspector<RelationalAtom, DefaultEdge>(graph);
         List<Set<RelationalAtom>> connectedComponents = inspector.connectedSets();
         if (connectedComponents.size() == 1) {
             if (logger.isDebugEnabled()) logger.debug("Tgd is normalized...");
-            normalizedTgds.add(dependency);
+            normalizedTgds.add(tgd);
             return normalizedTgds;
         }
         if (logger.isDebugEnabled()) logger.debug("Tgd is not normalized...");
         for (int i = 0; i < connectedComponents.size(); i++) {
             Set<RelationalAtom> connectedComponent = connectedComponents.get(i);
             String suffixId = "_NORM_" + (i + 1);
-            normalizedTgds.add(separateComponent(dependency, connectedComponent, suffixId));
+            normalizedTgds.add(separateComponent(tgd, connectedComponent, suffixId));
         }
         if (logger.isDebugEnabled()) logger.debug("Resulting set of normalized tgds: " + normalizedTgds);
         return normalizedTgds;
     }
 
-    private Dependency separateComponent(Dependency dependency, Set<RelationalAtom> connectedComponent, String suffixId) {
-        Dependency clone = dependency.clone();
+    private Dependency separateComponent(Dependency tgd, Set<RelationalAtom> connectedComponent, String suffixId) {
+        Dependency clone = tgd.clone();
         clone.addSuffixId(suffixId);
         IFormula conclusion = clone.getConclusion();
         for (Iterator<IFormulaAtom> it = conclusion.getAtoms().iterator(); it.hasNext();) {
@@ -121,10 +121,5 @@ public class NormalizeDependency {
         }
         return false;
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////    
-    /////                             EGDS
-    //////////////////////////////////////////////////////////////////////////////////////////    
-    
     
 }

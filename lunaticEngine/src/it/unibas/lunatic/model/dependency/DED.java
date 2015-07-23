@@ -72,20 +72,6 @@ public class DED implements Cloneable {
     }
 
     @Override
-    public DED clone() {
-        DED clone = null;
-        try {
-            clone = (DED) super.clone();
-            clone.associatedDependencies = new ArrayList<Dependency>();
-            for (Dependency dependency : associatedDependencies) {
-                clone.associatedDependencies.add(dependency.clone());
-            }
-        } catch (CloneNotSupportedException ex) {
-        }
-        return clone;
-    }
-
-    @Override
     public String toString() {
         return new DependencyToString().toLogicalString(this, "", false);
     }

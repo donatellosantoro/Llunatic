@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.dependency;
 
+import it.unibas.lunatic.model.dependency.operators.CloneFormulaVisitor;
 import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +63,7 @@ public class FormulaWithNegations implements IFormula {
     public List<VariableEquivalenceClass> getLocalVariableEquivalenceClasses() {
         return this.positiveFormula.getLocalVariableEquivalenceClasses();
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<FormulaVariable> getAllVariables() {
         if (father == null) {
@@ -82,21 +83,9 @@ public class FormulaWithNegations implements IFormula {
 
     @Override
     public FormulaWithNegations clone() {
-        FormulaWithNegations clone = null;
-        try {
-            clone = (FormulaWithNegations) super.clone();
-//            if (this.father != null) {
-//                clone.father = this.father.clone();
-//            } //Cyclic clone
-            clone.positiveFormula = this.positiveFormula.clone();
-            clone.negatedSubFormulas = new ArrayList<IFormula>();
-            for (IFormula subFormula : this.negatedSubFormulas) {
-                IFormula cloneSubFormula = subFormula.clone();
-                cloneSubFormula.setFather(clone);
-                clone.negatedSubFormulas.add(cloneSubFormula);
-            }
-        } catch (CloneNotSupportedException ex) {
-        }
-        return clone;
+        CloneFormulaVisitor cloneFormula = new CloneFormulaVisitor();
+        this.accept(cloneFormula);
+        return (FormulaWithNegations) cloneFormula.getResult();
     }
+
 }

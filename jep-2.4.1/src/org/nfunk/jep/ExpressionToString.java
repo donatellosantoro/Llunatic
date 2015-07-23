@@ -17,6 +17,19 @@ public class ExpressionToString {
         }
     }
 
+    public String toVariableDelimitedString(JEP jepExpression) {
+        try {
+            ToStringVisitor visitor = new ToStringVisitor(jepExpression, false, false, true, false);
+            if (jepExpression == null || jepExpression.getTopNode() == null) {
+                return null;
+            }
+            jepExpression.getTopNode().jjtAccept(visitor, null);
+            return visitor.getResult();
+        } catch (ParseException ex) {
+            return null;
+        }
+    }
+
     public String toStringWithAbsolutePaths(JEP jepExpression) {
         try {
             ToStringVisitor visitor = new ToStringVisitor(jepExpression, false, false, true);
@@ -70,6 +83,7 @@ class ToStringVisitor implements ParserVisitor {
     private StringBuffer result = new StringBuffer();
     private boolean withSlashes;
     private boolean withDollar;
+    private boolean withVariableDelimiters;
     private boolean absolutePaths;
 
     public ToStringVisitor(JEP jepExpression) {
@@ -86,6 +100,14 @@ class ToStringVisitor implements ParserVisitor {
         this.jepExpression = jepExpression;
         this.withSlashes = withSlashes;
         this.withDollar = withDollar;
+        this.absolutePaths = absolutePaths;
+    }
+
+    public ToStringVisitor(JEP jepExpression, boolean withSlashes, boolean withDollar, boolean withVariableDelimiters, boolean absolutePaths) {
+        this.jepExpression = jepExpression;
+        this.withSlashes = withSlashes;
+        this.withDollar = withDollar;
+        this.withVariableDelimiters = withVariableDelimiters;
         this.absolutePaths = absolutePaths;
     }
 
@@ -158,12 +180,16 @@ class ToStringVisitor implements ParserVisitor {
         Variable var = jepExpression.getVar(node.getVarName());
         String varDescription = null;
         if (!absolutePaths) {
-            varDescription = var.getDescription().toString();
+            Object description = var.getDescription();
+            varDescription = description.toString();
         } else {
             varDescription = var.getOriginalDescription().toString();
         }
         if (withDollar) {
             varDescription = "$" + varDescription;
+        }
+        if (withVariableDelimiters) {
+            varDescription = "<|" + varDescription + "|>";
         }
         if (withSlashes) {
             varDescription = varDescription.replaceAll("\\.", "/") + "/text()";

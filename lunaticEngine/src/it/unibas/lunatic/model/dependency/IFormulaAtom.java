@@ -10,6 +10,8 @@ public interface IFormulaAtom extends Cloneable {
     public List<FormulaVariable> getVariables();
 
     public Expression getExpression();
+    
+    public void setExpression(Expression expression);
 
     public IFormula getFormula();
 

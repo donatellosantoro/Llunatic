@@ -18,7 +18,7 @@
         <!--<appender-ref ref="file"/>-->
     </root>
     <!--     TEST     -->
-    <logger name="it.unibas.lunatic.test" level="DEBUG"/>
+    <!--<logger name="it.unibas.lunatic.test" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.test.BatchTest" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.persistence.relational.QueryStatManager" level="DEBUG"/>-->
@@ -30,6 +30,7 @@
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.CheckVariablesInExpressions" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.FindVariableEquivalenceClasses" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.GenerateSymmetricPremise" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.NormalizeJoinsInEGDs" level="DEBUG"/>-->
 
     <!--     ALGEBRA     -->
     <!--<logger name="it.unibas.lunatic.model.algebra.Difference" level="DEBUG"/>-->

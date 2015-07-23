@@ -27,6 +27,10 @@ public class BuiltInAtom implements IFormulaAtom {
         return expression;
     }
 
+    public void setExpression(Expression expression) {
+        this.expression = expression;
+    }
+
     public void addVariable(FormulaVariable variable) {
         this.variables.add(variable);
     }

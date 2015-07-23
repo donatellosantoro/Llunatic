@@ -91,6 +91,10 @@ public class RelationalAtom implements IFormulaAtom, Cloneable {
     public Expression getExpression() {
         return null;
     }
+
+    public void setExpression(Expression expression) {
+        throw new UnsupportedOperationException("Not supported.");
+    }    
     
     @Override
     public RelationalAtom clone() {

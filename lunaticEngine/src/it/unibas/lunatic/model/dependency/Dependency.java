@@ -2,6 +2,7 @@ package it.unibas.lunatic.model.dependency;
 
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.database.AttributeRef;
+import it.unibas.lunatic.model.dependency.operators.CloneDependency;
 import it.unibas.lunatic.model.dependency.operators.DependencyToString;
 import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;
 import it.unibas.lunatic.model.generators.IValueGenerator;
@@ -72,6 +73,10 @@ public class Dependency implements Cloneable {
         return additionalAttributes;
     }
 
+    public void setAdditionalAttributes(List<AttributeRef> additionalAttributes) {
+        this.additionalAttributes = additionalAttributes;
+    }
+    
     public void addAdditionalAttribute(AttributeRef attributeRef) {
         this.additionalAttributes.add(attributeRef);
     }
@@ -87,6 +92,10 @@ public class Dependency implements Cloneable {
     public Map<AttributeRef, IValueGenerator> getTargetGenerators() {
         return targetGenerators;
     }
+
+    public void setTargetGenerators(Map<AttributeRef, IValueGenerator> targetGenerators) {
+        this.targetGenerators = targetGenerators;
+    }    
 
     public List<ExtendedDependency> getExtendedDependencies() {
         return extendedDependencies;
@@ -174,32 +183,17 @@ public class Dependency implements Cloneable {
 
     @Override
     public Dependency clone() {
-        Dependency clone = null;
-        try {
-            clone = (Dependency) super.clone();
-            clone.premise = premise.clone();
-            clone.conclusion = conclusion.clone();
-            clone.additionalAttributes = new ArrayList<AttributeRef>();
-            for (AttributeRef attributeRef : this.additionalAttributes) {
-                clone.additionalAttributes.add(new AttributeRef(attributeRef.getTableAlias(), attributeRef.getName()));
-            }
-            clone.extendedDependencies = new ArrayList<ExtendedDependency>();
-            if (!this.extendedDependencies.isEmpty()) {
-                throw new UnsupportedOperationException("ExtendedDependency clone is not supported");
-            }
-            clone.targetGenerators = new HashMap<AttributeRef, IValueGenerator>();
-            for (AttributeRef attributeRef : this.targetGenerators.keySet()) {
-                clone.targetGenerators.put(attributeRef, this.targetGenerators.get(attributeRef).clone());
-            }
-            clone.queriedAttributes = new ArrayList<AttributeRef>();
-            for (AttributeRef attributeRef : this.queriedAttributes) {
-                clone.queriedAttributes.add(new AttributeRef(attributeRef.getTableAlias(), attributeRef.getName()));
-            }
-        } catch (CloneNotSupportedException ex) {
-        }
-        return clone;
+        return new CloneDependency().clone(this);
     }
 
+    public Dependency superficialClone() {
+        try {
+            return (Dependency) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new UnsupportedOperationException("Unable to clone dependency");
+        }
+    }
+    
     @Override
     public String toString() {
         return new DependencyToString().toLogicalString(this, "", false);
@@ -208,6 +202,8 @@ public class Dependency implements Cloneable {
     public String toLongString() {
         StringBuilder result = new StringBuilder();
         result.append(this.toString());
+        result.append("  Premise: ").append(this.getPremise().getPositiveFormula().toLongString()).append("\n");
+        result.append("  Conclusion: ").append(this.getConclusion().getPositiveFormula().toLongString()).append("\n");
         result.append("  Type: ").append(type).append("\n");
         result.append("  Queried attributes: ").append(queriedAttributes).append("\n");
         result.append("  Affected attributes: ").append(affectedAttributes).append("\n");

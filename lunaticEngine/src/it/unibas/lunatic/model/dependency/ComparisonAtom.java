@@ -26,6 +26,10 @@ public class ComparisonAtom implements IFormulaAtom {
         return expression;
     }
 
+    public void setExpression(Expression expression) {
+        this.expression = expression;
+    }
+
     public IFormula getFormula() {
         return formula;
     }
@@ -39,6 +43,9 @@ public class ComparisonAtom implements IFormulaAtom {
     }
 
     public void addVariable(FormulaVariable variable) {
+        if (this.variables.size() == 2) {
+            throw new IllegalArgumentException();
+        }
         this.variables.add(variable);
     }
 
@@ -102,14 +109,11 @@ public class ComparisonAtom implements IFormulaAtom {
 
     @Override
     public ComparisonAtom clone() {
-        // atoms are superficially cloned; see PositiveFormula.clone() for deop cloning
+        // atoms are superficially cloned; see PositiveFormula.clone() for deep cloning
         try {
             ComparisonAtom clone = (ComparisonAtom) super.clone();
             clone.expression = this.expression.clone();
             clone.variables = new ArrayList<FormulaVariable>(this.variables);
-//            for (FormulaVariable variable : variables) {
-//                clone.variables.add(variable.clone());
-//            }
             return clone;
         } catch (CloneNotSupportedException ex) {
             throw new IllegalArgumentException("Unable to clone ComparisonAtom " + ex.getLocalizedMessage());
