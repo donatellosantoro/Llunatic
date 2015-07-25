@@ -100,7 +100,7 @@ class NormalizeJoinsInEGDVisitor implements IFormulaVisitor {
         this.variableSubstitutions = variableSubstitutions;
     }
 
-    // TODO++: change conclusion
+    // TODO Norm: change conclusion
     public void visitDependency(Dependency egd) {
         egd.getPremise().accept(this);
     }

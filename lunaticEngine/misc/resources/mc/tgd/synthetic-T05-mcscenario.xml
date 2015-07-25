@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-  <target>    
-    <type>GENERATE</type>
-    <generate>
+    <target>    
+        <type>GENERATE</type>
+        <generate>
 <![CDATA[
 SCHEMA:
 R(a, b)
@@ -21,18 +21,16 @@ S(a: "4", b: "7")
 T(a: "1")
 T(a: "4")
 ]]>
-    </generate>
-  </target>
-  <dependencies>
+        </generate>
+    </target>
+    <dependencies>
 <![CDATA[
 ExtTGDs:
 R(a: $x, b: $y) -> S(a: $x, b: $N).
 S(a: $x, b: $y) -> T(a: $x).
 ]]>
-  </dependencies>
-  <partialOrder/>
-  <configuration>
-  	<useCellGroupsForTGDs>true</useCellGroupsForTGDs>
-  </configuration>
+    </dependencies>
+    <partialOrder/>
+    <configuration/>
 </scenario>
 

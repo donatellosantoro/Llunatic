@@ -19,20 +19,16 @@ import it.unibas.lunatic.model.chase.chasemc.operators.AddUserNode;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChangeCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDs;
-import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDsWithoutCellGroups;
+import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDsForDEProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeToString;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
-import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDs;
-import it.unibas.lunatic.model.chase.chasemc.operators.IMaintainCellGroupsForTGD;
+import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDsAndDEProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryInsertTuplesForTGDs;
-import it.unibas.lunatic.model.chase.chasemc.operators.InsertTuplesForTgdsWithoutCellGroups;
-import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryMaintainCellGroupsForTGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDeltaDB;
@@ -41,10 +37,10 @@ import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedyJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.ICacheManager;
-import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLInsertTuplesForTGDs;
-import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLMaintainCellGroupsForTGD;
+import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLInsertTuplesForTGDsAndDEProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB;
+import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryInsertTuplesForTGDsAndDEProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryRunQuery;
 import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
@@ -134,15 +130,11 @@ public class OperatorFactory {
         return sqlCellUpdater;
     }
 
-    public IInsertTuplesForTGDs getInsertTuplesForTgds(Scenario scenario) {
+    public IInsertTuplesForTGDsAndDEProxy getInsertTuplesForTgdsAndDEProxy(Scenario scenario) {
         if (scenario.isMainMemory()) {
-            return new MainMemoryInsertTuplesForTGDs(getInsertTuple(scenario), getQueryRunner(scenario), getOccurrenceHandlerMC(scenario), getOIDGenerator(scenario));
+            return new MainMemoryInsertTuplesForTGDsAndDEProxy(getInsertTuple(scenario), getQueryRunner(scenario), getOccurrenceHandlerMC(scenario), getOIDGenerator(scenario));
         }
-        return new SQLInsertTuplesForTGDs(getOIDGenerator(scenario));
-    }
-
-    public InsertTuplesForTgdsWithoutCellGroups getInsertTuplesForTgdsWithoutCellGroups(Scenario scenario) {
-        return new InsertTuplesForTgdsWithoutCellGroups(getInsertTuple(scenario), getQueryRunner(scenario), getDatabaseBuilder(scenario), getOIDGenerator(scenario));
+        return new SQLInsertTuplesForTGDsAndDEProxy(getOIDGenerator(scenario));
     }
 
     public IBuildDeltaDB getDeltaDBBuilder(Scenario scenario) {
@@ -217,24 +209,12 @@ public class OperatorFactory {
         return occurrenceHandler;
     }
 
-//    public IValueOccurrenceHandlerMC getOccurrenceHandlerMCNoCache(Scenario scenario) {
-//        return new OccurrenceHandlerMC(getQueryRunner(scenario), getInsertTuple(scenario), getDeleteOperator(scenario), getCellUpdater(scenario));
-//    }
     public IChaseDeltaExtTGDs getExtTgdChaser(Scenario scenario) {
-        if (scenario.getConfiguration().isUseCellGroupsForTGDs()) {
-            return new ChaseDeltaExtTGDs(getInsertTuplesForTgds(scenario), getQueryRunner(scenario),
-                    getDatabaseBuilder(scenario), getOccurrenceHandlerMC(scenario), getCellUpdater(scenario),
-                    getCellGroupMaintainer(scenario));
+        if (scenario.getConfiguration().isDeProxyMode()) {
+            return new ChaseDeltaExtTGDsForDEProxy(getInsertTuplesForTgdsAndDEProxy(scenario), getDatabaseBuilder(scenario));
         }
-        return new ChaseDeltaExtTGDsWithoutCellGroups(getInsertTuplesForTgds(scenario), getDatabaseBuilder(scenario));
-    }
-
-    public IMaintainCellGroupsForTGD getCellGroupMaintainer(Scenario scenario) {
-        if (scenario.isMainMemory()) {
-            return new MainMemoryMaintainCellGroupsForTGD(getQueryRunner(scenario), getOccurrenceHandlerMC(scenario));
-        } else {
-            return new SQLMaintainCellGroupsForTGD(getQueryRunner(scenario), getOccurrenceHandlerMC(scenario));
-        }
+        return new ChaseDeltaExtTGDs(getQueryRunner(scenario), getDatabaseBuilder(scenario),
+                getOccurrenceHandlerMC(scenario), getOIDGenerator(scenario), getCellChanger(scenario));
     }
 
     public ExportChaseStepResultsCSV getResultExporter(Scenario scenario) {

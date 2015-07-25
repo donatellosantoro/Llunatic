@@ -21,7 +21,6 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
-import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.database.IDatabase;
@@ -43,17 +42,15 @@ public class ChaseMCScenario {
     private ChaseDeltaDCs dChaser;
     private ChaseDeltaExtEGDs egdChaser;
     private IBuildDeltaDB deltaBuilder;
-    private IInsertTuplesForTGDs insertOperatorForTgds;
     private AnalyzeDependencies stratificationBuilder = new AnalyzeDependencies();
     private CheckSolution solutionChecker;
 
     public ChaseMCScenario(IChaseSTTGDs stChaser, IChaseDeltaExtTGDs extTgdChaser,
             IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
-            IInsertTuple insertOperatorForEgds, IInsertTuplesForTGDs insertOperatorForTgds, OccurrenceHandlerMC occurrenceHandler,
+            IInsertTuple insertOperatorForEgds, OccurrenceHandlerMC occurrenceHandler,
             ChaseDeltaExtEGDs egdChaser, CheckSolution solutionChecker) {
         this.stChaser = stChaser;
         this.deltaBuilder = deltaBuilder;
-        this.insertOperatorForTgds = insertOperatorForTgds;
         this.extTgdChaser = extTgdChaser;
         this.dChaser = new ChaseDeltaDCs(queryRunner, stepBuilder);
         this.egdChaser = egdChaser;
@@ -63,6 +60,8 @@ public class ChaseMCScenario {
     public DeltaChaseStep doChase(Scenario scenario, IChaseState chaseState) {
         long start = new Date().getTime();
         try {
+            // s-t tgds are chased in the standard way; this works fine as long as there are no authoritative sources
+            // in place of null cells + justifications, new cells with values are generated
             stChaser.doChase(scenario, false);
             ChaseTree chaseTree = new ChaseTree(scenario);
             IDatabase targetDB = scenario.getTarget();
@@ -93,11 +92,11 @@ public class ChaseMCScenario {
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DCS, scenario.getDCs().size());
         if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
         Map<Dependency, IAlgebraOperator> egdQueryMap = treeBuilderForEGD.buildPremiseAlgebraTreesForEGDs(scenario.getExtEGDs(), scenario);
-        Map<Dependency, IAlgebraOperator> tgdQueryMap = treeBuilderForTGD.buildAlgebraTreesForTGDViolations(scenario.getExtTGDs(), scenario);
+        Map<Dependency, IAlgebraOperator> tgdQueryMap = treeBuilderForTGD.buildAlgebraTreesForTGDViolationsChase(scenario.getExtTGDs(), scenario);
         Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap = treeBuilderForTGD.buildAlgebraTreesForTGDSatisfaction(scenario.getExtTGDs(), scenario);
         Map<Dependency, IAlgebraOperator> dQueryMap = treeBuilderForTGD.buildAlgebraTreesForDTGD(scenario.getDCs(), scenario);
         IDatabase targetDB = scenario.getTarget();
-        insertOperatorForTgds.initializeOIDs(targetDB);
+        extTgdChaser.initializeOIDs(targetDB);
         boolean userInteractionRequired = false;
         int iterations = 0;
         while (!userInteractionRequired) {

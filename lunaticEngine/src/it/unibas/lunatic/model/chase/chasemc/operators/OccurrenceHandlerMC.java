@@ -166,21 +166,21 @@ public class OccurrenceHandlerMC {
         if (logger.isDebugEnabled()) logger.debug("Adding new cell group " + cellGroup);
         this.cacheManager.putCellGroup(cellGroup, stepId, deltaDB, scenario);
         for (CellGroupCell cellRef : cellGroup.getOccurrences()) {
-            saveCellGroupCell(deltaDB, cellGroup.getId(), cellRef, stepId, LunaticConstants.TYPE_OCCURRENCE, scenario);
+            saveCellGroupCell(deltaDB, cellGroup.getId(), cellRef, stepId, scenario);
         }
         for (CellGroupCell cell : cellGroup.getJustifications()) {
-            saveCellGroupCell(deltaDB, cellGroup.getId(), cell, stepId, LunaticConstants.TYPE_JUSTIFICATION, scenario);
+            saveCellGroupCell(deltaDB, cellGroup.getId(), cell, stepId, scenario);
         }
         for (CellGroupCell cell : cellGroup.getUserCells()) {
-            saveCellGroupCell(deltaDB, cellGroup.getId(), cell, stepId, LunaticConstants.TYPE_USER, scenario);
+            saveCellGroupCell(deltaDB, cellGroup.getId(), cell, stepId, scenario);
         }
         if (cellGroup.hasInvalidCell()) {
-            saveCellGroupCell(deltaDB, cellGroup.getId(), cellGroup.getInvalidCell(), stepId, LunaticConstants.TYPE_INVALID, scenario);
+            saveCellGroupCell(deltaDB, cellGroup.getId(), cellGroup.getInvalidCell(), stepId, scenario);
         }
         for (AttributeRef attributeRef : cellGroup.getAdditionalCells().keySet()) {
             Set<CellGroupCell> additionalCells = cellGroup.getAdditionalCells().get(attributeRef);
             for (CellGroupCell additionalCell : additionalCells) {
-                saveCellGroupCell(deltaDB, cellGroup.getId(), additionalCell, stepId, LunaticConstants.TYPE_ADDITIONAL, scenario);
+                saveCellGroupCell(deltaDB, cellGroup.getId(), additionalCell, stepId, scenario);
             }
         }
         if (logger.isDebugEnabled()) logger.debug("DeltaDB\n" + deltaDB.printInstances());
@@ -195,15 +195,6 @@ public class OccurrenceHandlerMC {
         deleteOperator.execute(LunaticConstants.CELLGROUP_TABLE, deleteCellGroupQuery, null, deltaDB);
     }
 
-    public void updateOccurrencesForNewTuple(Tuple tuple, IValue occurrenceValue, IDatabase deltaDB, String tableName, String attributeName) {
-        //TODO++ (TGD)
-        throw new UnsupportedOperationException();
-//        IValue tid = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.TID);
-//        String stepId = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.STEP).toString();
-//        CellRef cellRef = new CellRef(new TupleOID(tid), new AttributeRef(tableName, attributeName));
-//        addOccurrence(deltaDB, occurrenceValue, cellRef, stepId, forceSave);
-    }
-
     public void reset() {
         this.cacheManager.reset();
     }
@@ -213,8 +204,9 @@ public class OccurrenceHandlerMC {
     }
 
     /////////////////////////////////////////////////////////////////////////   
-    protected void saveCellGroupCell(IDatabase deltaDB, IValue groupId, CellGroupCell cell, String stepId, String type, Scenario scenario) {
+    public void saveCellGroupCell(IDatabase deltaDB, IValue groupId, CellGroupCell cell, String stepId, Scenario scenario) {
         assert (groupId != null) : "Trying to save occurrence with null groupid " + cell;
+        String type = cell.getType();
         if (LunaticConstants.TYPE_OCCURRENCE.equals(type) && groupId instanceof ConstantValue) {
             this.cacheManager.putClusterId(new CellRef(cell), groupId, stepId, deltaDB, scenario);
         }

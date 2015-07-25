@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // a group of target cells with equal values for conclusion variables that need to be changed to solve a conflict
-public class TargetCellsToChange {
+public class TargetCellsToChangeForEGD {
 
     // all target cells with equal value to change for a forward repair. Initially incomplete
     private CellGroup cellGroupForForwardRepair;
@@ -13,7 +13,7 @@ public class TargetCellsToChange {
     private Map<BackwardAttribute, CellGroup> cellGroupsForBackwardRepairs = new HashMap<BackwardAttribute, CellGroup>();
     private boolean suspicious;
 
-    public TargetCellsToChange(IValue value) {
+    public TargetCellsToChangeForEGD(IValue value) {
         this.cellGroupForForwardRepair = new CellGroup(value, true);
     }
 

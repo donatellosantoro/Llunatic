@@ -12,9 +12,9 @@ import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
+import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.database.AttributeRef;
@@ -38,7 +38,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//TODO (DE) Refactoring. Merge with ChaseEGDEqClass?
 public class ChaseEGDs {
 
     private static Logger logger = LoggerFactory.getLogger(ChaseEGDs.class);
@@ -112,7 +111,7 @@ public class ChaseEGDs {
         try {
             while (true) {
                 if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
-                EquivalenceClass equivalenceClass = readNextEquivalenceClass(it, egd, scenario, chaseState);
+                EquivalenceClassForEGD equivalenceClass = readNextEquivalenceClass(it, egd, scenario, chaseState);
                 if (equivalenceClass == null) {
                     break;
                 }
@@ -149,22 +148,10 @@ public class ChaseEGDs {
 
     private void accumulateRepairs(Repair repairForDependency, Repair repairForEquivalenceClass) {
         repairForDependency.getChanges().addAll(repairForEquivalenceClass.getChanges());
-//        if (repairsForDependency.isEmpty()) {
-//            repairsForDependency.add(repairForEquivalenceClass);
-//            return repairsForDependency;
-//        }
-//        List<Repair> result = new ArrayList<Repair>();
-//        for (Repair repairForDependency : repairsForDependency) {
-//            Repair newRepair = new Repair();
-//            newRepair.getChanges().addAll(repairForDependency.getChanges());
-//            newRepair.getChanges().addAll(repairForEquivalenceClass.getChanges());
-//            result.add(newRepair);
-//        }
-//        return result;
     }
 
     @SuppressWarnings("unchecked")
-    private Repair generateRepair(EquivalenceClass equivalenceClass) {
+    private Repair generateRepair(EquivalenceClassForEGD equivalenceClass) {
         Repair repair = new Repair();
         List<CellGroup> cellGroups = extractCellGroups(equivalenceClass.getTupleGroups());
         CellGroup cellGroup = findChanges(cellGroups);
@@ -208,34 +195,35 @@ public class ChaseEGDs {
         return newGroup;
     }
 
-    private List<CellGroup> extractCellGroups(List<TargetCellsToChange> tupleGroups) {
+    private List<CellGroup> extractCellGroups(List<TargetCellsToChangeForEGD> tupleGroups) {
         List<CellGroup> cellGroups = new ArrayList<CellGroup>();
-        for (TargetCellsToChange tupleGroup : tupleGroups) {
+        for (TargetCellsToChangeForEGD tupleGroup : tupleGroups) {
             cellGroups.add(tupleGroup.getCellGroupForForwardRepair());
         }
         return cellGroups;
     }
 
-    //TODO++ Avoid changing values for unchanged cells
     private void applyRepairs(Repair repair, Scenario scenario) {
         for (ChangeSet changeSet : repair.getChanges()) {
             IValue newValue = changeSet.getCellGroup().getValue();
             Set<CellRef> cellsToChange = ChaseUtility.createCellRefsFromCells(changeSet.getCellGroup().getOccurrences());
-            for (CellRef cell : cellsToChange) {
+            for (CellRef cellRef : cellsToChange) {
                 if (newValue instanceof NullValue) {
-                    //TODO++
-//                    valueOccurrenceHandler.addOccurrenceForNull(scenario.getTarget(), (NullValue) newValue, cell);
+                    //TODO DE Check
+                    NullValue newNullValue = (NullValue) newValue;
+                    Cell nullCell = new Cell(cellRef, newNullValue);
+                    valueOccurrenceHandler.addOccurrenceForNull(scenario.getTarget(), newNullValue, nullCell);
                 }
-                cellUpdater.execute(cell, newValue, scenario.getTarget());
+                cellUpdater.execute(cellRef, newValue, scenario.getTarget());
             }
         }
     }
 
-    private EquivalenceClass readNextEquivalenceClass(ITupleIterator it, Dependency egd, Scenario scenario, IChaseState chaseState) {
+    private EquivalenceClassForEGD readNextEquivalenceClass(ITupleIterator it, Dependency egd, Scenario scenario, IChaseState chaseState) {
         if (!it.hasNext() && (this.lastTupleHandled || this.lastTuple == null)) {
             return null;
         }
-        EquivalenceClass equivalenceClass = buildEquivalenceClass(egd);
+        EquivalenceClassForEGD equivalenceClass = buildEquivalenceClass(egd);
         if (lastTuple != null && !this.lastTupleHandled) {
             if (logger.isDebugEnabled()) logger.debug("Reading tuple : " + this.lastTuple.toStringWithOIDAndAlias());
             EquivalenceClassUtility.addTuple(this.lastTuple, equivalenceClass);
@@ -266,8 +254,8 @@ public class ChaseEGDs {
         return equivalenceClass;
     }
 
-    private void addOccurrencesForEquivalenceClass(EquivalenceClass equivalenceClass, IDatabase target) {
-        for (TargetCellsToChange tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
+    private void addOccurrencesForEquivalenceClass(EquivalenceClassForEGD equivalenceClass, IDatabase target) {
+        for (TargetCellsToChangeForEGD tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
             addOccurrencesForCellGroup(tupleGroup.getCellGroupForForwardRepair(), target);
 //            for (CellGroup premiseGroup : tupleGroup.getCellGroupsForBackwardAttributes().values()) {
 //                addOccurrencesForCellGroup(premiseGroup, target);
@@ -283,7 +271,7 @@ public class ChaseEGDs {
         if (cells != null) {
             for (Cell cell : cells) {
                 IValue value = cell.getValue();
-                //TODO++ Check
+                //TODO DE Check
                 CellGroupCell cellGroupCell = new CellGroupCell(cell.getTupleOID(), cell.getAttributeRef(), value, null, LunaticConstants.TYPE_OCCURRENCE, false);
                 cellGroup.addOccurrenceCell(cellGroupCell);
             }
@@ -291,7 +279,7 @@ public class ChaseEGDs {
     }
 
     @SuppressWarnings("unchecked")
-    private EquivalenceClass buildEquivalenceClass(Dependency egd) {
+    private EquivalenceClassForEGD buildEquivalenceClass(Dependency egd) {
         List<AttributeRef> attributesForForwardChasing = new ArrayList<AttributeRef>();
         FormulaVariable v1 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(0);
         FormulaVariable v2 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(1);
@@ -309,6 +297,6 @@ public class ChaseEGDs {
             }
             attributesForForwardChasing.add(occurrenceAttribute);
         }
-        return new EquivalenceClass(egd, attributesForForwardChasing, Collections.EMPTY_LIST);
+        return new EquivalenceClassForEGD(egd, attributesForForwardChasing, Collections.EMPTY_LIST);
     }
 }

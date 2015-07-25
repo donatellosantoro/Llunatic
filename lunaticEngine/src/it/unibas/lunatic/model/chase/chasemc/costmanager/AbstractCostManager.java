@@ -12,16 +12,16 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
+import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
-import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
+import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDsAndDEProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.database.AttributeRef;
@@ -57,15 +57,14 @@ public abstract class AbstractCostManager implements ICostManager {
         IBuildDatabaseForChaseStep stepBuilder = OperatorFactory.getInstance().getDatabaseBuilder(scenario);
         IRunQuery queryRunner = OperatorFactory.getInstance().getQueryRunner(scenario);
         IInsertTuple insertOperatorForEgds = OperatorFactory.getInstance().getInsertTuple(scenario);
-        IInsertTuplesForTGDs insertOperatorForTgds = OperatorFactory.getInstance().getInsertTuplesForTgds(scenario);
         OccurrenceHandlerMC occurrenceHandler = OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario);
         IChaseDeltaExtTGDs extTgdChaser = OperatorFactory.getInstance().getExtTgdChaser(scenario);
         CheckSolution solutionChecker = OperatorFactory.getInstance().getSolutionChecker(scenario);
         ChaseDeltaExtEGDs egdChaser = OperatorFactory.getInstance().getEGDChaser(scenario);
-        return new ChaseMCScenario(stChaser, extTgdChaser, deltaBuilder, stepBuilder, queryRunner, insertOperatorForEgds, insertOperatorForTgds, occurrenceHandler, egdChaser, solutionChecker);
+        return new ChaseMCScenario(stChaser, extTgdChaser, deltaBuilder, stepBuilder, queryRunner, insertOperatorForEgds, occurrenceHandler, egdChaser, solutionChecker);
     }
 
-    protected boolean isNotViolation(List<TargetCellsToChange> tupleGroups, Scenario scenario) {
+    protected boolean isNotViolation(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Checking violations between tuple groups\n" + LunaticUtility.printCollection(tupleGroups));
         List<CellGroup> cellGroups = extractCellGroups(tupleGroups);
         Set<IValue> differentValues = findDifferentValuesInCellGroupsWithOccurrences(cellGroups);
@@ -110,8 +109,8 @@ public abstract class AbstractCostManager implements ICostManager {
         return result;
     }
 
-    protected boolean isSuspicious(CellGroup cellGroup, BackwardAttribute backwardAttribute, EquivalenceClass equivalenceClass) {
-        Dependency egd = equivalenceClass.getDependency();
+    protected boolean isSuspicious(CellGroup cellGroup, BackwardAttribute backwardAttribute, EquivalenceClassForEGD equivalenceClass) {
+        Dependency egd = equivalenceClass.getEGD();
         FormulaVariable variable = backwardAttribute.getVariable();
         if (logger.isDebugEnabled()) logger.debug("Checking if cell group is suspicious:\n" + cellGroup + "\nEGD: " + egd + "\nVariable: " + variable + "\nVariable occurrence " + variable.getPremiseRelationalOccurrences());
         if (variable.getPremiseRelationalOccurrences().size() > cellGroup.getOccurrences().size()) {
@@ -158,7 +157,7 @@ public abstract class AbstractCostManager implements ICostManager {
         return isBelow;
     }
 
-    protected ChangeSet generateForwardRepair(List<TargetCellsToChange> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
+    protected ChangeSet generateForwardRepair(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
         List<CellGroup> cellGroups = extractCellGroups(tupleGroups);
         // give preference to the script partial order, that may have additional rules to solve the violation
         CellGroup lub = getLUB(cellGroups, scenario.getScriptPartialOrder(), scenario);
@@ -169,9 +168,9 @@ public abstract class AbstractCostManager implements ICostManager {
         return changeSet;
     }
 
-    protected List<CellGroup> extractCellGroups(List<TargetCellsToChange> tupleGroups) {
+    protected List<CellGroup> extractCellGroups(List<TargetCellsToChangeForEGD> tupleGroups) {
         List<CellGroup> cellGroups = new ArrayList<CellGroup>();
-        for (TargetCellsToChange tupleGroup : tupleGroups) {
+        for (TargetCellsToChangeForEGD tupleGroup : tupleGroups) {
             cellGroups.add(tupleGroup.getCellGroupForForwardRepair().clone());
         }
         return cellGroups;
@@ -187,9 +186,9 @@ public abstract class AbstractCostManager implements ICostManager {
         return po.findLUB(cellGroups, scenario);
     }
 
-    protected List<CellGroup> buildWitnessCellGroups(List<TargetCellsToChange> tupleGroups) {
+    protected List<CellGroup> buildWitnessCellGroups(List<TargetCellsToChangeForEGD> tupleGroups) {
         List<CellGroup> witnessCellGroups = new ArrayList<CellGroup>();
-        for (TargetCellsToChange targetCellsToChange : tupleGroups) {
+        for (TargetCellsToChangeForEGD targetCellsToChange : tupleGroups) {
             LunaticUtility.addAllIfNotContained(witnessCellGroups, targetCellsToChange.getCellGroupsForBackwardRepairs().values());
         }
         List<CellGroup> result = new ArrayList<CellGroup>();

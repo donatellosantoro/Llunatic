@@ -126,7 +126,7 @@ public class MainMemoryTable implements ITable {
 //            for (Attribute attribute : getAttributes()) {
 //                result.append(tuple.getCell(new AttributeRef(attribute.getTableName(), attribute.getName()))).append(", ");
 //            }
-            LunaticUtility.removeChars(", ".length(), result);
+//            LunaticUtility.removeChars(", ".length(), result);
             result.append("\n");
         }
         iterator.close();

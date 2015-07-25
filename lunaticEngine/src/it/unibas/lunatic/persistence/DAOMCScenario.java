@@ -393,11 +393,7 @@ public class DAOMCScenario {
         }
         Element useLimit1Element = configurationElement.getChild("useLimit1");
         if (useLimit1Element != null) {
-            configuration.setUseLimit1(Boolean.parseBoolean(useLimit1Element.getValue()));
-        }
-        Element useCellGroupsForTGDsElement = configurationElement.getChild("useCellGroupsForTGDs");
-        if (useCellGroupsForTGDsElement != null) {
-            configuration.setUseCellGroupsForTGDs(Boolean.parseBoolean(useCellGroupsForTGDsElement.getValue()));
+            configuration.setUseLimit1ForEGDs(Boolean.parseBoolean(useLimit1Element.getValue()));
         }
         Element removeDuplicatesElement = configurationElement.getChild("removeDuplicates");
         if (removeDuplicatesElement != null) {

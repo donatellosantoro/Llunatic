@@ -253,6 +253,7 @@ public class CellGroup implements Cloneable, Serializable {
     public String toLongString() {
         StringBuilder sb = new StringBuilder();
         sb.append("<" + "v=").append(value);
+        sb.append(" id=").append(id);
         sb.append(" occ: [").append((occurrences.isEmpty() ? "" : "\n"));
         for (CellGroupCell occurrence : occurrences) {
             sb.append("\t").append(occurrence.toLongString()).append("\n");

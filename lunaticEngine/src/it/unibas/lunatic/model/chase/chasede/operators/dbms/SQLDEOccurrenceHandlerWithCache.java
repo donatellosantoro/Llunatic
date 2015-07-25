@@ -49,7 +49,7 @@ public class SQLDEOccurrenceHandlerWithCache implements IValueOccurrenceHandlerD
                 String attribute = rs.getString("attribute");
                 Object tupleOID = rs.getString("tuple_oid");
                 CellRef cellRef = new CellRef(new TupleOID(tupleOID), new AttributeRef(tableName, attribute));
-                //TODO++ Check null value
+                //TODO DE Check null value
                 Cell cell = new Cell(cellRef, new NullValue(skolem));
                 result.add(cell);
             }
@@ -99,7 +99,7 @@ public class SQLDEOccurrenceHandlerWithCache implements IValueOccurrenceHandlerD
                 String attribute = rs.getString("attribute");
                 Object tupleOID = rs.getString("tuple_oid");
                 CellRef cellRef = new CellRef(new TupleOID(tupleOID), new AttributeRef(tableName, attribute));
-                //TODO++ Check null value
+                //TODO DE Check null value
                 Cell cell = new Cell(cellRef, new NullValue(skolem));
                 addCacheOccurrence(skolem, cell);
             }

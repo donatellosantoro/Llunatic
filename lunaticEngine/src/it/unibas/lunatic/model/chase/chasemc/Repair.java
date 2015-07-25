@@ -8,7 +8,6 @@ public class Repair {
 
     private List<ChangeSet> changes = new ArrayList<ChangeSet>();
     private boolean suspicious;
-    
 
     public List<ChangeSet> getChanges() {
         return changes;

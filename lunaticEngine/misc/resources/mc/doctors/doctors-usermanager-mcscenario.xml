@@ -96,8 +96,6 @@ emd4b: hospital(doctor: $doctor, spec: $spec, npi: $npi1, hospital: $hospital1),
         <leavesThreshold>20</leavesThreshold>
         <potentialSolutionsThreshold>10</potentialSolutionsThreshold>
     </costManager>
-    <configuration>
-        <useCellGroupsForTGDs>true</useCellGroupsForTGDs>
-    </configuration>
+    <configuration/>
 </scenario>
 

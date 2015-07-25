@@ -13,11 +13,11 @@ import it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
+import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IDatabase;
@@ -54,11 +54,10 @@ public class ChaseEGDEquivalenceClass {
         this.cellChanger = cellChanger;
     }
 
-    public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, Map<Dependency, IAlgebraOperator> premiseTreeMap, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
+    public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
         if (logger.isDebugEnabled()) logger.debug("***** Chasing dependency: " + egd);
         this.lastTuple = null;
         this.lastTupleHandled = false;
-        IAlgebraOperator premiseQuery = premiseTreeMap.get(egd);
         if (logger.isDebugEnabled()) logger.debug("Executing premise query: " + premiseQuery);
         if (logger.isTraceEnabled()) logger.debug("Result:\n" + LunaticUtility.printIterator(queryRunner.run(premiseQuery, scenario.getSource(), databaseForStep)));
         long violationQueryStart = new Date().getTime();
@@ -69,7 +68,7 @@ public class ChaseEGDEquivalenceClass {
         try {
             while (true) {
                 long equivalenceClassStart = new Date().getTime();
-                EquivalenceClass equivalenceClass = readNextEquivalenceClass(it, egd, currentNode.getDeltaDB(), currentNode.getId(), chaseState, scenario);
+                EquivalenceClassForEGD equivalenceClass = readNextEquivalenceClass(it, egd, currentNode.getDeltaDB(), currentNode.getId(), chaseState, scenario);
                 long equivalenceClasEnd = new Date().getTime();
                 ChaseStats.getInstance().addStat(ChaseStats.EGD_EQUIVALENCE_CLASS_TIME, equivalenceClasEnd - equivalenceClassStart);
                 if (equivalenceClass == null) {
@@ -91,7 +90,7 @@ public class ChaseEGDEquivalenceClass {
         }
         if (logger.isDebugEnabled()) logger.debug("Total repairs for dependency: " + LunaticUtility.printCollection(repairsForDependency));
         long repairStart = new Date().getTime();
-        NewChaseSteps newSteps = applyRepairs(currentNode, repairsForDependency, egd, premiseTreeMap, scenario);
+        NewChaseSteps newSteps = applyRepairs(currentNode, repairsForDependency, egd, premiseQuery, scenario);
         long repairEnd = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.EGD_REPAIR_TIME, repairEnd - repairStart);
         return newSteps;
@@ -111,11 +110,11 @@ public class ChaseEGDEquivalenceClass {
         return (!it.hasNext() && lastTupleHandled);
     }
 
-    private EquivalenceClass readNextEquivalenceClass(ITupleIterator it, Dependency egd, IDatabase deltaDB, String stepId, IChaseState chaseState, Scenario scenario) {
+    private EquivalenceClassForEGD readNextEquivalenceClass(ITupleIterator it, Dependency egd, IDatabase deltaDB, String stepId, IChaseState chaseState, Scenario scenario) {
         if (!it.hasNext() && (this.lastTupleHandled || this.lastTuple == null)) {
             return null;
         }
-        EquivalenceClass equivalenceClass = createEquivalenceClass(egd);
+        EquivalenceClassForEGD equivalenceClass = createEquivalenceClass(egd);
         if (lastTuple != null && !this.lastTupleHandled) {
             if (logger.isDebugEnabled()) logger.debug("Reading tuple : " + this.lastTuple.toStringWithOIDAndAlias());
             EquivalenceClassUtility.addTuple(this.lastTuple, equivalenceClass);
@@ -146,7 +145,7 @@ public class ChaseEGDEquivalenceClass {
         return equivalenceClass;
     }
 
-    private EquivalenceClass createEquivalenceClass(Dependency egd) {
+    private EquivalenceClassForEGD createEquivalenceClass(Dependency egd) {
         List<AttributeRef> occurrenceAttributesForConclusionVariable = new ArrayList<AttributeRef>();
         FormulaVariable v1 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(0);
         FormulaVariable v2 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(1);
@@ -170,11 +169,11 @@ public class ChaseEGDEquivalenceClass {
             }
             occurrenceAttributesForConclusionVariable.add(occurrenceAttribute);
         }
-        return new EquivalenceClass(egd, occurrenceAttributesForConclusionVariable, egd.getAttributesForBackwardChasing());
+        return new EquivalenceClassForEGD(egd, occurrenceAttributesForConclusionVariable, egd.getAttributesForBackwardChasing());
     }
 
-    private void completeCellGroup(EquivalenceClass equivalenceClass, IDatabase deltaDB, String stepId, Scenario scenario) {
-        for (TargetCellsToChange tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
+    private void completeCellGroup(EquivalenceClassForEGD equivalenceClass, IDatabase deltaDB, String stepId, Scenario scenario) {
+        for (TargetCellsToChangeForEGD tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
             CellGroup forwardCellGroup = this.occurrenceHandler.enrichCellGroups(tupleGroup.getCellGroupForForwardRepair(), deltaDB, stepId, scenario);
             tupleGroup.setCellGroupForForwardRepair(forwardCellGroup);
             for (BackwardAttribute backwardAttribute : tupleGroup.getCellGroupsForBackwardRepairs().keySet()) {
@@ -185,7 +184,7 @@ public class ChaseEGDEquivalenceClass {
         }
     }
 
-    private List<Repair> accumulateRepairs(List<Repair> repairsForDependency, List<Repair> repairsForEquivalenceClass, EquivalenceClass equivalenceClass) {
+    private List<Repair> accumulateRepairs(List<Repair> repairsForDependency, List<Repair> repairsForEquivalenceClass, EquivalenceClassForEGD equivalenceClass) {
         if (logger.isDebugEnabled()) logger.debug("Accumulating new repairs. Repairs for dependency so far:\n" + LunaticUtility.printCollection(repairsForDependency) + "\nRepairs for equivalence class:\n" + LunaticUtility.printCollection(repairsForEquivalenceClass));
         // needed to handle the various ways to repair each equivalence class as returned by the cost manager
         if (repairsForEquivalenceClass.isEmpty()) {
@@ -210,7 +209,7 @@ public class ChaseEGDEquivalenceClass {
         return result;
     }
 
-    private NewChaseSteps applyRepairs(DeltaChaseStep currentNode, List<Repair> repairs, Dependency egd, Map<Dependency, IAlgebraOperator> premiseTreeMap, Scenario scenario) {
+    private NewChaseSteps applyRepairs(DeltaChaseStep currentNode, List<Repair> repairs, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("---Applying repairs...");
         NewChaseSteps newChaseSteps = new NewChaseSteps(egd);
         for (int i = 0; i < repairs.size(); i++) {
@@ -220,9 +219,9 @@ public class ChaseEGDEquivalenceClass {
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, currentNode, localId, egd, repair, repair.getChaseModes());
             for (ChangeSet changeSet : repair.getChanges()) {
-                this.cellChanger.changeCells(changeSet, newStep.getDeltaDB(), newStep.getId(), scenario);
+                this.cellChanger.changeCells(changeSet.getCellGroup(), newStep.getDeltaDB(), newStep.getId(), scenario);
             }
-            if (repair.isSuspicious() && !dependencyIsSatisfied(newStep, premiseTreeMap.get(egd), egd, scenario)) {
+            if (repair.isSuspicious() && !dependencyIsSatisfied(newStep, premiseQuery, egd, scenario)) {
                 if (logger.isDebugEnabled()) logger.debug("Generated step is not a solution \n" + newStep);
                 for (ChangeSet changeSet : repair.getChanges()) {
                     this.cellChanger.deleteCells(changeSet, newStep.getDeltaDB(), newStep.getId());
@@ -245,7 +244,7 @@ public class ChaseEGDEquivalenceClass {
     }
 
     private boolean purgeInconsistenceChanges(Dependency egd, Repair repair, Scenario scenario) {
-        if (egd.hasSymmetricAtoms() || scenario.getConfiguration().isUseLimit1()) {
+        if (egd.hasSymmetricAtoms() || scenario.getConfiguration().isUseLimit1ForEGDs()) {
             return false;
         }
         if (logger.isDebugEnabled()) logger.debug("Checking inconsistency for egd " + egd);
@@ -298,7 +297,7 @@ public class ChaseEGDEquivalenceClass {
 
     private boolean isEGDSatisfied(Dependency egd, boolean consistentRepair, Scenario scenario) {
 //        return egd.hasSymmetricAtoms() && consistentRepair && !scenario.getConfiguration().isUseLimit1();
-        return egd.hasSymmetricAtoms() && consistentRepair && !scenario.getConfiguration().isUseLimit1() && !egd.isOverlapBetweenAffectedAndQueried();
+        return egd.hasSymmetricAtoms() && consistentRepair && !scenario.getConfiguration().isUseLimit1ForEGDs() && !egd.isOverlapBetweenAffectedAndQueried();
     }
 
     private List<AttributeRef> extractAffectedAttributes(Repair repair) {

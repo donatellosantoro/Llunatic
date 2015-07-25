@@ -24,13 +24,11 @@ public class SkolemFunctionGenerator implements IValueGenerator {
 
     @Override
     public IValueGenerator clone() {
-        SkolemFunctionGenerator clone = null;
         try {
-            clone = (SkolemFunctionGenerator) super.clone();
+            return (SkolemFunctionGenerator) super.clone();
         } catch (CloneNotSupportedException ex) {
+            throw new IllegalArgumentException("Unable to clone " + this);
         }
-        return null;
     }
 
 }
-

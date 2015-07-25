@@ -5,8 +5,9 @@ public class LunaticConfiguration {
     public static boolean sout = false;
     private boolean debugMode = false;
     private Integer iterationLimit = null;
-    private boolean useLimit1 = false;
-    private boolean useCellGroupsForTGDs = true;
+    private boolean useLimit1ForEGDs = false;
+    private boolean useSingleEquivalenceClassForTGDs = false;
+    private boolean deProxyMode = false; //MCProxy for DE chase
     private boolean checkGroundSolutions = false;
     private boolean checkSolutions = false;
     private boolean checkSolutionsQuery = false;
@@ -55,20 +56,24 @@ public class LunaticConfiguration {
         this.iterationLimit = iterationLimit;
     }
 
-    public boolean isUseLimit1() {
-        return useLimit1;
+    public boolean isUseLimit1ForEGDs() {
+        return useLimit1ForEGDs;
     }
 
-    public void setUseLimit1(boolean useLimit1) {
-        this.useLimit1 = useLimit1;
+    public void setUseLimit1ForEGDs(boolean useLimit1ForEGDs) {
+        this.useLimit1ForEGDs = useLimit1ForEGDs;
     }
 
-    public boolean isUseCellGroupsForTGDs() {
-        return useCellGroupsForTGDs;
+    public boolean isUseSingleEquivalenceClassForTGDs() {
+        return useSingleEquivalenceClassForTGDs;
     }
 
-    public void setUseCellGroupsForTGDs(boolean useCellGroupsForTGDs) {
-        this.useCellGroupsForTGDs = useCellGroupsForTGDs;
+    public boolean isDeProxyMode() {
+        return deProxyMode;
+    }
+
+    public void setDeProxyMode(boolean deProxyMode) {
+        this.deProxyMode = deProxyMode;
     }
 
     public boolean isCheckGroundSolutions() {
@@ -177,8 +182,8 @@ public class LunaticConfiguration {
     public String toString() {
         return "\tDebugMode: " + debugMode
                 + "\n\tIterationLimit: " + iterationLimit
-                + "\n\tUseLimit1: " + useLimit1
-                + "\n\tUseCellGroupsForTGDs: " + useCellGroupsForTGDs
+                + "\n\tUseLimit1: " + useLimit1ForEGDs
+                + "\n\tUseCellGroupsForTGDs: " + deProxyMode
                 + "\n\tCheckSolutions: " + checkSolutions
                 + "\n\tCheckSolutionsQuery: " + checkSolutionsQuery
                 + "\n\tCheckGroundSolutions: " + checkGroundSolutions

@@ -2,6 +2,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
@@ -9,34 +10,31 @@ import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
-import it.unibas.lunatic.model.chase.chasemc.TGDViolation;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
-
+    
     public static final int ITERATION_LIMIT = 10;
     private static Logger logger = LoggerFactory.getLogger(ChaseDeltaExtTGDs.class);
-
-    private IInsertTuplesForTGDs insertTuples;
-    private IMaintainCellGroupsForTGD cellGroupMantainer;
+    
+    private ChaseTGDEquivalenceClass dependencyChaser;
     private IBuildDatabaseForChaseStep databaseBuilder;
-
-    public ChaseDeltaExtTGDs(IInsertTuplesForTGDs insertTuples, IRunQuery queryRunner, IBuildDatabaseForChaseStep databaseBuilder,
-            OccurrenceHandlerMC occurrenceHandler, IUpdateCell cellUpdater,
-            IMaintainCellGroupsForTGD cellGroupMantainer) {
-        this.insertTuples = insertTuples;
+    private IOIDGenerator oidGenerator;
+    
+    public ChaseDeltaExtTGDs(IRunQuery queryRunner, IBuildDatabaseForChaseStep databaseBuilder,
+            OccurrenceHandlerMC occurrenceHandler, IOIDGenerator oidGenerator, ChangeCell cellChanger) {
         this.databaseBuilder = databaseBuilder;
-        this.cellGroupMantainer = cellGroupMantainer;
+        this.oidGenerator = oidGenerator;
+        this.dependencyChaser = new ChaseTGDEquivalenceClass(queryRunner, oidGenerator, occurrenceHandler, cellChanger);
     }
-
+    
     @Override
     public boolean doChase(DeltaChaseStep treeRoot, Scenario scenario, IChaseState chaseState, Map<Dependency, IAlgebraOperator> tgdTreeMap, Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap) {
         if (scenario.getExtTGDs().isEmpty()) {
@@ -50,7 +48,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
         ChaseStats.getInstance().addStat(ChaseStats.TGD_TIME, end - start);
         return (size != newSize);
     }
-
+    
     private void chaseTree(DeltaChaseStep treeRoot, Scenario scenario, IChaseState chaseState, Map<Dependency, IAlgebraOperator> tgdTreeMap, Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap) {
         if (treeRoot.isInvalid()) {
             return;
@@ -62,7 +60,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
             chaseTree(child, scenario, chaseState, tgdTreeMap, tgdQuerySatisfactionMap);
         }
     }
-
+    
     private void chaseNode(DeltaChaseStep node, Scenario scenario, IChaseState chaseState, Map<Dependency, IAlgebraOperator> tgdTreeMap, Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap) {
         if (node.isDuplicate() || node.isInvalid()) {
             return;
@@ -86,24 +84,20 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 String localId = ChaseUtility.generateChaseStepIdForTGDs(eTgd);
                 DeltaChaseStep newStep = new DeltaChaseStep(scenario, node, localId, LunaticConstants.CHASE_STEP_TGD);
                 if (logger.isDebugEnabled()) logger.debug("----Chasing tgd: " + eTgd);
-                if (logger.isDebugEnabled()) logger.debug("----Current leaf: " + newStep);
                 IAlgebraOperator tgdQuery = tgdTreeMap.get(eTgd);
                 if (logger.isDebugEnabled()) logger.debug("----TGD Query: " + tgdQuery);
                 IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), eTgd);
-                //TODO++ Uniform by materializing violations in mainmemory
-                Set<TGDViolation> tgdViolations = cellGroupMantainer.extractViolationValues(eTgd, tgdQuery, databaseForStep, scenario);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Database for step: " + databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()).printInstances());
+                    logger.trace("DeltaDB: " + newStep.getDeltaDB().printInstances());
+                }
                 long start = new Date().getTime();
-                boolean insertedTuples = insertTuples.execute(tgdQuery, newStep, eTgd, scenario, databaseForStep);
+                boolean insertedTuples = dependencyChaser.chaseDependency(newStep, eTgd, tgdQuery, scenario, chaseState, databaseForStep);
                 long end = new Date().getTime();
-                if (LunaticConfiguration.sout) System.out.println("insertTuples Execution time: " + (end - start) + " ms");
+                if (LunaticConfiguration.sout) System.out.println("Dependency chasing Execution time: " + (end - start) + " ms");
+                ChaseStats.getInstance().addDepenendecyStat(eTgd, end - start);
                 if (insertedTuples) {
                     if (logger.isDebugEnabled()) logger.debug("Tuples have been inserted, adding new step to tree...");
-                    databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), eTgd);
-                    IAlgebraOperator tgdSatisfactionQuery = tgdQuerySatisfactionMap.get(eTgd);
-                    start = new Date().getTime();
-                    cellGroupMantainer.maintainCellGroupsForTGD(eTgd, tgdSatisfactionQuery, tgdViolations, node.getDeltaDB(), newStep.getId(), databaseForStep, scenario);
-                    end = new Date().getTime();
-                    if (LunaticConfiguration.sout) System.out.println("maintainCellGroupsForTGD Execution time: " + (end - start) + " ms");
                     node.addChild(newStep);
                     node = newStep;
                     newNode = true;
@@ -122,5 +116,10 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 throw new ChaseException("Reached iteration limit " + ITERATION_LIMIT + " with no solution...");
             }
         }
+    }
+    
+    @Override
+    public void initializeOIDs(IDatabase targetDB) {
+        this.oidGenerator.initializeOIDs(targetDB);
     }
 }

@@ -40,7 +40,7 @@ public class TChaseExtTGDSingleTuple extends CheckTest {
 
     public void testLimit1() throws Exception {
         Scenario scenario = prepareScenario();
-        scenario.getConfiguration().setUseLimit1(true);
+        scenario.getConfiguration().setUseLimit1ForEGDs(true);
         long start = new Date().getTime();
         tgdChaser.doChase(scenario, ImmutableChaseState.getInstance());
         long end = new Date().getTime();

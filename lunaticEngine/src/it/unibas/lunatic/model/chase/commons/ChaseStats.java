@@ -11,6 +11,7 @@ public class ChaseStats {
     public static final String TOTAL_TIME = "Total Time";
     public static final String EGD_TIME = "EGD Time";
     public static final String EGD_VIOLATION_QUERY_TIME = "EGD Violation Query Time";
+    public static final String TGD_VIOLATION_QUERY_TIME = "TGD Violation Query Time";
     public static final String EGD_EQUIVALENCE_CLASS_TIME = "EGD Equivalence Class Time";
     public static final String EGD_REPAIR_TIME = "EGD Repairing Time";
     public static final String TGD_TIME = "TGD Time";

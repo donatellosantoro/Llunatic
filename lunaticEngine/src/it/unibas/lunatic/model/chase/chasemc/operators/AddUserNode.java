@@ -36,7 +36,7 @@ public class AddUserNode {
         IPartialOrder po = scenario.getPartialOrder();
         po.setCellGroupValue(newCellGroup, scenario);
         ChangeSet changeSet = new ChangeSet(newCellGroup, LunaticConstants.CHASE_USER, Collections.EMPTY_LIST);
-        cellChanger.changeCells(changeSet, userNode.getDeltaDB(), userNode.getId(), scenario);
+        cellChanger.changeCells(changeSet.getCellGroup(), userNode.getDeltaDB(), userNode.getId(), scenario);
         return newCellGroup;
     }
 }

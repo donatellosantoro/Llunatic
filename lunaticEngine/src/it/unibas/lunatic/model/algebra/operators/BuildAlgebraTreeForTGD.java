@@ -26,12 +26,28 @@ public class BuildAlgebraTreeForTGD {
     private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
     private BuildAlgebraTreeForStandardChase treeBuilderForStandardChase = new BuildAlgebraTreeForStandardChase();
 
-    public Map<Dependency, IAlgebraOperator> buildAlgebraTreesForTGDViolations(List<Dependency> extTGDs, Scenario scenario) {
+    public Map<Dependency, IAlgebraOperator> buildAlgebraTreesForTGDViolationsCheck(List<Dependency> extTGDs, Scenario scenario) {
         Map<Dependency, IAlgebraOperator> result = new HashMap<Dependency, IAlgebraOperator>();
         for (Dependency extTGD : extTGDs) {
-            IAlgebraOperator standardInsert = treeBuilderForStandardChase.generate(extTGD, scenario);
-            if (logger.isDebugEnabled()) logger.debug("Operator for dependency " + extTGD + "\n" + standardInsert);
-            result.put(extTGD, standardInsert);
+            IAlgebraOperator standardQuery = treeBuilderForStandardChase.generate(extTGD, scenario);
+            if (logger.isDebugEnabled()) logger.debug("Operator for dependency " + extTGD + "\n" + standardQuery);
+            result.put(extTGD, standardQuery);
+        }
+        return result;
+    }
+
+    public Map<Dependency, IAlgebraOperator> buildAlgebraTreesForTGDViolationsChase(List<Dependency> extTGDs, Scenario scenario) {
+        Map<Dependency, IAlgebraOperator> result = new HashMap<Dependency, IAlgebraOperator>();
+        for (Dependency extTGD : extTGDs) {
+            IAlgebraOperator standardQuery = treeBuilderForStandardChase.generate(extTGD, scenario);
+            if (logger.isDebugEnabled()) logger.debug("Operator for dependency " + extTGD + "\n" + standardQuery);
+            List<FormulaVariable> universalVariables = DependencyUtility.getUniversalVariablesInConclusion(extTGD);
+            IAlgebraOperator premiseOperator = treeBuilder.buildTreeForPremise(extTGD, scenario);
+            List<AttributeRef> universalAttributes = DependencyUtility.getUniversalAttributesInPremise(universalVariables);
+            Join join = new Join(universalAttributes, universalAttributes);
+            join.addChild(premiseOperator);
+            join.addChild(standardQuery);
+            result.put(extTGD, join);
         }
         return result;
     }
@@ -131,11 +147,5 @@ public class BuildAlgebraTreeForTGD {
             result.add(new DifferenceEquality(leftAttribute, rightAttribute));
         }
         return result;
-    }
-
-    private IAlgebraOperator addOrderBy(IAlgebraOperator premiseRoot, Dependency dependency) {
-        OrderBy orderBy = new OrderBy(DependencyUtility.getFirstAttributesOfUniversalVariablesInConclusion(dependency));
-        orderBy.addChild(premiseRoot);
-        return orderBy;
     }
 }

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-  <source>
-    <type>DBMS</type>
-    <access-configuration>
-      <driver>org.postgresql.Driver</driver>
-      <uri>jdbc:postgresql:synthetic_t03</uri>
-      <schema>source</schema>
-      <login>pguser</login>
-      <password>pguser</password>
-    </access-configuration>
-    <init-db>
+    <source>
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:synthetic_t03</uri>
+            <schema>source</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
 <![CDATA[
 create schema source;
 SET search_path = source, pg_catalog;
@@ -21,18 +21,18 @@ create table const (
 
 insert into const(a) values ('4');
 ]]>
-    </init-db>
-  </source>
-  <target> 
-    <type>DBMS</type>
-    <access-configuration>
-      <driver>org.postgresql.Driver</driver>
-      <uri>jdbc:postgresql:synthetic_t03</uri>
-      <schema>target</schema>
-      <login>pguser</login>
-      <password>pguser</password>
-    </access-configuration>
-    <init-db>
+        </init-db>
+    </source>
+    <target> 
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:synthetic_t03</uri>
+            <schema>target</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
 <![CDATA[
 create schema target;
 SET search_path = target, pg_catalog;
@@ -54,9 +54,9 @@ insert into r(a,b) values ('2', '2');
 insert into s(a,b) values ('3', '4');
 insert into s(a,b) values ('2', '4');
 ]]>
-    </init-db>
-  </target>
-  <dependencies>
+        </init-db>
+    </target>
+    <dependencies>
 <![CDATA[
 ExtEGDs:
 s(a: $y1, b: $x), 
@@ -66,10 +66,8 @@ r(a: $z2, b: $y2),
 const(a: $x)
  -> $y1 == $y2.
 ]]>
-  </dependencies>
-  <partialOrder/>
-  <configuration>
-    <useCellGroupsForTGDs>true</useCellGroupsForTGDs>
-  </configuration>
+    </dependencies>
+    <partialOrder/>
+    <configuration/>
 </scenario>
 

@@ -2,7 +2,6 @@ package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
 import it.unibas.lunatic.model.chase.chasede.operators.IValueOccurrenceHandlerDE;
 import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
 import it.unibas.lunatic.model.database.NullValue;

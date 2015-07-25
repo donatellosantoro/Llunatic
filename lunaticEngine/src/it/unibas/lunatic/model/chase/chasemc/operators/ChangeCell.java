@@ -36,8 +36,7 @@ public class ChangeCell {
         this.occurrenceHandler = occurrenceHandler;
     }
 
-    public void changeCells(ChangeSet changeSet, IDatabase deltaDB, String stepId, Scenario scenario) {
-        CellGroup cellGroup = changeSet.getCellGroup();
+    public void changeCells(CellGroup cellGroup, IDatabase deltaDB, String stepId, Scenario scenario) {
         occurrenceHandler.saveNewCellGroup(cellGroup, deltaDB, stepId, scenario);
         IValue newValue = cellGroup.getValue();
         IValue groupID = cellGroup.getId();

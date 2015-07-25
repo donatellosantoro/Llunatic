@@ -110,7 +110,7 @@ public class Tuple implements Cloneable {
         StringBuilder result = new StringBuilder();
         result.append("[");
         for (Cell cell : cells) {
-            if(cell.getAttribute().equals(LunaticConstants.OID)){
+            if (cell.getAttribute().equals(LunaticConstants.OID)) {
                 continue;
             }
             result.append(cell.toShortString()).append(", ");

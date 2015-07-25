@@ -5,31 +5,13 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CellGroupUtility {
-
-    private static Logger logger = LoggerFactory.getLogger(CellGroupUtility.class);
-
-    public static void addCellGroupsForTGDVariableOccurrences(Tuple tuple, FormulaVariable formulaVariable, Map<FormulaVariable, List<CellGroup>> cellGroupsForVariable, IDatabase deltaDB, String stepId, OccurrenceHandlerMC occurrenceHandler) {
-        List<CellGroup> cellGroups = cellGroupsForVariable.get(formulaVariable);
-        if (cellGroups == null) {
-            cellGroups = new ArrayList<CellGroup>();
-        }
-        loadOrCreateCellGroupForTGDVariable(extractAttributeRefs(formulaVariable.getPremiseRelationalOccurrences()), tuple, cellGroups, deltaDB, stepId, occurrenceHandler);
-        loadOrCreateCellGroupForTGDVariable(extractAttributeRefs(formulaVariable.getConclusionRelationalOccurrences()), tuple, cellGroups, deltaDB, stepId, occurrenceHandler);
-        cellGroupsForVariable.put(formulaVariable, cellGroups);
-    }
 
     public static List<AttributeRef> extractAttributeRefs(List<FormulaVariableOccurrence> occurrences) {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
@@ -37,23 +19,6 @@ public class CellGroupUtility {
             result.add(formulaVariableOccurrence.getAttributeRef());
         }
         return result;
-    }
-
-    //TODO++ (TGD)
-    private static void loadOrCreateCellGroupForTGDVariable(List<AttributeRef> occurrenceAttributes, Tuple tuple, List<CellGroup> cellGroups, IDatabase deltaDB, String stepId, OccurrenceHandlerMC occurrenceHandler) {
-        throw new UnsupportedOperationException();
-//        for (AttributeRef attributeRef : occurrenceAttributes) {
-//            TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, attributeRef));
-//            CellRef cellRef = new CellRef(originalOid, attributeRef);
-//            IValue cellGroupValue = tuple.getCell(attributeRef).getValue();
-//            //TODO++ (TGD) Check new cell
-//            Cell cell = new Cell(cellRef, cellGroupValue);
-//            CellGroup cellGroup = occurrenceHandler.loadCellGroupFromValue(cell, deltaDB, stepId);
-//            if (cellGroup == null) {
-//                cellGroup = createNewCellGroupFromCell(cell);
-//            }
-//            cellGroups.add(cellGroup);
-//        }
     }
 
     public static CellGroup createNewCellGroupFromCell(Cell cell) {
@@ -69,16 +34,6 @@ public class CellGroupUtility {
         return cellGroup;
     }
 
-    public static CellGroup mergeCellGroupsForTGDs(List<CellGroup> cellGroups) {
-        IValue cellGroupValue = cellGroups.get(0).getValue();
-        CellGroup mergedCellGroup = new CellGroup(cellGroupValue, true);
-        for (CellGroup cellGroup : cellGroups) {
-            mergedCellGroup.getOccurrences().addAll(cellGroup.getOccurrences());
-            mergedCellGroup.getJustifications().addAll(cellGroup.getJustifications());
-        }
-        return mergedCellGroup;
-    }
-
     public static boolean haveAllEqualValues(Set<CellGroupCell> cells) {
         IValue firstValue = cells.iterator().next().getValue();
         for (CellGroupCell cell : cells) {
@@ -88,6 +43,19 @@ public class CellGroupUtility {
             return false;
         }
         return true;
+    }
+
+    public static void mergeCells(CellGroup source, CellGroup dest) {
+        if(source == dest){
+            throw new IllegalArgumentException("Unable to merge cell group with itself");
+        }
+        dest.getOccurrences().addAll(source.getOccurrences());
+        dest.getJustifications().addAll(source.getJustifications());
+        dest.getUserCells().addAll(source.getUserCells());
+        if (source.hasInvalidCell() && !dest.hasInvalidCell()) {
+            dest.setInvalidCell(source.getInvalidCell());
+        }
+        dest.addAllAdditionalCells(source.getAdditionalCells());
     }
 
 }

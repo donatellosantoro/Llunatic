@@ -7,9 +7,9 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
+import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IDatabase;
@@ -40,13 +40,13 @@ public class SamplingCostManager extends StandardCostManager {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Repair> chooseRepairStrategy(EquivalenceClass equivalenceClass, DeltaChaseStep chaseTreeRoot,
+    public List<Repair> chooseRepairStrategy(EquivalenceClassForEGD equivalenceClass, DeltaChaseStep chaseTreeRoot,
             List<Repair> repairsForDependency, Scenario scenario, String stepId,
             OccurrenceHandlerMC occurrenceHandler) {
         if (logger.isDebugEnabled()) logger.debug("########Current node: " + chaseTreeRoot.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("########Sampling repair strategy for equivalence class: " + equivalenceClass);
-        List<TargetCellsToChange> tupleGroupsWithSameConclusionValue = equivalenceClass.getTupleGroups();
-        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getDependency()) && isNotViolation(tupleGroupsWithSameConclusionValue, scenario)) {
+        List<TargetCellsToChangeForEGD> tupleGroupsWithSameConclusionValue = equivalenceClass.getTupleGroups();
+        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && isNotViolation(tupleGroupsWithSameConclusionValue, scenario)) {
             return Collections.EMPTY_LIST;
         }
         while (true) {
@@ -82,7 +82,7 @@ public class SamplingCostManager extends StandardCostManager {
         return LunaticConstants.CHASE_BACKWARD;
     }
 
-    private Repair generateRandomForwardRepair(EquivalenceClass equivalenceClass, Scenario scenario, IDatabase deltaDB, String stepId) {
+    private Repair generateRandomForwardRepair(EquivalenceClassForEGD equivalenceClass, Scenario scenario, IDatabase deltaDB, String stepId) {
         ChangeSet changesForForwardRepair = super.generateForwardRepair(equivalenceClass.getTupleGroups(), scenario, deltaDB, stepId);
         Repair forwardRepair = new Repair();
         forwardRepair.addChanges(changesForForwardRepair);
@@ -90,17 +90,17 @@ public class SamplingCostManager extends StandardCostManager {
         return forwardRepair;
     }
 
-    private Repair generateRandomBackwardRepair(List<TargetCellsToChange> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId, EquivalenceClass equivalenceClass) {
+    private Repair generateRandomBackwardRepair(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId, EquivalenceClassForEGD equivalenceClass) {
         if (logger.isDebugEnabled()) logger.debug("Generating backward repair for groups:\n" + LunaticUtility.printCollection(tupleGroups));
-        List<TargetCellsToChange> subset = generateRandomSubset(tupleGroups);
+        List<TargetCellsToChangeForEGD> subset = generateRandomSubset(tupleGroups);
         BackwardAttribute backwardAttribute = selectRandomAttribute(equivalenceClass);
         if (logger.isDebugEnabled()) logger.debug("Generating backward repairs for subset of size: " + subset.size() + "\n" + LunaticUtility.printCollection(subset));
         if (!super.allGroupsCanBeBackwardChasedForAttribute(subset, backwardAttribute)) {
             return null;
         }
-        List<TargetCellsToChange> forwardGroups = new ArrayList<TargetCellsToChange>(tupleGroups);
-        List<TargetCellsToChange> backwardGroups = new ArrayList<TargetCellsToChange>();
-        for (TargetCellsToChange tupleGroup : subset) {
+        List<TargetCellsToChangeForEGD> forwardGroups = new ArrayList<TargetCellsToChangeForEGD>(tupleGroups);
+        List<TargetCellsToChangeForEGD> backwardGroups = new ArrayList<TargetCellsToChangeForEGD>();
+        for (TargetCellsToChangeForEGD tupleGroup : subset) {
             CellGroup cellGroup = tupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute);
             if (backwardIsAllowed(cellGroup)) {
                 backwardGroups.add(tupleGroup);
@@ -116,21 +116,21 @@ public class SamplingCostManager extends StandardCostManager {
         return repair;
     }
 
-    private List<TargetCellsToChange> generateRandomSubset(List<TargetCellsToChange> tupleGroups) {
+    private List<TargetCellsToChangeForEGD> generateRandomSubset(List<TargetCellsToChangeForEGD> tupleGroups) {
         int subsetSize = Math.max(1, random.nextInt(tupleGroups.size()));
         List<Integer> subsetPositions = new ArrayList<Integer>();
         for (int i = 0; i < tupleGroups.size(); i++) {
             subsetPositions.add(i);
         }
         Collections.shuffle(subsetPositions);
-        List<TargetCellsToChange> subset = new ArrayList<TargetCellsToChange>();
+        List<TargetCellsToChangeForEGD> subset = new ArrayList<TargetCellsToChangeForEGD>();
         for (int i = 0; i < subsetSize; i++) {
             subset.add(tupleGroups.get(subsetPositions.get(i)));
         }
         return subset;
     }
 
-    private BackwardAttribute selectRandomAttribute(EquivalenceClass equivalenceClass) {
+    private BackwardAttribute selectRandomAttribute(EquivalenceClassForEGD equivalenceClass) {
         int position = random.nextInt(equivalenceClass.getAttributesToChangeForBackwardChasing().size());
         return equivalenceClass.getAttributesToChangeForBackwardChasing().get(position);
     }
@@ -146,7 +146,7 @@ public class SamplingCostManager extends StandardCostManager {
         return random.nextInt(maxRepairsForStep) + 1;
     }
 
-    private void correctValuesInRepair(Repair repair, EquivalenceClass equivalenceClass) {
+    private void correctValuesInRepair(Repair repair, EquivalenceClassForEGD equivalenceClass) {
         for (ChangeSet changeSet : repair.getChanges()) {
             if (!changeSet.getChaseMode().equals(LunaticConstants.CHASE_FORWARD)) {
                 continue;
@@ -162,9 +162,9 @@ public class SamplingCostManager extends StandardCostManager {
         return new ArrayList<CellGroupCell>(occurrences).get(random.nextInt(occurrences.size()));
     }
 
-    private IValue findOriginalValue(Cell randomCell, EquivalenceClass equivalenceClass) {
+    private IValue findOriginalValue(Cell randomCell, EquivalenceClassForEGD equivalenceClass) {
         for (IValue value : equivalenceClass.getTupleGroupsWithSameConclusionValue().keySet()) {
-            TargetCellsToChange targetCells = equivalenceClass.getTupleGroupsWithSameConclusionValue().get(value);
+            TargetCellsToChangeForEGD targetCells = equivalenceClass.getTupleGroupsWithSameConclusionValue().get(value);
             if (targetCells.getCellGroupForForwardRepair().getOccurrences().contains(randomCell)) {
                 return value;
             }

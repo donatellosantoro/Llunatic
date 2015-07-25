@@ -54,7 +54,7 @@ public class CheckUnsatisfiedDependencies {
 
     public List<Dependency> findUnsatisfiedTGDs(DeltaChaseStep currentNode, List<Dependency> dependencies, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Searching satisfied dependencies among " + LunaticUtility.printDependencyIds(dependencies));
-        Map<Dependency, IAlgebraOperator> tgdTreeMap = treeBuilderForTGD.buildAlgebraTreesForTGDViolations(scenario.getExtTGDs(), scenario);
+        Map<Dependency, IAlgebraOperator> tgdTreeMap = treeBuilderForTGD.buildAlgebraTreesForTGDViolationsCheck(scenario.getExtTGDs(), scenario);
         List<Dependency> unsatisfiedDepdendencies = new ArrayList<Dependency>();
         for (Dependency dependency : dependencies) {
             IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency);

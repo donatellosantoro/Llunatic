@@ -167,7 +167,5 @@ prescription(rxid: $rxid1, patient: $name1, npiref: $npi2) ->
         <leavesThreshold>20</leavesThreshold>
         <potentialSolutionsThreshold>10</potentialSolutionsThreshold>
     </costManager>
-    <configuration>
-        <useCellGroupsForTGDs>true</useCellGroupsForTGDs>
-    </configuration>
+    <configuration/>
 </scenario>

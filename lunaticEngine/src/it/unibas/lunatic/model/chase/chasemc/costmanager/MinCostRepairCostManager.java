@@ -3,9 +3,9 @@ package it.unibas.lunatic.model.chase.chasemc.costmanager;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
+import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
 import it.unibas.lunatic.model.database.IValue;
@@ -52,7 +52,7 @@ public class MinCostRepairCostManager extends StandardCostManager {
     
     @SuppressWarnings("unchecked")
     @Override
-    public List<Repair> chooseRepairStrategy(EquivalenceClass equivalenceClass, DeltaChaseStep chaseTreeRoot,
+    public List<Repair> chooseRepairStrategy(EquivalenceClassForEGD equivalenceClass, DeltaChaseStep chaseTreeRoot,
             List<Repair> repairsForDependency, Scenario scenario, String stepId,
             OccurrenceHandlerMC occurrenceHandler) {
         assert(scenario.getPartialOrder() instanceof StandardPartialOrder && scenario.getScriptPartialOrder() == null) : "No partial order allowed in min cost repair cost manager " + scenario;
@@ -68,7 +68,7 @@ public class MinCostRepairCostManager extends StandardCostManager {
         return Arrays.asList(new Repair[]{forwardRepair});
     }
 
-    private void correctValuesInRepair(Repair repair, EquivalenceClass equivalenceClass) {
+    private void correctValuesInRepair(Repair repair, EquivalenceClassForEGD equivalenceClass) {
         IValue minCostValue = null;
         double minCost = Double.MAX_VALUE;
         for (int i = 0; i < equivalenceClass.getTupleGroups().size(); i++) {
@@ -82,9 +82,9 @@ public class MinCostRepairCostManager extends StandardCostManager {
         repair.getChanges().get(0).getCellGroup().setValue(minCostValue);
     }
 
-    private double calculateCost(IValue value, EquivalenceClass equivalenceClass) {
+    private double calculateCost(IValue value, EquivalenceClassForEGD equivalenceClass) {
         double cost = 0;
-        for (TargetCellsToChange targetCellsToChange : equivalenceClass.getTupleGroups()) {
+        for (TargetCellsToChangeForEGD targetCellsToChange : equivalenceClass.getTupleGroups()) {
             CellGroup cellGroup = targetCellsToChange.getCellGroupForForwardRepair();
             double distance = 1.0 - SimilarityFactory.getInstance().getStrategy(similarityStrategy).computeSimilarity(value, cellGroup.getValue());
             cost += distance * cellGroup.getOccurrences().size();
@@ -93,7 +93,7 @@ public class MinCostRepairCostManager extends StandardCostManager {
     }
     
     @Override
-    public boolean isNotViolation(List<TargetCellsToChange> tupleGroups, Scenario scenario) {
+    public boolean isNotViolation(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Checking violations between tuple groups\n" + LunaticUtility.printCollection(tupleGroups));
         List<CellGroup> cellGroups = extractCellGroups(tupleGroups);
         Set<IValue> differentValues = findDifferentValuesInCellGroupsWithOccurrences(cellGroups);

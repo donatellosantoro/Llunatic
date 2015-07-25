@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-  <source>
-    <type>GENERATE</type>
-    <generate>
+    <source>
+        <type>GENERATE</type>
+        <generate>
 <![CDATA[
 SCHEMA:
 patients(ssn, name, phone, cfphone, str, city)
@@ -19,11 +19,11 @@ consttablecf1(insurance: "Abx", treatment: "Dental")
 consttablecf2(insurance: "Abx", city: "SF")
 masterdata(ssn: "222", name: "F. Lennon",  phone: "122-1876", str: "Sky Dr.", city: "SF")
 ]]>
-    </generate>
-  </source>
-  <target>    
-    <type>GENERATE</type>
-    <generate>
+        </generate>
+    </source>
+    <target>    
+        <type>GENERATE</type>
+        <generate>
 <![CDATA[
 SCHEMA:
 customers(ssn, name, phone, cfphone, str, city, cc)
@@ -36,9 +36,9 @@ treatments(ssn: "111", salary: "10K", insurance: "Abx", treatment: "Dental",    
 treatments(ssn: "111", salary: "25K", insurance: "Abx", treatment: "Cholest.",  date: "2012-12-08")
 treatments(ssn: "222", salary: "30K", insurance: "Med", treatment: "Eye surg.", date: "2012-10-06")
 ]]>
-    </generate>
-  </target>
-  <dependencies>
+        </generate>
+    </target>
+    <dependencies>
 <![CDATA[
 STTGDs:
 patients(ssn: $ssn, name: $name, phone: $phone, cfphone: $cfphone, str: $street, city: $city),
@@ -115,37 +115,35 @@ treatments(ssn: $ssn2, salary: $salary2, insurance: $insur2, treatment: $treat2,
 //S(a: $y1, b: $x), S(a: $y2, b: $x), R(a: $z1, b:$y1) and not exists(R(a: $z2, b:$y2)) -> $y1 == $y2.
 //S(a: $y1, b: $x), S(a: $y2, b: $x) and not exists(R(a: $z1, b:$y1)) and not exists(R(a: $z2, b:$y2)) -> $y1 == $y2.
 ]]>
-  </dependencies>
-  <authoritativeSources>
-    <source>consttablecf1</source>
-    <source>consttablecf2</source>
-    <source>masterdata</source>
-  </authoritativeSources>
-  <orderingAttributes>
-    <orderingAttribute>
-      <attribute>customers.phone</attribute>
-      <associatedAttribute>customers.cfphone</associatedAttribute>
-      <valueComparator sort="DESC">
-        <floatComparator/>
-      </valueComparator>
-    </orderingAttribute>    
-    <orderingAttribute>
-      <attribute>treatments.salary</attribute>
-      <associatedAttribute>treatments.date</associatedAttribute>
-      <valueComparator sort="DESC">
-        <dateComparator pattern="yyyy-MM-dd"/>
-      </valueComparator>
-    </orderingAttribute>
-  </orderingAttributes>
-  <configuration>
-      <useCellGroupsForTGDs>true</useCellGroupsForTGDs>
-  </configuration>
-<!--  <userManager>
-    <type>AfterLLUN</type>
-  </userManager>
-  <costManager>
-      <type>Standard</type>
-      <doPermutations>false</doPermutations>
-  </costManager>-->
+    </dependencies>
+    <authoritativeSources>
+        <source>consttablecf1</source>
+        <source>consttablecf2</source>
+        <source>masterdata</source>
+    </authoritativeSources>
+    <orderingAttributes>
+        <orderingAttribute>
+            <attribute>customers.phone</attribute>
+            <associatedAttribute>customers.cfphone</associatedAttribute>
+            <valueComparator sort="DESC">
+                <floatComparator/>
+            </valueComparator>
+        </orderingAttribute>    
+        <orderingAttribute>
+            <attribute>treatments.salary</attribute>
+            <associatedAttribute>treatments.date</associatedAttribute>
+            <valueComparator sort="DESC">
+                <dateComparator pattern="yyyy-MM-dd"/>
+            </valueComparator>
+        </orderingAttribute>
+    </orderingAttributes>
+    <configuration/>
+    <!--  <userManager>
+      <type>AfterLLUN</type>
+    </userManager>
+    <costManager>
+        <type>Standard</type>
+        <doPermutations>false</doPermutations>
+    </costManager>-->
 </scenario>
 

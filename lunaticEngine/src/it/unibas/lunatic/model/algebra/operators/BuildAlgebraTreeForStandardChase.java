@@ -20,7 +20,7 @@ public class BuildAlgebraTreeForStandardChase {
     private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
 
     public IAlgebraOperator generate(Dependency extTGD, Scenario scenario) {
-        if (logger.isDebugEnabled()) logger.debug("Generating standard insert for dependency " + extTGD);
+        if (logger.isDebugEnabled()) logger.debug("Generating standard query for dependency " + extTGD);
         List<FormulaVariable> universalVariables = DependencyUtility.getUniversalVariablesInConclusion(extTGD);
         if (logger.isDebugEnabled()) logger.debug("Universal variables: " + universalVariables);
         IAlgebraOperator premiseOperator = buildPremiseOperator(extTGD, scenario, universalVariables);
@@ -32,7 +32,7 @@ public class BuildAlgebraTreeForStandardChase {
         difference.addChild(conclusionOperator);
         if (logger.isDebugEnabled()) logger.debug("Difference operator: " + difference);
         IAlgebraOperator root = difference;
-        if (scenario.getConfiguration().isUseLimit1()) {
+        if (scenario.getConfiguration().isUseLimit1ForEGDs()) {
             Limit limit = new Limit(1);
             limit.addChild(root);
             if (logger.isDebugEnabled()) logger.debug("Adding limit operator. " + limit);
@@ -41,7 +41,7 @@ public class BuildAlgebraTreeForStandardChase {
         return root;
     }
 
-    private IAlgebraOperator buildPremiseOperator(Dependency dependency, Scenario scenario, List<FormulaVariable> universalVariables) {
+    public IAlgebraOperator buildPremiseOperator(Dependency dependency, Scenario scenario, List<FormulaVariable> universalVariables) {
         IAlgebraOperator premiseOperator = treeBuilder.buildTreeForPremise(dependency, scenario);
         List<AttributeRef> universalAttributes = DependencyUtility.getUniversalAttributesInPremise(universalVariables);
         if (logger.isDebugEnabled()) logger.debug("Universal attributes in premise: " + universalAttributes);

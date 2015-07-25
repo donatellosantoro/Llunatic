@@ -4,8 +4,8 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
+import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.CellRef;
@@ -38,14 +38,14 @@ public class EquivalenceClassUtility {
         return true;
     }
 
-    public static void addTuple(Tuple tuple, EquivalenceClass equivalenceClass) {
+    public static void addTuple(Tuple tuple, EquivalenceClassForEGD equivalenceClass) {
         if (logger.isDebugEnabled()) logger.trace("Adding tuple " + tuple + " to equivalence class: " + equivalenceClass);
         if (logger.isDebugEnabled()) logger.debug("OccurrenceAttributesForConclusionVariable: " + equivalenceClass.getOccurrenceAttributesForConclusionVariable());
         for (AttributeRef occurrenceAttributesForConclusionVariable : equivalenceClass.getOccurrenceAttributesForConclusionVariable()) {
             Cell cellToChangeForForwardChasing = tuple.getCell(occurrenceAttributesForConclusionVariable);
             if (logger.isDebugEnabled()) logger.trace("Attribute: " + occurrenceAttributesForConclusionVariable + " - Cell: " + cellToChangeForForwardChasing);
             IValue conclusionValue = cellToChangeForForwardChasing.getValue();
-            TargetCellsToChange targetCellsToChange = getOrCreateTargetCellsToChange(equivalenceClass, conclusionValue);
+            TargetCellsToChangeForEGD targetCellsToChange = getOrCreateTargetCellsToChange(equivalenceClass, conclusionValue);
             TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, occurrenceAttributesForConclusionVariable));
             CellRef cellRef = new CellRef(originalOid, ChaseUtility.unAlias(occurrenceAttributesForConclusionVariable));
             if (occurrenceAttributesForConclusionVariable.isSource()) {
@@ -68,18 +68,18 @@ public class EquivalenceClassUtility {
         if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
     }
 
-    private static TargetCellsToChange getOrCreateTargetCellsToChange(EquivalenceClass equivalenceClass, IValue conclusionValue) {
-        TargetCellsToChange targetCellsToChange = equivalenceClass.getTupleGroupsWithSameConclusionValue().get(conclusionValue);
+    private static TargetCellsToChangeForEGD getOrCreateTargetCellsToChange(EquivalenceClassForEGD equivalenceClass, IValue conclusionValue) {
+        TargetCellsToChangeForEGD targetCellsToChange = equivalenceClass.getTupleGroupsWithSameConclusionValue().get(conclusionValue);
         if (logger.isDebugEnabled()) logger.trace("Target cells to change: " + targetCellsToChange);
         if (targetCellsToChange == null) {
-            targetCellsToChange = new TargetCellsToChange(conclusionValue);
+            targetCellsToChange = new TargetCellsToChangeForEGD(conclusionValue);
             equivalenceClass.getTupleGroupsWithSameConclusionValue().put(conclusionValue, targetCellsToChange);
         }
         return targetCellsToChange;
     }
 
-    private static void addAdditionalAttributes(TargetCellsToChange targetCellsToChange, TupleOID originalOIDForConclusionValue, Tuple tuple, EquivalenceClass equivalenceClass) {
-        for (AttributeRef additionalAttribute : equivalenceClass.getDependency().getAdditionalAttributes()) {
+    private static void addAdditionalAttributes(TargetCellsToChangeForEGD targetCellsToChange, TupleOID originalOIDForConclusionValue, Tuple tuple, EquivalenceClassForEGD equivalenceClass) {
+        for (AttributeRef additionalAttribute : equivalenceClass.getEGD().getAdditionalAttributes()) {
             for (Cell additionalCell : tuple.getCells()) {
                 AttributeRef unaliasedAttribute = ChaseUtility.unAlias(additionalCell.getAttributeRef());
                 if (!unaliasedAttribute.equals(additionalAttribute)) {

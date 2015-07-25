@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc.costmanager;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
@@ -13,7 +13,7 @@ import java.util.List;
 public interface ICostManager {
 
     public List<Repair> chooseRepairStrategy(
-            EquivalenceClass equivalenceClass, DeltaChaseStep chaseTreeRoot,
+            EquivalenceClassForEGD equivalenceClass, DeltaChaseStep chaseTreeRoot,
             List<Repair> repairsForDependency,
             Scenario scenario, String stepId, OccurrenceHandlerMC occurrenceHandler);
     

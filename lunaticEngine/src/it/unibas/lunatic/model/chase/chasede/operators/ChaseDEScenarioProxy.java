@@ -36,7 +36,7 @@ public class ChaseDEScenarioProxy implements IDEChaser {
         forwardOnlyCostManager.setDoPermutations(false);
         scenario.setCostManager(forwardOnlyCostManager);
         scenario.setPartialOrder(new DEPartialOrder());
-        scenario.getConfiguration().setUseCellGroupsForTGDs(false);
+        scenario.getConfiguration().setDeProxyMode(true);
         scenario.getConfiguration().setRemoveDuplicates(false);
         ChaseMCScenario mcChaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep chaseStep = mcChaser.doChase(scenario);

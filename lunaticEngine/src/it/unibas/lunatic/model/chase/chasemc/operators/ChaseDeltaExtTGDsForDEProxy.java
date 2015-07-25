@@ -15,16 +15,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ChaseDeltaExtTGDsWithoutCellGroups implements IChaseDeltaExtTGDs {
+public class ChaseDeltaExtTGDsForDEProxy implements IChaseDeltaExtTGDs {
 
     public static final int ITERATION_LIMIT = 10;
-    private static Logger logger = LoggerFactory.getLogger(ChaseDeltaExtTGDsWithoutCellGroups.class);
+    private static Logger logger = LoggerFactory.getLogger(ChaseDeltaExtTGDsForDEProxy.class);
 
-//    private InsertTuplesForTgdsWithoutCellGroups insertTuples;
-    private IInsertTuplesForTGDs insertTuples;
+    private IInsertTuplesForTGDsAndDEProxy insertTuples;
     private IBuildDatabaseForChaseStep databaseBuilder;
 
-    public ChaseDeltaExtTGDsWithoutCellGroups(IInsertTuplesForTGDs insertTuples, IBuildDatabaseForChaseStep databaseBuilder) {
+    public ChaseDeltaExtTGDsForDEProxy(IInsertTuplesForTGDsAndDEProxy insertTuples, IBuildDatabaseForChaseStep databaseBuilder) {
         this.insertTuples = insertTuples;
         this.databaseBuilder = databaseBuilder;
     }
@@ -79,7 +78,6 @@ public class ChaseDeltaExtTGDsWithoutCellGroups implements IChaseDeltaExtTGDs {
                 if (logger.isDebugEnabled()) logger.debug("----Current leaf: " + newStep);
                 IAlgebraOperator tgdQuery = tgdTreeMap.get(eTgd);
                 if (logger.isDebugEnabled()) logger.debug("----TGD Query: " + tgdQuery);
-//                insertedTuples = insertTuples.execute(tgdQuery, newStep, eTgd, scenario) || insertedTuples;
                 insertedTuples = insertTuples.execute(tgdQuery, newStep, eTgd, scenario, databaseForStep) || insertedTuples;
                 long endTgd = new Date().getTime();
                 ChaseStats.getInstance().addDepenendecyStat(eTgd, endTgd - startTgd);
@@ -97,5 +95,8 @@ public class ChaseDeltaExtTGDsWithoutCellGroups implements IChaseDeltaExtTGDs {
         if (modified) {
             node.addChild(newStep);
         }
+    }
+
+    public void initializeOIDs(IDatabase targetDB) {
     }
 }

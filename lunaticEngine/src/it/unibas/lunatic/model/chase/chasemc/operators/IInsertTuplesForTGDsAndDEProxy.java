@@ -6,8 +6,9 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 
-public interface IInsertTuplesForTGDs {
+public interface IInsertTuplesForTGDsAndDEProxy {
 
-    boolean execute(IAlgebraOperator sourceQuery, DeltaChaseStep currentNode, Dependency tgd, Scenario scenario, IDatabase databaseForStep);
-    void initializeOIDs(IDatabase database);
+    public boolean execute(IAlgebraOperator violationQuery, DeltaChaseStep currentNode, Dependency tgd, Scenario scenario, IDatabase databaseForStep);
+
+    public void initializeOIDs(IDatabase database);
 }

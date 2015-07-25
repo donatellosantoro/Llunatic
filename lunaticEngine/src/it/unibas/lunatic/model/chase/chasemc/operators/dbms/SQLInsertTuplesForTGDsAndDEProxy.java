@@ -8,7 +8,7 @@ import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.sql.AlgebraTreeToSQL;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDs;
+import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDsAndDEProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
 import it.unibas.lunatic.model.database.Attribute;
 import it.unibas.lunatic.model.database.AttributeRef;
@@ -41,17 +41,18 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SQLInsertTuplesForTGDs implements IInsertTuplesForTGDs {
+public class SQLInsertTuplesForTGDsAndDEProxy implements IInsertTuplesForTGDsAndDEProxy {
 
-    private static Logger logger = LoggerFactory.getLogger(SQLInsertTuplesForTGDs.class);
+    private static Logger logger = LoggerFactory.getLogger(SQLInsertTuplesForTGDsAndDEProxy.class);
 
     private IOIDGenerator oidGenerator;
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
 
-    public SQLInsertTuplesForTGDs(IOIDGenerator oidGenerator) {
+    public SQLInsertTuplesForTGDsAndDEProxy(IOIDGenerator oidGenerator) {
         this.oidGenerator = oidGenerator;
     }
 
+    @Override
     public boolean execute(IAlgebraOperator violationQuery, DeltaChaseStep currentNode, Dependency tgd, Scenario scenario, IDatabase databaseForStep) {
         if (!scenario.isDBMS()) {
             throw new DBMSException("Unable to generate SQL: data sources are not on a dbms");
@@ -189,6 +190,7 @@ public class SQLInsertTuplesForTGDs implements IInsertTuplesForTGDs {
         return script.toString();
     }
 
+    @Override
     public void initializeOIDs(IDatabase database) {
         oidGenerator.initializeOIDs(database);
     }

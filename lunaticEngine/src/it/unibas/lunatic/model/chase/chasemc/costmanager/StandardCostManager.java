@@ -7,9 +7,9 @@ import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClass;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChange;
+import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.database.IDatabase;
@@ -28,13 +28,13 @@ public class StandardCostManager extends AbstractCostManager {
     private static Logger logger = LoggerFactory.getLogger(StandardCostManager.class);
 
     @SuppressWarnings("unchecked")
-    public List<Repair> chooseRepairStrategy(EquivalenceClass equivalenceClass, DeltaChaseStep chaseTreeRoot,
+    public List<Repair> chooseRepairStrategy(EquivalenceClassForEGD equivalenceClass, DeltaChaseStep chaseTreeRoot,
             List<Repair> repairsForDependency, Scenario scenario, String stepId,
             OccurrenceHandlerMC occurrenceHandler) {
         if (logger.isDebugEnabled()) logger.debug("########Current node: " + chaseTreeRoot.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("########Choosing repair strategy for equivalence class: " + equivalenceClass);
-        List<TargetCellsToChange> tupleGroupsWithSameConclusionValue = equivalenceClass.getTupleGroups();
-        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getDependency()) && isNotViolation(tupleGroupsWithSameConclusionValue, scenario)) {
+        List<TargetCellsToChangeForEGD> tupleGroupsWithSameConclusionValue = equivalenceClass.getTupleGroups();
+        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && isNotViolation(tupleGroupsWithSameConclusionValue, scenario)) {
             return Collections.EMPTY_LIST;
         }
         List<Repair> result = new ArrayList<Repair>();
@@ -63,15 +63,15 @@ public class StandardCostManager extends AbstractCostManager {
         return result;
     }
 
-    private List<Repair> generateBackwardRepairs(List<TargetCellsToChange> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId, EquivalenceClass equivalenceClass) {
+    private List<Repair> generateBackwardRepairs(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId, EquivalenceClassForEGD equivalenceClass) {
         if (tupleGroups.size() > 5) {
             throw new ChaseException("Tuple group of excessive size, it is not possible to chase this scenario: " + tupleGroups);
         }
         List<Repair> result = new ArrayList<Repair>();
         if (logger.isDebugEnabled()) logger.debug("Generating backward repairs for groups:\n" + LunaticUtility.printCollection(tupleGroups));
-        GenericPowersetGenerator<TargetCellsToChange> powersetGenerator = new GenericPowersetGenerator<TargetCellsToChange>();
-        List<List<TargetCellsToChange>> powerset = powersetGenerator.generatePowerSet(tupleGroups);
-        for (List<TargetCellsToChange> subset : powerset) {
+        GenericPowersetGenerator<TargetCellsToChangeForEGD> powersetGenerator = new GenericPowersetGenerator<TargetCellsToChangeForEGD>();
+        List<List<TargetCellsToChangeForEGD>> powerset = powersetGenerator.generatePowerSet(tupleGroups);
+        for (List<TargetCellsToChangeForEGD> subset : powerset) {
             if (subset.isEmpty()) {
                 continue;
             }
@@ -80,9 +80,9 @@ public class StandardCostManager extends AbstractCostManager {
                 if (!allGroupsCanBeBackwardChasedForAttribute(subset, backwardAttribute)) {
                     break;
                 }
-                List<TargetCellsToChange> forwardGroups = new ArrayList<TargetCellsToChange>(tupleGroups);
-                List<TargetCellsToChange> backwardGroups = new ArrayList<TargetCellsToChange>();
-                for (TargetCellsToChange tupleGroup : subset) {
+                List<TargetCellsToChangeForEGD> forwardGroups = new ArrayList<TargetCellsToChangeForEGD>(tupleGroups);
+                List<TargetCellsToChangeForEGD> backwardGroups = new ArrayList<TargetCellsToChangeForEGD>();
+                for (TargetCellsToChangeForEGD tupleGroup : subset) {
                     CellGroup cellGroup = tupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute);
                     if (backwardIsAllowed(cellGroup)) {
                         backwardGroups.add(tupleGroup);
@@ -100,8 +100,8 @@ public class StandardCostManager extends AbstractCostManager {
         return result;
     }
 
-    protected boolean allGroupsCanBeBackwardChasedForAttribute(List<TargetCellsToChange> subset, BackwardAttribute backwardAttribute) {
-        for (TargetCellsToChange tupleGroup : subset) {
+    protected boolean allGroupsCanBeBackwardChasedForAttribute(List<TargetCellsToChangeForEGD> subset, BackwardAttribute backwardAttribute) {
+        for (TargetCellsToChangeForEGD tupleGroup : subset) {
             if (tupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute) == null) {
                 return false;
             }
@@ -109,14 +109,14 @@ public class StandardCostManager extends AbstractCostManager {
         return true;
     }
 
-    protected Repair generateRepairWithBackwards(EquivalenceClass equivalenceClass, List<TargetCellsToChange> forwardTupleGroups, List<TargetCellsToChange> backwardTupleGroups, BackwardAttribute backwardAttribute,
+    protected Repair generateRepairWithBackwards(EquivalenceClassForEGD equivalenceClass, List<TargetCellsToChangeForEGD> forwardTupleGroups, List<TargetCellsToChangeForEGD> backwardTupleGroups, BackwardAttribute backwardAttribute,
             Scenario scenario, IDatabase deltaDB, String stepId) {
         Repair repair = new Repair();
         if (forwardTupleGroups.size() > 1) {
             ChangeSet forwardChanges = generateForwardRepair(forwardTupleGroups, scenario, deltaDB, stepId);
             repair.addChanges(forwardChanges);
         }
-        for (TargetCellsToChange backwardTupleGroup : backwardTupleGroups) {
+        for (TargetCellsToChangeForEGD backwardTupleGroup : backwardTupleGroups) {
             CellGroup backwardCellGroup = backwardTupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute).clone();
             LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
             backwardCellGroup.setValue(llunValue);

@@ -31,7 +31,7 @@ public class BuildAlgebraTreeForEGD {
         for (Dependency dependency : dependencies) {
             IAlgebraOperator premiseRoot = buildTreeForExtEGDPremise(dependency, scenario);
 //            if (scenario.getConfiguration().isUseLimit1() || dependency.isOverlapBetweenAffectedAndQueried()) {
-            if (scenario.getConfiguration().isUseLimit1()) {
+            if (scenario.getConfiguration().isUseLimit1ForEGDs()) {
                 Limit limit1 = new Limit(1);
                 limit1.addChild(premiseRoot);
                 premiseRoot = limit1;

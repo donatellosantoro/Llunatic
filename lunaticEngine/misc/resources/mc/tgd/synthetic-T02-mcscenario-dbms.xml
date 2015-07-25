@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-  <source>
-    <type>DBMS</type>
-    <access-configuration>
-      <driver>org.postgresql.Driver</driver>
-      <uri>jdbc:postgresql:synthetic_t02</uri>
-      <schema>source</schema>
-      <login>pguser</login>
-      <password>pguser</password>
-    </access-configuration>
-    <init-db>
+    <source>
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:synthetic_t02</uri>
+            <schema>source</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
 <![CDATA[
 create schema source;
 SET search_path = source, pg_catalog;
@@ -28,18 +28,18 @@ create table const2 (
 insert into const1(a) values ('3');
 insert into const2(a,b) values ('5', '6');
 ]]>
-    </init-db>
-  </source>
-  <target> 
-    <type>DBMS</type>
-    <access-configuration>
-      <driver>org.postgresql.Driver</driver>
-      <uri>jdbc:postgresql:synthetic_t02</uri>
-      <schema>target</schema>
-      <login>pguser</login>
-      <password>pguser</password>
-    </access-configuration>
-    <init-db>
+        </init-db>
+    </source>
+    <target> 
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:synthetic_t02</uri>
+            <schema>target</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
 <![CDATA[
 create schema target;
 SET search_path = target, pg_catalog;
@@ -62,9 +62,9 @@ insert into r(a,b) values ('5', '5');
 insert into s(a,b) values ('3', '4');
 insert into s(a,b) values ('2', '4');
 ]]>
-    </init-db>
-  </target>
-  <dependencies>
+        </init-db>
+    </target>
+    <dependencies>
 <![CDATA[
 ExtTGDs:
 r(a: $x, b: $y), const1(a: $y) -> s(a: $y, b: $z).
@@ -76,10 +76,8 @@ s(a: $y1, b: $x), s(a: $y2, b: $x), r(a: $z1, b:$y1) and not exists(r(a: $z2, b:
 //s(a: $y1, b: $x), s(a: $y2, b: $x), r(a: $z2, b:$y2) and not exists(r(a: $z1, b:$y1)) -> $y1 == $y2.
 s(a: $y1, b: $x), s(a: $y2, b: $x) and not exists(r(a: $z1, b:$y1)) and not exists(r(a: $z2, b:$y2)) -> $y1 == $y2.
 ]]>
-  </dependencies>
-  <partialOrder/>
-  <configuration>
-    <useCellGroupsForTGDs>true</useCellGroupsForTGDs>
-  </configuration>
+    </dependencies>
+    <partialOrder/>
+    <configuration/>
 </scenario>
 

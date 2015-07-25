@@ -43,6 +43,10 @@ public class DependencyUtility {
         return result;
     }
 
+    public static List<FormulaVariable> getExistentialVariables(Dependency dependency) {
+        return dependency.getConclusion().getLocalVariables();
+    }
+
     public static List<FormulaVariable> findUniversalVariablesInConclusion(Dependency dependency) {
         List<FormulaVariable> result = new ArrayList<FormulaVariable>();
         for (FormulaVariable formulaVariable : dependency.getPremise().getLocalVariables()) {

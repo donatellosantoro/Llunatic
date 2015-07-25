@@ -12,8 +12,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FindOriginalValuesForCellGroupCells {
+
+    private static Logger logger = LoggerFactory.getLogger(FindOriginalValuesForCellGroupCells.class);
 
     public CellGroup findOriginalValues(List<CellGroup> cellGroupsToMerge, IValue value) {
         Map<CellRef, List<CellGroupCell>> occurrenceMap = new HashMap<CellRef, List<CellGroupCell>>();

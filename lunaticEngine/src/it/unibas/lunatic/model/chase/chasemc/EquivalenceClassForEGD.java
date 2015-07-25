@@ -9,22 +9,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EquivalenceClass {
+public class EquivalenceClassForEGD {
 
-    private Dependency dependency;
+    private Dependency egd;
     private List<AttributeRef> occurrenceAttributesForConclusionVariable;
     private List<BackwardAttribute> attributesToChangeForBackwardChasing;
-    private Map<IValue, TargetCellsToChange> tupleGroupsWithSameConclusionValue = new HashMap<IValue, TargetCellsToChange>();
+    private Map<IValue, TargetCellsToChangeForEGD> tupleGroupsWithSameConclusionValue = new HashMap<IValue, TargetCellsToChangeForEGD>();
 
-    public EquivalenceClass(Dependency dependency, List<AttributeRef> occurrenceAttributesForConclusionVariable, 
+    public EquivalenceClassForEGD(Dependency egd, List<AttributeRef> occurrenceAttributesForConclusionVariable, 
             List<BackwardAttribute> attributesForBackwardChasing) {
-        this.dependency = dependency;
+        this.egd = egd;
         this.occurrenceAttributesForConclusionVariable = occurrenceAttributesForConclusionVariable;
         this.attributesToChangeForBackwardChasing = attributesForBackwardChasing;
     }
 
-    public Dependency getDependency() {
-        return dependency;
+    public Dependency getEGD() {
+        return egd;
     }
 
     public List<AttributeRef> getOccurrenceAttributesForConclusionVariable() {
@@ -35,17 +35,17 @@ public class EquivalenceClass {
         return attributesToChangeForBackwardChasing;
     }
 
-    public Map<IValue, TargetCellsToChange> getTupleGroupsWithSameConclusionValue() {
+    public Map<IValue, TargetCellsToChangeForEGD> getTupleGroupsWithSameConclusionValue() {
         return tupleGroupsWithSameConclusionValue;
     }
 
-    public List<TargetCellsToChange> getTupleGroups() {
-        return new ArrayList<TargetCellsToChange>(tupleGroupsWithSameConclusionValue.values());
+    public List<TargetCellsToChangeForEGD> getTupleGroups() {
+        return new ArrayList<TargetCellsToChangeForEGD>(tupleGroupsWithSameConclusionValue.values());
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("EquivalenceClass for dependency=" + dependency.getId());
+        StringBuilder sb = new StringBuilder("EquivalenceClass for egd=" + egd.getId());
         sb.append("\nOccurrence Attributes For ConclusionVariable: ").append(occurrenceAttributesForConclusionVariable);
         sb.append("\nAttributes For Backward Chasing\n");
         for (BackwardAttribute backwardAttribute : attributesToChangeForBackwardChasing) {

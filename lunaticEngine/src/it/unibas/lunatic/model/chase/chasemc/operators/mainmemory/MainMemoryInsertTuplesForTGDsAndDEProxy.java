@@ -1,26 +1,30 @@
-package it.unibas.lunatic.model.chase.chasemc.operators;
+package it.unibas.lunatic.model.chase.chasemc.operators.mainmemory;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.IInsertTuple;
 import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.database.Attribute;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.ITable;
 import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.model.database.TupleOID;
 import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
+import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDsAndDEProxy;
+import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
+import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
+import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -30,43 +34,33 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InsertTuplesForTgdsWithoutCellGroups {
+public class MainMemoryInsertTuplesForTGDsAndDEProxy implements IInsertTuplesForTGDsAndDEProxy {
 
-    private static Logger logger = LoggerFactory.getLogger(InsertTuplesForTgdsWithoutCellGroups.class);
+    private static Logger logger = LoggerFactory.getLogger(MainMemoryInsertTuplesForTGDsAndDEProxy.class);
 
     private IInsertTuple insertOperator;
     private IRunQuery queryRunner;
-//    private IValueOccurrenceHandlerMC occurrenceHandler;
-    private IBuildDatabaseForChaseStep databaseBuilder;
+    private OccurrenceHandlerMC occurrenceHandler;
     private IOIDGenerator oidGenerator;
 
-//    public InsertTuplesForTgdsWithoutCellGroups(IInsertTuple insertOperator, IRunQuery queryRunner, IValueOccurrenceHandlerMC occurrenceHandler, IBuildDatabaseForChaseStep databaseBuilder, IOIDGenerator oidGenerator) {
-    public InsertTuplesForTgdsWithoutCellGroups(IInsertTuple insertOperator, IRunQuery queryRunner, IBuildDatabaseForChaseStep databaseBuilder, IOIDGenerator oidGenerator) {
+    public MainMemoryInsertTuplesForTGDsAndDEProxy(IInsertTuple insertOperator, IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, IOIDGenerator oidGenerator) {
         this.insertOperator = insertOperator;
         this.queryRunner = queryRunner;
-//        this.occurrenceHandler = occurrenceHandler;
-        this.databaseBuilder = databaseBuilder;
+        this.occurrenceHandler = occurrenceHandler;
         this.oidGenerator = oidGenerator;
     }
 
-    public boolean execute(IAlgebraOperator sourceQuery, DeltaChaseStep currentNode, Dependency tgd, Scenario scenario) {
-        IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), tgd);
-        return execute(sourceQuery, currentNode, tgd, scenario, databaseForStep);
-    }
-
-    public boolean execute(IAlgebraOperator sourceQuery, DeltaChaseStep currentNode, Dependency tgd, Scenario scenario, IDatabase databaseForStep) {
+    @Override
+    public boolean execute(IAlgebraOperator violationQuery, DeltaChaseStep currentNode, Dependency tgd, Scenario scenario, IDatabase databaseForStep) {
         Map<AttributeRef, IValueGenerator> targetGenerators = tgd.getTargetGenerators();
         if (logger.isDebugEnabled()) logger.debug("----Executing insert. Tgd generator map: " + LunaticUtility.printMap(targetGenerators));
-        if (logger.isDebugEnabled()) logger.debug("----Source query: " + sourceQuery);
+        if (logger.isDebugEnabled()) logger.debug("----Violation query: " + violationQuery);
         List<TableAlias> targetTablesToInsert = findTableAliases(targetGenerators);
-        //1. Rebuild db for step
         if (logger.isDebugEnabled()) logger.debug("----Tables to insert: " + targetTablesToInsert);
-        //2. Run source query
-        ITupleIterator it = queryRunner.run(sourceQuery, scenario.getSource(), databaseForStep);
-        //3. Perform inserts
+        if (logger.isDebugEnabled()) logger.debug("Executing violation query...");
+        ITupleIterator it = queryRunner.run(violationQuery, scenario.getSource(), databaseForStep);
         boolean insertedTuple = it.hasNext();
         while (it.hasNext()) {
-//            Map<NullValue, CellGroup> cellGroupsForNull = new HashMap<NullValue, CellGroup>();
             Tuple premiseTuple = it.next();
             if (logger.isDebugEnabled()) logger.debug("----Premise tuple: " + premiseTuple);
             for (TableAlias tableAlias : targetTablesToInsert) {
@@ -81,22 +75,27 @@ public class InsertTuplesForTgdsWithoutCellGroups {
                     String deltaTableName = ChaseUtility.getDeltaRelationName(table.getName(), attribute.getName());
                     if (logger.isDebugEnabled()) logger.debug("----Inserting into delta table: " + deltaTableName);
                     IValue attributeValue = computeValue(tableAlias, attribute, targetGenerators, premiseTuple);
-                    Tuple targetTuple = buildTargetTuple(deltaTableName, newTupleOID, attribute.getName(), attributeValue, currentNode.getId());
+                    Tuple targetTuple = buildTargetTupleForDeltaDB(deltaTableName, newTupleOID, attribute.getName(), attributeValue, currentNode.getId());
                     if (logger.isDebugEnabled()) logger.debug("----Target tuple: " + targetTuple);
                     ITable deltaTable = currentNode.getDeltaDB().getTable(deltaTableName);
                     insertOperator.execute(deltaTable, targetTuple, scenario.getSource(), scenario.getTarget());
-//                    IValue groupId = CellGroupIDGenerator.generateNewId(attributeValue);
-//                    occurrenceHandler.updateOccurrencesForNewTuple(targetTuple, groupId, currentNode.getDeltaDB(), table.getName(), attribute.getName(), true);
-//                    generateCellGroupForNulls(targetTuple, cellGroupsForNull);
+                    //TODO DE Check
+                    updateOccurrencesForNewTuple(targetTuple, attributeValue, databaseForStep, deltaTableName, deltaTableName, scenario);
                 }
             }
-//            if (logger.isDebugEnabled()) logger.debug("Cell groups for null value:\n" + LunaticUtility.printMap(cellGroupsForNull));
-//            for (CellGroup cellGroupForNull : cellGroupsForNull.values()) {
-//                occurrenceHandler.enrichOccurrencesAndProvenances(cellGroupForNull, currentNode.getDeltaDB(), currentNode.getId());
-//            }
         }
         it.close();
+        if (logger.isDebugEnabled()) logger.debug("TGD repair terminated");
         return insertedTuple;
+    }
+
+    public void updateOccurrencesForNewTuple(Tuple tuple, IValue cellValue, IDatabase deltaDB, String tableName, String attributeName, Scenario scenario) {
+        IValue groupId = CellGroupIDGenerator.generateNewId(cellValue);
+        IValue tid = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.TID);
+        String stepId = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.STEP).toString();
+        CellRef cellRef = new CellRef(new TupleOID(tid), new AttributeRef(tableName, attributeName));
+        CellGroupCell cellGroupCell = new CellGroupCell(cellRef, tid, cellValue, LunaticConstants.TYPE_OCCURRENCE, true);
+        occurrenceHandler.saveCellGroupCell(deltaDB, groupId, cellGroupCell, stepId, scenario);
     }
 
     private List<TableAlias> findTableAliases(Map<AttributeRef, IValueGenerator> targetGenerators) {
@@ -114,7 +113,7 @@ public class InsertTuplesForTgdsWithoutCellGroups {
         return generator.generateValue(sourceTuple);
     }
 
-    private Tuple buildTargetTuple(String deltaTableName, TupleOID newTupleOID, String attributeName, IValue attributeValue, String id) {
+    private Tuple buildTargetTupleForDeltaDB(String deltaTableName, TupleOID newTupleOID, String attributeName, IValue attributeValue, String id) {
         TupleOID tupleOID = new TupleOID(IntegerOIDGenerator.getNextOID());
         Tuple tuple = new Tuple(tupleOID);
         Cell tidCell = new Cell(tupleOID, new AttributeRef(deltaTableName, LunaticConstants.TID), new ConstantValue(newTupleOID));
@@ -126,23 +125,7 @@ public class InsertTuplesForTgdsWithoutCellGroups {
         return tuple;
     }
 
-    //TODO++ (TGD)
-//    private void generateCellGroupForNulls(Tuple targetTuple, Map<NullValue, CellGroup> cellGroupsForNull) {
-//        // tgds may generate new nulls
-//        for (Cell cell : targetTuple.getCells()) {
-//            IValue cellValue = cell.getValue();
-//            if (cellValue instanceof NullValue) {
-//                NullValue nullValue = (NullValue) cellValue;
-//                CellGroup cellGroupForNull = cellGroupsForNull.get(nullValue);
-//                if (cellGroupForNull == null) {
-//                    cellGroupForNull = new CellGroup(nullValue, true);
-//                    cellGroupsForNull.put(nullValue, cellGroupForNull);
-//                }
-//                cellGroupForNull.addOccurrenceCell(new CellRef(cell));
-//            }
-//        }
-//    }
-
+    @Override
     public void initializeOIDs(IDatabase database) {
         oidGenerator.initializeOIDs(database);
     }

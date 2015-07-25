@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-  <source>    
-    <type>GENERATE</type>
-    <generate>
+    <source>    
+        <type>GENERATE</type>
+        <generate>
 <![CDATA[
 SCHEMA:
 const1(A)
@@ -11,11 +11,11 @@ INSTANCE:
 const1(A: "3")
 const2(A: "5", B: "6")
 ]]>
-    </generate>
-  </source>
-  <target>    
-    <type>GENERATE</type>
-    <generate>
+        </generate>
+    </source>
+    <target>    
+        <type>GENERATE</type>
+        <generate>
 <![CDATA[
 SCHEMA:
 R(A, B)
@@ -27,9 +27,9 @@ R(A: "5", B: "5")
 S(A: "3", B: "4")
 S(A: "2", B: "4")
 ]]>
-    </generate>
-  </target>
-  <dependencies>
+        </generate>
+    </target>
+    <dependencies>
 <![CDATA[
 ExtTGDs:
 R(A: $x, B: $y), const1(A: $y) -> S(A: $y, B: $z).
@@ -41,10 +41,8 @@ S(A: $y1, B: $x), S(A: $y2, B: $x), R(A: $z1, B:$y1) and not exists(R(A: $z2, B:
 //S(A: $y1, B: $x), S(A: $y2, B: $x), R(A: $z2, B:$y2) and not exists(R(A: $z1, B:$y1)) -> $y1 == $y2.
 S(A: $y1, B: $x), S(A: $y2, B: $x) and not exists(R(A: $z1, B:$y1)) and not exists(R(A: $z2, B:$y2)) -> $y1 == $y2.
 ]]>
-  </dependencies>
-  <partialOrder/>
-  <configuration>
-    <useCellGroupsForTGDs>true</useCellGroupsForTGDs>
-  </configuration>
+    </dependencies>
+    <partialOrder/>
+    <configuration/>
 </scenario>
 
