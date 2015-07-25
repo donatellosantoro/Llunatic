@@ -1,3 +1,9 @@
+try {
+    load("nashorn:mozilla_compat.js");
+    //print("Nashorn");
+} catch (e) {
+    //print("Rhino");
+}
 importPackage(Packages.it.unibas.lunatic);
 importPackage(Packages.it.unibas.lunatic.model.database);
 importPackage(Packages.it.unibas.lunatic.model.chase.chasemc.partialorder);
