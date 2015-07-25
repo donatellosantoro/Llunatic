@@ -5,7 +5,7 @@ import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.LoadedScenario;
 import it.unibas.lunatic.gui.node.TableFinder;
 import it.unibas.lunatic.gui.node.TableNode;
-import it.unibas.lunatic.gui.node.cellgroup.ProvenanceTupleNode;
+import it.unibas.lunatic.gui.node.cellgroup.JustificationTupleNode;
 import it.unibas.lunatic.gui.window.db.TableWindowManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,12 +27,12 @@ import org.openide.util.NbBundle.Messages;
 public final class ActionShowProvenanceTuple implements ActionListener {
 
     private Log logger = LogFactory.getLog(getClass());
-    private final ProvenanceTupleNode provenanceTupleNode;
+    private final JustificationTupleNode provenanceTupleNode;
     private TableWindowManager tableWindowManager = Lookup.getDefault().lookup(TableWindowManager.class);
     private IApplication app = Lookup.getDefault().lookup(IApplication.class);
     private TableFinder scenarioTableFinder = new TableFinder();
     
-    public ActionShowProvenanceTuple(ProvenanceTupleNode context) {
+    public ActionShowProvenanceTuple(JustificationTupleNode context) {
         this.provenanceTupleNode = context;
     }
 

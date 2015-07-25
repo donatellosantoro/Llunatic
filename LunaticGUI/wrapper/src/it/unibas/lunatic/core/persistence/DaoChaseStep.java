@@ -1,6 +1,5 @@
 package it.unibas.lunatic.core.persistence;
 
-import it.unibas.lunatic.core.GenerateModifiedCells;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.core.GenerateModifiedCells;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;

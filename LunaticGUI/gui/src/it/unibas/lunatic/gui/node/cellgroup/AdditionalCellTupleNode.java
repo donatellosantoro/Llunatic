@@ -1,7 +1,7 @@
 package it.unibas.lunatic.gui.node.cellgroup;
 
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 
@@ -9,18 +9,18 @@ class AdditionalCellTupleNode extends AbstractNode {
     
     private final StepCellGroupNode stepCellGroupNode;
     private final AttributeRef attributeRef;
-    private final Cell cell;
+    private final CellGroupCell cell;
     
-    public AdditionalCellTupleNode(StepCellGroupNode stepCellGroupNode, AttributeRef key, Cell cell) {
+    public AdditionalCellTupleNode(StepCellGroupNode stepCellGroupNode, AttributeRef key, CellGroupCell cell) {
         super(Children.LEAF);
         this.stepCellGroupNode = stepCellGroupNode;
         this.attributeRef = key;
         this.cell = cell;
-        setName(cell.toStringWithOIDAndAlias());
+        setName(cell.toStringWithOIDAndAlias() + " [" + cell.getOriginalValue() + "]");
         setDisplayName(cell.toString());
     }
     
-    public Cell getCell() {
+    public CellGroupCell getCell() {
         return cell;
     }
     

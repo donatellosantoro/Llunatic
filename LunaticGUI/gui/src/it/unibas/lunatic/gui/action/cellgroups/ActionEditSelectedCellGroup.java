@@ -60,7 +60,7 @@ public final class ActionEditSelectedCellGroup extends ContextAwareActionProxy<S
                 if (value != null) {
                     AddUserNode editor = cgHelper.getEditor(userNode.getScenario());
                     StepCellGroupNode editableCellGroupNode = getBean();
-                    CellGroup cellGroup = editor.addChange(editableCellGroupNode.getChaseStep(), editableCellGroupNode.getCellGroup(), new ConstantValue(value));
+                    CellGroup cellGroup = editor.addChange(editableCellGroupNode.getChaseStep(), editableCellGroupNode.getCellGroup(), new ConstantValue(value), editableCellGroupNode.getChaseStep().getScenario());
                     editableCellGroupNode.setUserCellGroup(cellGroup);
                     logger.debug("Edited cellGroup: " + editableCellGroupNode.toString());
                     getModel().notifyChange(R.BeanProperty.SELECTED_CELL_GROUP_NODE, editableCellGroupNode.getClass());

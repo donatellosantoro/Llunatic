@@ -7,6 +7,7 @@ import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
@@ -29,7 +30,7 @@ public class StepCellGroupsLoaderFactory extends ChildFactory<ChaseStepNode> {
 
     @Override
     protected Node[] createNodesForKey(ChaseStepNode key) {
-        List<CellGroup> cellGroups = retrieveCellGroups();
+        Set<CellGroup> cellGroups = retrieveCellGroups();
         List<Node> nodes = new ArrayList<Node>(cellGroups.size());
         for (CellGroup cg : cellGroups) {
             if (valueFilter.accept(cg)) {
@@ -40,8 +41,8 @@ public class StepCellGroupsLoaderFactory extends ChildFactory<ChaseStepNode> {
         return nodes.toArray(result);
     }
 
-    public List<CellGroup> retrieveCellGroups() {
-        List<CellGroup> cellGroups;
+    public Set<CellGroup> retrieveCellGroups() {
+        Set<CellGroup> cellGroups;
         if (!chaseStepNode.hasCellGroupsLoaded()) {
             StepCellGroups stepCellGroups = cgHelper.retrieveStepCellGroups(chaseStepNode.getScenario(), chaseStepNode.getChaseStep());
             chaseStepNode.cacheCellGroups(stepCellGroups);

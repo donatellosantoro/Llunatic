@@ -1,23 +1,25 @@
 package it.unibas.lunatic.core;
 
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class StepCellGroups {
 
-    private final List<CellGroup> cellGroups;
-    private final List<CellGroup> changedCellGroups;
+    private final Set<CellGroup> cellGroups;
+    private final Set<CellGroup> changedCellGroups;
 
     public StepCellGroups(List<CellGroup> cellGroups, List<CellGroup> changedCellGroups) {
-        this.cellGroups = cellGroups;
-        this.changedCellGroups = changedCellGroups;
+        this.cellGroups = new HashSet<CellGroup>(cellGroups);
+        this.changedCellGroups = new HashSet<CellGroup>(changedCellGroups);
     }
 
-    public List<CellGroup> getAll() {
+    public Set<CellGroup> getAll() {
         return cellGroups;
     }
 
-    public List<CellGroup> getChangedCellGroups() {
+    public Set<CellGroup> getChangedCellGroups() {
         return changedCellGroups;
     }
 }

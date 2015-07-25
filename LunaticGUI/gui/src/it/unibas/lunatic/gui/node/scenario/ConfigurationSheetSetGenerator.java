@@ -157,17 +157,6 @@ public class ConfigurationSheetSetGenerator {
                 config.setCheckAllNodesForEGDSatisfaction(val);
             }
         });
-        set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.USE_CELL_GROUPS_FOR_TG_DS, Boolean.class, Bundle.PROP_useCellGroupsForTGDs(), Bundle.PROP_useCellGroupsForTGDs()) {
-            @Override
-            public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
-                return config.isUseCellGroupsForTGDs();
-            }
-
-            @Override
-            public void setValue(Boolean val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                config.setUseCellGroupsForTGDs(val);
-            }
-        });
         set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.REMOVE_DUPLICATES, Boolean.class, Bundle.PROP_removeDuplicates(), Bundle.PROP_removeDuplicates()) {
             @Override
             public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
@@ -182,12 +171,12 @@ public class ConfigurationSheetSetGenerator {
         set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.USE_LIMIT, Boolean.class, Bundle.PROP_useLimit(), Bundle.PROP_useLimit()) {
             @Override
             public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
-                return config.isUseLimit1();
+                return config.isUseLimit1ForEGDs();
             }
 
             @Override
             public void setValue(Boolean val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                config.setUseLimit1(val);
+                config.setUseLimit1ForEGDs(val);
             }
         });
         set.put(new PropertySupport.ReadWrite<Integer>(ScenarioNode.ITERATION_LIMIT, Integer.class, Bundle.PROP_iterationLimit(), Bundle.PROP_iterationLimit()) {

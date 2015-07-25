@@ -23,7 +23,6 @@ public class ScenarioNode extends AbstractNode {
     public static final String CHASE_TREE_TRESHOLD = "chaseTreeThreshold";
     public static final String USE_LIMIT = "UseLimit";
     public static final String REMOVE_DUPLICATES = "RemoveDuplicates";
-    public static final String USE_CELL_GROUPS_FOR_TG_DS = "UseCellGroupsForTGDs";
     public static final String CHECK_ALL_NODES_FOR_EGD_SATISFACTION = "CheckAllNodesForEGDSatisfaction";
     public static final String REMOVE_SUSPICIOUS_SOLUTIONS = "RemoveSuspiciousSolutions";
     public static final String CHECK_SOLUTIONS_QUERY = "CheckSolutionsQuery";

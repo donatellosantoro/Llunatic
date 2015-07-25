@@ -13,13 +13,13 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
 
-public class ProvenanceTupleNode extends AbstractNode {
+public class JustificationTupleNode extends AbstractNode {
 
     private final Cell cell;
     private final StepCellGroupNode stepCellGroup;
     private Action[] actions = new Action[]{Actions.forID("Window", R.ActionId.SHOW_PROVENANCE_TUPLE)};
 
-    public ProvenanceTupleNode(Cell key, StepCellGroupNode node) {
+    public JustificationTupleNode(Cell key, StepCellGroupNode node) {
         super(Children.LEAF);
         this.cell = key;
         this.stepCellGroup = node;

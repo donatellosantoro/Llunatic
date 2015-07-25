@@ -3,8 +3,8 @@ package it.unibas.lunatic.gui.window.cellgroup;
 import it.unibas.lunatic.gui.MultiViewExplorerTopComponent;
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.LoadedScenario;
-import it.unibas.lunatic.gui.node.cellgroup.ProvenanceRootNode;
-import it.unibas.lunatic.gui.node.cellgroup.ProvenanceTupleNode;
+import it.unibas.lunatic.gui.node.cellgroup.JustificationRootNode;
+import it.unibas.lunatic.gui.node.cellgroup.JustificationTupleNode;
 import it.unibas.lunatic.gui.node.cellgroup.StepCellGroupNode;
 import it.unibas.lunatic.gui.node.utils.ITableColumnGenerator;
 import it.unibas.lunatic.gui.table.OutlineTableHelper;
@@ -28,7 +28,7 @@ import org.openide.windows.TopComponent;
 public class ProvenancesPanel extends MultiViewExplorerTopComponent implements ScenarioChangeListener.Target {
 
     private OutlineTableHelper tableHelper = new OutlineTableHelper();
-    private ITableColumnGenerator columnGenerator = ProvenanceTupleNode.getColumnGenerator();
+    private ITableColumnGenerator columnGenerator = JustificationTupleNode.getColumnGenerator();
     private final CellGroupDetails details;
 
     public ProvenancesPanel(CellGroupDetails details) {
@@ -68,7 +68,7 @@ public class ProvenancesPanel extends MultiViewExplorerTopComponent implements S
     public void setRootContext(Node node) {
         StepCellGroupNode stepCellGroupNode = (StepCellGroupNode) node;
         details.setCellGroupValue(stepCellGroupNode.getValue());
-        explorer.setRootContext(new ProvenanceRootNode(stepCellGroupNode));
+        explorer.setRootContext(new JustificationRootNode(stepCellGroupNode));
     }
 
     @Override
