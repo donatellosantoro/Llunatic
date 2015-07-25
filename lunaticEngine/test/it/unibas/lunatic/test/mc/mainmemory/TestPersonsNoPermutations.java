@@ -35,7 +35,7 @@ public class TestPersonsNoPermutations extends CheckExpectedSolutionsTest {
         Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
-        Map<String, List<PrecisionAndRecall>> quality = compareWithExpectedInstances(result, "expected-frsp", Arrays.asList(new String[]{LunaticConstants.OID, LunaticConstants.TID}), 1.0, false);
+        Map<String, List<PrecisionAndRecall>> quality = compareWithExpectedInstances(result, "expected-frsp", Arrays.asList(new String[]{LunaticConstants.OID, LunaticConstants.TID}), 0, false);
         if (logger.isDebugEnabled()) logger.debug(printPrecisionAndRecall(quality));
         checkQuality(quality);
     }

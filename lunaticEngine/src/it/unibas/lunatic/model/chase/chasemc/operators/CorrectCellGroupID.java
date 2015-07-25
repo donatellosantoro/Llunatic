@@ -64,7 +64,8 @@ public class CorrectCellGroupID {
             if (occurrences == null) {
                 result.put(originalCellGroupId, 1);
             } else {
-                result.put(originalCellGroupId, occurrences++);
+                occurrences++;
+                result.put(originalCellGroupId, occurrences);
             }
         }
     }

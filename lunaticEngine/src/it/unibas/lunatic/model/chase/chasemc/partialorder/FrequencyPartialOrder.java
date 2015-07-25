@@ -23,8 +23,10 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
             return lubValue;
         }
         Map<IValue, Integer> occurrenceHistogram = buildOccurrenceHistogram(constantCells);
+        if (logger.isDebugEnabled()) logger.debug("Histogram for cells " + constantCells + "\n" + occurrenceHistogram);
         IValue mostFrequentValue = ChaseUtility.findMostFrequentValueIfAny(occurrenceHistogram);
-        if(mostFrequentValue != null){
+        if (mostFrequentValue != null) {
+            if (logger.isDebugEnabled()) logger.debug("Most frequent value in cell group:" + cellGroup + "\n\t ->" + mostFrequentValue);
             return mostFrequentValue;
         }
         return lubValue;
@@ -33,11 +35,13 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
     private Map<IValue, Integer> buildOccurrenceHistogram(Set<CellGroupCell> nonAuthoritativeCells) {
         Map<IValue, Integer> result = new HashMap<IValue, Integer>();
         for (CellGroupCell nonAuthoritativeCell : nonAuthoritativeCells) {
-            Integer occurrences = result.get(nonAuthoritativeCell.getOriginalValue());
+            IValue originalValue = nonAuthoritativeCell.getOriginalValue();
+            Integer occurrences = result.get(originalValue);
             if (occurrences == null) {
-                result.put(nonAuthoritativeCell.getOriginalValue(), 1);
+                result.put(originalValue, 1);
             } else {
-                result.put(nonAuthoritativeCell.getOriginalValue(), occurrences++);
+                occurrences++;
+                result.put(originalValue, occurrences);
             }
         }
         return result;
