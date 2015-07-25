@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+r(a, b)
+s(a, b)
+t(a, b)
+INSTANCE:
+r(a: "1", b: "2")
+r(a: "1", b: "1")
+s(a: "1", b: "5")
+s(a: "1", b: "1")
+t(a: "1", b: "6")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+//e1: r(a: $v1, b: $v2), r(a: $v3, b: $v4), $v1 == $v3, $v3 == $v4 and not exists(s(a: $v3, b: $v5) and not exists(t(a: $v4, b: $v6))) 
+//    -> $v3 == $v2.
+//e1: r(a: $v1, b: $v2), r(a: $v3, b: $v5), s(a: $v4, b: $v6), $v1 == $v3, $v3 == $v4 and not exists(s(a: $v3, b: $v7) and not exists(t(a: $v4, b: $v8))) 
+//    -> $v2 == $v5.
+//e1: r(a: $v1, b: $v2), r(a: $v3, b: $v5), s(a: $v4, b: $v6), $v1 == $v3, $v3 == $v4 
+//    -> $v2 == $v6.
+// cycles
+e1: r(a: $v1, b: $v2), r(a: $v1, b: $v3), s(a: $v1, b: $v1) -> $v2 == $v3.
+]]>
+  </dependencies>
+  <orderingAttributes />
+  <costManager/>
+</scenario>
+

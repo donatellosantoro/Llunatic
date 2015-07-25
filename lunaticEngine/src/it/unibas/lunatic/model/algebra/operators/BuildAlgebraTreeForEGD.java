@@ -101,10 +101,9 @@ public class BuildAlgebraTreeForEGD {
     }
 
     private IAlgebraOperator addOrderBy(Dependency dependency, IAlgebraOperator premiseRoot) {
-        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(dependency);
+        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributesInPositiveFormula(dependency);
         if(targetJoinAttributes.isEmpty()){
             return premiseRoot;
-//            throw new ChaseException("Dependency " + dependency + " is incorrect. It doesn't contain joins in the premise.");
         }
         List<AttributeRef> attributesForOrderBy = new ArrayList<AttributeRef>();
         for (AttributeRef targetJoinAttribute : targetJoinAttributes) {
@@ -113,9 +112,6 @@ public class BuildAlgebraTreeForEGD {
                 attributesForOrderBy.add(attributeForOrderBy);
             }
         }
-//        if(attributesForOrderBy.isEmpty()){
-//            return premiseRoot;
-//        }
         OrderBy orderBy = new OrderBy(attributesForOrderBy);
         orderBy.addChild(premiseRoot);
         return orderBy;

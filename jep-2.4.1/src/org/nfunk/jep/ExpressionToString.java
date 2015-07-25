@@ -189,7 +189,7 @@ class ToStringVisitor implements ParserVisitor {
             varDescription = "$" + varDescription;
         }
         if (withVariableDelimiters) {
-            varDescription = "<|" + varDescription + "|>";
+            varDescription = "§" + varDescription + "#";
         }
         if (withSlashes) {
             varDescription = varDescription.replaceAll("\\.", "/") + "/text()";

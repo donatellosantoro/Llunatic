@@ -12,6 +12,7 @@ class EqualityGroup {
     private TableAlias leftTable;
     private TableAlias rightTable;
     private List<Equality> equalities = new ArrayList<Equality>();
+    private boolean cyclicJoinGraph;
 
     EqualityGroup(Equality equality) {
         this.leftTable = equality.getLeftAttribute().getTableAlias();
@@ -28,6 +29,14 @@ class EqualityGroup {
 
     List<Equality> getEqualities() {
         return equalities;
+    }
+
+    boolean isCyclicJoinGraph() {
+        return cyclicJoinGraph;
+    }
+
+    void setCyclicJoinGraph(boolean cyclicJoinGraph) {
+        this.cyclicJoinGraph = cyclicJoinGraph;
     }
 
     List<AttributeRef> getAttributeRefsForTableAlias(TableAlias tableAlias) {
@@ -52,7 +61,7 @@ class EqualityGroup {
             equalityExpression.changeVariableDescription(equality.getRightAttribute().toString(), equality.getRightAttribute());
             result.add(equalityExpression);
         }
-        if (leftTable.getTableName().equals(rightTable.getTableName())) {
+        if (leftTable.getTableName().equals(rightTable.getTableName()) && !cyclicJoinGraph) {
             String inequalityOperator = "!=";
             Expression oidInequality = new Expression(leftTable.toString() + "." + LunaticConstants.OID + inequalityOperator + rightTable.toString() + "." + LunaticConstants.OID);
             oidInequality.changeVariableDescription(leftTable.toString() + "." + LunaticConstants.OID, new AttributeRef(leftTable, LunaticConstants.OID));

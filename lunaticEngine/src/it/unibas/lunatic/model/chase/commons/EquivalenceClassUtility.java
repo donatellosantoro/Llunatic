@@ -108,7 +108,7 @@ public class EquivalenceClassUtility {
     }
 
     private static List<AttributeRef> getTargetJoinAttributes(Dependency egd) {
-        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(egd);
+        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributesInPositiveFormula(egd);
         if (!egd.hasSymmetricAtoms()) {
             return targetJoinAttributes;
         }

@@ -28,7 +28,7 @@ public class TestPersonsNoPermutations extends CheckExpectedSolutionsTest {
         Assert.assertTrue(scenario.getPartialOrder() instanceof FrequencyPartialOrder);
         Assert.assertTrue(scenario.getCostManager() instanceof SimilarityToMostFrequentCostManager);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
-        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
+//        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.getDeltaDB().printInstances(false));
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());

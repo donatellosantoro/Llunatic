@@ -167,11 +167,13 @@ public class DependencyUtility {
         return relationalPremiseOccurrences + nonRelationalOccurrences <= 1;
     }
 
-    public static List<AttributeRef> findTargetJoinAttributes(Dependency dependency) {
+    public static List<AttributeRef> findTargetJoinAttributesInPositiveFormula(Dependency dependency) {
         List<VariableEquivalenceClass> relevantVariableClasses = ChaseUtility.findJoinVariablesInTarget(dependency);
         List<AttributeRef> targetJoinAttributes = new ArrayList<AttributeRef>();
         for (VariableEquivalenceClass variableEquivalenceClass : relevantVariableClasses) {
-            for (FormulaVariableOccurrence occurrence : ChaseUtility.findTargetOccurrences(variableEquivalenceClass)) {
+            List<FormulaVariableOccurrence> targetOccurrencesForEquivalenceClass = ChaseUtility.findTargetOccurrences(variableEquivalenceClass);
+            List<FormulaVariableOccurrence> positiveTargetOccurrencesForEquivalenceClass = ChaseUtility.findPositiveOccurrences(dependency.getPremise().getPositiveFormula(), targetOccurrencesForEquivalenceClass);
+            for (FormulaVariableOccurrence occurrence : positiveTargetOccurrencesForEquivalenceClass) {
                 targetJoinAttributes.add(occurrence.getAttributeRef());
             }
         }

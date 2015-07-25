@@ -123,16 +123,16 @@ public class ChaseUtility {
         return true;
     }
 
-    public static List<FormulaVariableOccurrence> findTargetOccurrences(FormulaVariable variable) {
-        List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
-        for (FormulaVariableOccurrence occurrence : variable.getPremiseRelationalOccurrences()) {
-            if (occurrence.getAttributeRef().getTableAlias().isSource()) {
-                continue;
-            }
-            result.add(occurrence);
-        }
-        return result;
-    }
+//    public static List<FormulaVariableOccurrence> findTargetOccurrences(FormulaVariable variable) {
+//        List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
+//        for (FormulaVariableOccurrence occurrence : variable.getPremiseRelationalOccurrences()) {
+//            if (occurrence.getAttributeRef().getTableAlias().isSource()) {
+//                continue;
+//            }
+//            result.add(occurrence);
+//        }
+//        return result;
+//    }
 
     public static List<FormulaVariableOccurrence> findTargetOccurrences(VariableEquivalenceClass variableEquivalenceClass) {
         List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
@@ -141,6 +141,16 @@ public class ChaseUtility {
                 continue;
             }
             result.add(occurrence);
+        }
+        return result;
+    }
+
+    public static List<FormulaVariableOccurrence> findPositiveOccurrences(PositiveFormula positiveFormula, List<FormulaVariableOccurrence> premiseRelationalOccurrences) {
+        List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
+        for (FormulaVariableOccurrence formulaVariableOccurrence : premiseRelationalOccurrences) {
+            if (containsAlias(positiveFormula, formulaVariableOccurrence.getTableAlias())) {
+                result.add(formulaVariableOccurrence);
+            }
         }
         return result;
     }
@@ -216,27 +226,6 @@ public class ChaseUtility {
             List<FormulaVariableOccurrence> positiveOccurrences = findPositiveOccurrences(egd.getPremise().getPositiveFormula(), variableEquivalenceClass.getPremiseRelationalOccurrences());
             if (positiveOccurrences.size() > 1 && !targetOccurrences.isEmpty()) {
                 result.add(variableEquivalenceClass);
-            }
-        }
-        return result;
-    }
-//    public static List<FormulaVariable> findJoinVariablesInTarget(Dependency egd) {
-//        List<FormulaVariable> result = new ArrayList<FormulaVariable>();
-//        for (FormulaVariable variable : egd.getPremise().getLocalVariables()) {
-//            List<FormulaVariableOccurrence> targetOccurrences = findTargetOccurrences(variable);
-//            List<FormulaVariableOccurrence> positiveOccurrences = findPositiveOccurrences(egd.getPremise().getPositiveFormula(), variable.getPremiseRelationalOccurrences());
-//            if (positiveOccurrences.size() > 1 && !targetOccurrences.isEmpty()) {
-//                result.add(variable);
-//            }
-//        }
-//        return result;
-//    }
-
-    private static List<FormulaVariableOccurrence> findPositiveOccurrences(PositiveFormula positiveFormula, List<FormulaVariableOccurrence> premiseRelationalOccurrences) {
-        List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
-        for (FormulaVariableOccurrence formulaVariableOccurrence : premiseRelationalOccurrences) {
-            if (containsAlias(positiveFormula, formulaVariableOccurrence.getTableAlias())) {
-                result.add(formulaVariableOccurrence);
             }
         }
         return result;

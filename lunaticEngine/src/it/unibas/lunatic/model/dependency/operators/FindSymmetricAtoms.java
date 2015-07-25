@@ -46,12 +46,16 @@ public class FindSymmetricAtoms {
     }
 
     private void findSymmetricAtoms(Dependency dependency) {
-        if (hasInequalitiesOrBuiltIns(dependency)) {
+        if (logger.isDebugEnabled()) logger.debug("Finding symmetric atoms for dependency: " + dependency);
+        if (hasInequalitiesOrBuiltIns(dependency) || hasNegation(dependency)) {
             return;
         }
         List<VariableEquivalenceClass> joinVariables = ChaseUtility.findJoinVariablesInTarget(dependency);
         if (logger.isDebugEnabled()) logger.debug("Join variables: " + joinVariables);
         UndirectedGraph<TableAlias, LabeledEdge> joinGraph = initJoinGraph(dependency, joinVariables);
+        if (joinGraph == null) {
+            return;
+        }
         if (logger.isDebugEnabled()) logger.debug("Join graph: " + joinGraph.toString());
         List<SelfJoin> selfJoins = findSelfJoins(joinVariables);
         if (logger.isDebugEnabled()) logger.debug("Self joins: " + selfJoins);
@@ -71,20 +75,24 @@ public class FindSymmetricAtoms {
 
     private boolean hasInequalitiesOrBuiltIns(Dependency dependency) {
         for (IFormulaAtom atom : dependency.getPremise().getAtoms()) {
-            if(atom instanceof RelationalAtom){
+            if (atom instanceof RelationalAtom) {
                 continue;
             }
-            if(atom instanceof BuiltInAtom){
+            if (atom instanceof BuiltInAtom) {
                 return true;
             }
-            if(atom instanceof ComparisonAtom){
-                ComparisonAtom comparisonAtom = (ComparisonAtom)atom;
-                if(!comparisonAtom.isEqualityComparison()){
+            if (atom instanceof ComparisonAtom) {
+                ComparisonAtom comparisonAtom = (ComparisonAtom) atom;
+                if (!comparisonAtom.isEqualityComparison()) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    private boolean hasNegation(Dependency dependency) {
+        return !(dependency.getPremise().getNegatedSubFormulas().isEmpty());
     }
 
     private UndirectedGraph<TableAlias, LabeledEdge> initJoinGraph(Dependency dependency, List<VariableEquivalenceClass> joinVariableClasses) {
@@ -108,7 +116,13 @@ public class FindSymmetricAtoms {
                     FormulaVariableOccurrence occurrencej = occurrences.get(j);
                     TableAlias aliasj = occurrencej.getAttributeRef().getTableAlias();
                     String edgeLabel = buildEdgeLabel(occurrencei, occurrencej);
-                    joinGraph.addEdge(aliasi, aliasj, new LabeledEdge(aliasi.toString(), aliasj.toString(), edgeLabel));
+                    try {
+                        joinGraph.addEdge(aliasi, aliasj, new LabeledEdge(aliasi.toString(), aliasj.toString(), edgeLabel));
+                    } catch (IllegalArgumentException ex) {
+                        // graph is cyclic
+                        dependency.setJoinGraphIsCyclic(true);
+                        return null;
+                    }
                 }
             }
         }

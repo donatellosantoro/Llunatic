@@ -103,11 +103,12 @@ class NormalizeJoinsInEGDVisitor implements IFormulaVisitor {
     // TODO Norm: change conclusion
     public void visitDependency(Dependency egd) {
         egd.getPremise().accept(this);
+        egd.getConclusion().accept(this);
     }
 
     public void visitPositiveFormula(PositiveFormula formula) {
         removeReplacedVariables(formula);
-        mergeVariableOccurrences(formula);
+        mergeVariableOccurrencesAndRemoveComparisons(formula);
         changeRelationalAtoms(formula);
     }
 
@@ -127,7 +128,7 @@ class NormalizeJoinsInEGDVisitor implements IFormulaVisitor {
         }
     }
 
-    private void mergeVariableOccurrences(PositiveFormula formula) {
+    private void mergeVariableOccurrencesAndRemoveComparisons(PositiveFormula formula) {
         Set<IFormulaAtom> atomsToRemove = new HashSet<IFormulaAtom>();
         for (FormulaVariable variable : formula.getLocalVariables()) {
             List<FormulaVariable> variablesToReplace = findVariablesToReplaceForThisVariable(variable);
@@ -197,8 +198,9 @@ class NormalizeJoinsInEGDVisitor implements IFormulaVisitor {
 
     private void correctExpression(IFormulaAtom atom, FormulaVariable variable, FormulaVariable variableToReplace) {
         String expressionWithDelimiters = atom.getExpression().toVariableDelimitedString();        
-        String newExpressionString = expressionWithDelimiters.replaceAll("<|" + variableToReplace.getId() + "|>", "$" + variable.getId());
-        System.out.println("****** Old expression: "+ expressionWithDelimiters + "- new expression: " + newExpressionString);
+        String newExpressionString = expressionWithDelimiters.replaceAll("§" + variableToReplace.getId() + "#", "\\$" + variable.getId());
+        newExpressionString = newExpressionString.replaceAll("§", "\\$");
+        newExpressionString = newExpressionString.replaceAll("#", "");
         Expression newExpression = new Expression(newExpressionString);
         atom.setExpression(newExpression);
         for (FormulaVariable variableInAtom : atom.getVariables()) {

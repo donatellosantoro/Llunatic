@@ -78,7 +78,9 @@ public class BuildExtendedDependencies {
         if (logger.isDebugEnabled()) logger.debug("Join variables in target: " + relevantVariableClasses);
         int i = 0;
         for (VariableEquivalenceClass variableClass : relevantVariableClasses) {
-            for (FormulaVariableOccurrence occurrence : ChaseUtility.findTargetOccurrences(variableClass)) {
+            List<FormulaVariableOccurrence> targetOccurrencesForEqvClass = ChaseUtility.findTargetOccurrences(variableClass);
+            List<FormulaVariableOccurrence> positiveTargetOccurrencesForEqvClass = ChaseUtility.findPositiveOccurrences(dependency.getPremise().getPositiveFormula(), targetOccurrencesForEqvClass);
+            for (FormulaVariableOccurrence occurrence : positiveTargetOccurrencesForEqvClass) {
                 String id = dependency.getId() + LunaticConstants.CHASE_BACKWARD + i++;
                 ExtendedDependency backward = new ExtendedDependency(id, dependency, LunaticConstants.CHASE_BACKWARD, occurrence);
                 result.add(backward);

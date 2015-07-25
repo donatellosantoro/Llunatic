@@ -60,7 +60,7 @@ public class BuildAlgebraTreeForSymmetricEGD {
         groupByQueriedAttributes.addChild(premiseRoot);
 
         List<IAggregateFunction> aggregatesForWitness = new ArrayList<IAggregateFunction>();
-        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(dependency);
+        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributesInPositiveFormula(dependency);
         List<AttributeRef> symmetricWitnessAttributes = filterAttributesForSymmetricPremise(targetJoinAttributes, dependency);
         if (logger.isDebugEnabled()) logger.debug("Symmetric witness attributes: " + symmetricWitnessAttributes);
         symmetricWitnessAttributes = filterConclusionOccurrences(symmetricWitnessAttributes, dependency);
@@ -81,7 +81,7 @@ public class BuildAlgebraTreeForSymmetricEGD {
     }
 
     private IAlgebraOperator generateSelectIn(Dependency dependency, IAlgebraOperator violationValues) {
-        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(dependency);
+        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributesInPositiveFormula(dependency);
         List<AttributeRef> symmetricWitnessAttributes = filterAttributesForSymmetricPremise(targetJoinAttributes, dependency);
         symmetricWitnessAttributes = filterConclusionOccurrences(symmetricWitnessAttributes, dependency);
         SelectIn selectIn = new SelectIn(symmetricWitnessAttributes, violationValues);
@@ -89,7 +89,7 @@ public class BuildAlgebraTreeForSymmetricEGD {
     }
 
     private IAlgebraOperator addOrderBy(Dependency dependency, IAlgebraOperator premiseRoot) {
-        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributes(dependency);
+        List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributesInPositiveFormula(dependency);
         List<AttributeRef> symmetricWitnessAttributes = filterAttributesForSymmetricPremise(targetJoinAttributes, dependency);
         symmetricWitnessAttributes = filterConclusionOccurrences(symmetricWitnessAttributes, dependency);
         List<AttributeRef> attributesForOrderBy = new ArrayList<AttributeRef>();

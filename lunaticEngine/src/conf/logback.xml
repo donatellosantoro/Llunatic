@@ -18,7 +18,7 @@
         <!--<appender-ref ref="file"/>-->
     </root>
     <!--     TEST     -->
-    <logger name="it.unibas.lunatic.test" level="DEBUG"/>
+    <!--<logger name="it.unibas.lunatic.test" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.test.BatchTest" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.persistence.relational.QueryStatManager" level="DEBUG"/>-->
@@ -61,8 +61,8 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChangeCell" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.AbstractCacheManager" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDs" level="TRACE"/>-->
-    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseEGDEquivalenceClass" level="DEBUG"/>-->
+<!--    <logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDs" level="TRACE"/>
+    <logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseEGDEquivalenceClass" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseTGDEquivalenceClass" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies" level="DEBUG"/>-->

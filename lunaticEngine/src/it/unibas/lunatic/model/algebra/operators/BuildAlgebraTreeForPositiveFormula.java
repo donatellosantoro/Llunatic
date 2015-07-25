@@ -172,7 +172,7 @@ public class BuildAlgebraTreeForPositiveFormula {
         if (logger.isDebugEnabled()) logger.debug("Equality generating variables: " + equalityGeneratingVariables);
         List<Equality> equalities = extractEqualities(equalityGeneratingVariables, positiveFormula, premise);
         if (logger.isDebugEnabled()) logger.debug("Join equalities: " + equalities);
-        List<EqualityGroup> equalityGroups = groupEqualities(equalities);
+        List<EqualityGroup> equalityGroups = groupEqualities(equalities, dependency);
         List<ConnectedTables> connectedTables = connectedTablesFinder.findConnectedEqualityGroups(atoms, equalityGroups);
         if (logger.isDebugEnabled()) logger.debug("Connected tables: " + connectedTables);
         assignEqualityGroupsToConnectedTables(connectedTables, equalityGroups);
@@ -231,12 +231,15 @@ public class BuildAlgebraTreeForPositiveFormula {
         return result;
     }
 
-    private List<EqualityGroup> groupEqualities(List<Equality> equalities) {
+    private List<EqualityGroup> groupEqualities(List<Equality> equalities, Dependency dependency) {
         Map<String, EqualityGroup> groups = new HashMap<String, EqualityGroup>();
         for (Equality equality : equalities) {
             EqualityGroup group = groups.get(getHashString(equality.getLeftAttribute().getTableAlias(), equality.getRightAttribute().getTableAlias()));
             if (group == null) {
                 group = new EqualityGroup(equality);
+                if (dependency.joinGraphIsCyclic()) {
+                    group.setCyclicJoinGraph(true);
+                }
                 groups.put(getHashString(equality.getLeftAttribute().getTableAlias(), equality.getRightAttribute().getTableAlias()), group);
             }
             group.getEqualities().add(equality);
@@ -368,7 +371,7 @@ public class BuildAlgebraTreeForPositiveFormula {
 //        AlgebraUtility.addIfNotContained(addedTables, equalityGroup.leftTable);
 //        AlgebraUtility.addIfNotContained(addedTables, equalityGroup.rightTable);
         IAlgebraOperator root = join;
-        if (equalityGroup.getLeftTable().getTableName().equals(equalityGroup.getRightTable().getTableName())) {
+        if (equalityGroup.getLeftTable().getTableName().equals(equalityGroup.getRightTable().getTableName()) && !dependency.joinGraphIsCyclic()) {
             root = addOidInequality(equalityGroup.getLeftTable(), equalityGroup.getRightTable(), root);
         }
         return root;

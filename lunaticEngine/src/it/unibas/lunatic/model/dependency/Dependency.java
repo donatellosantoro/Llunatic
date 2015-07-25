@@ -24,8 +24,8 @@ public class Dependency implements Cloneable {
     private List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
     private List<BackwardAttribute> attributesForBackwardChasing = new ArrayList<BackwardAttribute>();
     private SymmetricAtoms symmetricAtoms = new SymmetricAtoms();
+    private boolean joinGraphIsCyclic; // R(v1, v1)
     private boolean overlapBetweenAffectedAndQueried;
-//    private boolean recursive;
 
     public Dependency() {
     }
@@ -150,21 +150,18 @@ public class Dependency implements Cloneable {
         this.symmetricAtoms = symmetricAtoms;
     }
 
-//    public String getTableNameForSymmetricAtom() {
-//        return this.symmetricAtoms.getSelfJoin().getAtoms().get(0).getTableName();
-//    }
+    public boolean joinGraphIsCyclic() {
+        return joinGraphIsCyclic;
+    }
+
+    public void setJoinGraphIsCyclic(boolean joinGraphIsCyclic) {
+        this.joinGraphIsCyclic = joinGraphIsCyclic;
+    }
 
     public boolean hasNegations() {
         return !this.premise.getNegatedSubFormulas().isEmpty();
     }
 
-//    public boolean isRecursive() {
-//        return recursive;
-//    }
-//
-//    public void setRecursive(boolean recursive) {
-//        this.recursive = recursive;
-//    }
     @Override
     public int hashCode() {
         int hash = 7;
@@ -211,6 +208,7 @@ public class Dependency implements Cloneable {
         result.append("  Attributes for backward chasing: ").append(attributesForBackwardChasing).append("\n");
         result.append("  Symmetric atoms: ").append(symmetricAtoms).append("\n");
         result.append("  Has Symmetric Atoms: ").append(hasSymmetricAtoms()).append("\n");
+        result.append("  Join Graph Is Cyclic: ").append(joinGraphIsCyclic).append("\n");
 //        result.append("  Extended dependencies:\n");
 //        for (ExtendedDependency extendedDependency : extendedDependencies) {
 //            result.append("      ").append(extendedDependency.toString());
