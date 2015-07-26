@@ -20,14 +20,14 @@ public class TestSQLHospital extends CheckTest {
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
-        DeltaChaseStep result = chaser.doChase(scenario);        
+        DeltaChaseStep result = chaser.doChase(scenario);
         QueryStatManager.getInstance().printStatistics();
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("hospital", scenario));
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicates: " + resultSizer.getDuplicates(result));
-        Assert.assertEquals(39, resultSizer.getSolutions(result));
-        Assert.assertEquals(21, resultSizer.getDuplicates(result));
+        Assert.assertEquals(38, resultSizer.getSolutions(result));
+        Assert.assertEquals(22, resultSizer.getDuplicates(result));
         checkSolutions(result);
     }
 }

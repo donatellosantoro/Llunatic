@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+person(ssn, surname, name, address)
+INSTANCE:
+person(ssn: "123", surname: "Smith", name: "John", address: "a1")
+person(ssn: "123", surname: "Smith-x", name: "Josh", address: "a2")
+person(ssn: "321", surname: "White", name: "Frankx", address: "a3")
+person(ssn: "321", surname: "Red", name: "Frank", address: "a4")
+person(ssn: "321", surname: "White", name: "Frank", address: "a5")
+person(ssn: "321", surname: "White", name: "Frank", address: "a6")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+//person(ssn: $ssn, surname: $surname1, name: $name1, address: $address1), 
+// person(ssn: $ssn, surname: $surname2, name: $name2, address: $address2)
+// -> $surname1 == $surname2.
+person(ssn: $ssn1, surname: $surname1, name: $name1, address: $address1), 
+person(ssn: $ssn2, surname: $surname2, name: $name2, address: $address2),
+$ssn1 == $ssn2 -> $surname1 == $surname2.
+
+person(ssn: $ssn1, surname: $surname, name: $name1, address: $address1), 
+ person(ssn: $ssn2, surname: $surname, name: $name2, address: $address2)
+ -> $name1 == $name2.
+]]>
+  </dependencies>
+  <partialOrder>
+    <type>Frequency</type>
+  </partialOrder>
+  <costManager>
+    <type>Similarity</type>
+    <doPermutations>false</doPermutations>
+    <similarityThreshold>0.5</similarityThreshold>
+  </costManager>
+  <userManager>
+    <type>Interactive</type>
+  </userManager>
+</scenario>
+
