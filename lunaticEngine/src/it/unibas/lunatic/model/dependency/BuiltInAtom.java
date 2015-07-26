@@ -40,7 +40,7 @@ public class BuiltInAtom implements IFormulaAtom {
     }
 
     public IFormulaAtom clone() {
-        // atoms are superficially cloned; see PositiveFormula.clone() for deop cloning
+        // atoms are superficially cloned; see PositiveFormula.clone() for deep cloning
         try {
             BuiltInAtom clone = (BuiltInAtom) super.clone();
             clone.expression = this.expression.clone();

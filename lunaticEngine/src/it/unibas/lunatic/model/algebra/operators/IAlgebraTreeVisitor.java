@@ -17,6 +17,6 @@ public interface IAlgebraTreeVisitor {
     void visitOrderBy(OrderBy operator);
     void visitLimit(Limit operator);
     void visitRestoreOIDs(RestoreOIDs operator);
-    void visitCreateTable(CreateTable operator);
+    void visitCreateTable(CreateTableAs operator);
     Object getResult();
 }

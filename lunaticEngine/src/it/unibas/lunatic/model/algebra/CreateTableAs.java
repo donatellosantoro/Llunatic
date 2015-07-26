@@ -7,15 +7,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CreateTable extends AbstractOperator {
+public class CreateTableAs extends AbstractOperator {
 
-    private static Logger logger = LoggerFactory.getLogger(CreateTable.class);
+    private static Logger logger = LoggerFactory.getLogger(CreateTableAs.class);
 
     private String tableName;
     private String tableAlias;
     private boolean withOIDs;
 
-    public CreateTable(String tableName, String tableAlias, boolean withOIDs) {
+    public CreateTableAs(String tableName, String tableAlias, boolean withOIDs) {
         this.tableName = tableName;
         this.tableAlias = tableAlias;
         this.withOIDs = withOIDs;

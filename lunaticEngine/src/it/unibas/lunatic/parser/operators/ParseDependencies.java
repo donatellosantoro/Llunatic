@@ -1,5 +1,6 @@
 package it.unibas.lunatic.parser.operators;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ParserException;
 import it.unibas.lunatic.model.database.IDatabase;
@@ -13,6 +14,7 @@ import it.unibas.lunatic.model.dependency.operators.FindTargetGenerators;
 import it.unibas.lunatic.model.dependency.operators.FindVariableEquivalenceClasses;
 import it.unibas.lunatic.model.dependency.operators.NormalizeConclusionsInTGDs;
 import it.unibas.lunatic.model.dependency.operators.NormalizeJoinsInEGDs;
+import it.unibas.lunatic.model.dependency.operators.ReplaceConstantsWithVariables;
 import it.unibas.lunatic.parser.output.DependenciesLexer;
 import it.unibas.lunatic.parser.output.DependenciesParser;
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class ParseDependencies {
     private FindFormulaVariables variableFinder = new FindFormulaVariables();
     private FindTargetGenerators generatorFinder = new FindTargetGenerators();
     private NormalizeConclusionsInTGDs tgdConclusionNormalizer = new NormalizeConclusionsInTGDs();
+    private ReplaceConstantsWithVariables constantReplacer = new ReplaceConstantsWithVariables();
     private NormalizeJoinsInEGDs egdJoinNormalizer = new NormalizeJoinsInEGDs();
 
     private List<Dependency> stTGDs = new ArrayList<Dependency>();
@@ -193,57 +196,14 @@ public class ParseDependencies {
 
 // final callback method for processing tgds
     public void processDependencies() {
-        // TGDS
-        for (Dependency stTgd : stTGDs) {
-            processDependency(stTgd);
-            generatorFinder.findGenerators(stTgd);
-        }
-        for (Dependency eTGD : eTGDs) {
-            processDependency(eTGD);
-        }
-        List<Dependency> normalizedETGDs = tgdConclusionNormalizer.normalizeTGDs(eTGDs);
-        for (Dependency eTGD : normalizedETGDs) {
-            generatorFinder.findGenerators(eTGD);
-        }
-        // DCs
-        for (Dependency dc : dcs) {
-            processDependency(dc);
-        }
-        // EGDs
-        for (Dependency egd : egds) {
-            processDependency(egd);
-        }
-        for (Dependency extEGD : eEGDs) {
-            processDependency(extEGD);
-        }
-        List<Dependency> normalizedEgds = egdJoinNormalizer.normalizeEGDs(egds);
-        List<Dependency> normalizedExtEgds = egdJoinNormalizer.normalizeEGDs(eEGDs);
-        // DEDS
-        for (DED ded : dedstTGDs) {
-            for (Dependency dependency : ded.getAssociatedDependencies()) {
-                processDependency(dependency);
-                generatorFinder.findGenerators(dependency);
-            }
-        }
-        for (DED ded : dedeTGDs) {
-            for (Dependency dependency : ded.getAssociatedDependencies()) {
-                processDependency(dependency);
-                generatorFinder.findGenerators(dependency);
-            }
-        }
-        for (DED ded : dedegds) {
-            for (Dependency dependency : ded.getAssociatedDependencies()) {
-                processDependency(dependency);
-            }
-        }
-        scenario.setSTTGDs(stTGDs);
-        scenario.setExtTGDs(normalizedETGDs);
-        scenario.setDCs(dcs);
-        scenario.setEGDs(normalizedEgds);
-        scenario.setExtEGDs(normalizedExtEgds);
-        scenario.setDEDstTGDs(dedstTGDs);
-        scenario.setDEDextTGDs(dedeTGDs);
-        scenario.setDEDEGDs(dedegds);
+        scenario.setSTTGDs(processDependencies(stTGDs));
+        scenario.setExtTGDs(processExtTGDs(eTGDs));
+        scenario.setDCs(processDependencies(dcs));
+        scenario.setEGDs(processDependencies(egds));
+        scenario.setExtEGDs(processDependencies(eEGDs));
+        scenario.setDEDstTGDs(processDEDs(dedstTGDs));
+        scenario.setDEDextTGDs(processDEDExtTGDs(dedeTGDs));
+        scenario.setDEDEGDs(processDEDs(dedegds));
     }
 
     public String clean(String expressionString) {
@@ -252,13 +212,60 @@ public class ParseDependencies {
         return result.substring(1, result.length() - 1);
     }
 
-    private void processDependency(Dependency dependency) {
+    private List<Dependency> processDependencies(List<Dependency> dependencies) {
+        List<Dependency> result = new ArrayList<Dependency>();
+        for (Dependency dependency : dependencies) {
+            dependency = processInitialDependency(dependency);
+            dependency = normalizeVariablesInDependency(dependency);
+            result.add(dependency);
+            if (dependency.getType().equals(LunaticConstants.STTGD)) {
+                generatorFinder.findGenerators(dependency);
+            }
+        }
+        return result;
+    }
+
+    private List<Dependency> processExtTGDs(List<Dependency> etgds) {
+        List<Dependency> result = new ArrayList<Dependency>();
+        for (Dependency etgd : etgds) {
+            assert (etgd.getType().equals(LunaticConstants.ExtTGD)) : "Conclusion normalization is only needed for etgds";
+            etgd = processInitialDependency(etgd);
+            List<Dependency> normalizedTgds = tgdConclusionNormalizer.normalizeTGD(etgd);
+            for (Dependency normalizedTgd : normalizedTgds) {
+                normalizeVariablesInDependency(normalizedTgd);
+                generatorFinder.findGenerators(normalizedTgd);
+                result.add(normalizedTgd);
+            }
+        }
+        return result;
+    }
+
+    private List<DED> processDEDs(List<DED> deds) {
+        for (DED ded : dedegds) {
+            List<Dependency> processedDependencies = processDependencies(ded.getAssociatedDependencies());
+            ded.setAssociatedDependencies(processedDependencies);
+        }
+        return deds;
+    }
+
+    private List<DED> processDEDExtTGDs(List<DED> dedExtTGDs) {
+        for (DED ded : dedegds) {
+            List<Dependency> processedExtTGDs = processExtTGDs(ded.getAssociatedDependencies());
+            ded.setAssociatedDependencies(processedExtTGDs);
+        }
+        return dedExtTGDs;
+    }
+
+
+    /////////////////////   INITIAL PROCESSING    //////////////////////////////////
+    private Dependency processInitialDependency(Dependency dependency) {
         assignAuthoritativeSources(dependency);
         recursionChecker.checkRecursion(dependency);
         aliasAssigner.assignAliases(dependency);
         variableFinder.findVariables(dependency, scenario.getSource().getTableNames(), scenario.getAuthoritativeSources());
         checker.checkVariables(dependency);
         equivalenceClassFinder.findVariableEquivalenceClasses(dependency);
+        return dependency;
     }
 
     private void assignAuthoritativeSources(Dependency dependency) {
@@ -272,4 +279,19 @@ public class ParseDependencies {
             }
         }
     }
+
+    /////////////////////   NORMALIZATION    //////////////////////////////////
+    private Dependency normalizeVariablesInDependency(Dependency dependency) {
+        if (dependency.getType().equals(LunaticConstants.ExtEGD) || dependency.getType().equals(LunaticConstants.ExtTGD)) {
+            constantReplacer.replaceConstants(dependency, scenario);
+            equivalenceClassFinder.findVariableEquivalenceClasses(dependency); // needed after each variable change
+//            assignAuthoritativeSources(dependency); // needed twice
+        }
+        if (dependency.getType().equals(LunaticConstants.EGD) || dependency.getType().equals(LunaticConstants.ExtEGD)) {
+            dependency = egdJoinNormalizer.normalizeJoinsInEgd(dependency);
+        }
+        equivalenceClassFinder.findVariableEquivalenceClasses(dependency); // needed after each variable change
+        return dependency;
+    }
+
 }

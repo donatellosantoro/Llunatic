@@ -31,20 +31,27 @@ public class NormalizeJoinsInEGDs {
 
     private FindVariableEquivalenceClasses equivalenceClassFinder = new FindVariableEquivalenceClasses();
 
-    //////////////////////////////////////////////////////////////////////////////////////////    
-    /////                             EGDS
-    //////////////////////////////////////////////////////////////////////////////////////////    
-    public List<Dependency> normalizeEGDs(List<Dependency> egds) {
-        List<Dependency> normalizedEgds = new ArrayList<Dependency>();
-        for (Dependency egd : egds) {
-            if (!hasExplicitComparisons(egd)) {
-                normalizedEgds.add(egd);
-            } else {
-                normalizedEgds.add(normalizeJoins(egd));
-            }
+//    public List<Dependency> normalizeJoinsInEgds(List<Dependency> egds) {
+//        List<Dependency> normalizedEgds = new ArrayList<Dependency>();
+//        for (Dependency egd : egds) {
+//            normalizedEgds.add(normalizeJoinsInEgd(egd));
+//        }
+//        if (logger.isTraceEnabled()) logger.debug("Normalized egds: " + normalizedEgds);
+//        return normalizedEgds;
+//    }
+
+    public Dependency normalizeJoinsInEgd(Dependency egd) {
+        if (!hasExplicitComparisons(egd)) {
+            return egd;
         }
-        if (logger.isTraceEnabled()) logger.debug("Normalized egds: " + normalizedEgds);
-        return normalizedEgds;
+        Dependency clone = egd.clone();
+        Map<FormulaVariable, FormulaVariable> variableSubstitutions = generateSubstitutions(clone);
+        NormalizeJoinsInEGDVisitor visitor = new NormalizeJoinsInEGDVisitor(variableSubstitutions);
+        clone.accept(visitor);
+        if (logger.isDebugEnabled()) logger.debug("Initial egd: " + egd.toLongString());
+        if (logger.isDebugEnabled()) logger.debug("Normalized egd: " + clone.toLongString());
+        //equivalenceClassFinder.findVariableEquivalenceClasses(clone);
+        return clone;
     }
 
     private boolean hasExplicitComparisons(Dependency egd) {
@@ -58,16 +65,6 @@ public class NormalizeJoinsInEGDs {
             }
         }
         return false;
-    }
-
-    private Dependency normalizeJoins(Dependency egd) {
-        Dependency clone = egd.clone();
-        Map<FormulaVariable, FormulaVariable> variableSubstitutions = generateSubstitutions(clone);
-        NormalizeJoinsInEGDVisitor visitor = new NormalizeJoinsInEGDVisitor(variableSubstitutions);
-        clone.accept(visitor);    
-        if (logger.isDebugEnabled()) logger.debug("Normalized egd: " + clone.toLongString());
-        equivalenceClassFinder.findVariableEquivalenceClasses(clone);
-        return clone;
     }
 
     @SuppressWarnings("unchecked")
@@ -197,9 +194,10 @@ class NormalizeJoinsInEGDVisitor implements IFormulaVisitor {
     }
 
     private void correctExpression(IFormulaAtom atom, FormulaVariable variable, FormulaVariable variableToReplace) {
-        String expressionWithDelimiters = atom.getExpression().toVariableDelimitedString();        
-        String newExpressionString = expressionWithDelimiters.replaceAll("§" + variableToReplace.getId() + "#", "\\$" + variable.getId());
-        newExpressionString = newExpressionString.replaceAll("§", "\\$");
+        String expressionWithDelimiters = atom.getExpression().toVariableDelimitedString();
+//        String newExpressionString = expressionWithDelimiters.replaceAll("§" + variableToReplace.getId() + "#", "\\$" + variable.getId());
+        String newExpressionString = expressionWithDelimiters.replaceAll("§" + variableToReplace.getId() + "#", variable.getId());
+        newExpressionString = newExpressionString.replaceAll("§", "");
         newExpressionString = newExpressionString.replaceAll("#", "");
         Expression newExpression = new Expression(newExpressionString);
         atom.setExpression(newExpression);
@@ -235,7 +233,7 @@ class NormalizeJoinsInEGDVisitor implements IFormulaVisitor {
         }
         return null;
     }
-    
+
     public Object getResult() {
         return null;
     }

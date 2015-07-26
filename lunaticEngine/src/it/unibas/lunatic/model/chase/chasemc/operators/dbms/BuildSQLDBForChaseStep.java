@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.dbms;
 
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.algebra.CreateTable;
+import it.unibas.lunatic.model.algebra.CreateTableAs;
 import it.unibas.lunatic.model.algebra.Distinct;
 import it.unibas.lunatic.model.algebra.GroupBy;
 import it.unibas.lunatic.model.algebra.IAggregateFunction;
@@ -186,7 +186,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
                     cleanStepId = getHash(cleanStepId);
                 }
                 String materializedTableName = tableName + "_" + dependencyId + "_" + cleanStepId;
-                CreateTable createTable = new CreateTable(materializedTableName, materializedTableName, distinct);
+                CreateTableAs createTable = new CreateTableAs(materializedTableName, materializedTableName, distinct);
                 createTable.addChild(algebraRoot);
                 resultOperator = createTable;
             } else {
@@ -284,7 +284,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         if (materialize) {
             String tableName = "tmp_" + DBMSUtility.attributeRefToAliasSQL(attribute) + "_" + cleanStepId;
             String tableAlias = DBMSUtility.attributeRefToAliasSQL(attribute);
-            CreateTable createTable = new CreateTable(tableName, tableAlias, false);
+            CreateTableAs createTable = new CreateTableAs(tableName, tableAlias, false);
             createTable.addChild(project);
             resultOperator = createTable;
         } else {

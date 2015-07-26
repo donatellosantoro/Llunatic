@@ -21,22 +21,18 @@ import org.slf4j.LoggerFactory;
 public class NormalizeConclusionsInTGDs {
 
     private static Logger logger = LoggerFactory.getLogger(NormalizeConclusionsInTGDs.class);
-
-    //////////////////////////////////////////////////////////////////////////////////////////    
-    /////                             TGDS
-    //////////////////////////////////////////////////////////////////////////////////////////    
     
     private DualGaifmanGraph dualGaifmanGraphGenerator = new DualGaifmanGraph();
 
-    public List<Dependency> normalizeTGDs(List<Dependency> eTGDs) {
-        List<Dependency> normalizedTgds = new ArrayList<Dependency>();
-        for (Dependency eTGD : eTGDs) {
-            normalizedTgds.addAll(normalizeTGD(eTGD));
-        }
-        return normalizedTgds;
-    }
+//    public List<Dependency> normalizeTGDs(List<Dependency> eTGDs) {
+//        List<Dependency> normalizedTgds = new ArrayList<Dependency>();
+//        for (Dependency eTGD : eTGDs) {
+//            normalizedTgds.addAll(normalizeTGD(eTGD));
+//        }
+//        return normalizedTgds;
+//    }
 
-    private List<Dependency> normalizeTGD(Dependency tgd) {
+    public List<Dependency> normalizeTGD(Dependency tgd) {
         if (logger.isDebugEnabled()) logger.debug("Analyzing tgd: " + tgd);
         List<Dependency> normalizedTgds = new ArrayList<Dependency>();
         if (tgd.getConclusion().getAtoms().size() == 1) {

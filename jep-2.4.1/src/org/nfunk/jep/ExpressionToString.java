@@ -227,6 +227,9 @@ class ToStringVisitor implements ParserVisitor {
                 valueString = "" + intValue;
             }
         }
+        if (withVariableDelimiters) {
+            valueString = "§" + valueString + "#";
+        }
         result.append(valueString);
         return null;
     }

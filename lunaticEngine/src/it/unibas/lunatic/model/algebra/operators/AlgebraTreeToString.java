@@ -103,7 +103,7 @@ class AlgebraTreeToStringVisitor implements IAlgebraTreeVisitor {
         visitChildren(operator);
     }
 
-    public void visitCreateTable(CreateTable operator) {
+    public void visitCreateTable(CreateTableAs operator) {
         result.append(this.indentString()).append(operator.getName()).append("\n");
         visitChildren(operator);
     }

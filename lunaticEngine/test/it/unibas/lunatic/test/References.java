@@ -73,7 +73,9 @@ public class References {
     public static final String synthetic_02 = "mc/synthetic/synthetic-02-mcscenario.xml";
     public static final String synthetic_02_dbms = "mc/synthetic/synthetic-02-mcscenario-dbms.xml";
     public static final String synthetic_03 = "mc/synthetic/synthetic-03-mcscenario.xml";
+    public static final String synthetic_03_const = "mc/synthetic/synthetic-03-mcscenario-const.xml";
     public static final String synthetic_03_dbms = "mc/synthetic/synthetic-03-mcscenario-dbms.xml";
+    public static final String synthetic_03_dbms_const = "mc/synthetic/synthetic-03-mcscenario-dbms-const.xml";
     public static final String synthetic_04 = "mc/synthetic/synthetic-04-mcscenario.xml";
     public static final String synthetic_04_dbms = "mc/synthetic/synthetic-04-mcscenario-dbms.xml";
     public static final String synthetic_05 = "mc/synthetic/synthetic-05-mcscenario.xml";

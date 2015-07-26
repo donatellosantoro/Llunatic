@@ -184,4 +184,19 @@ public class DependencyUtility {
         FindSourceAtoms sourceAtomFinder = new FindSourceAtoms();
         return sourceAtomFinder.hasSourceAtoms(dependency);
     }
+
+    public static String buildVariableIdForConstant(Object constantValue) {
+        String constantValueString = constantValue.toString().replaceAll("\"", "");
+        return "v" + constantValueString;
+    }
+    
+    public static String buildTableNameForConstants(Dependency dependency) {
+        return "consts_in_" + dependency.getId();
+    }
+    
+    public static String buildAttributeNameForConstant(Object constantValue) {
+        String constantValueString = constantValue.toString().replaceAll("\"", "");
+        return "a" + constantValueString;
+    }
+
 }

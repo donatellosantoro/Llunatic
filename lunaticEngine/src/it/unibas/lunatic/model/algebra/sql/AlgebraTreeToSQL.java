@@ -151,7 +151,7 @@ public class AlgebraTreeToSQL {
                 //Ignore Project of Project
                 child = child.getChildren().get(0);
             }
-            if (!(child instanceof Scan) && !(child instanceof Join) && !(child instanceof Select) && !(child instanceof CreateTable) && !(child instanceof RestoreOIDs)) {
+            if (!(child instanceof Scan) && !(child instanceof Join) && !(child instanceof Select) && !(child instanceof CreateTableAs) && !(child instanceof RestoreOIDs)) {
                 throw new IllegalArgumentException("Project of a " + child.getName() + " is not supported");
             }
             child.accept(this);
@@ -266,7 +266,7 @@ public class AlgebraTreeToSQL {
             child.accept(this);
         }
 
-        public void visitCreateTable(CreateTable operator) {
+        public void visitCreateTable(CreateTableAs operator) {
             String currentResult = result.toString();
             result = new SQLQuery();
             String tableName = operator.getTableName();
@@ -365,7 +365,7 @@ public class AlgebraTreeToSQL {
                 this.indentLevel--;
                 result.append("\n").append(this.indentString()).append(") AS ");
                 result.append("Nest_").append(operator.hashCode());
-            } else if ((operator instanceof CreateTable)) {
+            } else if ((operator instanceof CreateTableAs)) {
                 this.indentLevel++;
                 operator.accept(this);
                 this.indentLevel--;
@@ -498,7 +498,7 @@ public class AlgebraTreeToSQL {
                 attributes.addAll(getNestedAttributes(rightChild));
 //            attributes.addAll(operator.getAttributes(source, target));
             }
-            if (operator instanceof CreateTable) {
+            if (operator instanceof CreateTableAs) {
                 attributes.addAll(operator.getAttributes(source, target));
 //            CreateTable createTable = (CreateTable)operator;
 //            for (AttributeRef attributeRef : operator.getAttributes(source, target)) {

@@ -24,10 +24,10 @@ ExtEGDs:
 //    -> $v3 == $v2.
 //e1: r(a: $v1, b: $v2), r(a: $v3, b: $v5), s(a: $v4, b: $v6), $v1 == $v3, $v3 == $v4 and not exists(s(a: $v3, b: $v7) and not exists(t(a: $v4, b: $v8))) 
 //    -> $v2 == $v5.
-//e1: r(a: $v1, b: $v2), r(a: $v3, b: $v5), s(a: $v4, b: $v6), $v1 == $v3, $v3 == $v4 
-//    -> $v2 == $v6.
+e1: r(a: $v1, b: $v2), r(a: $v3, b: $v5), s(a: $v4, b: $v6), $v1 == $v3, $v3 == $v4 
+    -> $v2 == $v6.
 // cycles
-e1: r(a: $v1, b: $v2), r(a: $v1, b: $v3), s(a: $v1, b: $v1) -> $v2 == $v3.
+//e1: r(a: $v1, b: $v2), r(a: $v1, b: $v3), s(a: $v1, b: $v1) -> $v2 == $v3.
 ]]>
   </dependencies>
   <orderingAttributes />
