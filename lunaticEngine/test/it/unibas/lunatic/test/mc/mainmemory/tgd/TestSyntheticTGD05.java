@@ -16,6 +16,7 @@ public class TestSyntheticTGD05 extends CheckTest {
 
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T05);
+        if (logger.isDebugEnabled()) logger.debug("Scenario:\n" + scenario);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
