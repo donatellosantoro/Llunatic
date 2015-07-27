@@ -66,7 +66,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseTGDEquivalenceClass" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies" level="DEBUG"/>-->
-    <logger name="it.unibas.lunatic.model.dependency.operators.ReplaceConstantsWithVariables" level="DEBUG"/>
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.ReplaceConstantsWithVariables" level="DEBUG"/>-->
 
     <!--     CHASE DED     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chaseded.ChaseDEDScenarioGreedy" level="DEBUG"/>-->

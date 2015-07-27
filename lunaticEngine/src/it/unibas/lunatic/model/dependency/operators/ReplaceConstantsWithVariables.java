@@ -84,7 +84,8 @@ public class ReplaceConstantsWithVariables {
         if (comparisonAtom.getVariables().size() == 2) {
             return;
         }
-        Object constantValue = createConstantValue((comparisonAtom.getLeftConstant() != null ? comparisonAtom.getLeftConstant() : comparisonAtom.getRightConstant()));
+        Object originalConstantValue = (comparisonAtom.getLeftConstant() != null ? comparisonAtom.getLeftConstant() : comparisonAtom.getRightConstant());
+        Object constantValue = createConstantValue(originalConstantValue);
         ConstantInFormula constantInFormula = getConstantInFormula(constantValue, constantsInFormula);
         if (comparisonAtom.getLeftConstant() != null) {
             comparisonAtom.setLeftConstant(null);
@@ -94,7 +95,7 @@ public class ReplaceConstantsWithVariables {
             comparisonAtom.addVariable(constantInFormula.getFormulaVariable());
         }
         constantInFormula.getFormulaVariable().addNonRelationalOccurrence(comparisonAtom);
-        fixExpression(comparisonAtom, constantValue, constantInFormula.getFormulaVariable());
+        fixExpression(comparisonAtom, originalConstantValue, constantInFormula.getFormulaVariable());
     }
 
     private Object createConstantValue(Object value) {

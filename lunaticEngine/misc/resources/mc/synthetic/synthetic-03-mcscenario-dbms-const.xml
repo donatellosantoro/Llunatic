@@ -30,17 +30,11 @@ insert into r(a,b,c) values ('a', 'b2', 'c2');
 <![CDATA[
 ExtEGDs:
 r(a: $x, b: $y1, c: $z1), r(a: $x, b: $y2, c: $z2) -> $y1 == $y2.
-//r(a: $x1, b: $y1, c: $c), const1(b: $b, c: $c) -> $y1 == $b.
-//r(a: $x1, b: $y1, c: $c), const2(b: $b, c: $c) -> $y1 == $b.
 r(a: $x1, b: $y1, c: $c), $c == "c1" -> $y1 == "b1".
 r(a: $x1, b: $y1, c: $c), $c == "c2" -> $y1 == "b2".
 
 ]]>
   </dependencies>
-  <authoritativeSources>
-    <source>const1</source>
-    <source>const2</source>
-  </authoritativeSources>
   <partialOrder/>
 </scenario>
 

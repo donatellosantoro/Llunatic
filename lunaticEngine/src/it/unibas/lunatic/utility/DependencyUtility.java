@@ -188,11 +188,11 @@ public class DependencyUtility {
     public static String buildVariableIdForConstant(Object constantValue) {
         return "v" + constantValue;
     }
-    
+
     public static String buildTableNameForConstants(Dependency dependency) {
         return "consts_in_" + dependency.getId();
     }
-    
+
     public static String buildAttributeNameForConstant(Object constantValue) {
         return "a" + constantValue;
     }
