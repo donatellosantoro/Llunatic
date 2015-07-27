@@ -43,6 +43,9 @@
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.NormalizeDependency" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.algebra.sql.AlgebraTreeToSQL" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.algebra.sql.GenerateTrigger" level="DEBUG"/>-->
+    
+    <!--     DBMS     -->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery" level="DEBUG"/>-->
 
     <!--     CHASE DE     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs" level="DEBUG"/>-->

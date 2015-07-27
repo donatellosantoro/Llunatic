@@ -38,22 +38,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ChaseTGDEquivalenceClass {
-    
+
     private static Logger logger = LoggerFactory.getLogger(ChaseTGDEquivalenceClass.class);
-    
+
     private CorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
     private IRunQuery queryRunner;
     private IOIDGenerator oidGenerator;
     private OccurrenceHandlerMC occurrenceHandler;
     private ChangeCell cellChanger;
-    
+
     public ChaseTGDEquivalenceClass(IRunQuery queryRunner, IOIDGenerator oidGenerator, OccurrenceHandlerMC occurrenceHandler, ChangeCell cellChanger) {
         this.queryRunner = queryRunner;
         this.oidGenerator = oidGenerator;
         this.occurrenceHandler = occurrenceHandler;
         this.cellChanger = cellChanger;
     }
-    
+
     public boolean chaseDependency(DeltaChaseStep currentNode, Dependency tgd, IAlgebraOperator query,
             Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
         if (logger.isDebugEnabled()) logger.debug("** Chasing dependency " + tgd);
@@ -65,7 +65,7 @@ public class ChaseTGDEquivalenceClass {
         long violationQueryEnd = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.TGD_VIOLATION_QUERY_TIME, violationQueryEnd - violationQueryStart);
         List<EquivalenceClassForTGD> equivalenceClasses = new ArrayList<EquivalenceClassForTGD>();
-        Map<CellGroupCell, Set<TargetCellsToInsertForTGD>> cellMap = new HashMap<CellGroupCell, Set<TargetCellsToInsertForTGD>>();
+        Map<CellGroupCell, List<TargetCellsToInsertForTGD>> cellGroupMap = new HashMap<CellGroupCell, List<TargetCellsToInsertForTGD>>();
         List<IValue> lastUniversalValues = null;
         while (it.hasNext()) {
             Tuple tuple = it.next();
@@ -73,25 +73,27 @@ public class ChaseTGDEquivalenceClass {
             if (logger.isDebugEnabled()) logger.debug("Detected violation on values " + universalValuesInConclusion);
             if (lastUniversalValues == null || LunaticUtility.areDifferentConsideringOrder(lastUniversalValues, universalValuesInConclusion)) {
                 //New equivalence class
-                if (logger.isDebugEnabled()) logger.debug("New equivalence class with universal values " + lastUniversalValues);
+                if (logger.isDebugEnabled()) logger.debug("New equivalence class with universal values " + universalValuesInConclusion);
                 EquivalenceClassForTGD equivalenceClass = new EquivalenceClassForTGD(tgd);
                 equivalenceClasses.add(equivalenceClass);
                 lastUniversalValues = universalValuesInConclusion;
             }
             EquivalenceClassForTGD equivalenceClass = equivalenceClasses.get(equivalenceClasses.size() - 1);
-            addTupleInEquivalenceClass(tuple, equivalenceClass, tgd, cellMap);
+            addTupleInEquivalenceClass(tuple, equivalenceClass, tgd, cellGroupMap);
         }
         it.close();
-        Set<TargetCellsToInsertForTGD> updates = generateUpdates(cellMap, currentNode.getDeltaDB(), currentNode.getId(), scenario);
+        if (logger.isDebugEnabled()) logger.debug("Equivalence classes\n " + LunaticUtility.printCollection(equivalenceClasses));
+        if (logger.isDebugEnabled()) logger.debug("CellGroup Map\n " + LunaticUtility.printMap(cellGroupMap));
+        List<TargetCellsToInsertForTGD> updates = generateUpdates(cellGroupMap, currentNode.getDeltaDB(), currentNode.getId(), scenario);
         applyChanges(updates, currentNode.getDeltaDB(), currentNode.getId(), scenario);
         if (logger.isDebugEnabled()) logger.debug("** Updates " + LunaticUtility.printCollection(updates));
         return !updates.isEmpty();
     }
-    
-    private void addTupleInEquivalenceClass(Tuple tuple, EquivalenceClassForTGD equivalenceClass, Dependency tgd, Map<CellGroupCell, Set<TargetCellsToInsertForTGD>> cellMap) {
+
+    private void addTupleInEquivalenceClass(Tuple tuple, EquivalenceClassForTGD equivalenceClass, Dependency tgd, Map<CellGroupCell, List<TargetCellsToInsertForTGD>> cellGroupMap) {
         List<FormulaVariable> universalVariables = DependencyUtility.getUniversalVariablesInConclusion(tgd);
         for (FormulaVariable universalVariable : universalVariables) {
-            List<CellGroupCell> cellsForVariable = findPremiseCells(tuple, universalVariable);
+            List<CellGroupCell> cellsForVariable = findPremiseCells(tuple, universalVariable, tgd);
             TargetCellsToInsertForTGD targetCellsToInsert = equivalenceClass.getTargetCellForVariable(universalVariable);
             if (targetCellsToInsert == null) {
                 IValue cellGroupValue = cellsForVariable.get(0).getValue();
@@ -106,12 +108,12 @@ public class ChaseTGDEquivalenceClass {
                 if (cellForVariable.getType().equals(LunaticConstants.TYPE_JUSTIFICATION)) {
                     cellGroup.addJustificationCell(cellForVariable);
                 }
-                addCellToCellMap(cellForVariable, targetCellsToInsert, cellMap);
+                addCellToCellGroupMap(cellForVariable, targetCellsToInsert, cellGroupMap);
             }
-            if (equivalenceClass.hasNewCellsForVariable(universalVariable)) {
-                continue;
+            if (!equivalenceClass.hasNewCellsForVariable(universalVariable)) {
+                //New cells for equivalence class need to be generated only once
+                addNewCells(universalVariable, cellGroup.getValue(), equivalenceClass, tgd);
             }
-            addNewCells(universalVariable, cellGroup.getValue(), equivalenceClass, tgd);
         }
         List<FormulaVariable> existentialVariables = DependencyUtility.getExistentialVariables(tgd);
         for (FormulaVariable existentialVariable : existentialVariables) {
@@ -121,18 +123,21 @@ public class ChaseTGDEquivalenceClass {
                 targetCellsToInsert = new TargetCellsToInsertForTGD(nullValue);
                 equivalenceClass.setTargetCellToInsertForVariable(existentialVariable, targetCellsToInsert);
             }
-            if (equivalenceClass.hasNewCellsForVariable(existentialVariable)) {
-                continue;
-            }
-            addNewCells(existentialVariable, nullValue, equivalenceClass, tgd);
-            for (CellGroupCell nullCell : targetCellsToInsert.getNewCells()) {
-                addCellToCellMap(nullCell, targetCellsToInsert, cellMap);
+            if (!equivalenceClass.hasNewCellsForVariable(existentialVariable)) {
+                //New cells for equivalence class need to be generated only once
+                addNewCells(existentialVariable, nullValue, equivalenceClass, tgd);
+                //Need to initialize cell groups for new cells, otherwise missing
+                for (CellGroupCell nullCell : targetCellsToInsert.getNewCells()) {
+                    addCellToCellGroupMap(nullCell, targetCellsToInsert, cellGroupMap);
+                }
             }
         }
     }
-    
-    private List<CellGroupCell> findPremiseCells(Tuple tuple, FormulaVariable formulaVariable) {
-        List<AttributeRef> premiseAttributesForVariable = extractAttributeRefsForVariable(formulaVariable.getPremiseRelationalOccurrences());
+
+    private List<CellGroupCell> findPremiseCells(Tuple tuple, FormulaVariable formulaVariable, Dependency tgd) {
+        List<FormulaVariableOccurrence> premiseOccurrences = formulaVariable.getPremiseRelationalOccurrences();
+        List<FormulaVariableOccurrence> positiveOccurrences = ChaseUtility.findPositiveOccurrences(tgd.getPremise().getPositiveFormula(), premiseOccurrences);
+        List<AttributeRef> premiseAttributesForVariable = extractAttributeRefsForVariable(positiveOccurrences);
         List<CellGroupCell> premiseCells = new ArrayList<CellGroupCell>();
         for (AttributeRef attributeRef : premiseAttributesForVariable) {
             TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, attributeRef));
@@ -147,7 +152,7 @@ public class ChaseTGDEquivalenceClass {
         }
         return premiseCells;
     }
-    
+
     private List<AttributeRef> extractAttributeRefsForVariable(List<FormulaVariableOccurrence> occurrences) {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
         for (FormulaVariableOccurrence formulaVariableOccurrence : occurrences) {
@@ -155,7 +160,7 @@ public class ChaseTGDEquivalenceClass {
         }
         return result;
     }
-    
+
     private void addNewCells(FormulaVariable universalVariable, IValue value, EquivalenceClassForTGD equivalenceClass, Dependency tgd) {
         for (FormulaVariableOccurrence occurrence : universalVariable.getConclusionRelationalOccurrences()) {
             TableAlias tableAlias = occurrence.getTableAlias();
@@ -169,19 +174,26 @@ public class ChaseTGDEquivalenceClass {
             equivalenceClass.getTargetCellForVariable(universalVariable).addNewCell(newCell);
         }
     }
-    
-    private void addCellToCellMap(CellGroupCell cell, TargetCellsToInsertForTGD targetCellsToInsert, Map<CellGroupCell, Set<TargetCellsToInsertForTGD>> cellMap) {
-        Set<TargetCellsToInsertForTGD> targetCellsForCell = cellMap.get(cell);
+
+    private void addCellToCellGroupMap(CellGroupCell cell, TargetCellsToInsertForTGD targetCellsToInsert, Map<CellGroupCell, List<TargetCellsToInsertForTGD>> cellMap) {
+        List<TargetCellsToInsertForTGD> targetCellsForCell = cellMap.get(cell);
         if (targetCellsForCell == null) {
-            targetCellsForCell = new HashSet<TargetCellsToInsertForTGD>();
+            targetCellsForCell = new ArrayList<TargetCellsToInsertForTGD>();
             cellMap.put(cell, targetCellsForCell);
         }
-        targetCellsForCell.add(targetCellsToInsert);
+        if (!targetCellsForCell.contains(targetCellsToInsert)) {
+            targetCellsForCell.add(targetCellsToInsert);
+        }
     }
-    
-    private Set<TargetCellsToInsertForTGD> generateUpdates(Map<CellGroupCell, Set<TargetCellsToInsertForTGD>> cellMap, IDatabase deltaDB, String step, Scenario scenario) {
-        Set<TargetCellsToInsertForTGD> updates = new HashSet<TargetCellsToInsertForTGD>();
-        for (Set<TargetCellsToInsertForTGD> group : cellMap.values()) {
+
+    private List<TargetCellsToInsertForTGD> generateUpdates(Map<CellGroupCell, List<TargetCellsToInsertForTGD>> cellMap, IDatabase deltaDB, String step, Scenario scenario) {
+        Set<List<TargetCellsToInsertForTGD>> analizedSets = new HashSet<List<TargetCellsToInsertForTGD>>();
+        List<TargetCellsToInsertForTGD> updates = new ArrayList<TargetCellsToInsertForTGD>();
+        for (List<TargetCellsToInsertForTGD> group : cellMap.values()) {
+            if (analizedSets.contains(group)) {
+                continue;
+            }
+            analizedSets.add(group);
             TargetCellsToInsertForTGD mergedCellsToInsert = mergeAll(group);
             this.occurrenceHandler.enrichCellGroups(mergedCellsToInsert.getCellGroup(), deltaDB, step, scenario);
             this.cellGroupIDFixer.correctCellGroupId(mergedCellsToInsert.getCellGroup());
@@ -191,17 +203,17 @@ public class ChaseTGDEquivalenceClass {
         }
         return updates;
     }
-    
-    private TargetCellsToInsertForTGD mergeAll(Set<TargetCellsToInsertForTGD> group) {
+
+    private TargetCellsToInsertForTGD mergeAll(List<TargetCellsToInsertForTGD> group) {
         Iterator<TargetCellsToInsertForTGD> iterator = group.iterator();
         TargetCellsToInsertForTGD result = iterator.next();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             TargetCellsToInsertForTGD otherCellsToInsert = iterator.next();
             CellGroupUtility.mergeCells(otherCellsToInsert.getCellGroup(), result.getCellGroup());
         }
         return result;
     }
-    
+
     private void addNewCells(TargetCellsToInsertForTGD mergedCellsToInsert) {
         CellGroup cellGroup = mergedCellsToInsert.getCellGroup();
         for (CellGroupCell newCell : mergedCellsToInsert.getNewCells()) {
@@ -209,27 +221,26 @@ public class ChaseTGDEquivalenceClass {
             cellGroup.addOccurrenceCell(newCell);
         }
     }
-    
-    private void applyChanges(Set<TargetCellsToInsertForTGD> updates, IDatabase deltaDB, String id, Scenario scenario) {
+
+    private void applyChanges(List<TargetCellsToInsertForTGD> updates, IDatabase deltaDB, String id, Scenario scenario) {
         for (TargetCellsToInsertForTGD update : updates) {
             this.cellChanger.changeCells(update.getCellGroup(), deltaDB, id, scenario);
         }
     }
-    
+
     private IValue generateNullValueForVariable(FormulaVariable existentialVariable, Map<AttributeRef, IValueGenerator> targetGenerators, Tuple tuple) {
         IValueGenerator generator = targetGenerators.get(existentialVariable.getConclusionRelationalOccurrences().get(0).getAttributeRef());
         IValue value = generator.generateValue(tuple);
         return value;
     }
-    
+
     private void checkAndSetOriginalValues(CellGroup cellGroup) {
         for (CellGroupCell cell : cellGroup.getAllCells()) {
             if (cell.getOriginalValue() == null) {
                 cell.setOriginalValue(cell.getValue());
                 cell.setToSave(true);
             }
-                cell.setToSave(true); //TODO++ TGD
         }
     }
-    
+
 }

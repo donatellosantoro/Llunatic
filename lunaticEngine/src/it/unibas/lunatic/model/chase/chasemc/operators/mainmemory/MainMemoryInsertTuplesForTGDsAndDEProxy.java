@@ -79,8 +79,7 @@ public class MainMemoryInsertTuplesForTGDsAndDEProxy implements IInsertTuplesFor
                     if (logger.isDebugEnabled()) logger.debug("----Target tuple: " + targetTuple);
                     ITable deltaTable = currentNode.getDeltaDB().getTable(deltaTableName);
                     insertOperator.execute(deltaTable, targetTuple, scenario.getSource(), scenario.getTarget());
-                    //TODO DE Check
-                    updateOccurrencesForNewTuple(targetTuple, attributeValue, databaseForStep, deltaTableName, deltaTableName, scenario);
+                    updateOccurrencesForNewTuple(targetTuple, attributeValue, currentNode.getDeltaDB(), attribute.getTableName(), attribute.getName(), scenario);
                 }
             }
         }

@@ -1,7 +1,6 @@
 package it.unibas.lunatic.test.mc.dbms.tgd;
 
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.test.mc.mainmemory.tgd.*;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;

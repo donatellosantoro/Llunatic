@@ -44,6 +44,7 @@
                 <package>it.unibas.lunatic.model.chase.commons.control</package>
                 <package>it.unibas.lunatic.model.database</package>
                 <package>it.unibas.lunatic.model.database.dbms</package>
+                <package>it.unibas.lunatic.model.database.dbms.operators</package>
                 <package>it.unibas.lunatic.model.database.lazyloading</package>
                 <package>it.unibas.lunatic.model.database.mainmemory</package>
                 <package>it.unibas.lunatic.model.database.mainmemory.datasource</package>
@@ -55,8 +56,6 @@
                 <package>it.unibas.lunatic.model.dependency</package>
                 <package>it.unibas.lunatic.model.dependency.operators</package>
                 <package>it.unibas.lunatic.model.expressions</package>
-                <package>it.unibas.lunatic.model.extendedegdanalysis</package>
-                <package>it.unibas.lunatic.model.extendedegdanalysis.operators</package>
                 <package>it.unibas.lunatic.model.generators</package>
                 <package>it.unibas.lunatic.model.similarity</package>
                 <package>it.unibas.lunatic.parser</package>

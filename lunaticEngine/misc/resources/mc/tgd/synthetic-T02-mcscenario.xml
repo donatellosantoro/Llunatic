@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-    <source>    
-        <type>GENERATE</type>
-        <generate>
-<![CDATA[
-SCHEMA:
-const1(A)
-const2(A, B)
-INSTANCE:
-const1(A: "3")
-const2(A: "5", B: "6")
-]]>
-        </generate>
-    </source>
     <target>    
         <type>GENERATE</type>
         <generate>
@@ -32,13 +19,13 @@ S(A: "2", B: "4")
     <dependencies>
 <![CDATA[
 ExtTGDs:
-R(A: $x, B: $y), const1(A: $y) -> S(A: $y, B: $z).
-R(A: $x, B: $y), const2(A: $y, B: $z) -> S(A: $y, B: $z).
+//R(A: $x, B: $y), const1(A: $y) -> S(A: $y, B: $z).
+R(A: $x, B: $y), $y == 3 -> S(A: $y, B: $z).
+//R(A: $x, B: $y), const2(A: $y, B: $z) -> S(A: $y, B: $z).
+R(A: $x, B: $y), $y == 5-> S(A: $y, B: 6).
 ExtEGDs:
-//S(A: $y1, B: $x), S(A: $y2, B: $x) -> $y1 == $y2.
 S(A: $y1, B: $x), S(A: $y2, B: $x), R(A: $z1, B:$y1), R(A: $z2, B:$y2) -> $y1 == $y2.
 S(A: $y1, B: $x), S(A: $y2, B: $x), R(A: $z1, B:$y1) and not exists(R(A: $z2, B:$y2)) -> $y1 == $y2.
-//S(A: $y1, B: $x), S(A: $y2, B: $x), R(A: $z2, B:$y2) and not exists(R(A: $z1, B:$y1)) -> $y1 == $y2.
 S(A: $y1, B: $x), S(A: $y2, B: $x) and not exists(R(A: $z1, B:$y1)) and not exists(R(A: $z2, B:$y2)) -> $y1 == $y2.
 ]]>
     </dependencies>

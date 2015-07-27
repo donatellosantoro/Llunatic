@@ -74,7 +74,7 @@ public class CorrectCellGroupID {
         if (!originalCellGroupId.getType().equals(lubCellGroupId.getType())) {
             return false;
         }
-        if (originalCellGroupId.getType().equals(PartialOrderConstants.LLUN)
+        if (originalCellGroupId.getType().equals(PartialOrderConstants.NULL)
                 || originalCellGroupId.getType().equals(PartialOrderConstants.LLUN)) {
             return true;
         }

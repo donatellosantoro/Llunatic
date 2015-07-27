@@ -209,7 +209,6 @@ public class ChaseEGDs {
             Set<CellRef> cellsToChange = ChaseUtility.createCellRefsFromCells(changeSet.getCellGroup().getOccurrences());
             for (CellRef cellRef : cellsToChange) {
                 if (newValue instanceof NullValue) {
-                    //TODO DE Check
                     NullValue newNullValue = (NullValue) newValue;
                     Cell nullCell = new Cell(cellRef, newNullValue);
                     valueOccurrenceHandler.addOccurrenceForNull(scenario.getTarget(), newNullValue, nullCell);
@@ -271,7 +270,6 @@ public class ChaseEGDs {
         if (cells != null) {
             for (Cell cell : cells) {
                 IValue value = cell.getValue();
-                //TODO DE Check
                 CellGroupCell cellGroupCell = new CellGroupCell(cell.getTupleOID(), cell.getAttributeRef(), value, null, LunaticConstants.TYPE_OCCURRENCE, false);
                 cellGroup.addOccurrenceCell(cellGroupCell);
             }
