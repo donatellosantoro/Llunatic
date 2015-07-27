@@ -1,16 +1,21 @@
  package it.unibas.lunatic.test.mc.mainmemory;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
-import it.unibas.lunatic.test.checker.CheckTest;
+import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
+import it.unibas.lunatic.test.comparator.repairs.PrecisionAndRecall;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestSynthetic03 extends CheckTest {
+public class TestSynthetic03 extends CheckExpectedSolutionsTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestSynthetic03.class);
 
@@ -28,5 +33,10 @@ public class TestSynthetic03 extends CheckTest {
         Assert.assertEquals(6, resultSizer.getSolutions(result));
         Assert.assertEquals(4, resultSizer.getDuplicates(result));
         checkSolutions(result);
+//        OperatorFactory.getInstance().getResultExporter(scenario).exportResult(result, "~/Tmp/Synt03", false);
+        
+        Map<String, List<PrecisionAndRecall>> quality = compareWithExpectedInstances(result, "expected03", Arrays.asList(new String[]{LunaticConstants.OID, LunaticConstants.TID}), 0.0, false);
+        if (logger.isDebugEnabled()) logger.debug(printPrecisionAndRecall(quality));
+        checkQuality(quality);
     }
 }

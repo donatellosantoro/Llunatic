@@ -7,7 +7,6 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
-import it.unibas.lunatic.test.checker.CheckTest;
 import it.unibas.lunatic.test.comparator.repairs.PrecisionAndRecall;
 import java.util.Arrays;
 import java.util.List;
