@@ -36,7 +36,7 @@ public class ReplaceConstantsWithVariables {
 
     public Dependency replaceConstants(Dependency dependency, Scenario scenario) {
         initTableCreator(scenario);
-        if (logger.isTraceEnabled()) logger.debug("Before constant removal: " + dependency);
+        if (logger.isDebugEnabled()) logger.debug("Before constant removal: " + dependency);
         ConstantsInFormula constantsInFormula = new ConstantsInFormula(dependency);
         findAndReplaceConstantsInPositiveFormula(dependency.getPremise().getPositiveFormula(), constantsInFormula, true);
         findAndReplaceConstantsInPositiveFormula(dependency.getConclusion().getPositiveFormula(), constantsInFormula, false);
@@ -45,7 +45,8 @@ public class ReplaceConstantsWithVariables {
         }
         addAtomAndVariables(dependency, constantsInFormula);
         createTable(constantsInFormula, scenario);
-        if (logger.isTraceEnabled()) logger.debug("After constant removal: " + dependency);
+        if (logger.isDebugEnabled()) logger.debug("After constant removal: " + dependency.toLongString());
+        if (logger.isDebugEnabled()) logger.debug("Constant Table: " + constantsInFormula.toString());
         return dependency;
     }
 
@@ -96,6 +97,11 @@ public class ReplaceConstantsWithVariables {
         fixExpression(comparisonAtom, constantValue, constantInFormula.getFormulaVariable());
     }
 
+    private Object createConstantValue(Object value) {
+        String valueString = value.toString().replaceAll("\"", "");
+        return valueString;
+    }
+
     private ConstantInFormula getConstantInFormula(Object constantValue, ConstantsInFormula constantsInFormula) {
         ConstantInFormula constantInFormula = constantsInFormula.getConstantMap().get(constantValue.toString());
         if (constantInFormula == null) {
@@ -140,10 +146,5 @@ public class ReplaceConstantsWithVariables {
 
     private void createTable(ConstantsInFormula constantsInFormula, Scenario scenario) {
         this.tableCreator.createTable(constantsInFormula, scenario);
-    }
-
-    private Object createConstantValue(Object value) {
-        String valueString = value.toString().replaceAll("\"", "");
-        return valueString;
     }
 }

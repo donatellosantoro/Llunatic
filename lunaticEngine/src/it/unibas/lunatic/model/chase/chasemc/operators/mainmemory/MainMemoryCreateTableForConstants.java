@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 public class MainMemoryCreateTableForConstants implements ICreateTablesForConstants {
 
     private static final Logger logger = LoggerFactory.getLogger(MainMemoryCreateTableForConstants.class.getName());
-    
+
     public void createTable(ConstantsInFormula constantsInFormula, Scenario scenario) {
         if (scenario.getSource() instanceof EmptyDB) {
             MainMemoryDB newSource = createEmptySourceDatabase();
@@ -30,21 +30,12 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
         }
         MainMemoryDB mainMemorySource = (MainMemoryDB) scenario.getSource();
         String tableName = constantsInFormula.getTableName();
-        if (containsTable(mainMemorySource, tableName)) {
+        if (mainMemorySource.getTableNames().contains(tableName)) {
             return;
         }
         createSchema(tableName, mainMemorySource, constantsInFormula);
         createInstance(tableName, mainMemorySource, constantsInFormula);
         scenario.getAuthoritativeSources().add(tableName);
-    }
-
-    private boolean containsTable(MainMemoryDB mainMemorySource, String tableName) {
-        for (INode tableNode : mainMemorySource.getDataSource().getSchema().getChildren()) {
-            if (tableNode.getLabel().equals(tableName)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void createSchema(String tableName, MainMemoryDB mainMemorySource, ConstantsInFormula constantsInFormula) {

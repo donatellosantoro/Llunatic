@@ -8,7 +8,6 @@ import it.unibas.lunatic.model.database.Key;
 import it.unibas.lunatic.model.database.dbms.operators.ExecuteInitDB;
 import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
-import it.unibas.lunatic.persistence.relational.QueryManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +26,6 @@ public class DBMSDB implements IDatabase {
         this.accessConfiguration = accessConfiguration;
     }
 
-//    public DBMSDB(DBMSDB db, AccessConfiguration accessConfiguration) {
-//        this.accessConfiguration = accessConfiguration;
-//        this.initDBConfiguration = db.initDBConfiguration;
-//        this.tableNames = db.tableNames;
-//        this.keys = db.keys;
-//        this.foreignKeys = db.foreignKeys;
-//        this.initialized = db.initialized;
-//        this.tables = db.tables;
-//    }
     private void initDBMS() {
         if (initialized) {
             return;
@@ -58,6 +48,9 @@ public class DBMSDB implements IDatabase {
 
     public void addTable(ITable table) {
         tables.add((DBMSTable) table);
+        if(!tableNames.contains(table.getName())){
+            tableNames.add(table.getName());
+        }
     }
 
     public String getName() {
