@@ -12,7 +12,6 @@ public class ConstantsInFormula {
     
     private Dependency dependency;
     private Map<String, ConstantInFormula> constantMap = new HashMap<String, ConstantInFormula>();
-    private String tableName;
 
     public ConstantsInFormula(Dependency dependency) {
         this.dependency = dependency;
@@ -27,11 +26,7 @@ public class ConstantsInFormula {
     }
 
     public String getTableName() {
-        return tableName;
-    }
-
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+        return DependencyUtility.buildTableNameForConstants(dependency);
     }
     
     @SuppressWarnings("unchecked")
@@ -63,7 +58,7 @@ public class ConstantsInFormula {
 
     @Override
     public String toString() {
-        return "ConstantsInFormula{" + "dependency=" + dependency + ", constantMap=" + constantMap + ", tableName=" + tableName + '}';
+        return "ConstantsInFormula{" + "dependency=" + dependency + ", constantMap=" + constantMap + '}';
     }    
 
 }

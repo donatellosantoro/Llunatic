@@ -413,7 +413,7 @@ public class DAOMCScenario {
     @SuppressWarnings("unchecked")
     private List<String> loadAuthoritativeSources(Element authoritativeSourcesElement, Scenario scenario) {
         if (authoritativeSourcesElement == null || authoritativeSourcesElement.getChildren().isEmpty()) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<String>();
         }
         List<String> sources = new ArrayList<String>();
         List<Element> sourceElements = authoritativeSourcesElement.getChildren("source");

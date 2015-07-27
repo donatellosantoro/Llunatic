@@ -6,7 +6,7 @@ import java.util.List;
 
 abstract class IntermediateNode extends AbstractNode {
 
-    private List<INode> listOfChildren = new ArrayList<INode>(1);
+    private List<INode> listOfChildren = new ArrayList<INode>();
 
     public IntermediateNode(String label) {
         super(label);

@@ -186,8 +186,7 @@ public class DependencyUtility {
     }
 
     public static String buildVariableIdForConstant(Object constantValue) {
-        String constantValueString = constantValue.toString().replaceAll("\"", "");
-        return "v" + constantValueString;
+        return "v" + constantValue;
     }
     
     public static String buildTableNameForConstants(Dependency dependency) {
@@ -195,8 +194,7 @@ public class DependencyUtility {
     }
     
     public static String buildAttributeNameForConstant(Object constantValue) {
-        String constantValueString = constantValue.toString().replaceAll("\"", "");
-        return "a" + constantValueString;
+        return "a" + constantValue;
     }
 
 }

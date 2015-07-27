@@ -61,7 +61,7 @@ class EqualityGroup {
             equalityExpression.changeVariableDescription(equality.getRightAttribute().toString(), equality.getRightAttribute());
             result.add(equalityExpression);
         }
-        if (leftTable.getTableName().equals(rightTable.getTableName()) && !cyclicJoinGraph) {
+        if (leftTable.getTableName().equals(rightTable.getTableName()) && !isCyclicJoinGraph()) {
             String inequalityOperator = "!=";
             Expression oidInequality = new Expression(leftTable.toString() + "." + LunaticConstants.OID + inequalityOperator + rightTable.toString() + "." + LunaticConstants.OID);
             oidInequality.changeVariableDescription(leftTable.toString() + "." + LunaticConstants.OID, new AttributeRef(leftTable, LunaticConstants.OID));

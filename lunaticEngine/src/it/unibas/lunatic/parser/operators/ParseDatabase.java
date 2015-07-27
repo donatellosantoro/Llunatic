@@ -16,6 +16,7 @@ import it.unibas.lunatic.model.database.mainmemory.datasource.NullValueFactory;
 import it.unibas.lunatic.parser.*;
 import it.unibas.lunatic.persistence.PersistenceUtility;
 import it.unibas.lunatic.persistence.Types;
+import it.unibas.lunatic.utility.LunaticUtility;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -104,7 +105,7 @@ public class ParseDatabase {
                 if (parserAttribute.getValue().equals(NULL)) {
                     leafNodeInstance = new LeafNode(Types.STRING, NullValueFactory.getNullValue());
                 } else {
-                    String valueType = findType(parserAttribute.getValue());
+                    String valueType = LunaticUtility.findType(parserAttribute.getValue());
                     leafNodeInstance = new LeafNode(valueType, parserAttribute.getValue());
                 }
                 attributeNodeInstance.addChild(leafNodeInstance);
@@ -114,19 +115,6 @@ public class ParseDatabase {
         if (logger.isDebugEnabled()) logger.debug("Final instance" + rootInstance);
     }
 
-    private String findType(Object value) {
-        try {
-            Integer.parseInt(value.toString());
-            return Types.INTEGER;
-        } catch (NumberFormatException e) {
-        }
-        try {
-            Double.parseDouble(value.toString());
-            return Types.DOUBLE;
-        } catch (NumberFormatException e) {
-        }
-        return Types.STRING;
-    }
 
     private INode findSetNode(String setName, INode rootInstance) {
         for (INode child : rootInstance.getChildren()) {

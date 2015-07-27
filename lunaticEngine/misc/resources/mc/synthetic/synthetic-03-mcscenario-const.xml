@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-    <source>
-        <type>GENERATE</type>
-        <generate>
-<![CDATA[
-SCHEMA:
-consts_in_e1(ab1, ac1)
-consts_in_e2(ab2, ac2)
-INSTANCE:
-consts_in_e1(ab1: "b1", ac1: "c1")
-consts_in_e2(ab2: "b2", ac2: "c2")
-]]>
-        </generate>        
-    </source>
+    <source/>
     <target>    
         <type>GENERATE</type>
         <generate>
@@ -29,16 +17,10 @@ R(a: "a", b: "b2", c: "c2")
 <![CDATA[
 ExtEGDs:
 R(a: $x, b: $y1, c: $z1), R(a: $x, b: $y2, c: $z2) -> $y1 == $y2.
-//R(a: $x1, b: $y1, c: $c), const1(b: $b, c: $c) -> $y1 == $b.
-//R(a: $x1, b: $y1, c: $c), const2(b: $b, c: $c) -> $y1 == $b.
 R(a: $x1, b: $y1, c: $c), $c == "c1" -> $y1 == "b1".
 R(a: $x1, b: $y1, c: $c), $c == "c2" -> $y1 == "b2".
 ]]>
     </dependencies>
-    <authoritativeSources>
-        <source>consts_in_e1</source>
-        <source>consts_in_e2</source>
-    </authoritativeSources>
     <partialOrder/>
 </scenario>
 

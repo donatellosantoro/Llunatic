@@ -14,6 +14,7 @@ import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.TupleNode;
 import it.unibas.lunatic.model.dependency.ConstantsInFormula;
 import it.unibas.lunatic.persistence.PersistenceConstants;
 import it.unibas.lunatic.persistence.Types;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
         }
         createSchema(tableName, mainMemorySource, constantsInFormula);
         createInstance(tableName, mainMemorySource, constantsInFormula);
+        scenario.getAuthoritativeSources().add(tableName);
     }
 
     private boolean containsTable(MainMemoryDB mainMemorySource, String tableName) {
@@ -50,14 +52,19 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
         mainMemorySource.getDataSource().getSchema().addChild(setNodeSchema);
         TupleNode tupleNodeSchema = new TupleNode(tableName + "Tuple");
         setNodeSchema.addChild(tupleNodeSchema);
-        for (String attributeName : constantsInFormula.getAttributeNames()) {
-            tupleNodeSchema.addChild(createAttributeSchema(attributeName));
+        List<String> attributeNames = constantsInFormula.getAttributeNames();
+        List<Object> constantValues = constantsInFormula.getConstantValues();
+        for (int i = 0; i < constantValues.size(); i++) {
+            String attributeName = attributeNames.get(i);
+            Object constantValue = constantValues.get(i);
+            tupleNodeSchema.addChild(createAttributeSchema(attributeName, constantValue));
         }
     }
 
-    private AttributeNode createAttributeSchema(String attributeName) {
+    private AttributeNode createAttributeSchema(String attributeName, Object value) {
         AttributeNode attributeNodeInstance = new AttributeNode(attributeName);
-        LeafNode leafNodeInstance = new LeafNode(Types.STRING);
+        String type = LunaticUtility.findType(value);
+        LeafNode leafNodeInstance = new LeafNode(type);
         attributeNodeInstance.addChild(leafNodeInstance);
         return attributeNodeInstance;
     }
@@ -89,7 +96,8 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
         DataSource dataSource = new DataSource(PersistenceConstants.TYPE_META_INSTANCE, schemaNode);
         INode instanceNode = new TupleNode(PersistenceConstants.DATASOURCE_ROOT_LABEL, IntegerOIDGenerator.getNextOID());
         instanceNode.setRoot(true);
-        dataSource.addInstanceWithCheck(instanceNode);
+//        dataSource.addInstanceWithCheck(instanceNode);
+        dataSource.addInstance(instanceNode);
         return new MainMemoryDB(dataSource);
     }
 }

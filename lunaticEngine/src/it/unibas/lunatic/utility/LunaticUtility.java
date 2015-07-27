@@ -21,6 +21,7 @@ import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
+import it.unibas.lunatic.persistence.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -332,6 +333,20 @@ public class LunaticUtility {
         return scenario.getAuthoritativeSources().contains(tableName);
     }
     
+    public static String findType(Object value) {
+        try {
+            Integer.parseInt(value.toString());
+            return Types.INTEGER;
+        } catch (NumberFormatException e) {
+        }
+        try {
+            Double.parseDouble(value.toString());
+            return Types.DOUBLE;
+        } catch (NumberFormatException e) {
+        }
+        return Types.STRING;
+    }
+
 }
 
 class StringComparator implements Comparator<Object> {

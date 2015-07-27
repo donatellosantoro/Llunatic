@@ -67,7 +67,7 @@ public class DataSource implements Cloneable {
     }
 
     public void addInstance(INode instance) {
-        if (!type.equals(PersistenceConstants.TYPE_ALGEBRA_RESULT)) {
+        if (!type.equals(PersistenceConstants.TYPE_ALGEBRA_RESULT) && !type.equals(PersistenceConstants.TYPE_META_INSTANCE)) {
             throw new IllegalArgumentException("Method can be used for algebra data sources only. Use addInstanceWithCheck()");
         }
         this.instances.add(instance);

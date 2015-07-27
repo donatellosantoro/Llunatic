@@ -2,7 +2,6 @@ package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ICreateTablesForConstants;
-import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLCreateTablesForConstants;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryCreateTableForConstants;
 import it.unibas.lunatic.model.database.AttributeRef;
@@ -11,7 +10,6 @@ import it.unibas.lunatic.model.dependency.ConstantInFormula;
 import it.unibas.lunatic.model.dependency.ConstantsInFormula;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaAttribute;
-import it.unibas.lunatic.model.dependency.FormulaConstant;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
@@ -28,7 +26,7 @@ public class ReplaceConstantsWithVariables {
 
     private ICreateTablesForConstants tableCreator;
 
-    public void initTableCreator(Scenario scenario) {
+    private void initTableCreator(Scenario scenario) {
         if (scenario.isMainMemory()) {
             this.tableCreator = new MainMemoryCreateTableForConstants();
         } else {
@@ -68,7 +66,7 @@ public class ReplaceConstantsWithVariables {
             if (attribute.getValue().isVariable() || attribute.getValue().isNull()) {
                 continue;
             }
-            Object constantValue = ((FormulaConstant) attribute.getValue()).getValue();
+            Object constantValue = createConstantValue(attribute.getValue());
             ConstantInFormula constantInFormula = getConstantInFormula(constantValue, constantsInFormula);
             AttributeRef attributeRef = new AttributeRef(relationalAtom.getTableAlias(), attribute.getAttributeName());
             if (premise) {
@@ -85,7 +83,7 @@ public class ReplaceConstantsWithVariables {
         if (comparisonAtom.getVariables().size() == 2) {
             return;
         }
-        Object constantValue = (comparisonAtom.getLeftConstant() != null ? comparisonAtom.getLeftConstant() : comparisonAtom.getRightConstant());
+        Object constantValue = createConstantValue((comparisonAtom.getLeftConstant() != null ? comparisonAtom.getLeftConstant() : comparisonAtom.getRightConstant()));
         ConstantInFormula constantInFormula = getConstantInFormula(constantValue, constantsInFormula);
         if (comparisonAtom.getLeftConstant() != null) {
             comparisonAtom.setLeftConstant(null);
@@ -141,7 +139,11 @@ public class ReplaceConstantsWithVariables {
     }
 
     private void createTable(ConstantsInFormula constantsInFormula, Scenario scenario) {
-        //TODO norm
-//        this.tableCreator.createTable(constantsInFormula, scenario);
+        this.tableCreator.createTable(constantsInFormula, scenario);
+    }
+
+    private Object createConstantValue(Object value) {
+        String valueString = value.toString().replaceAll("\"", "");
+        return valueString;
     }
 }
