@@ -40,12 +40,15 @@ public class TestPersons extends CheckExpectedSolutionsTest {
 //        scenario.getCostManager().setDoPermutations(false);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
-        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
+//        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
         Assert.assertEquals(9, resultSizer.getPotentialSolutions(result));
         checkSolutions(result);
+//        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedPersons", result);
+        checkExpectedSolutions("expectedPersons", result);
 //        if (logger.isDebugEnabled()) logger.debug("Delta db:\n" + result.getDeltaDB().printInstances());
     }
 }
