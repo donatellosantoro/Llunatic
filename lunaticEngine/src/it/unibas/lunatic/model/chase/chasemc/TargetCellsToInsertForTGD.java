@@ -13,6 +13,10 @@ public class TargetCellsToInsertForTGD {
         this.cellGroup = new CellGroup(value, true);
     }
 
+    public void setCellGroup(CellGroup cellGroup) {
+        this.cellGroup = cellGroup;
+    }
+
     public void addNewCell(CellGroupCell newCell) {
         this.newCells.add(newCell);
     }

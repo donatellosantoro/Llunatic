@@ -65,7 +65,7 @@
         </manifest>
     </target>
 
-    <target name="test" depends="-prepare-test, build" description="esegue i test">
+    <target name="test-mainmemory" depends="-prepare-test, build" description="esegue i test">
         <junit haltonfailure="false"
                errorProperty="test.failed"
                failureProperty="test.failed"
@@ -90,9 +90,6 @@
             Esecuzione dell'operazione fallita a causa del fallimento dei test
         </fail>
     </target>    
-    
-    <target name="test-all" depends="test, test-dbms" description="esegue i test">
-    </target>
 
     <target name="test-mc" depends="test-mc-mainmemory,test-mc-dbms">
     </target>

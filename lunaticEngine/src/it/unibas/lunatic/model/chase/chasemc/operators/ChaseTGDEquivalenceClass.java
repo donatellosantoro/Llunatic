@@ -195,7 +195,8 @@ public class ChaseTGDEquivalenceClass {
             }
             analizedSets.add(group);
             TargetCellsToInsertForTGD mergedCellsToInsert = mergeAll(group);
-            this.occurrenceHandler.enrichCellGroups(mergedCellsToInsert.getCellGroup(), deltaDB, step, scenario);
+            CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(mergedCellsToInsert.getCellGroup(), deltaDB, step, scenario);
+            mergedCellsToInsert.setCellGroup(enrichedCellGroup);
             this.cellGroupIDFixer.correctCellGroupId(mergedCellsToInsert.getCellGroup());
             checkAndSetOriginalValues(mergedCellsToInsert.getCellGroup());
             addNewCells(mergedCellsToInsert);
