@@ -24,8 +24,6 @@ public class TestDoctors extends CheckExpectedSolutionsTest {
 //        Assert.assertEquals(8, resultSizer.getSolutions(result));
 //        Assert.assertEquals(13, resultSizer.getDuplicates(result));
         checkSolutions(result);
-//        Map<String, List<PrecisionAndRecall>> quality = compareWithExpectedInstances(result, "expected", Arrays.asList(new String[]{LunaticConstants.OID, LunaticConstants.TID}), 1.0, false);
-//        if (logger.isDebugEnabled()) logger.debug(printPrecisionAndRecall(quality));
-//        checkQuality(quality);
+        checkExpectedSolutions("expected", result);
     }
 }

@@ -41,8 +41,8 @@ public class CompareInstances {
                 pr.setExpectedInstance(similarityResult.getExpectedInstance());
                 pr.setGeneratedInstance(similarityResult.getTranslatedInstance());
                 precisionForExpected.add(pr);
-                if (logger.isDebugEnabled()) logger.debug("## Similarity result\n\tExpected: " + similarityResult.getExpectedInstance() + "\n\tTranslated: " + similarityResult.getTranslatedInstance() + "\n\t" + pr);
-                if (logger.isDebugEnabled()) logger.debug("## VIOLATIONS\n" + feature.getViolations().printViolations());
+                if (logger.isTraceEnabled()) logger.debug("## Similarity result\n\tExpected: " + similarityResult.getExpectedInstance() + "\n\tTranslated: " + similarityResult.getTranslatedInstance() + "\n\t" + pr);
+                if (logger.isTraceEnabled()) logger.debug("## VIOLATIONS\n" + feature.getViolations().printViolations());
             }
         } catch (Exception ex) {
             ex.printStackTrace();

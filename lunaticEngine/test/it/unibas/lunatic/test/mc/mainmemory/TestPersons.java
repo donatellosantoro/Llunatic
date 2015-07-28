@@ -1,16 +1,11 @@
 package it.unibas.lunatic.test.mc.mainmemory;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
-import it.unibas.lunatic.test.comparator.repairs.PrecisionAndRecall;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +29,7 @@ public class TestPersons extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
         Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
         checkSolutions(result);
-//        if (logger.isDebugEnabled()) logger.debug("Delta db:\n" + result.getDeltaDB().printInstances());
-        Map<String, List<PrecisionAndRecall>> quality = compareWithExpectedInstances(result, "expected-nop", Arrays.asList(new String[]{LunaticConstants.OID, LunaticConstants.TID}), 1.0, false);
-        if (logger.isDebugEnabled()) logger.debug(printPrecisionAndRecall(quality));
-        checkQuality(quality);
+        checkExpectedSolutions("expected-nop", result);
     }
 
     public void testScenario() throws Exception {

@@ -83,8 +83,9 @@ public class References {
     public static final String synthetic_08 = "mc/synthetic/synthetic-08-mcscenario.xml";
     public static final String synthetic_09 = "mc/synthetic/synthetic-09-mcscenario.xml";
     public static final String synthetic_T01 = "mc/tgd/synthetic-T01-mcscenario.xml";
-    public static final String synthetic_T01Rew = "mc/tgd/synthetic-T01rew-mcscenario.xml";
     public static final String synthetic_T01_dbms = "mc/tgd/synthetic-T01-mcscenario-dbms.xml";
+    public static final String synthetic_T01Rew = "mc/tgd/synthetic-T01rew-mcscenario.xml";
+    public static final String synthetic_T01Rew_dbms = "mc/tgd/synthetic-T01rew-mcscenario-dbms.xml";
     public static final String synthetic_T02 = "mc/tgd/synthetic-T02-mcscenario.xml";
     public static final String synthetic_T02_dbms = "mc/tgd/synthetic-T02-mcscenario-dbms.xml";
     public static final String synthetic_T04 = "mc/tgd/synthetic-T04-mcscenario.xml";

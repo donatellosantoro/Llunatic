@@ -241,7 +241,7 @@ public class ParseDependencies {
     }
 
     private List<DED> processDEDs(List<DED> deds) {
-        for (DED ded : dedegds) {
+        for (DED ded : deds) {
             List<Dependency> processedDependencies = processDependencies(ded.getAssociatedDependencies());
             ded.setAssociatedDependencies(processedDependencies);
         }
@@ -249,7 +249,7 @@ public class ParseDependencies {
     }
 
     private List<DED> processDEDExtTGDs(List<DED> dedExtTGDs) {
-        for (DED ded : dedegds) {
+        for (DED ded : dedExtTGDs) {
             List<Dependency> processedExtTGDs = processExtTGDs(ded.getAssociatedDependencies());
             ded.setAssociatedDependencies(processedExtTGDs);
         }

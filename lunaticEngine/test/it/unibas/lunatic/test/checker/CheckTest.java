@@ -17,9 +17,13 @@ import it.unibas.lunatic.test.comparator.repairs.PrecisionAndRecall;
 import java.util.List;
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CheckTest extends TestCase {
 
+    private static Logger logger = LoggerFactory.getLogger(CheckTest.class);
+    
     protected ChaseTreeSize resultSizer = new ChaseTreeSize();
     protected RepairsComparator comparator = new RepairsComparator();
     protected ChaseStats chaseStats = ChaseStats.getInstance();
@@ -54,6 +58,7 @@ public class CheckTest extends TestCase {
     }
 
     protected void checkSolutions(DeltaChaseStep result) {
+        if (logger.isDebugEnabled()) logger.debug("Checking that leaves are solutions...");
         Assert.assertTrue("No solution...", resultSizer.getSolutions(result) > 0);
         Assert.assertTrue("No solution...", resultSizer.getAllNodes(result) > 0);
         Assert.assertEquals("Expected solutions", resultSizer.getPotentialSolutions(result), resultSizer.getSolutions(result));

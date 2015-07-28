@@ -1,4 +1,4 @@
- package it.unibas.lunatic.test.mc.mainmemory;
+package it.unibas.lunatic.test.mc.mainmemory;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
@@ -33,10 +33,6 @@ public class TestSynthetic03 extends CheckExpectedSolutionsTest {
         Assert.assertEquals(6, resultSizer.getSolutions(result));
         Assert.assertEquals(4, resultSizer.getDuplicates(result));
         checkSolutions(result);
-//        OperatorFactory.getInstance().getResultExporter(scenario).exportResult(result, "~/Tmp/Synt03", false);
-        
-        Map<String, List<PrecisionAndRecall>> quality = compareWithExpectedInstances(result, "expected03", Arrays.asList(new String[]{LunaticConstants.OID, LunaticConstants.TID}), 0.0, false);
-        if (logger.isDebugEnabled()) logger.debug(printPrecisionAndRecall(quality));
-        checkQuality(quality);
+        checkExpectedSolutions("expected03", result);
     }
 }

@@ -1,5 +1,6 @@
 package it.unibas.lunatic.test.checker;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
@@ -9,6 +10,7 @@ import it.unibas.lunatic.utility.LunaticUtility;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +18,6 @@ import java.util.Map;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class CheckExpectedSolutionsTest extends CheckTest {
 
@@ -87,7 +88,7 @@ public class CheckExpectedSolutionsTest extends CheckTest {
         }
         ExportChaseStepResultsCSV resultExporter = OperatorFactory.getInstance().getResultExporter(result.getScenario());
         List<String> resultFiles = resultExporter.exportResult(result, tmpFilePath, materializeFKJoins);
-        if (logger.isDebugEnabled()) logger.debug("Exported solutions:\n" + LunaticUtility.printCollection(resultFiles));
+        if (logger.isTraceEnabled()) logger.debug("Exported solutions:\n" + LunaticUtility.printCollection(resultFiles));
         return resultFiles;
     }
 
@@ -112,5 +113,16 @@ public class CheckExpectedSolutionsTest extends CheckTest {
 
     protected void checkQuality(List<PrecisionAndRecall> quality) {
         Assert.assertEquals("Expected instance was not generated!", 1.0, quality.get(0).getfMeasure());
+    }
+
+    protected void checkExpectedSolutions(String folderName, DeltaChaseStep result) {
+        if (logger.isDebugEnabled()) logger.debug("Checking expected solutions...");
+        Map<String, List<PrecisionAndRecall>> quality = compareWithExpectedInstances(result, folderName, Arrays.asList(new String[]{LunaticConstants.OID, LunaticConstants.TID}), 0.0, false);
+        if (logger.isTraceEnabled()) logger.debug(printPrecisionAndRecall(quality));
+        checkQuality(quality);
+    }
+
+    protected void exportResults(String folderName, DeltaChaseStep result) {
+        OperatorFactory.getInstance().getResultExporter(result.getScenario()).exportResult(result, folderName, false);
     }
 }
