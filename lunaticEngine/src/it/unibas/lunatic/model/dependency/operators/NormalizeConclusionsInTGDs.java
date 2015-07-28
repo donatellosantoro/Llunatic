@@ -24,13 +24,13 @@ public class NormalizeConclusionsInTGDs {
     
     private DualGaifmanGraph dualGaifmanGraphGenerator = new DualGaifmanGraph();
 
-//    public List<Dependency> normalizeTGDs(List<Dependency> eTGDs) {
-//        List<Dependency> normalizedTgds = new ArrayList<Dependency>();
-//        for (Dependency eTGD : eTGDs) {
-//            normalizedTgds.addAll(normalizeTGD(eTGD));
-//        }
-//        return normalizedTgds;
-//    }
+    public List<Dependency> normalizeTGDs(List<Dependency> eTGDs) {
+        List<Dependency> normalizedTgds = new ArrayList<Dependency>();
+        for (Dependency eTGD : eTGDs) {
+            normalizedTgds.addAll(normalizeTGD(eTGD));
+        }
+        return normalizedTgds;
+    }
 
     public List<Dependency> normalizeTGD(Dependency tgd) {
         if (logger.isDebugEnabled()) logger.debug("Analyzing tgd: " + tgd);
@@ -64,7 +64,6 @@ public class NormalizeConclusionsInTGDs {
         IFormula conclusion = clone.getConclusion();
         for (Iterator<IFormulaAtom> it = conclusion.getAtoms().iterator(); it.hasNext();) {
             RelationalAtom atom = (RelationalAtom) it.next();
-//            if (connectedComponent.contains(atom)) {
             if (isContained(atom, connectedComponent)) {
                 continue;
             }

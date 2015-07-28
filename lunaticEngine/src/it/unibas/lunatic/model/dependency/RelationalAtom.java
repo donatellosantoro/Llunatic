@@ -98,7 +98,7 @@ public class RelationalAtom implements IFormulaAtom, Cloneable {
     
     @Override
     public RelationalAtom clone() {
-        // atoms are superficially cloned; see PositiveFormula.clone() for deop cloning
+        // atoms are superficially cloned; see PositiveFormula.clone() for deep cloning
         try {
             RelationalAtom c = (RelationalAtom) super.clone();
             c.tableAlias = this.tableAlias.clone();

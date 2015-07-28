@@ -18,6 +18,7 @@ import it.unibas.lunatic.model.dependency.operators.ReplaceConstantsWithVariable
 import it.unibas.lunatic.parser.output.DependenciesLexer;
 import it.unibas.lunatic.parser.output.DependenciesParser;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.antlr.runtime.ANTLRStringStream;
@@ -197,7 +198,7 @@ public class ParseDependencies {
 // final callback method for processing tgds
     public void processDependencies() {
         scenario.setSTTGDs(processDependencies(stTGDs));
-        scenario.setExtTGDs(processExtTGDs(eTGDs));
+        scenario.setExtTGDs(processExtTGDs(eTGDs, false));
         scenario.setDCs(processDependencies(dcs));
         scenario.setEGDs(processDependencies(egds));
         scenario.setExtEGDs(processDependencies(eEGDs));
@@ -225,12 +226,18 @@ public class ParseDependencies {
         return result;
     }
 
-    private List<Dependency> processExtTGDs(List<Dependency> etgds) {
+    private List<Dependency> processExtTGDs(List<Dependency> etgds, boolean fromDEDs) {
         List<Dependency> result = new ArrayList<Dependency>();
         for (Dependency etgd : etgds) {
             assert (etgd.getType().equals(LunaticConstants.ExtTGD)) : "Conclusion normalization is only needed for etgds";
             etgd = processInitialDependency(etgd);
-            List<Dependency> normalizedTgds = tgdConclusionNormalizer.normalizeTGD(etgd);
+            List<Dependency> normalizedTgds = null;
+            if (fromDEDs) {
+                // DED tgds cannot be normalized at this time to avoid confusing the greedy scenario generator
+                normalizedTgds = Arrays.asList(new Dependency[]{etgd});
+            } else {
+                normalizedTgds = tgdConclusionNormalizer.normalizeTGD(etgd);
+            }
             for (Dependency normalizedTgd : normalizedTgds) {
                 normalizeVariablesInDependency(normalizedTgd);
                 generatorFinder.findGenerators(normalizedTgd);
@@ -250,12 +257,11 @@ public class ParseDependencies {
 
     private List<DED> processDEDExtTGDs(List<DED> dedExtTGDs) {
         for (DED ded : dedExtTGDs) {
-            List<Dependency> processedExtTGDs = processExtTGDs(ded.getAssociatedDependencies());
+            List<Dependency> processedExtTGDs = processExtTGDs(ded.getAssociatedDependencies(), true);
             ded.setAssociatedDependencies(processedExtTGDs);
         }
         return dedExtTGDs;
     }
-
 
     /////////////////////   INITIAL PROCESSING    //////////////////////////////////
     private Dependency processInitialDependency(Dependency dependency) {

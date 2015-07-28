@@ -31,6 +31,8 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
     private IDatabaseManager databaseManager;
     //
     private ImmutableChaseState immutableChaseState = ImmutableChaseState.getInstance();
+    private NormalizeConclusionsInTGDs dependencyNormalizer = new NormalizeConclusionsInTGDs();
+    private FindTargetGenerators generatorFinder = new FindTargetGenerators();
 
     public ChaseDEDScenarioGreedy(IChaseSTTGDs stChaser, IDEChaser deChaser, IDatabaseManager databaseManager) {
         this.stChaser = stChaser;
@@ -116,14 +118,13 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
     }
 
     private List<Dependency> processDEDTGDs(Scenario scenario, GreedyDEDScenario dedScenario) {
-        FindTargetGenerators generatorFinder = new FindTargetGenerators();
-//        NormalizeConclusionsInTGDs dependencyNormalizer = new NormalizeConclusionsInTGDs();
         List<Dependency> newExtTGDs = new ArrayList<Dependency>();
         for (DED ded : scenario.getDEDextTGDs()) {
             newExtTGDs.add(dedScenario.getDependencyForDED(ded));
         }
         if (logger.isDebugEnabled()) logger.debug("Generated TGDs from DED: \n" + LunaticUtility.printCollection(newExtTGDs));
-//        newExtTGDs = dependencyNormalizer.normalizeTGDs(newExtTGDs);
+        // needed because DEDs cannot be normalized earlier on
+        newExtTGDs = dependencyNormalizer.normalizeTGDs(newExtTGDs);
         for (Dependency eTGD : newExtTGDs) {
             generatorFinder.findGenerators(eTGD);
         }

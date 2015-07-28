@@ -19,18 +19,20 @@ public class TestDedWorkers extends CheckTest {
     public void testSolution() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.deds_workers_1);
         IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isTraceEnabled()) logger.debug(scenario.toString());
         Assert.assertNotNull(result);
-        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        if (logger.isTraceEnabled()) logger.debug(result.toString());
         chaseStats.printStatistics();
     }
 
-    public void testInstance1() {//20 Success, 0 Failed
+    public void testAllSolutions1() {//20 Success, 0 Failed
         testAllSolutions(References.deds_workers_1);
         chaseStats.printStatistics("INSTANCE 1\n");
         long total = (long) chaseStats.getStat(ChaseStats.NUMBER_OF_GREEDY_SCENARIOS);
         long executed = (long) chaseStats.getStat(ChaseStats.NUMBER_OF_EXECUTED_GREEDY_SCENARIOS);
         long failed = (chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS) == null ? 0 : chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS));
         long success = executed - failed;
+        if (logger.isDebugEnabled()) logger.debug("Total: " + total + " - Executed: " + executed + " - Success: " + success + " - Failed:" + failed);
         Assert.assertEquals(total, executed);
         Assert.assertEquals(20, success);
         Assert.assertEquals(0, failed);
@@ -43,6 +45,7 @@ public class TestDedWorkers extends CheckTest {
         long executed = (long) chaseStats.getStat(ChaseStats.NUMBER_OF_EXECUTED_GREEDY_SCENARIOS);
         long failed = (chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS) == null ? 0 : chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS));
         long success = executed - failed;
+        if (logger.isDebugEnabled()) logger.debug("Total: " + total + " - Executed: " + executed + " - Success: " + success + " - Failed:" + failed);
         Assert.assertEquals(total, executed);
         Assert.assertEquals(10, success);
         Assert.assertEquals(10, failed);
@@ -55,6 +58,7 @@ public class TestDedWorkers extends CheckTest {
         long executed = (long) chaseStats.getStat(ChaseStats.NUMBER_OF_EXECUTED_GREEDY_SCENARIOS);
         long failed = (chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS) == null ? 0 : chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS));
         long success = executed - failed;
+        if (logger.isDebugEnabled()) logger.debug("Total: " + total + " - Executed: " + executed + " - Success: " + success + " - Failed:" + failed);
         Assert.assertEquals(total, executed);
         Assert.assertEquals(4, success);
         Assert.assertEquals(16, failed);
@@ -67,6 +71,7 @@ public class TestDedWorkers extends CheckTest {
         long executed = (long) chaseStats.getStat(ChaseStats.NUMBER_OF_EXECUTED_GREEDY_SCENARIOS);
         long failed = (chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS) == null ? 0 : chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS));
         long success = executed - failed;
+        if (logger.isDebugEnabled()) logger.debug("Total: " + total + " - Executed: " + executed + " - Success: " + success + " - Failed:" + failed);
         Assert.assertEquals(total, executed);
         Assert.assertEquals(16, success);
         Assert.assertEquals(4, failed);
@@ -79,6 +84,7 @@ public class TestDedWorkers extends CheckTest {
         long executed = (long) chaseStats.getStat(ChaseStats.NUMBER_OF_EXECUTED_GREEDY_SCENARIOS);
         long failed = (chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS) == null ? 0 : chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS));
         long success = executed - failed;
+        if (logger.isDebugEnabled()) logger.debug("Total: " + total + " - Executed: " + executed + " - Success: " + success + " - Failed:" + failed);
         Assert.assertEquals(total, executed);
         Assert.assertEquals(0, success);
         Assert.assertEquals(20, failed);
@@ -91,9 +97,9 @@ public class TestDedWorkers extends CheckTest {
         try {
             IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
             Assert.assertNotNull(result);
-            if (logger.isDebugEnabled()) logger.debug(result.printInstances(true));
+            if (logger.isTraceEnabled()) logger.debug(result.printInstances(true));
         } catch (ChaseException ex) {
-            if (logger.isDebugEnabled()) logger.debug("No solution...");
+            if (logger.isTraceEnabled()) logger.debug("No solution...");
         }
     }
 }
