@@ -34,20 +34,20 @@ public class ReplaceConstantsWithVariables {
         }
     }
 
-    public Dependency replaceConstants(Dependency dependency, Scenario scenario) {
+    public void replaceConstants(Dependency dependency, Scenario scenario) {
         initTableCreator(scenario);
         if (logger.isDebugEnabled()) logger.debug("Before constant removal: " + dependency);
         ConstantsInFormula constantsInFormula = new ConstantsInFormula(dependency);
         findAndReplaceConstantsInPositiveFormula(dependency.getPremise().getPositiveFormula(), constantsInFormula, true);
         findAndReplaceConstantsInPositiveFormula(dependency.getConclusion().getPositiveFormula(), constantsInFormula, false);
         if (constantsInFormula.isEmpty()) {
-            return dependency;
+            return;
         }
         addAtomAndVariables(dependency, constantsInFormula);
         createTable(constantsInFormula, scenario);
         if (logger.isDebugEnabled()) logger.debug("After constant removal: " + dependency.toLongString());
         if (logger.isDebugEnabled()) logger.debug("Constant Table: " + constantsInFormula.toString());
-        return dependency;
+        return;
     }
 
     private void findAndReplaceConstantsInPositiveFormula(PositiveFormula positiveFormula, ConstantsInFormula constantsInFormula, boolean premise) {

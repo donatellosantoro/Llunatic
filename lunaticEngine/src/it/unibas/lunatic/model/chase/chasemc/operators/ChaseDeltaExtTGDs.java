@@ -2,14 +2,12 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
-import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;

@@ -97,6 +97,8 @@ public class ChaseDeltaExtTGDsForDEProxy implements IChaseDeltaExtTGDs {
         }
     }
 
+    @Override
     public void initializeOIDs(IDatabase targetDB) {
+        this.insertTuples.initializeOIDs(targetDB);        
     }
 }

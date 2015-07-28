@@ -4,17 +4,13 @@ import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.exceptions.DBMSException;
 import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.ITable;
 import it.unibas.lunatic.model.database.dbms.DBMSTable;
 import it.unibas.lunatic.model.database.mainmemory.datasource.OID;
 import it.unibas.lunatic.persistence.relational.QueryManager;
-import it.unibas.lunatic.utility.LunaticUtility;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SQLOIDGenerator implements IOIDGenerator {
 

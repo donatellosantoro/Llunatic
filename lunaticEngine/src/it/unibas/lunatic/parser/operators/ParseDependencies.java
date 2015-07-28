@@ -216,12 +216,12 @@ public class ParseDependencies {
     private List<Dependency> processDependencies(List<Dependency> dependencies) {
         List<Dependency> result = new ArrayList<Dependency>();
         for (Dependency dependency : dependencies) {
-            dependency = processInitialDependency(dependency);
-            dependency = normalizeVariablesInDependency(dependency);
-            result.add(dependency);
-            if (dependency.getType().equals(LunaticConstants.STTGD)) {
-                generatorFinder.findGenerators(dependency);
+            processInitialDependency(dependency);
+            Dependency normalizedDependency = normalizeVariablesInDependency(dependency);
+            if (normalizedDependency.getType().equals(LunaticConstants.STTGD)) {
+                generatorFinder.findGenerators(normalizedDependency);
             }
+            result.add(normalizedDependency);
         }
         return result;
     }
@@ -230,18 +230,18 @@ public class ParseDependencies {
         List<Dependency> result = new ArrayList<Dependency>();
         for (Dependency etgd : etgds) {
             assert (etgd.getType().equals(LunaticConstants.ExtTGD)) : "Conclusion normalization is only needed for etgds";
-            etgd = processInitialDependency(etgd);
-            List<Dependency> normalizedTgds = null;
+            processInitialDependency(etgd);
+            List<Dependency> tgdsWithNormalizedJoinsInConclusion = null;
             if (fromDEDs) {
                 // DED tgds cannot be normalized at this time to avoid confusing the greedy scenario generator
-                normalizedTgds = Arrays.asList(new Dependency[]{etgd});
+                tgdsWithNormalizedJoinsInConclusion = Arrays.asList(new Dependency[]{etgd});
             } else {
-                normalizedTgds = tgdConclusionNormalizer.normalizeTGD(etgd);
+                tgdsWithNormalizedJoinsInConclusion = tgdConclusionNormalizer.normalizeTGD(etgd);
             }
-            for (Dependency normalizedTgd : normalizedTgds) {
-                normalizeVariablesInDependency(normalizedTgd);
-                generatorFinder.findGenerators(normalizedTgd);
-                result.add(normalizedTgd);
+            for (Dependency normalizedTgd : tgdsWithNormalizedJoinsInConclusion) {
+                Dependency newTgd = normalizeVariablesInDependency(normalizedTgd);
+                generatorFinder.findGenerators(newTgd);
+                result.add(newTgd);
             }
         }
         return result;
@@ -264,14 +264,13 @@ public class ParseDependencies {
     }
 
     /////////////////////   INITIAL PROCESSING    //////////////////////////////////
-    private Dependency processInitialDependency(Dependency dependency) {
+    private void processInitialDependency(Dependency dependency) {
         assignAuthoritativeSources(dependency);
         recursionChecker.checkRecursion(dependency);
         aliasAssigner.assignAliases(dependency);
         variableFinder.findVariables(dependency, scenario.getSource().getTableNames(), scenario.getAuthoritativeSources());
         checker.checkVariables(dependency);
         equivalenceClassFinder.findVariableEquivalenceClasses(dependency);
-        return dependency;
     }
 
     private void assignAuthoritativeSources(Dependency dependency) {
@@ -293,7 +292,8 @@ public class ParseDependencies {
             equivalenceClassFinder.findVariableEquivalenceClasses(dependency); // needed after each variable change
 //            assignAuthoritativeSources(dependency); // needed twice
         }
-        if (dependency.getType().equals(LunaticConstants.EGD) || dependency.getType().equals(LunaticConstants.ExtEGD)) {
+        if (dependency.getType().equals(LunaticConstants.ExtTGD) || dependency.getType().equals(LunaticConstants.EGD) 
+                || dependency.getType().equals(LunaticConstants.ExtEGD)) {
             dependency = egdJoinNormalizer.normalizeJoinsInEgd(dependency);
         }
         equivalenceClassFinder.findVariableEquivalenceClasses(dependency); // needed after each variable change
