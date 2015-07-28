@@ -67,12 +67,12 @@ public class DBMSTupleIterator implements ITupleIterator {
     }
 
     public void reset() {
-        throw new UnsupportedOperationException("Unable to reset DBMS result set");
-//        try {
-//            resultSet.beforeFirst();
-//        } catch (SQLException ex) {
-//            throw new DBMSException("Exception in running result set:" + ex);
-//        }
+//        throw new UnsupportedOperationException("Unable to reset DBMS result set");
+        try {
+            resultSet.beforeFirst();
+        } catch (SQLException ex) {
+            throw new DBMSException("Exception in running result set:" + ex);
+        }
     }
 
     public void remove() {

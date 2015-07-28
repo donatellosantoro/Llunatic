@@ -133,7 +133,6 @@ public class ChaseUtility {
 //        }
 //        return result;
 //    }
-
     public static List<FormulaVariableOccurrence> findTargetOccurrences(VariableEquivalenceClass variableEquivalenceClass) {
         List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
         for (FormulaVariableOccurrence occurrence : variableEquivalenceClass.getPremiseRelationalOccurrences()) {
@@ -286,17 +285,6 @@ public class ChaseUtility {
             result.add(new CellRef(cell));
         }
         return result;
-    }
-
-    public static boolean haveAllEqualValues(Set<CellGroupCell> cells) {
-        IValue firstValue = cells.iterator().next().getValue();
-        for (CellGroupCell cell : cells) {
-            if (cell.getValue().equals(firstValue)) {
-                continue;
-            }
-            return false;
-        }
-        return true;
     }
 
     public static IValue findFirstOrderedValue(Map<IValue, Integer> occurrenceHistogram) {

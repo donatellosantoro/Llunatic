@@ -1,5 +1,6 @@
 package it.unibas.lunatic.persistence.relational;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.exceptions.DBMSException;
 import java.io.StringReader;
 import java.sql.Connection;
@@ -79,14 +80,17 @@ public class QueryManager {
     }
 
     public static ResultSet executeQuery(String query, Connection connection, AccessConfiguration accessConfiguration) {
-        Statement statement = null;
+        Statement statement;
         ResultSet resultSet = null;
         try {
             connection.setAutoCommit(false);
             if (logger.isTraceEnabled()) logger.trace("Executing query " + intoSingleLine(query));
             long start = new Date().getTime();
-//          statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            statement = connection.createStatement();
+            if (LunaticConstants.DBMS_DEBUG) {
+                statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            } else {
+                statement = connection.createStatement();
+            }
             resultSet = statement.executeQuery(query);
             long finish = new Date().getTime();
             if (logger.isDebugEnabled()) logger.debug((finish - start) + " ~ " + intoSingleLine(query));

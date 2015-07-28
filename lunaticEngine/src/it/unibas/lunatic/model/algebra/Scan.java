@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.algebra;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.operators.IAlgebraTreeVisitor;
 import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
@@ -13,14 +14,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Scan extends AbstractOperator {
-    
+
     private static Logger logger = LoggerFactory.getLogger(Scan.class);
 
     private TableAlias tableAlias;
 
     public Scan(TableAlias tableAlias) {
         this.tableAlias = tableAlias;
-    }      
+    }
 
     public void accept(IAlgebraTreeVisitor visitor) {
         visitor.visitScan(this);
@@ -39,11 +40,12 @@ public class Scan extends AbstractOperator {
     }
 
     public ITupleIterator execute(IDatabase source, IDatabase target) {
-        if(!(source == null || source instanceof MainMemoryDB || source instanceof MainMemoryVirtualDB || source instanceof EmptyDB) || 
-             !(target instanceof MainMemoryDB || target instanceof MainMemoryVirtualDB)){
+        if (!LunaticConstants.DBMS_DEBUG && 
+                (!(source == null || source instanceof MainMemoryDB || source instanceof MainMemoryVirtualDB || source instanceof EmptyDB)
+                || !(target instanceof MainMemoryDB || target instanceof MainMemoryVirtualDB))) {
             throw new IllegalArgumentException("Algebra execution is allowed only on MainMemoryDB");
         }
-        IDatabase database = null;    
+        IDatabase database = null;
         if (tableAlias.isSource()) {
 //            database = (MainMemoryDB) source;
             database = source;
@@ -52,10 +54,10 @@ public class Scan extends AbstractOperator {
             database = target;
         }
         ITable table = database.getTable(tableAlias.getTableName());
-        if(table == null){
+        if (table == null) {
             throw new ChaseException("Unable to scan table " + tableAlias.getTableName() + " in " + database);
         }
-        return new ScanTupleIterator(table.getTupleIterator());        
+        return new ScanTupleIterator(table.getTupleIterator());
     }
 
     public List<AttributeRef> getAttributes(IDatabase source, IDatabase target) {
@@ -63,7 +65,7 @@ public class Scan extends AbstractOperator {
         if (tableAlias.isSource()) {
             table = source.getTable(tableAlias.getTableName());
         } else {
-            table = target.getTable(tableAlias.getTableName());            
+            table = target.getTable(tableAlias.getTableName());
         }
         List<AttributeRef> result = new ArrayList<AttributeRef>();
         for (Attribute attribute : table.getAttributes()) {
@@ -73,7 +75,7 @@ public class Scan extends AbstractOperator {
         }
         return result;
     }
-    
+
     class ScanTupleIterator implements ITupleIterator {
 
         private ITupleIterator tableIterator;
@@ -110,4 +112,3 @@ public class Scan extends AbstractOperator {
     }
 
 }
-

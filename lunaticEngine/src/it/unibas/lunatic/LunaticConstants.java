@@ -94,6 +94,10 @@ public class LunaticConstants {
     public static final String CLASSIC_DE_CHASER = "CLASSIC_DE_CHASER";
     public static final String PROXY_MC_CHASER = "PROXY_MC_CHASER";
 
+    ///////////////    DEBUG MODE     ///////////////////
+//    public static final boolean DBMS_DEBUG = true;
+    public static final boolean DBMS_DEBUG = false;
+    
     // NULL OBJECTS
     public static final AttributeRef NULL_ATTRIBUTE_REF = new AttributeRef("_NullTable_", "_NullAttribute_");
     public static final AttributeRef INVALID_ATTRIBUTE_REF = new AttributeRef("_InvalidTable_", "_InvalidAttribute_");

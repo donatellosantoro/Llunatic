@@ -61,8 +61,8 @@ public class StandardPartialOrder implements IPartialOrder {
         //User Cells
         Set<CellGroupCell> userCells = lubCellGroup.getUserCells();
         if (!userCells.isEmpty()) {
-            if (ChaseUtility.haveAllEqualValues(userCells)) {
-                return userCells.iterator().next().getValue();
+            if (haveAllEqualOriginalValues(userCells)) {
+                return userCells.iterator().next().getOriginalValue();
             }
             return CellGroupIDGenerator.getNextLLUNID();
         }
@@ -71,8 +71,8 @@ public class StandardPartialOrder implements IPartialOrder {
         if (logger.isDebugEnabled()) logger.debug("Authoritative cells: " + authoritativeCells);
         if (!authoritativeCells.isEmpty()) {
             if (logger.isDebugEnabled()) logger.debug("Finding lubValue btw authoritative cells: " + authoritativeCells);
-            if (ChaseUtility.haveAllEqualValues(authoritativeCells)) {
-                return authoritativeCells.iterator().next().getValue();
+            if (haveAllEqualOriginalValues(authoritativeCells)) {
+                return authoritativeCells.iterator().next().getOriginalValue();
             }
             return CellGroupIDGenerator.getNextLLUNID();
         }
@@ -92,12 +92,12 @@ public class StandardPartialOrder implements IPartialOrder {
     private Set<CellGroupCell> extractNonAuthoritativeConstantCells(CellGroup cellGroup) {
         Set<CellGroupCell> result = new HashSet<CellGroupCell>();
         for (CellGroupCell occurrence : cellGroup.getOccurrences()) {
-            if (occurrence.getValue().getType().equals(PartialOrderConstants.CONST)) {
+            if (occurrence.getOriginalValue().getType().equals(PartialOrderConstants.CONST)) {
                 result.add(occurrence);
             }
         }
         for (CellGroupCell justification : cellGroup.getNonAuthoritativeJustifications()) {
-            if (justification.getValue().getType().equals(PartialOrderConstants.CONST)) {
+            if (justification.getOriginalValue().getType().equals(PartialOrderConstants.CONST)) {
                 result.add(justification);
             }
         }
@@ -105,11 +105,14 @@ public class StandardPartialOrder implements IPartialOrder {
     }
 
     public IValue generalizeNonAuthoritativeConstantCells(Set<CellGroupCell> nonAuthoritativeCells, CellGroup cellGroup, Scenario scenario) {
+        if (logger.isDebugEnabled()) logger.debug("Generalizing non authoritative constant cells: " + nonAuthoritativeCells);
         Set<OrderingAttribute> orderingAttributes = findAllOrderingAttributes(nonAuthoritativeCells, scenario);
         if (orderingAttributes.isEmpty()) {
+            if (logger.isDebugEnabled()) logger.debug("No ordering attributes");
             // No PI
-            if (ChaseUtility.haveAllEqualValues(nonAuthoritativeCells)) {
-                return nonAuthoritativeCells.iterator().next().getValue();
+            if (haveAllEqualOriginalValues(nonAuthoritativeCells)) {
+                if (logger.isDebugEnabled()) logger.debug("All cells have equal value");
+                return nonAuthoritativeCells.iterator().next().getOriginalValue();
             }
             return CellGroupIDGenerator.getNextLLUNID();
         }
@@ -117,7 +120,17 @@ public class StandardPartialOrder implements IPartialOrder {
         setAdditionalValues(nonAuthoritativeCells, cellGroup, scenario);
         List<CellGroupCell> cellList = new ArrayList<CellGroupCell>(nonAuthoritativeCells);
         Collections.sort(cellList, new CellComparatorUsingAdditionalValue(valueComparator));
-        return cellList.get(cellList.size() - 1).getValue();
+        return cellList.get(cellList.size() - 1).getOriginalValue();
+    }
+
+    private boolean haveAllEqualOriginalValues(Set<CellGroupCell> cells) {
+        IValue firstValue = cells.iterator().next().getOriginalValue();
+        for (CellGroupCell cell : cells) {
+            if (!cell.getOriginalValue().equals(firstValue)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private IValueComparator extractValueComparator(Set<OrderingAttribute> orderingAttributes) {

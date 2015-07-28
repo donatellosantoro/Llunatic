@@ -6,6 +6,7 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
+import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

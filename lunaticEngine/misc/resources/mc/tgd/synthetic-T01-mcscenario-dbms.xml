@@ -5,7 +5,7 @@
         <type>DBMS</type>
         <access-configuration>
             <driver>org.postgresql.Driver</driver>
-            <uri>jdbc:postgresql:synthetic_t00</uri>
+            <uri>jdbc:postgresql:synthetic_t01</uri>
             <schema>target</schema>
             <login>pguser</login>
             <password>pguser</password>
@@ -27,12 +27,6 @@ create table s (
   b varchar(50)
 );
 
-create table t (
-  oid serial,
-  a varchar(50),
-  b varchar(50)
-);
-
 insert into r(a,b) values ('1', '3');
 insert into r(a,b) values ('2', '3');
 insert into r(a,b) values ('5', '5');
@@ -46,14 +40,8 @@ insert into s(a,b) values ('2', '4');
 ExtTGDs:
 //ORIGINAL
 r(a: $x, b: $y) -> s(a: $y, b: $z).
-//V1
-//r(a: $x, b: $y) -> s(a: $x, b: $N), t(a: $N, b: $x).
-//V2
-//r(a: $x, b: $y) -> s(a: $x, b: $N), s(a: $N, b: $y).
 ExtEGDs:
-s(a: $y1, b: $x), s(a: $y2, b: $x), r(a: $z1, b:$y1), r(a: $z2, b:$y2) -> $y1 == $y2.
-s(a: $y1, b: $x), s(a: $y2, b: $x), r(a: $z1, b:$y1) and not exists(r(a: $z2, b:$y2)) -> $y1 == $y2.
-s(a: $y1, b: $x), s(a: $y2, b: $x) and not exists(r(a: $z1, b:$y1)) and not exists(r(a: $z2, b:$y2)) -> $y1 == $y2.
+s(a: $y1, b: $x), s(a: $y2, b: $x) -> $y1 == $y2.
 ]]>
     </dependencies>
     <partialOrder/>

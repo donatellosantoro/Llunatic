@@ -1,0 +1,11 @@
+#emp
+name,dept,salary,manager
+_L11,Managment,5000,Carl
+_L11,Marketing,1000,John
+_L11,Marketing,2000,Carl
+_L11,Marketing,2500,Carl
+_L11,Marketing,3000,Carl
+_L11,Sales,2000,Carl
+_L11,Sales,2500,Carl
+_L11,Staff,1000,Frank
+_L11,Staff,2500,Carl
