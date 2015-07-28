@@ -6,7 +6,6 @@ import it.unibas.lunatic.model.chase.chasemc.operators.ICreateTablesForConstants
 import it.unibas.lunatic.model.database.EmptyDB;
 import it.unibas.lunatic.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.model.database.dbms.DBMSTable;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
 import it.unibas.lunatic.model.dependency.ConstantsInFormula;
 import it.unibas.lunatic.persistence.Types;
 import it.unibas.lunatic.persistence.relational.AccessConfiguration;
@@ -64,6 +63,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
             String attributeName = attributeNames.get(i);
             Object constantValue = constantValues.get(i);
             String type = LunaticUtility.findType(constantValue);
+            type = Types.STRING;//TODO++
             String dbmsType = DBMSUtility.convertDataSourceTypeToDBType(type);
             script.append(LunaticConstants.INDENT).append(attributeName).append(" ").append(dbmsType).append(",").append("\n");
         }
@@ -82,6 +82,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         for (int i = 0; i < constantValues.size(); i++) {
             Object constantValue = constantValues.get(i);
             String type = LunaticUtility.findType(constantValue);
+            type = Types.STRING; //TODO++
             String valueString = constantValue.toString();
             if (type.equals(Types.STRING)) {
                 valueString = "'" + valueString + "'";

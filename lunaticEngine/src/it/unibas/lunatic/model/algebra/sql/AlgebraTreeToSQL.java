@@ -83,7 +83,7 @@ public class AlgebraTreeToSQL {
 
         public void visitScan(Scan operator) {
             if (logger.isDebugEnabled()) logger.debug("Visiting scan " + operator);
-            createSQLSelectClause(operator, new ArrayList<TableAlias>(), true);
+            createSQLSelectClause(operator, new ArrayList<NestedOperator>(), true);
             result.append(" FROM ");
             TableAlias tableAlias = operator.getTableAlias();
             result.append(tableAliasToSQL(tableAlias));
@@ -119,7 +119,7 @@ public class AlgebraTreeToSQL {
         }
 
         public void visitJoin(Join operator) {
-            List<TableAlias> nestedSelect = findNestedTablesForJoin(operator);
+            List<NestedOperator> nestedSelect = findNestedTablesForJoin(operator);
             createSQLSelectClause(operator, nestedSelect, true);
             result.append(" FROM ");
             IAlgebraOperator leftChild = operator.getChildren().get(0);
@@ -151,7 +151,7 @@ public class AlgebraTreeToSQL {
                 //Ignore Project of Project
                 child = child.getChildren().get(0);
             }
-            if (!(child instanceof Scan) && !(child instanceof Join) && !(child instanceof Select) && !(child instanceof CreateTableAs) && !(child instanceof RestoreOIDs)) {
+            if (!(child instanceof Scan) && !(child instanceof Join) && !(child instanceof Select) && !(child instanceof CreateTableAs) && !(child instanceof RestoreOIDs) && !(child instanceof Difference)) {
                 throw new IllegalArgumentException("Project of a " + child.getName() + " is not supported");
             }
             child.accept(this);
@@ -193,7 +193,7 @@ public class AlgebraTreeToSQL {
                 result.append("DISTINCT ");
                 result.setDistinct(false);
             }
-            List<TableAlias> nestedTables = findNestedTablesForGroupBy(operator);
+            List<NestedOperator> nestedTables = findNestedTablesForGroupBy(operator);
             List<IAggregateFunction> aggregateFunctions = operator.getAggregateFunctions();
             List<String> havingFunctions = extractHavingFunctions(aggregateFunctions, operator);
             for (IAggregateFunction aggregateFunction : aggregateFunctions) {
@@ -215,7 +215,7 @@ public class AlgebraTreeToSQL {
                 visitSelectForGroupBy(select);
             } else if (child instanceof Join) {
                 Join join = (Join) child;
-                List<TableAlias> nestedTablesForJoin = findNestedTablesForJoin(join);
+                List<NestedOperator> nestedTablesForJoin = findNestedTablesForJoin(join);
                 IAlgebraOperator leftChild = join.getChildren().get(0);
                 IAlgebraOperator rightChild = join.getChildren().get(1);
                 createJoinClause(join, leftChild, rightChild, nestedTablesForJoin);
@@ -234,7 +234,7 @@ public class AlgebraTreeToSQL {
             result.append(" GROUP BY ");
             for (AttributeRef groupingAttribute : operator.getGroupingAttributes()) {
 //                result.append(DBMSUtility.attributeRefToSQLDot(groupingAttribute)).append(", ");
-                if (nestedTables.contains(groupingAttribute.getTableAlias())) {
+                if (containsAlias(nestedTables, groupingAttribute.getTableAlias())) {
                     result.append(DBMSUtility.attributeRefToAliasSQL(groupingAttribute));
                 } else {
                     result.append(DBMSUtility.attributeRefToSQLDot(groupingAttribute));
@@ -291,7 +291,7 @@ public class AlgebraTreeToSQL {
                 if (operator.getFather() instanceof Join) {
                     result.append(LunaticConstants.WORK_SCHEMA).append(".").append(tableName).append(" AS ").append(operator.getTableAlias());
                 } else if (operator.getFather() instanceof Project) {
-                    createSQLSelectClause(operator, new ArrayList<TableAlias>(), false);
+                    createSQLSelectClause(operator, new ArrayList<NestedOperator>(), false);
                     result.append(" FROM ").append(LunaticConstants.WORK_SCHEMA).append(".").append(tableName).append(" AS ").append(operator.getTableAlias());
                 } else {
                     throw new IllegalArgumentException("Create table is allowed only on Join or Project");
@@ -306,7 +306,7 @@ public class AlgebraTreeToSQL {
         }
 
         ///////////////////////////////////////////////////////////
-        private void createSQLSelectClause(IAlgebraOperator operator, List<TableAlias> nestedSelect, boolean useTableName) {
+        private void createSQLSelectClause(IAlgebraOperator operator, List<NestedOperator> nestedSelect, boolean useTableName) {
             result.append(this.indentString());
             result.append("SELECT ");
             if (result.isDistinct()) {
@@ -331,7 +331,7 @@ public class AlgebraTreeToSQL {
             result.append("\n").append(this.indentString());
         }
 
-        private void createJoinClausePart(IAlgebraOperator operator, List<TableAlias> nestedSelect) {
+        private void createJoinClausePart(IAlgebraOperator operator, List<NestedOperator> nestedSelect) {
             if ((operator instanceof Join)) {
                 IAlgebraOperator leftChild = operator.getChildren().get(0);
                 IAlgebraOperator rightChild = operator.getChildren().get(1);
@@ -374,27 +374,19 @@ public class AlgebraTreeToSQL {
             }
         }
 
-        private void createJoinClause(Join operator, IAlgebraOperator leftOperator, IAlgebraOperator rightOperator, List<TableAlias> nestedSelect) {
-            createJoinClausePart(leftOperator, nestedSelect);
+        private void createJoinClause(Join operator, IAlgebraOperator leftOperator, IAlgebraOperator rightOperator, List<NestedOperator> nestedSelects) {
+            createJoinClausePart(leftOperator, nestedSelects);
             result.append(" JOIN ");
-            createJoinClausePart(rightOperator, nestedSelect);
+            createJoinClausePart(rightOperator, nestedSelects);
             result.append(" ON ");
             List<AttributeRef> leftAttributes = operator.getLeftAttributes();
             List<AttributeRef> rightAttributes = operator.getRightAttributes();
             for (int i = 0; i < leftAttributes.size(); i++) {
                 AttributeRef leftAttribute = leftAttributes.get(i);
-                AttributeRef rightAttribute = rightAttributes.get(i);
-                if (nestedSelect.contains(leftAttribute.getTableAlias())) {
-                    result.append(DBMSUtility.attributeRefToAliasSQL(leftAttribute));
-                } else {
-                    result.append(DBMSUtility.attributeRefToSQLDot(leftAttribute));
-                }
+                result.append(getJoinAttributeSQL(leftAttribute, leftOperator, nestedSelects));
                 result.append(" = ");
-                if (nestedSelect.contains(rightAttribute.getTableAlias())) {
-                    result.append(DBMSUtility.attributeRefToAliasSQL(rightAttribute));
-                } else {
-                    result.append(DBMSUtility.attributeRefToSQLDot(rightAttribute));
-                }
+                AttributeRef rightAttribute = rightAttributes.get(i);
+                result.append(getJoinAttributeSQL(rightAttribute, rightOperator, nestedSelects));
                 result.append(" AND ");
             }
             LunaticUtility.removeChars(" AND ".length(), result.getStringBuilder());
@@ -404,6 +396,28 @@ public class AlgebraTreeToSQL {
             if (rightOperator instanceof Select) {
                 createWhereClause((Select) rightOperator, true);
             }
+        }
+
+        private String getJoinAttributeSQL(AttributeRef attribute, IAlgebraOperator operator, List<NestedOperator> nestedSelects) {
+            boolean useAlias = false;
+            if (operator instanceof CreateTableAs) {
+                useAlias = true;
+            }
+            IAlgebraOperator nestedOperator = findNestedOperator(nestedSelects, operator, attribute.getTableAlias());
+            if (nestedOperator != null) {
+                useAlias = true;
+            }
+            String attributeResult;
+            if (useAlias) {
+                attributeResult = DBMSUtility.attributeRefToAliasSQL(attribute);
+            } else {
+                attributeResult = DBMSUtility.attributeRefToSQLDot(attribute);
+            }
+//            logger.error(" ### Attribute: " + attribute);
+//            logger.error(" ### Operator: " + useAlias);
+//            logger.error(" ### NestedOperator: " + nestedOperator);
+//            logger.error(" ### Restult: " + attributeResult);
+            return attributeResult;
         }
 
         private void createWhereClause(Select operator, boolean append) {
@@ -447,35 +461,48 @@ public class AlgebraTreeToSQL {
                 return false;
             }
             IAlgebraOperator firstChild = operator.getChildren().get(0);
-            if(firstChild instanceof CartesianProduct){
+            if (firstChild instanceof CartesianProduct) {
                 return true;
             }
-            if(firstChild instanceof Select){
+            if (firstChild instanceof Select) {
                 return isInACartesianProduct(firstChild);
             }
             return false;
         }
 
-        private List<TableAlias> findNestedTablesForJoin(IAlgebraOperator operator) {
-            List<TableAlias> tableAliases = new ArrayList<TableAlias>();
-            List<AttributeRef> attributes = new ArrayList<AttributeRef>();
+        private List<NestedOperator> findNestedTablesForJoin(IAlgebraOperator operator) {
+            List<NestedOperator> attributes = new ArrayList<NestedOperator>();
             IAlgebraOperator leftChild = operator.getChildren().get(0);
-            attributes.addAll(getNestedAttributes(leftChild));
+            for (AttributeRef nestedAttribute : getNestedAttributes(leftChild)) {
+                NestedOperator nestedOperator = new NestedOperator(leftChild, nestedAttribute.getTableAlias());
+                attributes.add(nestedOperator);
+            }
             IAlgebraOperator rightChild = operator.getChildren().get(1);
-            attributes.addAll(getNestedAttributes(rightChild));
-            for (AttributeRef attributeRef : attributes) {
-                LunaticUtility.addIfNotContained(tableAliases, attributeRef.getTableAlias());
+            for (AttributeRef nestedAttribute : getNestedAttributes(rightChild)) {
+                NestedOperator nestedOperator = new NestedOperator(rightChild, nestedAttribute.getTableAlias());
+                attributes.add(nestedOperator);
+            }
+            List<NestedOperator> tableAliases = new ArrayList<NestedOperator>();
+            for (NestedOperator nestedOperator : attributes) {
+                if (containsAlias(tableAliases, nestedOperator.alias)) {
+                    continue;
+                }
+                tableAliases.add(nestedOperator);
             }
             return tableAliases;
         }
 
-        private List<TableAlias> findNestedTablesForGroupBy(GroupBy operator) {
-            List<TableAlias> tableAliases = new ArrayList<TableAlias>();
+        private List<NestedOperator> findNestedTablesForGroupBy(GroupBy operator) {
+            List<NestedOperator> tableAliases = new ArrayList<NestedOperator>();
             List<AttributeRef> attributes = new ArrayList<AttributeRef>();
             IAlgebraOperator child = operator.getChildren().get(0);
             attributes.addAll(getNestedAttributes(child));
             for (AttributeRef attributeRef : attributes) {
-                LunaticUtility.addIfNotContained(tableAliases, attributeRef.getTableAlias());
+                if (containsAlias(tableAliases, attributeRef.getTableAlias())) {
+                    continue;
+                }
+                NestedOperator nestedOperator = new NestedOperator(operator, attributeRef.getTableAlias());
+                tableAliases.add(nestedOperator);
             }
             return tableAliases;
         }
@@ -572,24 +599,31 @@ public class AlgebraTreeToSQL {
             return havingFunctions;
         }
 
-        private String attributesToSQL(List<AttributeRef> attributes, List<AttributeRef> newAttributes, List<TableAlias> nestedSelect, boolean useTableName) {
+        private String attributesToSQL(List<AttributeRef> attributes, List<AttributeRef> newAttributes, List<NestedOperator> nestedSelect, boolean useTableName) {
             if (logger.isDebugEnabled()) logger.debug("Generating SQL for attributes\n\nAttributes: " + attributes + "\n\t" + newAttributes + "\n\tNested Select: " + nestedSelect + "\n\tuseTableName: " + useTableName);
-            StringBuilder sb = new StringBuilder();
+            List<String> sqlAttributes = new ArrayList<String>();
             for (int i = 0; i < attributes.size(); i++) {
                 AttributeRef newAttributeRef = null;
                 if (newAttributes != null) {
                     newAttributeRef = newAttributes.get(i);
                 }
-                sb.append(attributeToSQL(attributes.get(i), useTableName, nestedSelect, newAttributeRef));
-                sb.append(",\n").append(this.indentString());
+                String attribute = attributeToSQL(attributes.get(i), useTableName, nestedSelect, newAttributeRef);
+                if (!sqlAttributes.contains(attribute)) {
+                    sqlAttributes.add(attribute);
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            for (String attribute : sqlAttributes) {
+                sb.append(attribute).append(",\n").append(this.indentString());
             }
             LunaticUtility.removeChars(",\n".length() + this.indentString().length(), sb);
             return sb.toString();
         }
 
-        public String attributeToSQL(AttributeRef attributeRef, boolean useTableName, List<TableAlias> nestedSelect, AttributeRef newAttributeRef) {
+        public String attributeToSQL(AttributeRef attributeRef, boolean useTableName, List<NestedOperator> nestedSelects, AttributeRef newAttributeRef) {
             StringBuilder sb = new StringBuilder();
-            if (!useTableName || nestedSelect.contains(attributeRef.getTableAlias())) {
+//            if (!useTableName || containsAlias(nestedSelects, attributeRef.getTableAlias())) {
+            if (!useTableName || containsNestedAttribute(nestedSelects, attributeRef)) {
                 sb.append(DBMSUtility.attributeRefToAliasSQL(attributeRef));
             } else {
                 sb.append(DBMSUtility.attributeRefToSQLDot(attributeRef));
@@ -597,11 +631,51 @@ public class AlgebraTreeToSQL {
             if (newAttributeRef != null) {
                 sb.append(" AS ");
                 sb.append(newAttributeRef.getName());
-            } else if (!nestedSelect.contains(attributeRef.getTableAlias())) {
+//            } else if (!(containsAlias(nestedSelects, attributeRef.getTableAlias()))) {
+            } else if (!(containsNestedAttribute(nestedSelects, attributeRef))) {
                 sb.append(" AS ");
                 sb.append(DBMSUtility.attributeRefToAliasSQL(attributeRef));
             }
             return sb.toString();
+        }
+
+        private boolean containsNestedAttribute(List<NestedOperator> nestedSelects, AttributeRef attribute) {
+            for (NestedOperator nestedSelect : nestedSelects) {
+                if (!nestedSelect.alias.equals(attribute.getTableAlias())) {
+                    continue;
+                }
+                IAlgebraOperator operator = nestedSelect.operator;
+                return operator.getAttributes(source, target).contains(attribute);
+            }
+            return false;
+        }
+
+        private boolean containsAlias(List<NestedOperator> nestedSelects, TableAlias alias) {
+            for (NestedOperator nestedSelect : nestedSelects) {
+                if (nestedSelect.alias.equals(alias)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private IAlgebraOperator findNestedOperator(List<NestedOperator> nestedSelects, IAlgebraOperator operator, TableAlias alias) {
+            for (NestedOperator nestedSelect : nestedSelects) {
+                if (nestedSelect.alias.equals(alias) && nestedSelect.operator.equals(operator)) {
+//                if (nestedSelect.operator.equals(operator)) {
+                    return nestedSelect.operator;
+                }
+            }
+            return null;
+        }
+
+        private boolean containsAliasAndOperator(List<NestedOperator> nestedSelects, IAlgebraOperator operator, TableAlias alias) {
+            for (NestedOperator nestedSelect : nestedSelects) {
+                if (nestedSelect.alias.equals(alias) && nestedSelect.operator.equals(operator)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private String tableAliasToSQL(TableAlias tableAlias) {
@@ -628,7 +702,7 @@ public class AlgebraTreeToSQL {
             throw new IllegalArgumentException("Unable to find attribute " + originalAttribute + " into " + attributes);
         }
 
-        private String aggregateFunctionToString(IAggregateFunction aggregateFunction, List<TableAlias> nestedTables) {
+        private String aggregateFunctionToString(IAggregateFunction aggregateFunction, List<NestedOperator> nestedTables) {
             if (aggregateFunction instanceof ValueAggregateFunction) {
                 return attributeToSQL(aggregateFunction.getAttributeRef(), true, nestedTables, null);
             }
@@ -636,6 +710,23 @@ public class AlgebraTreeToSQL {
                 return "max(" + aggregateFunction.getAttributeRef() + ") as " + DBMSUtility.attributeRefToAliasSQL(aggregateFunction.getAttributeRef());
             }
             throw new UnsupportedOperationException("Unable generate SQL for aggregate function" + aggregateFunction);
+        }
+
+    }
+
+    class NestedOperator {
+
+        IAlgebraOperator operator;
+        TableAlias alias;
+
+        public NestedOperator(IAlgebraOperator operator, TableAlias alias) {
+            this.operator = operator;
+            this.alias = alias;
+        }
+
+        @Override
+        public String toString() {
+            return alias.toString();
         }
 
     }

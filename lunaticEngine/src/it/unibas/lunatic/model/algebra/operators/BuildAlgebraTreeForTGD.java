@@ -3,7 +3,6 @@ package it.unibas.lunatic.model.algebra.operators;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.Join;
-import it.unibas.lunatic.model.algebra.OrderBy;
 import it.unibas.lunatic.model.algebra.Scan;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.database.AttributeRef;

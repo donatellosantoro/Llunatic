@@ -27,5 +27,6 @@ public class TestSQLSyntheticTGD01 extends CheckExpectedSolutionsTest {
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
         checkExpectedSolutions("expectedTGD01", result);
+//        checkExpectedSolutions("expectedTGD01SQL", result);
     }
 }

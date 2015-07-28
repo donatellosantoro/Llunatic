@@ -57,7 +57,7 @@ public class ChaseEGDEquivalenceClass {
         if (logger.isDebugEnabled()) logger.debug("***** Chasing dependency: " + egd);
         this.lastTuple = null;
         this.lastTupleHandled = false;
-        if (logger.isDebugEnabled()) logger.debug("Executing premise query: " + premiseQuery);
+        if (logger.isTraceEnabled()) logger.debug("Executing premise query: " + premiseQuery);
         if (logger.isTraceEnabled()) logger.debug("Result:\n" + LunaticUtility.printIterator(queryRunner.run(premiseQuery, scenario.getSource(), databaseForStep)));
         long violationQueryStart = new Date().getTime();
         ITupleIterator it = queryRunner.run(premiseQuery, scenario.getSource(), databaseForStep);

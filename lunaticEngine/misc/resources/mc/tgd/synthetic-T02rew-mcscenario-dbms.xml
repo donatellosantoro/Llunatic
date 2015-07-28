@@ -40,7 +40,9 @@ ExtTGDs:
 r(a: $x, b: $y), $y == "3" -> s(a: $y, b: $z).
 r(a: $x, b: $y), $y == "5" -> s(a: $y, b: "6").
 ExtEGDs:
-s(a: $y1, b: $x), s(a: $y2, b: $x) -> $y1 == $y2.
+//s(a: $y1, b: $x), s(a: $y2, b: $x), r(a: $z1, b:$y1), r(a: $z2, b:$y2) -> $y1 == $y2.
+s(a: $y1, b: $x), s(a: $y2, b: $x), r(a: $z1, b:$y1) and not exists(r(a: $z2, b:$y2)) -> $y1 == $y2.
+//s(a: $y1, b: $x), s(a: $y2, b: $x) and not exists(r(a: $z1, b:$y1)) and not exists(r(a: $z2, b:$y2)) -> $y1 == $y2.
 ]]>
     </dependencies>
     <partialOrder/>

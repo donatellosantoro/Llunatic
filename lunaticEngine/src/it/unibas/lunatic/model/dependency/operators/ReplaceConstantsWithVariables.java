@@ -47,7 +47,6 @@ public class ReplaceConstantsWithVariables {
         createTable(constantsInFormula, scenario);
         if (logger.isDebugEnabled()) logger.debug("After constant removal: " + dependency.toLongString());
         if (logger.isDebugEnabled()) logger.debug("Constant Table: " + constantsInFormula.toString());
-        return;
     }
 
     private void findAndReplaceConstantsInPositiveFormula(PositiveFormula positiveFormula, ConstantsInFormula constantsInFormula, boolean premise) {
