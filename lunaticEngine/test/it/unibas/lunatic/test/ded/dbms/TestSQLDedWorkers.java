@@ -24,7 +24,7 @@ public class TestSQLDedWorkers extends CheckTest {
         chaseStats.printStatistics();
     }
 
-    public void testInstance1() {//20 Success, 0 Failed
+    public void testAllSolutions1() {//20 Success, 0 Failed
         testAllSolutions(References.deds_workers_1_dbms, true);
         chaseStats.printStatistics("INSTANCE 1\n");
         long total = (long) chaseStats.getStat(ChaseStats.NUMBER_OF_GREEDY_SCENARIOS);
