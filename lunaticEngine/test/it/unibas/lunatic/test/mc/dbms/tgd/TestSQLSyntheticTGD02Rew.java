@@ -17,7 +17,6 @@ public class TestSQLSyntheticTGD02Rew extends CheckExpectedSolutionsTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T02Rew_dbms, true);
         setConfigurationForTest(scenario);
-        scenario.getCostManager().setDoBackward(false); //TODO++
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);

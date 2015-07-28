@@ -213,7 +213,7 @@ public class ChaseEGDEquivalenceClass {
         NewChaseSteps newChaseSteps = new NewChaseSteps(egd);
         for (int i = 0; i < repairs.size(); i++) {
             Repair repair = repairs.get(i);
-            boolean consistentRepair = purgeInconsistenceChanges(egd, repair, scenario);
+            boolean consistentRepair = purgeOverlappingContexts(egd, repair, scenario);
             String egdId = egd.getId();
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, currentNode, localId, egd, repair, repair.getChaseModes());
@@ -242,17 +242,17 @@ public class ChaseEGDEquivalenceClass {
         return newChaseSteps;
     }
 
-    private boolean purgeInconsistenceChanges(Dependency egd, Repair repair, Scenario scenario) {
+    private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Scenario scenario) {
         if (egd.hasSymmetricAtoms() || scenario.getConfiguration().isUseLimit1ForEGDs()) {
             return false;
         }
-        if (logger.isDebugEnabled()) logger.debug("Checking inconsistency for egd " + egd);
+        if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);
         boolean consistent = true;
         Set<Cell> cellsToChange = new HashSet<Cell>();
         for (Iterator<ChangeSet> it = repair.getChanges().iterator(); it.hasNext();) {
             ChangeSet changeSet = it.next();
-            if (inconsistentChanges(changeSet, cellsToChange) || inconsistentWitness(changeSet, cellsToChange)) {
-                if (logger.isDebugEnabled()) logger.debug("Change set not consistent " + changeSet);
+            if (occurrencesOverlap(changeSet, cellsToChange) || witnessOverlaps(changeSet, cellsToChange)) {
+                if (logger.isDebugEnabled()) logger.debug("Violation context has overlaps: " + changeSet);
                 it.remove();
                 consistent = false;
             } else {
@@ -262,22 +262,22 @@ public class ChaseEGDEquivalenceClass {
         return consistent;
     }
 
-    private boolean inconsistentChanges(ChangeSet changeSet, Set<Cell> cellsToChange) {
+    private boolean occurrencesOverlap(ChangeSet changeSet, Set<Cell> cellsToChange) {
         CellGroup cellGroup = changeSet.getCellGroup();
         boolean inconsistent = containsCells(cellGroup, cellsToChange);
-        if (inconsistent && logger.isDebugEnabled()) logger.debug("Inconsistent changes:\n" + changeSet);
+        if (inconsistent && logger.isDebugEnabled()) logger.debug("Occurrences Overlap:\n" + changeSet);
 //        if (inconsistent) logger.warn("Inconsistent changes:\n" + changeSet);
         return inconsistent;
     }
 
-    private boolean inconsistentWitness(ChangeSet changeSet, Set<Cell> cellsToChange) {
+    private boolean witnessOverlaps(ChangeSet changeSet, Set<Cell> cellsToChange) {
         if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
             return false;
         }
         List<CellGroup> witnessGroups = changeSet.getWitnessCellGroups();
         for (CellGroup witnessGroup : witnessGroups) {
             if (containsCells(witnessGroup, cellsToChange)) {
-                if (logger.isDebugEnabled()) logger.debug("Inconsistent witness:\n" + witnessGroup);
+                if (logger.isDebugEnabled()) logger.debug("Witness Overlaps:\n" + witnessGroup);
 //                logger.warn("Inconsistent witness:\n" + witnessGroup);
                 return true;
             }

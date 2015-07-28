@@ -25,8 +25,8 @@ public class TestHospital extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicates: " + resultSizer.getDuplicates(result));
-        Assert.assertEquals(38, resultSizer.getSolutions(result));
-        Assert.assertEquals(22, resultSizer.getDuplicates(result));
+        Assert.assertEquals(35, resultSizer.getSolutions(result));
+        Assert.assertEquals(25, resultSizer.getDuplicates(result));
         checkSolutions(result);
     }
 }

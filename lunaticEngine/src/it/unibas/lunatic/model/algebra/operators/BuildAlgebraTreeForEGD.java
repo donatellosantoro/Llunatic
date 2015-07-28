@@ -2,6 +2,7 @@ package it.unibas.lunatic.model.algebra.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
+import it.unibas.lunatic.model.algebra.Difference;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.Limit;
 import it.unibas.lunatic.model.algebra.OrderBy;
@@ -51,7 +52,15 @@ public class BuildAlgebraTreeForEGD {
         if (!dependency.hasSymmetricAtoms() || !useSymmetry) {
             if (logger.isDebugEnabled()) logger.debug("Building tree for non-symmetric dependency...");
             premiseRoot = treeBuilder.buildDeltaTreeForFormulaWithNegations(dependency, dependency.getPremise(), scenario, true);
-            premiseRoot = addSelectionsForViolations(dependency, premiseRoot);
+            IAlgebraOperator select = addSelectionsForViolations(dependency);
+            if (premiseRoot instanceof Difference) {
+                IAlgebraOperator leftChild = premiseRoot.getChildren().get(0);
+                select.addChild(leftChild);
+                premiseRoot.getChildren().set(0, select);
+            } else {
+                select.addChild(premiseRoot);
+                premiseRoot = select;
+            }
             premiseRoot = addOrderBy(dependency, premiseRoot);
         } else {
             premiseRoot = builderForSymmetricEGD.buildTreeForSymmetricEGD(dependency);
@@ -61,7 +70,7 @@ public class BuildAlgebraTreeForEGD {
     }
 
     ////////////////////////////////
-    private Select addSelectionsForViolations(Dependency dependency, IAlgebraOperator premiseRoot) {
+    private Select addSelectionsForViolations(Dependency dependency) {
         StringBuilder stringExpression = new StringBuilder();
         Map<String, Object> variableDescriptions = new HashMap<String, Object>();
         for (IFormulaAtom atom : dependency.getConclusion().getAtoms()) {
@@ -96,13 +105,12 @@ public class BuildAlgebraTreeForEGD {
         List<Expression> selections = new ArrayList<Expression>();
         selections.add(expression);
         Select select = new Select(selections);
-        select.addChild(premiseRoot);
         return select;
     }
 
     private IAlgebraOperator addOrderBy(Dependency dependency, IAlgebraOperator premiseRoot) {
         List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributesInPositiveFormula(dependency);
-        if(targetJoinAttributes.isEmpty()){
+        if (targetJoinAttributes.isEmpty()) {
             return premiseRoot;
         }
         List<AttributeRef> attributesForOrderBy = new ArrayList<AttributeRef>();
