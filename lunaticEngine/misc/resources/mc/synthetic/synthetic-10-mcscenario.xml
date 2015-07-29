@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <target>    
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+r(a, b, c)
+INSTANCE:
+r(a: "1", b: "aaaaaaa", c: "1")
+r(a: "1", b: "aaaaaaa", c: "2")
+r(a: "1", b: "aaaaaaa", c: "3")
+r(a: "1", b: "aaaaaab", c: "4")
+r(a: "1", b: "0000000", c: "5")
+r(a: "1", b: "0000000", c: "6")
+]]>
+        </generate>
+    </target>
+    <dependencies>
+<![CDATA[
+ExtEGDs:
+e4: r(a: $x, b: $y1, c: $z1), r(a: $x, b: $y2, c: $z2) -> $y1 == $y2.
+]]>
+    </dependencies>
+    <orderingAttributes />
+<!--    <partialOrder>
+        <type>Frequency</type>
+    </partialOrder>
+    <costManager>
+        <type>Similarity</type>
+        <similarityStrategy>SmithWaterman</similarityStrategy>
+        <similarityThreshold>0.80</similarityThreshold>
+        <chaseBranchingThreshold>5</chaseBranchingThreshold>
+        <potentialSolutionsThreshold>5</potentialSolutionsThreshold>
+    </costManager>-->
+</scenario>
+

@@ -68,7 +68,7 @@ public class MinCostRepairCostManager extends StandardCostManager {
             return repairs;
         }
         Repair forwardRepair = repairs.get(0);
-        assert (forwardRepair.getChanges().size() == 1) : "Forward repair must have only one change set: " + forwardRepair;
+        assert (forwardRepair.getViolationContexts().size() == 1) : "Forward repair must have only one change set: " + forwardRepair;
         correctValuesInRepair(forwardRepair, equivalenceClass);
         return Arrays.asList(new Repair[]{forwardRepair});
     }
@@ -87,7 +87,7 @@ public class MinCostRepairCostManager extends StandardCostManager {
         // generate forward repair for all groups
         ViolationContext changesForForwardRepair = generateForwardRepair(equivalenceClass.getTupleGroups(), scenario, chaseTreeRoot.getDeltaDB(), stepId);
         Repair forwardRepair = new Repair();
-        forwardRepair.addChanges(changesForForwardRepair);
+        forwardRepair.addViolationContext(changesForForwardRepair);
         if (logger.isDebugEnabled()) logger.debug("########Forward repair: " + forwardRepair);
         result.add(forwardRepair);
         if (isDoBackward()) {
@@ -116,7 +116,7 @@ public class MinCostRepairCostManager extends StandardCostManager {
                 minCostValue = value;
             }
         }
-        repair.getChanges().get(0).getCellGroup().setValue(minCostValue);
+        repair.getViolationContexts().get(0).getCellGroup().setValue(minCostValue);
     }
 
     private double calculateCost(IValue value, EquivalenceClassForEGD equivalenceClass) {

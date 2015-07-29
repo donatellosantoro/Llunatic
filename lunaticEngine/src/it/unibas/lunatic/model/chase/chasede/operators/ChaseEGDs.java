@@ -132,7 +132,7 @@ public class ChaseEGDs {
             it.close();
         }
         if (logger.isDebugEnabled()) logger.debug("Repair for dependency: " + repairForDependency);
-        if (repairForDependency.getChanges().isEmpty()) {
+        if (repairForDependency.getViolationContexts().isEmpty()) {
             return false;
         }
         long repairStart = new Date().getTime();
@@ -147,7 +147,7 @@ public class ChaseEGDs {
     }
 
     private void accumulateRepairs(Repair repairForDependency, Repair repairForEquivalenceClass) {
-        repairForDependency.getChanges().addAll(repairForEquivalenceClass.getChanges());
+        repairForDependency.getViolationContexts().addAll(repairForEquivalenceClass.getViolationContexts());
     }
 
     @SuppressWarnings("unchecked")
@@ -156,7 +156,7 @@ public class ChaseEGDs {
         List<CellGroup> cellGroups = extractCellGroups(equivalenceClass.getTupleGroups());
         CellGroup cellGroup = findChanges(cellGroups);
         ViolationContext changesForRepair = new ViolationContext(cellGroup, LunaticConstants.CHASE_FORWARD, Collections.EMPTY_LIST);
-        repair.addChanges(changesForRepair);
+        repair.addViolationContext(changesForRepair);
         return repair;
     }
 
@@ -204,7 +204,7 @@ public class ChaseEGDs {
     }
 
     private void applyRepairs(Repair repair, Scenario scenario) {
-        for (ViolationContext changeSet : repair.getChanges()) {
+        for (ViolationContext changeSet : repair.getViolationContexts()) {
             IValue newValue = changeSet.getCellGroup().getValue();
             Set<CellRef> cellsToChange = ChaseUtility.createCellRefsFromCells(changeSet.getCellGroup().getOccurrences());
             for (CellRef cellRef : cellsToChange) {

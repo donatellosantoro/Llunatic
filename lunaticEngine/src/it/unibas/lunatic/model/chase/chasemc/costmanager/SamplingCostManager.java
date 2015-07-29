@@ -85,7 +85,7 @@ public class SamplingCostManager extends StandardCostManager {
     private Repair generateRandomForwardRepair(EquivalenceClassForEGD equivalenceClass, Scenario scenario, IDatabase deltaDB, String stepId) {
         ViolationContext changesForForwardRepair = super.generateForwardRepair(equivalenceClass.getTupleGroups(), scenario, deltaDB, stepId);
         Repair forwardRepair = new Repair();
-        forwardRepair.addChanges(changesForForwardRepair);
+        forwardRepair.addViolationContext(changesForForwardRepair);
         correctValuesInRepair(forwardRepair, equivalenceClass);
         return forwardRepair;
     }
@@ -147,7 +147,7 @@ public class SamplingCostManager extends StandardCostManager {
     }
 
     private void correctValuesInRepair(Repair repair, EquivalenceClassForEGD equivalenceClass) {
-        for (ViolationContext changeSet : repair.getChanges()) {
+        for (ViolationContext changeSet : repair.getViolationContexts()) {
             if (!changeSet.getChaseMode().equals(LunaticConstants.CHASE_FORWARD)) {
                 continue;
             }

@@ -95,7 +95,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         }
         Repair repair = new Repair();
         ViolationContext forwardChanges = new ViolationContext(cellGroup, LunaticConstants.CHASE_FORWARD, buildWitnessCellGroups(tupleGroups));
-        repair.addChanges(forwardChanges);
+        repair.addViolationContext(forwardChanges);
         return repair;
     }
 
@@ -132,7 +132,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             ViolationContext forwardChanges = generateForwardRepair(forwardGroups, scenario, deltaDB, stepId);
             if (logger.isDebugEnabled()) logger.debug("Forward changes: " + forwardChanges);
             if (forwardChanges != null) {
-                repair.addChanges(forwardChanges);
+                repair.addViolationContext(forwardChanges);
             }
         }
         for (TargetCellsToChangeForEGD backwardGroup : backwardGroups) {
@@ -142,13 +142,13 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
                 backwardCellGroup.setValue(llunValue);
                 backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
                 ViolationContext backwardChangesForGroup = new ViolationContext(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardGroups));
-                repair.addChanges(backwardChangesForGroup);
+                repair.addViolationContext(backwardChangesForGroup);
                 if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {
                     backwardGroup.setSuspicious(true);
                 }
             }
         }
-        if (repair.getChanges().isEmpty()) {
+        if (repair.getViolationContexts().isEmpty()) {
             return null;
         }
         return repair;
@@ -158,7 +158,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         Repair repair = new Repair();
         ViolationContext forwardChanges = generateForwardRepair(tupleGroups, scenario, deltaDB, stepId);
         if (logger.isDebugEnabled()) logger.debug("Forward changes: " + forwardChanges);
-        repair.addChanges(forwardChanges);
+        repair.addViolationContext(forwardChanges);
         return repair;
     }
 

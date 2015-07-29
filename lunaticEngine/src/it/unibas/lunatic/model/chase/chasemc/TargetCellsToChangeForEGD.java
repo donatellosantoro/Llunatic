@@ -10,7 +10,7 @@ public class TargetCellsToChangeForEGD {
     // all target cells with equal value to change for a forward repair. Initially incomplete
     private CellGroup cellGroupForForwardRepair;
     // all witness cells from the originating tuples (to be changed for backward repairs). Initially incomplete
-    private Map<BackwardAttribute, CellGroup> cellGroupsForBackwardRepairs = new HashMap<BackwardAttribute, CellGroup>();
+    private Map<BackwardAttribute, CellGroup> cellGroupsForBackwardRepairs = new HashMap<BackwardAttribute, CellGroup>(); //TODO: Replace cellGroup with Set<Cell>
     private boolean suspicious;
 
     public TargetCellsToChangeForEGD(IValue value) {
@@ -38,10 +38,10 @@ public class TargetCellsToChangeForEGD {
         this.cellGroupForForwardRepair = cellGroupForForwardRepair;
     }
 
-    public void setCellGroupForBackwardRepair(BackwardAttribute backwardAttribute, CellGroup cellGroup){
+    public void setCellGroupForBackwardRepair(BackwardAttribute backwardAttribute, CellGroup cellGroup) {
         this.cellGroupsForBackwardRepairs.put(backwardAttribute, cellGroup);
     }
-    
+
     public int getOccurrenceSize() {
         return cellGroupForForwardRepair.getOccurrences().size();
     }

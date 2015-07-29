@@ -66,6 +66,7 @@ public abstract class AbstractCostManager implements ICostManager {
         Dependency egd = equivalenceClass.getEGD();
         FormulaVariable variable = backwardAttribute.getVariable();
         if (logger.isDebugEnabled()) logger.debug("Checking if cell group is suspicious:\n" + cellGroup + "\nEGD: " + egd + "\nVariable: " + variable + "\nVariable occurrence " + variable.getPremiseRelationalOccurrences());
+        // If premise contains more occurrences than the ones we are changing, it is guareanteed that the join is disrupted
         if (variable.getPremiseRelationalOccurrences().size() > cellGroup.getOccurrences().size()) {
             return false;
         }
@@ -73,7 +74,9 @@ public abstract class AbstractCostManager implements ICostManager {
         for (FormulaVariableOccurrence occurrence : variable.getPremiseRelationalOccurrences()) {
             if (logger.isDebugEnabled()) logger.debug("Variable occurrence: " + occurrence.toLongString());
             if (occurrence.getAttributeRef().isSource()) {
-                continue;
+//                continue;
+                //TODO Check
+                return false;
             }
             AttributeRef attributeRef = ChaseUtility.unAlias(occurrence.getAttributeRef());
             if (!containsAndRemove(occurrences, attributeRef)) {

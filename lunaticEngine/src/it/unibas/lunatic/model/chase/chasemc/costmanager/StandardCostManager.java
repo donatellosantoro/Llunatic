@@ -41,7 +41,7 @@ public class StandardCostManager extends AbstractCostManager {
         // generate forward repair for all groups
         ViolationContext changesForForwardRepair = generateForwardRepair(equivalenceClass.getTupleGroups(), scenario, chaseTreeRoot.getDeltaDB(), stepId);
         Repair forwardRepair = new Repair();
-        forwardRepair.addChanges(changesForForwardRepair);
+        forwardRepair.addViolationContext(changesForForwardRepair);
         if (logger.isDebugEnabled()) logger.debug("########Forward repair: " + forwardRepair);
         result.add(forwardRepair);
         if (isDoBackward()) {
@@ -110,7 +110,7 @@ public class StandardCostManager extends AbstractCostManager {
         Repair repair = new Repair();
         if (forwardTupleGroups.size() > 1) {
             ViolationContext forwardChanges = generateForwardRepair(forwardTupleGroups, scenario, deltaDB, stepId);
-            repair.addChanges(forwardChanges);
+            repair.addViolationContext(forwardChanges);
         }
         for (TargetCellsToChangeForEGD backwardTupleGroup : backwardTupleGroups) {
             CellGroup backwardCellGroup = backwardTupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute).clone();
@@ -118,7 +118,7 @@ public class StandardCostManager extends AbstractCostManager {
             backwardCellGroup.setValue(llunValue);
             backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
             ViolationContext backwardChangesForGroup = new ViolationContext(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardTupleGroups));
-            repair.addChanges(backwardChangesForGroup);
+            repair.addViolationContext(backwardChangesForGroup);
             if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {
                 backwardTupleGroup.setSuspicious(true);
                 repair.setSuspicious(true);
