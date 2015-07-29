@@ -19,14 +19,12 @@ import it.unibas.lunatic.model.chase.chasemc.operators.AddUserNode;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChangeCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDs;
-import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDsForDEProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeToString;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
-import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDsAndDEProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
@@ -37,10 +35,8 @@ import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedyJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.ICacheManager;
-import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLInsertTuplesForTGDsAndDEProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB;
-import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryInsertTuplesForTGDsAndDEProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryRunQuery;
 import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
@@ -130,13 +126,6 @@ public class OperatorFactory {
         return sqlCellUpdater;
     }
 
-    public IInsertTuplesForTGDsAndDEProxy getInsertTuplesForTgdsAndDEProxy(Scenario scenario) {
-        if (scenario.isMainMemory()) {
-            return new MainMemoryInsertTuplesForTGDsAndDEProxy(getInsertTuple(scenario), getQueryRunner(scenario), getOccurrenceHandlerMC(scenario), getOIDGenerator(scenario));
-        }
-        return new SQLInsertTuplesForTGDsAndDEProxy(getOIDGenerator(scenario));
-    }
-
     public IBuildDeltaDB getDeltaDBBuilder(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return mainMemoryDeltaBuilder;
@@ -210,9 +199,6 @@ public class OperatorFactory {
     }
 
     public IChaseDeltaExtTGDs getExtTgdChaser(Scenario scenario) {
-        if (scenario.getConfiguration().isDeProxyMode()) {
-            return new ChaseDeltaExtTGDsForDEProxy(getInsertTuplesForTgdsAndDEProxy(scenario), getDatabaseBuilder(scenario));
-        }
         return new ChaseDeltaExtTGDs(getQueryRunner(scenario), getDatabaseBuilder(scenario),
                 getOccurrenceHandlerMC(scenario), getOIDGenerator(scenario), getCellChanger(scenario));
     }

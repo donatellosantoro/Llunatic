@@ -21,7 +21,6 @@ import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseSte
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.chase.chasemc.operators.IInsertTuplesForTGDsAndDEProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.database.AttributeRef;

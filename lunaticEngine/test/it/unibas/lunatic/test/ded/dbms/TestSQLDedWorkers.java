@@ -48,17 +48,17 @@ public class TestSQLDedWorkers extends CheckTest {
         Assert.assertEquals(10, failed);
     }
 
-    public void testAllSolutions3() {//4 Success, 16 Failed
-        testAllSolutions(References.deds_workers_3_dbms, true);
-        chaseStats.printStatistics("INSTANCE 3\n");
-        long total = (long) chaseStats.getStat(ChaseStats.NUMBER_OF_GREEDY_SCENARIOS);
-        long executed = (long) chaseStats.getStat(ChaseStats.NUMBER_OF_EXECUTED_GREEDY_SCENARIOS);
-        long failed = (chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS) == null ? 0 : chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS));
-        long success = executed - failed;
-        Assert.assertEquals(total, executed);
-        Assert.assertEquals(4, success);
-        Assert.assertEquals(16, failed);
-    }
+//    public void testAllSolutions3() {//4 Success, 16 Failed
+//        testAllSolutions(References.deds_workers_3_dbms, true);
+//        chaseStats.printStatistics("INSTANCE 3\n");
+//        long total = (long) chaseStats.getStat(ChaseStats.NUMBER_OF_GREEDY_SCENARIOS);
+//        long executed = (long) chaseStats.getStat(ChaseStats.NUMBER_OF_EXECUTED_GREEDY_SCENARIOS);
+//        long failed = (chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS) == null ? 0 : chaseStats.getStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS));
+//        long success = executed - failed;
+//        Assert.assertEquals(total, executed);
+//        Assert.assertEquals(4, success);
+//        Assert.assertEquals(16, failed);
+//    }
 
     public void testAllSolutions4() { //16 Success, 4 Failed
         testAllSolutions(References.deds_workers_4_dbms, true);
@@ -95,6 +95,7 @@ public class TestSQLDedWorkers extends CheckTest {
             if (logger.isDebugEnabled()) logger.debug(result.printInstances(true));
         } catch (ChaseException ex) {
             if (logger.isDebugEnabled()) logger.debug("No solution...");
+            logger.error(ex.getLocalizedMessage());
         }
     }
 }

@@ -1,0 +1,17 @@
+#R
+a,b,c
+1,_L5,a
+1,_L5,b
+1,_L5,c
+1,_L5,d
+
+#S
+a,b,c
+a,x,q
+c,z,p
+
+#T
+a,b
+b,y
+d,e
+

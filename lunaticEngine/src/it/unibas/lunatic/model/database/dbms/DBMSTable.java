@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DBMSTable implements ITable {
 
@@ -50,7 +48,7 @@ public class DBMSTable implements ITable {
                 return attribute;
             }
         }
-        throw new IllegalArgumentException("Table " + tableName + " doesn't contain attribute " + name);
+        throw new IllegalArgumentException("Table " + tableName + " doesn't contain attribute " + name + ". Attributes " + attributes);
     }
 
     public ITupleIterator getTupleIterator(int offset, int limit) {

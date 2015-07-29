@@ -130,7 +130,7 @@ public class ChaseMCScenario {
             solutionChecker.checkSolutions(root, scenario);
         }
         dChaser.doChase(root, scenario, chaseState, dQueryMap);
-        if (logger.isDebugEnabled()) logger.debug("------------------Final Chase tree: ----\n" + root);
+        if (logger.isDebugEnabled()) logger.debug("------------------Final Chase tree: ----\n" + root.toLongStringWithSort());
         return root;
     }
 

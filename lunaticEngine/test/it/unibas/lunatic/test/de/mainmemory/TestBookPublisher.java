@@ -22,7 +22,15 @@ public class TestBookPublisher extends CheckTest {
         checkExpectedInstances(result, scenario);
     }
 
-    public void testScenarioEGD() throws Exception {
+    public void testScenarioEGDClassic() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_egd);
+        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        checkExpectedInstances(result, scenario);
+    }
+
+    public void testScenarioEGDProxy() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_egd);
         scenario.getConfiguration().setDeChaser(LunaticConstants.PROXY_MC_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);

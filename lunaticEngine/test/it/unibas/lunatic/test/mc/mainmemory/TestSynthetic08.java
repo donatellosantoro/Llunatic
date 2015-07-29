@@ -20,6 +20,7 @@ public class TestSynthetic08 extends CheckExpectedSolutionsTest {
         scenario.getCostManager().setDoBackward(false);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
