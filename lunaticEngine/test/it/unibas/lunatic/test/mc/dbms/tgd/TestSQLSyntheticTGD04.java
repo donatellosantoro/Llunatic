@@ -6,16 +6,17 @@ import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
+import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
 import it.unibas.lunatic.test.checker.CheckTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestSQLSyntheticTGD04 extends CheckTest {
+public class TestSQLSyntheticTGD04 extends CheckExpectedSolutionsTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestSQLSyntheticTGD04.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T04_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T04_dbms, true);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
@@ -26,6 +27,8 @@ public class TestSQLSyntheticTGD04 extends CheckTest {
 //        Assert.assertEquals(7, OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario).loadAllCellGroups(result.getDeltaDB(), "r.tt0").size());
 //        if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
 //        checkExpectedInstances((MainMemoryDB) result, scenario);
-        checkSolutions(result);        
+        checkSolutions(result);
+        checkExpectedSolutions("expectedSyntheticTGD04", result);
+
     }
 }
