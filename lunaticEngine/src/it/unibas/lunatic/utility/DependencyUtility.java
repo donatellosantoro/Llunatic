@@ -105,9 +105,31 @@ public class DependencyUtility {
         return result;
     }
 
-    public static List<AttributeRef> findQueriedAttributesForExtTGD(Dependency dependency) {
+    public static List<AttributeRef> extractRequestedAttributesWithExistential(Dependency dependency) {
+        List<AttributeRef> result = new ArrayList<AttributeRef>();
+        result.addAll(dependency.getQueriedAttributes());
+        for (FormulaVariable variable : dependency.getConclusion().getLocalVariables()) {
+            if (variable.getConclusionRelationalOccurrences().size() == 1) {
+                continue;
+            }
+            for (FormulaVariableOccurrence occurrence : variable.getConclusionRelationalOccurrences()) {
+                if (logger.isTraceEnabled()) logger.trace("Inspecting occurrence: " + occurrence);
+                AttributeRef attribute = occurrence.getAttributeRef();
+                AttributeRef unaliasedAttribute = ChaseUtility.unAlias(attribute);
+                LunaticUtility.addIfNotContained(result, unaliasedAttribute);
+            }            
+        }
+        for (AttributeRef attributeRef : dependency.getAdditionalAttributes()) {
+            if (!result.contains(attributeRef)) {
+                result.add(attributeRef);
+            }
+        }
+        return result;
+    }
+    
+    public static List<AttributeRef> findTargetQueriedAttributesForExtTGD(Dependency dependency) {
         List<AttributeRef> queriedAttributes = new ArrayList<AttributeRef>();
-        LunaticUtility.addAllIfNotContained(queriedAttributes, findQueriedAttributesInPremise(dependency));
+        LunaticUtility.addAllIfNotContained(queriedAttributes, findTargetQueriedAttributesInPremise(dependency));
         for (FormulaVariable formulaVariable : dependency.getPremise().getLocalVariables()) {
             if (formulaVariable.getConclusionRelationalOccurrences().isEmpty()) {
                 continue;
@@ -138,12 +160,12 @@ public class DependencyUtility {
         return null;
     }
 
-    public static List<AttributeRef> findQueriedAttributesInPremise(Dependency dependency) {
+    public static List<AttributeRef> findTargetQueriedAttributesInPremise(Dependency dependency) {
         if (logger.isTraceEnabled()) logger.trace("Searching query attributes for dependency: \n" + dependency);
         List<AttributeRef> queriedAttributes = new ArrayList<AttributeRef>();
         for (FormulaVariable variable : dependency.getPremise().getLocalVariables()) {
             if (logger.isTraceEnabled()) logger.trace("Inspecting variable: " + variable);
-            if (hasSingleOccurrence(variable)) {
+            if (hasSingleOccurrenceInPremise(variable)) {
                 continue;
             }
             for (FormulaVariableOccurrence occurrence : variable.getPremiseRelationalOccurrences()) {
@@ -160,7 +182,7 @@ public class DependencyUtility {
         return queriedAttributes;
     }
 
-    private static boolean hasSingleOccurrence(FormulaVariable variable) {
+    private static boolean hasSingleOccurrenceInPremise(FormulaVariable variable) {
         if (logger.isTraceEnabled()) logger.trace("Occurrences for variable: " + variable.toLongString());
         int relationalPremiseOccurrences = variable.getPremiseRelationalOccurrences().size();
         int nonRelationalOccurrences = variable.getNonRelationalOccurrences().size();

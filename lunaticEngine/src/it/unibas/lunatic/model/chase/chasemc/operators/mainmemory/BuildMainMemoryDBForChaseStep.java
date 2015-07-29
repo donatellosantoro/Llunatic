@@ -68,9 +68,9 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
 
     public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, Dependency dependency) {
         long start = new Date().getTime();
-        if (logger.isDebugEnabled()) logger.debug("Extracting database for step " + stepId + " and dependency:\n" + dependency + "\non deltaDB:\n" + deltaDB.printInstances());
+        if (logger.isDebugEnabled()) logger.debug("Extracting database for step " + stepId + " and dependency:\n" + dependency.toLongString() + "\non deltaDB:\n" + deltaDB.printInstances());
         Map<String, List<AttributeRef>> attributeMap = new HashMap<String, List<AttributeRef>>();
-        List<AttributeRef> requestedAttributesForDependency = DependencyUtility.extractRequestedAttributes(dependency);
+        List<AttributeRef> requestedAttributesForDependency = DependencyUtility.extractRequestedAttributesWithExistential(dependency);
         if (requestedAttributesForDependency.isEmpty()) {
             throw new IllegalArgumentException("Unable to find relevant attributes for dependency " + dependency);
         }

@@ -15,7 +15,7 @@ public class TestSQLSynthetic07 extends CheckExpectedSolutionsTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLSynthetic07.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_07_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_07_dbms, true);
         setConfigurationForTest(scenario);
         scenario.getCostManager().setDoBackward(false);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);

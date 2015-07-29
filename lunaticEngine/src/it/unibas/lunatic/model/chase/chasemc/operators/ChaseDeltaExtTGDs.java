@@ -86,8 +86,8 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 if (logger.isDebugEnabled()) logger.debug("---- Candidate new step: " + newStep.getId() + "- Chasing tgd: " + eTgd);
                 IAlgebraOperator tgdQuery = tgdTreeMap.get(eTgd);
                 if (logger.isTraceEnabled()) logger.debug("----TGD Query: " + tgdQuery);
-//                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), eTgd);
-                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()); //TODO++ Optimize checking test deds workers
+                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), eTgd);
+//                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()); //TODO++ Optimize checking test deds workers
                 if (logger.isTraceEnabled()) logger.trace("Database for step: " + databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()).printInstances() + "\nDeltaDB: " + newStep.getDeltaDB().printInstances());
                 long start = new Date().getTime();
                 boolean insertedTuples = dependencyChaser.chaseDependency(newStep, eTgd, tgdQuery, scenario, chaseState, databaseForStep);

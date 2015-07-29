@@ -23,10 +23,10 @@ public class TestSyntheticTGD03 extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
-//        Assert.assertEquals(3, resultSizer.getPotentialSolutions(result));
-//        Assert.assertEquals(0, resultSizer.getDuplicates(result));
+        Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
 //        checkSolutions(result);
-//        exportResults("/Temp/expectedTGD02", result);
-//        checkExpectedSolutions("expectedTGD02", result);
+//        exportResults("/Temp/expectedTGD03", result);
+        checkExpectedSolutions("expectedTGD03", result);
     }
 }

@@ -51,14 +51,14 @@ public class AnalyzeDependencies {
 
     private void findAllQueriedAttributesForEGDs(List<Dependency> dependencies) {
         for (Dependency dependency : dependencies) {
-            List<AttributeRef> queriedAttributes = DependencyUtility.findQueriedAttributesInPremise(dependency);
+            List<AttributeRef> queriedAttributes = DependencyUtility.findTargetQueriedAttributesInPremise(dependency);
             dependency.setQueriedAttributes(queriedAttributes);
         }
     }
 
     private void findAllQueriedAttributesForTGDs(List<Dependency> dependencies) {
         for (Dependency dependency : dependencies) {
-            List<AttributeRef> queriedAttributes = DependencyUtility.findQueriedAttributesForExtTGD(dependency);
+            List<AttributeRef> queriedAttributes = DependencyUtility.findTargetQueriedAttributesForExtTGD(dependency);
             dependency.setQueriedAttributes(queriedAttributes);
         }
     }

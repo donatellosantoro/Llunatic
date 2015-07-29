@@ -91,7 +91,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         if (logger.isDebugEnabled()) logger.debug("Generating database for step " + stepId + " and depedency " + dependency);
         //Materialize join
         Map<String, List<AttributeRef>> attributeMap = new HashMap<String, List<AttributeRef>>();
-        List<AttributeRef> requestedAttributesForDependency = DependencyUtility.extractRequestedAttributes(dependency);
+        List<AttributeRef> requestedAttributesForDependency = DependencyUtility.extractRequestedAttributesWithExistential(dependency);
         if (requestedAttributesForDependency.isEmpty()) {
             throw new IllegalArgumentException("Unable to find relevant attributes for dependency " + dependency);
         }

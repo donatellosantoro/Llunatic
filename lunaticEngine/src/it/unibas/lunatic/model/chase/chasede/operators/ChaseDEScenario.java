@@ -80,7 +80,7 @@ public class ChaseDEScenario implements IDEChaser {
 
     private void addQueriedAttributes(List<Dependency> dependencies) {
         for (Dependency dependency : dependencies) {
-            List<AttributeRef> queriedAttributes = DependencyUtility.findQueriedAttributesInPremise(dependency);
+            List<AttributeRef> queriedAttributes = DependencyUtility.findTargetQueriedAttributesInPremise(dependency);
             dependency.setQueriedAttributes(queriedAttributes);
         }
     }
