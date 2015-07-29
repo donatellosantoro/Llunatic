@@ -92,6 +92,8 @@ public class References {
     public static final String synthetic_T02_dbms = "mc/tgd/synthetic-T02-mcscenario-dbms.xml";
     public static final String synthetic_T02Rew = "mc/tgd/synthetic-T02rew-mcscenario.xml";
     public static final String synthetic_T02Rew_dbms = "mc/tgd/synthetic-T02rew-mcscenario-dbms.xml";
+    public static final String synthetic_T03 = "mc/tgd/synthetic-T03-mcscenario.xml";
+    public static final String synthetic_T03_dbms = "mc/tgd/synthetic-T03-mcscenario-dbms.xml";
     public static final String synthetic_T04 = "mc/tgd/synthetic-T04-mcscenario.xml";
     public static final String synthetic_T04_dbms = "mc/tgd/synthetic-T04-mcscenario-dbms.xml";
     public static final String synthetic_T05 = "mc/tgd/synthetic-T05-mcscenario.xml";

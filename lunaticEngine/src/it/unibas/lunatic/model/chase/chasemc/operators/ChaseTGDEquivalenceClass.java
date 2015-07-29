@@ -27,6 +27,7 @@ import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,11 +42,13 @@ public class ChaseTGDEquivalenceClass {
 
     private static Logger logger = LoggerFactory.getLogger(ChaseTGDEquivalenceClass.class);
 
-    private CorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
     private IRunQuery queryRunner;
     private IOIDGenerator oidGenerator;
     private OccurrenceHandlerMC occurrenceHandler;
     private ChangeCell cellChanger;
+    
+    private CorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
+    private FindIdMappingForTGDSAU idMappingFinder = new FindIdMappingForTGDSAU();
 
     public ChaseTGDEquivalenceClass(IRunQuery queryRunner, IOIDGenerator oidGenerator, OccurrenceHandlerMC occurrenceHandler, ChangeCell cellChanger) {
         this.queryRunner = queryRunner;
@@ -188,21 +191,35 @@ public class ChaseTGDEquivalenceClass {
 
     private List<TargetCellsToInsertForTGD> generateUpdates(Map<CellGroupCell, List<TargetCellsToInsertForTGD>> cellMap, IDatabase deltaDB, String step, Scenario scenario) {
         Set<List<TargetCellsToInsertForTGD>> analizedSets = new HashSet<List<TargetCellsToInsertForTGD>>();
-        List<TargetCellsToInsertForTGD> updates = new ArrayList<TargetCellsToInsertForTGD>();
+        List<TargetCellsToInsertForTGD> candidateUpdates = new ArrayList<TargetCellsToInsertForTGD>();
+        Set<TupleOID> tuplesToRemoveDueToSAU = new HashSet<TupleOID>();
         for (List<TargetCellsToInsertForTGD> group : cellMap.values()) {
             if (analizedSets.contains(group)) {
                 continue;
             }
             analizedSets.add(group);
             TargetCellsToInsertForTGD mergedCellsToInsert = mergeAll(group);
+            CellGroup canonicalCellGroup = mergedCellsToInsert.getCellGroup().clone();
             CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(mergedCellsToInsert.getCellGroup(), deltaDB, step, scenario);
             mergedCellsToInsert.setCellGroup(enrichedCellGroup);
             this.cellGroupIDFixer.correctCellGroupId(mergedCellsToInsert.getCellGroup());
             checkAndSetOriginalValues(mergedCellsToInsert.getCellGroup());
-            addNewCells(mergedCellsToInsert);
-            updates.add(mergedCellsToInsert);
+            if (generatesTuplesToRemoveDueToSAU(mergedCellsToInsert, tuplesToRemoveDueToSAU) || idMappingFinder.satisfiedAfterRepairs(mergedCellsToInsert, canonicalCellGroup, scenario)) {
+                tuplesToRemoveDueToSAU.addAll(getTupleOIDs(mergedCellsToInsert));
+            } else {
+                addNewCells(mergedCellsToInsert);
+                candidateUpdates.add(mergedCellsToInsert);
+            }
         }
-        return updates;
+        List<TargetCellsToInsertForTGD> result = new ArrayList<TargetCellsToInsertForTGD>();
+        // needs to filter at the end, some early updates might have survived
+        for (TargetCellsToInsertForTGD candidate : candidateUpdates) {
+            if (generatesTuplesToRemoveDueToSAU(candidate, tuplesToRemoveDueToSAU)) {
+                continue;
+            }
+            result.add(candidate);
+        }
+        return result;
     }
 
     private TargetCellsToInsertForTGD mergeAll(List<TargetCellsToInsertForTGD> group) {
@@ -211,9 +228,12 @@ public class ChaseTGDEquivalenceClass {
         while (iterator.hasNext()) {
             TargetCellsToInsertForTGD otherCellsToInsert = iterator.next();
             CellGroupUtility.mergeCells(otherCellsToInsert.getCellGroup(), result.getCellGroup());
+            result.getNewCells().addAll(otherCellsToInsert.getNewCells());
         }
         return result;
     }
+
+
 
     private void addNewCells(TargetCellsToInsertForTGD mergedCellsToInsert) {
         CellGroup cellGroup = mergedCellsToInsert.getCellGroup();
@@ -242,6 +262,24 @@ public class ChaseTGDEquivalenceClass {
                 cell.setToSave(true);
             }
         }
+    }
+
+    private Set<TupleOID> getTupleOIDs(TargetCellsToInsertForTGD mergedCellsToInsert) {
+        Set<TupleOID> result = new HashSet<TupleOID>();
+        for (CellGroupCell cell : mergedCellsToInsert.getNewCells()) {
+            result.add(cell.getTupleOID());
+        }
+        return result;
+    }
+
+    private boolean generatesTuplesToRemoveDueToSAU(TargetCellsToInsertForTGD candidate, Set<TupleOID> tuplesToRemoveDueToSAU) {
+        Set<TupleOID> tuplesInCandidate = getTupleOIDs(candidate);
+        for (TupleOID candidateTupleOID : tuplesInCandidate) {
+            if (tuplesToRemoveDueToSAU.contains(candidateTupleOID)) {
+                return true;
+            }            
+        }
+        return false;
     }
 
 }

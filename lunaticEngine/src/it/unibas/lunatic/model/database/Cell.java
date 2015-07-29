@@ -53,6 +53,10 @@ public class Cell implements Serializable, Cloneable {
         return tupleOid;
     }
 
+    public void setTupleOid(TupleOID tupleOid) {
+        this.tupleOid = tupleOid;
+    }
+
     public boolean isSource() {
         return this.attributeRef.isSource();
     }

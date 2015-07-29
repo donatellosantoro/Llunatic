@@ -4,7 +4,7 @@ import it.unibas.lunatic.model.database.IValue;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TargetCellsToInsertForTGD {
+public class TargetCellsToInsertForTGD implements Cloneable {
 
     private CellGroup cellGroup;
     private Set<CellGroupCell> newCells = new HashSet<CellGroupCell>();
@@ -34,16 +34,6 @@ public class TargetCellsToInsertForTGD {
     }
 
     @Override
-    public String toString() {
-        return toShortString();
-//        return "TargetCellsToInsertForTGD{" + "cellGroup=" + cellGroup.toLongString() + ", newCells=\n" + LunaticUtility.printCollection(newCells, "\t") + '}';
-    }
-
-    public String toShortString() {
-        return cellGroup + " - " + newCells;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
@@ -52,4 +42,27 @@ public class TargetCellsToInsertForTGD {
         return result;
     }
 
+    public TargetCellsToInsertForTGD clone() {
+        try {
+            TargetCellsToInsertForTGD clone = (TargetCellsToInsertForTGD) super.clone();
+            clone.cellGroup = this.cellGroup.clone();
+            clone.newCells = new HashSet<CellGroupCell>();
+            for (CellGroupCell newCell : this.newCells) {
+                clone.newCells.add((CellGroupCell) newCell.clone());
+            }
+            return clone;
+        } catch (CloneNotSupportedException ex) {
+            throw new IllegalArgumentException("Unable to clone target cells to insert " + this);
+        }
+    }
+    
+    @Override
+    public String toString() {
+        return toShortString();
+//        return "TargetCellsToInsertForTGD{" + "cellGroup=" + cellGroup.toLongString() + ", newCells=\n" + LunaticUtility.printCollection(newCells, "\t") + '}';
+    }
+
+    public String toShortString() {
+        return cellGroup + " - " + newCells;
+    }
 }

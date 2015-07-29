@@ -25,6 +25,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
+import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
@@ -70,22 +71,45 @@ public abstract class AbstractCostManager implements ICostManager {
         if (differentValues.size() > 1) {
             return false;
         }
-        return checkContainment(cellGroups, scenario);
+        return checkContainment(cellGroups);
     }
 
-    public boolean checkContainment(List<CellGroup> cellGroups, Scenario scenario) {
-        Set<CellGroupCell> allCells = new HashSet<CellGroupCell>();
+//    public boolean checkContainment(List<CellGroup> cellGroups) {
+//        Set<CellGroupCell> allCells = new HashSet<CellGroupCell>();
+//        for (CellGroup cellGroup : cellGroups) {
+//            allCells.addAll(cellGroup.getAllCells());
+//        }
+//        for (CellGroup cellGroup : cellGroups) {
+//            if (cellGroup.getAllCells().equals(allCells)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+
+    public boolean checkContainment(List<CellGroup> cellGroups) {
+        Set<CellRef> allCellRefs = new HashSet<CellRef>();
         for (CellGroup cellGroup : cellGroups) {
-            allCells.addAll(cellGroup.getAllCells());
+            allCellRefs.addAll(extractAllCellRefs(cellGroup));
         }
         for (CellGroup cellGroup : cellGroups) {
-            if (cellGroup.getAllCells().equals(allCells)) {
+            Set<CellRef> allCellRefsForCellGroup = extractAllCellRefs(cellGroup);
+            if (allCellRefsForCellGroup.equals(allCellRefs)) {
                 return true;
             }
         }
         return false;
     }
 
+    private Set<CellRef> extractAllCellRefs(CellGroup cellGroup) {
+        Set<CellRef> result = new HashSet<CellRef>();
+        for (CellGroupCell cell : cellGroup.getAllCells()) {
+            result.add(new CellRef(cell));
+        }
+        return result;
+    }
+    
+    
 //    public boolean checkIfLUBIsIdempotent(List<CellGroup> cellGroups, Scenario scenario) {
 //    public boolean checkContainment(List<CellGroup> cellGroups, Scenario scenario) {
 //        CellGroup scriptLUB = getLUB(cellGroups, scenario.getScriptPartialOrder(), scenario);

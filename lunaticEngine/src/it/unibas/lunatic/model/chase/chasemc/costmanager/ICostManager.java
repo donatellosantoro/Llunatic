@@ -29,6 +29,6 @@ public interface ICostManager {
     public void setChaseBranchingThreshold(int chaseBranchingThreshold);
     public int getPotentialSolutionsThreshold();
     public void setPotentialSolutionsThreshold(int PotentialSolutionsThreshold);
-    public boolean checkContainment(List<CellGroup> cellGroups, Scenario scenario);
+    public boolean checkContainment(List<CellGroup> cellGroups);
     public String toLongString();
 }
