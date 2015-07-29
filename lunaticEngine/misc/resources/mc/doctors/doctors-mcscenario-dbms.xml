@@ -161,6 +161,9 @@ prescription(rxid: $rxid1, patient: $name1, npiref: $npi2) ->
     $npi1 == $npi2.
 ]]>
     </dependencies>
+    <authoritativeSources>
+        <source>hospital</source>
+    </authoritativeSources>
     <partialOrder/>
     <costManager>
         <type>Standard</type>

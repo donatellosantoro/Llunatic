@@ -26,8 +26,7 @@ public class TestDoctors extends CheckExpectedSolutionsTest {
         Assert.assertEquals(10, resultSizer.getSolutions(result));
         Assert.assertEquals(5, resultSizer.getDuplicates(result));
         checkSolutions(result);
-//        checkExpectedSolutions("expected", result);
-//        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedDoctors", result);
+//        exportResults("/Temp/expectedDoctors", result);
         checkExpectedSolutions("expectedDoctors", result);
     }
 }

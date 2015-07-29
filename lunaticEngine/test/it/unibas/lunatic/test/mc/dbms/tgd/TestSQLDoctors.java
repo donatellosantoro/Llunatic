@@ -24,6 +24,6 @@ public class TestSQLDoctors extends CheckExpectedSolutionsTest {
 //        Assert.assertEquals(8, resultSizer.getSolutions(result));
 //        Assert.assertEquals(13, resultSizer.getDuplicates(result));
         checkSolutions(result);
-        checkExpectedSolutions("expected", result);
+        checkExpectedSolutions("expectedDoctors", result);
     }
 }

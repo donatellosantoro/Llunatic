@@ -403,6 +403,10 @@ public class AlgebraTreeToSQL {
             if (operator instanceof CreateTableAs) {
                 useAlias = true;
             }
+            if (operator instanceof Join && (operator.getChildren().get(0) instanceof CreateTableAs)
+                    && (operator.getChildren().get(1) instanceof CreateTableAs)) {
+                useAlias = true;
+            }
             IAlgebraOperator nestedOperator = findNestedOperator(nestedSelects, operator, attribute.getTableAlias());
             if (nestedOperator != null) {
                 useAlias = true;
@@ -413,10 +417,11 @@ public class AlgebraTreeToSQL {
             } else {
                 attributeResult = DBMSUtility.attributeRefToSQLDot(attribute);
             }
-//            logger.error(" ### Attribute: " + attribute);
-//            logger.error(" ### Operator: " + useAlias);
-//            logger.error(" ### NestedOperator: " + nestedOperator);
-//            logger.error(" ### Restult: " + attributeResult);
+            if (logger.isDebugEnabled()) logger.debug(" ### Attribute: " + attribute);
+            if (logger.isDebugEnabled()) logger.debug(" ### Operator: " + operator);
+            if (logger.isDebugEnabled()) logger.debug(" ### NestedOperator: " + nestedOperator);
+            if (logger.isDebugEnabled()) logger.debug(" ### Result: " + attributeResult);
+            if (logger.isDebugEnabled()) logger.debug(" ##########");
             return attributeResult;
         }
 
@@ -489,6 +494,7 @@ public class AlgebraTreeToSQL {
                 }
                 tableAliases.add(nestedOperator);
             }
+            if (logger.isDebugEnabled()) logger.debug("Nested tables for operator:\n" + operator + "\n" + tableAliases);
             return tableAliases;
         }
 
@@ -667,15 +673,6 @@ public class AlgebraTreeToSQL {
                 }
             }
             return null;
-        }
-
-        private boolean containsAliasAndOperator(List<NestedOperator> nestedSelects, IAlgebraOperator operator, TableAlias alias) {
-            for (NestedOperator nestedSelect : nestedSelects) {
-                if (nestedSelect.alias.equals(alias) && nestedSelect.operator.equals(operator)) {
-                    return true;
-                }
-            }
-            return false;
         }
 
         private String tableAliasToSQL(TableAlias tableAlias) {
