@@ -49,12 +49,14 @@ public class References {
     public static final String employees_comparisons_nosymmetric = "mc/employees/employees-comparisons-nosymmetric-mcscenario.xml";
     public static final String employees_comparisons_nosymmetric_dbms = "mc/employees/employees-comparisons-nosymmetric-mcscenario-dbms.xml";
     
+    public static final String treatments = "mc/treatments/treatments-mcscenario.xml";
+    public static final String treatments_dbms = "mc/treatments/treatments-mcscenario-dbms.xml";
     public static final String treatments_fr_sp = "mc/treatments/treatments-mcscenario-fr-sp.xml";
     public static final String treatments_fr_sp_dbms = "mc/treatments/treatments-mcscenario-fr-sp-dbms.xml";
-    public static final String treatments_poset = "mc/treatments/treatments-mcscenario-poset.xml";
-    public static final String treatments_poset_dbms = "mc/treatments/treatments-mcscenario-poset-dbms.xml";
-    public static final String treatments_fr_s5_poset = "mc/treatments/treatments-mcscenario-fr-s5-poset.xml";
-    public static final String treatments_fr_s5_poset_dbms = "mc/treatments/treatments-mcscenario-fr-s5-poset-dbms.xml";
+    public static final String treatments_fr_sp_script = "mc/treatments/treatments-mcscenario-fr-sp-script.xml";
+    public static final String treatments_fr_sp_script_dbms = "mc/treatments/treatments-mcscenario-fr-sp-script-dbms.xml";
+    public static final String treatments_fr_s5 = "mc/treatments/treatments-mcscenario-fr-s5.xml";
+    public static final String treatments_fr_s5_dbms = "mc/treatments/treatments-mcscenario-fr-s5-dbms.xml";
     public static final String treatments_usermanager = "mc/treatments/treatments-mcscenario-usermanager.xml";    
     public static final String treatments_icde = "mc/treatments/treatments-mcscenario-icde.xml";
 

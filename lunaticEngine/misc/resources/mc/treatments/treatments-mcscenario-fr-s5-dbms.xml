@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-   <source>
-    <type>DBMS</type>
-    <access-configuration>
-      <driver>org.postgresql.Driver</driver>
-      <uri>jdbc:postgresql:treatments</uri>
-      <schema>source</schema>
-      <login>pguser</login>
-      <password>pguser</password>
-    </access-configuration>
-    <init-db>
+    <source>
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:treatments</uri>
+            <schema>source</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
 <![CDATA[
 create schema source;
 SET search_path = source, pg_catalog;
@@ -41,18 +41,18 @@ insert into consttablecf2 values (3, 'Cis', 'NYC');
 insert into masterdata values(4, '222', 'F. Lennon',  '122-1876', 'Sky Dr.', 'SF');
 insert into masterdata values(5, '111', 'M. White',  '408-3334', 'Red Ave.', 'LA');
 ]]>
-  </init-db>
-  </source>
-   <target>
-    <type>DBMS</type>
-    <access-configuration>
-      <driver>org.postgresql.Driver</driver>
-      <uri>jdbc:postgresql:treatments</uri>
-      <schema>target</schema>
-      <login>pguser</login>
-      <password>pguser</password>
-    </access-configuration>
-    <init-db>
+        </init-db>
+    </source>
+    <target>
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:treatments</uri>
+            <schema>target</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
 <![CDATA[
 create schema target;
 SET search_path = target, pg_catalog;
@@ -87,9 +87,9 @@ insert into treatments values (8, '111', '25K', 'Cis', 'Cholest.',   '2012-12-10
 insert into treatments values (9, '222', '25K', 'Cis', 'Cholest.',   '2012-10-09');
 insert into treatments values (10, '222', '30K', 'Abx', 'Eye surg.', '2012-10-06');
 ]]>
-    </init-db>
-  </target>
-  <dependencies>
+        </init-db>
+    </target>
+    <dependencies>
 <![CDATA[
 ExtEGDs:
 //MasterData: CUST[SSN,PHONE],MD[SSN,PHONE] -> NAME,STREET,CITY
@@ -130,38 +130,38 @@ fd2: treatments(ssn: $ssn, salary: $salary1, insurance: $insur1, treatment: $tre
     treatments(ssn: $ssn, salary: $salary2, insurance: $insur2, treatment: $treat2, date: $date2)
     -> $salary1 == $salary2.
 ]]>
-  </dependencies>
-  <authoritativeSources>
-    <source>consttablecf1</source>
-    <source>consttablecf2</source>
-    <source>masterdata</source>
-  </authoritativeSources>
-  <orderingAttributes>
-    <orderingAttribute>
-      <attribute>customers.phone</attribute>
-      <associatedAttribute>customers.cfphone</associatedAttribute>
-      <valueComparator sort="DESC">
-        <floatComparator/>
-      </valueComparator>
-    </orderingAttribute>    
-    <orderingAttribute>
-      <attribute>treatments.salary</attribute>
-      <associatedAttribute>treatments.date</associatedAttribute>
-      <valueComparator sort="DESC">
-        <dateComparator pattern="yyyy-MM-dd"/>
-      </valueComparator>
-    </orderingAttribute>
-  </orderingAttributes>
- <costManager>
-    <type>Similarity</type>
-    <similarityStrategy>Mixed</similarityStrategy>
-    <similarityThreshold>0.60</similarityThreshold>
-    <leavesThreshold>5</leavesThreshold>
-    <potentialSolutionsThreshold>5</potentialSolutionsThreshold>
-  </costManager>
-  <partialOrder>
-    <type>Frequency</type>
-  </partialOrder>
-  <configuration/>
+    </dependencies>
+    <authoritativeSources>
+        <source>consttablecf1</source>
+        <source>consttablecf2</source>
+        <source>masterdata</source>
+    </authoritativeSources>
+    <orderingAttributes>
+        <orderingAttribute>
+            <attribute>customers.phone</attribute>
+            <associatedAttribute>customers.cfphone</associatedAttribute>
+            <valueComparator sort="DESC">
+                <floatComparator/>
+            </valueComparator>
+        </orderingAttribute>    
+        <orderingAttribute>
+            <attribute>treatments.salary</attribute>
+            <associatedAttribute>treatments.date</associatedAttribute>
+            <valueComparator sort="DESC">
+                <dateComparator pattern="yyyy-MM-dd"/>
+            </valueComparator>
+        </orderingAttribute>
+    </orderingAttributes>
+    <costManager>
+        <type>Similarity</type>
+        <similarityStrategy>Mixed</similarityStrategy>
+        <similarityThreshold>0.60</similarityThreshold>
+        <leavesThreshold>5</leavesThreshold>
+        <potentialSolutionsThreshold>5</potentialSolutionsThreshold>
+    </costManager>
+    <partialOrder>
+        <type>Frequency</type>
+    </partialOrder>
+    <configuration/>
 </scenario>
 

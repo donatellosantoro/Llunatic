@@ -81,7 +81,9 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
                 ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS, 1);
                 rollbackChase(originalTarget, scenario);
             } catch (Exception ex) {
+                ex.printStackTrace();
                 logger.error(ex.getLocalizedMessage());
+                throw new RuntimeException(ex.getLocalizedMessage());
             }
         }
         databaseManager.removeClone(originalTarget, scenario);

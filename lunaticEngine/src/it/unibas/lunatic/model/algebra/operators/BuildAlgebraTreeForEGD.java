@@ -1,8 +1,6 @@
 package it.unibas.lunatic.model.algebra.operators;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.exceptions.ChaseException;
-import it.unibas.lunatic.model.algebra.Difference;
 import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.Limit;
 import it.unibas.lunatic.model.algebra.OrderBy;
@@ -10,6 +8,8 @@ import it.unibas.lunatic.model.algebra.Select;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
+import it.unibas.lunatic.model.dependency.FormulaWithNegations;
+import it.unibas.lunatic.model.dependency.IFormula;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.expressions.Expression;
 import it.unibas.lunatic.utility.DependencyUtility;
@@ -26,6 +26,7 @@ public class BuildAlgebraTreeForEGD {
     private static Logger logger = LoggerFactory.getLogger(BuildAlgebraTreeForEGD.class);
     private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
     private BuildAlgebraTreeForSymmetricEGD builderForSymmetricEGD = new BuildAlgebraTreeForSymmetricEGD();
+    private BuildAlgebraTreeForPositiveFormula builderForPositiveFormula = new BuildAlgebraTreeForPositiveFormula();
 
     public Map<Dependency, IAlgebraOperator> buildPremiseAlgebraTreesForEGDs(List<Dependency> dependencies, Scenario scenario) {
         Map<Dependency, IAlgebraOperator> premiseTreeMap = new HashMap<Dependency, IAlgebraOperator>();
@@ -51,15 +52,12 @@ public class BuildAlgebraTreeForEGD {
         IAlgebraOperator premiseRoot;
         if (!dependency.hasSymmetricAtoms() || !useSymmetry) {
             if (logger.isDebugEnabled()) logger.debug("Building tree for non-symmetric dependency...");
-            premiseRoot = treeBuilder.buildDeltaTreeForFormulaWithNegations(dependency, dependency.getPremise(), scenario, true);
+            premiseRoot = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, dependency.getPremise().getPositiveFormula(), true);
             IAlgebraOperator select = addSelectionsForViolations(dependency);
-            if (premiseRoot instanceof Difference) {
-                IAlgebraOperator leftChild = premiseRoot.getChildren().get(0);
-                select.addChild(leftChild);
-                premiseRoot.getChildren().set(0, select);
-            } else {
-                select.addChild(premiseRoot);
-                premiseRoot = select;
+            select.addChild(premiseRoot);
+            premiseRoot = select;
+            for (IFormula negatedFormula : dependency.getPremise().getNegatedSubFormulas()) {
+                premiseRoot = treeBuilder.addDeltaDifferences(dependency, premiseRoot, (FormulaWithNegations) negatedFormula, scenario, true);
             }
             premiseRoot = addOrderBy(dependency, premiseRoot);
         } else {

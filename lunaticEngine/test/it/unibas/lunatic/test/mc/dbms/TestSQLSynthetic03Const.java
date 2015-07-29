@@ -27,5 +27,7 @@ public class TestSQLSynthetic03Const extends CheckExpectedSolutionsTest {
         Assert.assertEquals(6, resultSizer.getSolutions(result));
         Assert.assertEquals(4, resultSizer.getDuplicates(result));
         checkSolutions(result);
+        checkExpectedSolutions("expected03", result);
+
     }
 }

@@ -5,12 +5,13 @@ import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
+import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
 import it.unibas.lunatic.test.checker.CheckTest;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestSQLSynthetic01 extends CheckTest {
+public class TestSQLSynthetic01 extends CheckExpectedSolutionsTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestSQLSynthetic01.class);
 
@@ -26,5 +27,6 @@ public class TestSQLSynthetic01 extends CheckTest {
         Assert.assertEquals(10, resultSizer.getSolutions(result));
         Assert.assertEquals(6, resultSizer.getDuplicates(result));
         checkSolutions(result);
+        checkExpectedSolutions("expectedSynthetic01", result);
     }
 }

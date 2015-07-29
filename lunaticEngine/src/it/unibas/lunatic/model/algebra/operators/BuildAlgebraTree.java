@@ -44,31 +44,7 @@ public class BuildAlgebraTree {
         return root;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
-    ////////
-    ////////    STANDARD QUERY WITH JOINS
-    ////////
-    ////////////////////////////////////////////////////////////////////////////////////////
-    private IAlgebraOperator buildStandardTreeForFormulaWithNegations(Dependency dependency, IFormula formula, Scenario scenario, boolean premise) {
-        IAlgebraOperator root = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, formula.getPositiveFormula(), premise);
-        for (IFormula negatedFormula : formula.getNegatedSubFormulas()) {
-            root = addStandardDifferences(dependency, root, (FormulaWithNegations) negatedFormula, scenario, premise);
-        }
-        return root;
-    }
-
-    private IAlgebraOperator addStandardDifferences(Dependency dependency, IAlgebraOperator root, FormulaWithNegations negatedFormula, Scenario scenario, boolean premise) {
-        IAlgebraOperator negatedRoot = buildStandardTreeForFormulaWithNegations(dependency, negatedFormula, scenario, premise);
-        IAlgebraOperator joinRoot = addJoinForDifference(root, negatedRoot, negatedFormula);
-        IAlgebraOperator project = new Project(root.getAttributes(scenario.getSource(), scenario.getTarget()));
-        project.addChild(joinRoot);
-        IAlgebraOperator difference = new Difference();
-        difference.addChild(root);
-        difference.addChild(project);
-        return difference;
-    }
-
-    private IAlgebraOperator addDeltaDifferences(Dependency dependency, IAlgebraOperator root, FormulaWithNegations negatedFormula, Scenario scenario, boolean premise) {
+    public IAlgebraOperator addDeltaDifferences(Dependency dependency, IAlgebraOperator root, FormulaWithNegations negatedFormula, Scenario scenario, boolean premise) {
         IAlgebraOperator negatedRoot = buildDeltaTreeForFormulaWithNegations(dependency, negatedFormula, scenario, premise);
         IAlgebraOperator joinRoot = addJoinForDifference(root, negatedRoot, negatedFormula);
         List<AttributeRef> projectionAttributes = new ArrayList<AttributeRef>();
@@ -90,6 +66,30 @@ public class BuildAlgebraTree {
 //                    + root.getAttributes(scenario.getSource(), scenario.getTarget()) + " - "
 //                    + project.getAttributes(scenario.getSource(), scenario.getTarget()));
 //        }
+        return difference;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    ////////
+    ////////    STANDARD QUERY WITH JOINS
+    ////////
+    ////////////////////////////////////////////////////////////////////////////////////////
+    private IAlgebraOperator buildStandardTreeForFormulaWithNegations(Dependency dependency, IFormula formula, Scenario scenario, boolean premise) {
+        IAlgebraOperator root = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, formula.getPositiveFormula(), premise);
+        for (IFormula negatedFormula : formula.getNegatedSubFormulas()) {
+            root = addStandardDifferences(dependency, root, (FormulaWithNegations) negatedFormula, scenario, premise);
+        }
+        return root;
+    }
+
+    private IAlgebraOperator addStandardDifferences(Dependency dependency, IAlgebraOperator root, FormulaWithNegations negatedFormula, Scenario scenario, boolean premise) {
+        IAlgebraOperator negatedRoot = buildStandardTreeForFormulaWithNegations(dependency, negatedFormula, scenario, premise);
+        IAlgebraOperator joinRoot = addJoinForDifference(root, negatedRoot, negatedFormula);
+        IAlgebraOperator project = new Project(root.getAttributes(scenario.getSource(), scenario.getTarget()));
+        project.addChild(joinRoot);
+        IAlgebraOperator difference = new Difference();
+        difference.addChild(root);
+        difference.addChild(project);
         return difference;
     }
 

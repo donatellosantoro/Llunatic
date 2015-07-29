@@ -1,0 +1,14 @@
+#customers
+ssn,name,phone,cfphone,str,city,cc
+111,M. White,408-3334,8,Red Ave.,_L867,112-321
+222,F. Lennon,122-1876,9,Sky Dr.,_L881,781-658
+222,L. Lennon,000-0000,0,Fry Dr.,_L881,784-659
+
+#treatments
+ssn,salary,insurance,treatment,date
+111,25K,Abx,Dental,2011-01-10
+111,25K,Abx,Dental,2012-12-08
+111,25K,Cis,Cholest.,2012-12-10
+222,25K,Abx,Dental,2012-10-06
+222,25K,Cis,Cholest.,2012-10-09
+

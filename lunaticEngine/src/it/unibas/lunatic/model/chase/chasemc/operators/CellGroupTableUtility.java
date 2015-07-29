@@ -50,14 +50,13 @@ public class CellGroupTableUtility {
         TableAlias alias = new TableAlias(table.getTableName(), "0");
         Scan aliasScan = new Scan(alias);
         // select * from (group-by) join R_A_1 on step, celloid, celltable, cellattribute
-        List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{step, cellOid, cellTable, cellAttr, originalValue, type}));
+        List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{step, cellOid, cellTable, cellAttr, type}));
         AttributeRef oidInAlias = new AttributeRef(alias, LunaticConstants.CELL_OID);
         AttributeRef tableInAlias = new AttributeRef(alias, LunaticConstants.CELL_TABLE);
         AttributeRef attrInAlias = new AttributeRef(alias, LunaticConstants.CELL_ATTRIBUTE);
         AttributeRef stepInAlias = new AttributeRef(alias, LunaticConstants.STEP);
-        AttributeRef originalValueInAlias = new AttributeRef(alias, LunaticConstants.CELL_ORIGINAL_VALUE);
         AttributeRef typeInAlias = new AttributeRef(alias, LunaticConstants.CELL_TYPE);
-        List<AttributeRef> rightAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{stepInAlias, oidInAlias, tableInAlias, attrInAlias, originalValueInAlias, typeInAlias}));
+        List<AttributeRef> rightAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{stepInAlias, oidInAlias, tableInAlias, attrInAlias, typeInAlias}));
         Join join = new Join(leftAttributes, rightAttributes);
         join.addChild(groupBy);
         join.addChild(aliasScan);

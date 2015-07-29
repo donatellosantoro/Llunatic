@@ -23,9 +23,9 @@ public class TestLoadScenario extends TestCase {
             Assert.assertEquals(2, UtilityTest.getSize(scenario.getSource().getTable("locset")));
             Assert.assertEquals(2, UtilityTest.getSize(scenario.getSource().getTable("iblbookset")));
             Assert.assertEquals(2, UtilityTest.getSize(scenario.getSource().getTable("iblpublisherset")));
-            Assert.assertEquals("title", scenario.getSource().getTable("ibdbookset").getAttributes().get(1).getName());
+            Assert.assertEquals("title", scenario.getSource().getTable("ibdbookset").getAttributes().get(2).getName());
             Assert.assertNotNull(scenario.getTarget());
-            Assert.assertEquals("title", scenario.getTarget().getTable("bookset").getAttributes().get(1).getName());
+            Assert.assertEquals("title", scenario.getTarget().getTable("bookset").getAttributes().get(2).getName());
             Assert.assertNotNull(scenario.getPartialOrder());
             if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         } catch (Exception ex) {
