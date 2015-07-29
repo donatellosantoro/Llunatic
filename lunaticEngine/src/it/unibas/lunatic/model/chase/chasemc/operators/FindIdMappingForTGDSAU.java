@@ -4,8 +4,14 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToInsertForTGD;
+import it.unibas.lunatic.model.database.IValue;
+import it.unibas.lunatic.model.database.LLUNValue;
+import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.database.TupleOID;
 import it.unibas.lunatic.utility.LunaticUtility;
+import it.unibas.lunatic.utility.combinatorial.GenericCombinationsGenerator;
+import it.unibas.lunatic.utility.combinatorial.GenericListGenerator;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,6 +25,8 @@ import org.slf4j.LoggerFactory;
 public class FindIdMappingForTGDSAU {
 
     private static final Logger logger = LoggerFactory.getLogger(FindIdMappingForTGDSAU.class.getName());
+    
+    private GenericListGenerator<Map<TupleOID, TupleOID>> listGenerator = new GenericListGenerator<Map<TupleOID, TupleOID>>();
 
     public boolean satisfiedAfterRepairs(TargetCellsToInsertForTGD update, CellGroup canonicalCellGroup, Scenario scenario) {
         CellGroup existingCellGroup = update.getCellGroup();
@@ -30,11 +38,14 @@ public class FindIdMappingForTGDSAU {
         Map<String, Set<TupleOID>> oidMapForNewCells = generateOidMap(update.getNewCells());
         Map<String, Set<TupleOID>> oidMapForExisting = generateOidMap(existingCellGroup.getAllCells());
         for (Map<TupleOID, TupleOID> idMapping : generateIdMapping(oidMapForNewCells, oidMapForExisting)) {
-            CellGroup canonicalWithMapping = generateCanonicalUpdateWithMapping(canonicalCellGroup, newCells, idMapping);
+            CellGroup canonicalWithMapping = generateCanonicalUpdateWithMapping(canonicalCellGroup, existingCellGroup, newCells, idMapping);
+            if (canonicalWithMapping == null) {
+                continue;
+            }
             List<CellGroup> cellGroupsToCheck = Arrays.asList(new CellGroup[]{canonicalWithMapping, existingCellGroup});
             boolean lubIsIdempotent = scenario.getCostManager().checkContainment(cellGroupsToCheck);
             if (lubIsIdempotent) {
-                if (logger.isDebugEnabled()) logger.debug("Found idempotent cell groups with mapping:\n" + LunaticUtility.printMap(idMapping) + "\n"+ canonicalWithMapping + "\n" + existingCellGroup);
+                if (logger.isDebugEnabled()) logger.debug("Found idempotent cell groups with mapping:\n" + LunaticUtility.printMap(idMapping) + "\n" + canonicalWithMapping + "\n" + existingCellGroup);
                 return true;
             }
         }
@@ -54,19 +65,102 @@ public class FindIdMappingForTGDSAU {
         return result;
     }
 
-    private Iterable<Map<TupleOID, TupleOID>> generateIdMapping(Map<String, Set<TupleOID>> oidMapForNewCells, Map<String, Set<TupleOID>> oidMapForExisting) {
-        return Collections.EMPTY_LIST;
+    @SuppressWarnings("unchecked")
+    private List<Map<TupleOID, TupleOID>> generateIdMapping(Map<String, Set<TupleOID>> oidMapForNewCells, Map<String, Set<TupleOID>> oidMapForExisting) {
+        List<MatchingOidsForTable> listOfMatchingOids = new ArrayList<MatchingOidsForTable>();
+        for (String tableName : oidMapForNewCells.keySet()) { 
+            Set<TupleOID> oidsInNewCells = oidMapForNewCells.get(tableName);
+            Set<TupleOID> oidsInExisting = oidMapForExisting.get(tableName);
+            if (oidsInExisting == null || oidsInExisting.isEmpty()) {
+                return Collections.EMPTY_LIST;
+            }
+            listOfMatchingOids.add(new MatchingOidsForTable(tableName, oidsInNewCells, oidsInExisting));
+        }
+        List<List<Map<TupleOID, TupleOID>>> listOfLists = new ArrayList<List<Map<TupleOID, TupleOID>>>();
+        for (MatchingOidsForTable machingOid : listOfMatchingOids) {
+            listOfLists.add(machingOid.generateAllIdMappings());            
+        }
+        List<List<Map<TupleOID, TupleOID>>> combinedLists = listGenerator.generateListsOfElements(listOfLists);
+        List<Map<TupleOID, TupleOID>> result = new ArrayList<Map<TupleOID, TupleOID>>();
+        for (List<Map<TupleOID, TupleOID>> combinedList : combinedLists) {
+            Map<TupleOID, TupleOID> map = new HashMap<TupleOID, TupleOID>();
+            for (Map<TupleOID, TupleOID> mapInList : combinedList) {
+                map.putAll(mapInList);
+            }
+            result.add(map);
+        }
+        return result;
     }
 
-    private CellGroup generateCanonicalUpdateWithMapping(CellGroup canonicalCellGroup, Set<CellGroupCell> newCells, Map<TupleOID, TupleOID> idMapping) {
+    private CellGroup generateCanonicalUpdateWithMapping(CellGroup canonicalCellGroup, CellGroup existingCellGroup, Set<CellGroupCell> newCells, Map<TupleOID, TupleOID> idMapping) {
         CellGroup canonicalClone = canonicalCellGroup.clone();
         for (CellGroupCell newCell : newCells) {
-            CellGroupCell newCellClone = (CellGroupCell) newCell.clone();
-            TupleOID newTupleId = idMapping.get(newCellClone.getTupleOID());
-            newCellClone.setTupleOid(newTupleId);
-            canonicalClone.addOccurrenceCell(newCellClone);
+            CellGroupCell exsistingCell = findCorrespondingCell(newCell, existingCellGroup, idMapping);
+            if (!valuesAreCompatible(newCell, exsistingCell)) {
+                return null;
+            }
+            canonicalClone.addOccurrenceCell((CellGroupCell) exsistingCell.clone());
         }
         return canonicalClone;
     }
 
+    private CellGroupCell findCorrespondingCell(CellGroupCell newCell, CellGroup existingCellGroup, Map<TupleOID, TupleOID> idMapping) {
+        TupleOID mappedOID = idMapping.get(newCell.getTupleOID());
+        for (CellGroupCell cell : existingCellGroup.getOccurrences()) {
+            if (cell.getTupleOID().equals(mappedOID)
+                    && cell.getAttributeRef().equals(newCell.getAttributeRef())) {
+                return cell;
+            }
+        }
+        throw new IllegalArgumentException("Unable to find matching cell for " + newCell + " in cell group\n" + existingCellGroup);
+    }
+
+    private boolean valuesAreCompatible(CellGroupCell newCell, CellGroupCell existingCell) {
+        IValue existingValue = existingCell.getValue();
+        IValue newValue = newCell.getValue();
+        if (newValue instanceof NullValue) {
+            return true;
+        }
+        if (newValue instanceof LLUNValue) {
+            return (existingValue instanceof LLUNValue);
+        }
+        return (existingValue instanceof LLUNValue || existingValue.equals(newValue));
+
+    }
 }
+
+class MatchingOidsForTable {
+
+    String tableName;
+    List<TupleOID> canonicalOids;
+    List<TupleOID> existingOids;
+
+    public MatchingOidsForTable(String tableName, Set<TupleOID> canonicalOids, Set<TupleOID> existingOids) {
+        this.tableName = tableName;
+        this.canonicalOids = new ArrayList<TupleOID>(canonicalOids);
+        this.existingOids = new ArrayList<TupleOID>(existingOids);
+    }
+
+    @SuppressWarnings("unchecked")
+    List<Map<TupleOID, TupleOID>> generateAllIdMappings() {
+        List<Map<TupleOID, TupleOID>> result = new ArrayList<Map<TupleOID, TupleOID>>();
+        int size = canonicalOids.size();
+        GenericCombinationsGenerator combinationGenerator = new GenericCombinationsGenerator(existingOids, size);
+        while (combinationGenerator.hasMoreElements()) {
+            List<TupleOID> combination = combinationGenerator.nextElement();
+            Map<TupleOID, TupleOID> mapping = new HashMap<TupleOID, TupleOID>();
+            for (int i = 0; i < combination.size(); i++) {
+                mapping.put(canonicalOids.get(i), combination.get(i));                
+            }
+            result.add(mapping);
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MatchingOidsForTable{" + "tableName=" + tableName + ", canonicalOids=" + canonicalOids + ", existingOids=" + existingOids + '}';
+    }
+
+}
+

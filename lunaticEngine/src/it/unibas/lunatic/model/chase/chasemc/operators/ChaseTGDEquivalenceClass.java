@@ -115,7 +115,7 @@ public class ChaseTGDEquivalenceClass {
             }
             if (!equivalenceClass.hasNewCellsForVariable(universalVariable)) {
                 //New cells for equivalence class need to be generated only once
-                addNewCells(universalVariable, cellGroup.getValue(), equivalenceClass, tgd);
+                generateNewCells(universalVariable, cellGroup.getValue(), equivalenceClass);
             }
         }
         List<FormulaVariable> existentialVariables = DependencyUtility.getExistentialVariables(tgd);
@@ -128,7 +128,7 @@ public class ChaseTGDEquivalenceClass {
             }
             if (!equivalenceClass.hasNewCellsForVariable(existentialVariable)) {
                 //New cells for equivalence class need to be generated only once
-                addNewCells(existentialVariable, nullValue, equivalenceClass, tgd);
+                generateNewCells(existentialVariable, nullValue, equivalenceClass);
                 //Need to initialize cell groups for new cells, otherwise missing
                 for (CellGroupCell nullCell : targetCellsToInsert.getNewCells()) {
                     addCellToCellGroupMap(nullCell, targetCellsToInsert, cellGroupMap);
@@ -164,7 +164,7 @@ public class ChaseTGDEquivalenceClass {
         return result;
     }
 
-    private void addNewCells(FormulaVariable universalVariable, IValue value, EquivalenceClassForTGD equivalenceClass, Dependency tgd) {
+    private void generateNewCells(FormulaVariable universalVariable, IValue value, EquivalenceClassForTGD equivalenceClass) {
         for (FormulaVariableOccurrence occurrence : universalVariable.getConclusionRelationalOccurrences()) {
             TableAlias tableAlias = occurrence.getTableAlias();
             AttributeRef attributeRef = occurrence.getAttributeRef();
