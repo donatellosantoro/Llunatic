@@ -7,12 +7,12 @@ import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryRunQ
 import it.unibas.lunatic.test.GenerateModifiedCells;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
-import it.unibas.lunatic.test.checker.CheckTest;
+import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestTreatments extends CheckTest {
+public class TestTreatments extends CheckExpectedSolutionsTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestTreatments.class);
 
@@ -26,6 +26,7 @@ public class TestTreatments extends CheckTest {
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
+//        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of leaves: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getSolutions(result));
@@ -33,6 +34,8 @@ public class TestTreatments extends CheckTest {
         checkSolutions(result);
         Assert.assertEquals(1, resultSizer.getSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
+//        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedTreatmentsScenarioPOFRSP", result);
+        checkExpectedSolutions("expectedTreatmentsScenarioPOFRSP", result);
     }
 
     public void testScenarioPOFRS5() throws Exception {
@@ -41,7 +44,8 @@ public class TestTreatments extends CheckTest {
         setCheckEGDsAfterEachStep(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
-        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
+//        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
+//        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of leaves: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getSolutions(result));
