@@ -6,6 +6,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.IValue;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +18,7 @@ public class CorrectCellGroupID {
     private static Logger logger = LoggerFactory.getLogger(CorrectCellGroupID.class);
 
     public void correctCellGroupId(CellGroup cellGroup) {
+        if (logger.isDebugEnabled()) logger.debug("Correcting cell group id/value for cell group:\n" + cellGroup.toLongString());
         IValue mostFrequentCellGroupId = findMostFrequentCellGroupId(cellGroup);
         if (mostFrequentCellGroupId != null) {
             if (logger.isDebugEnabled()) logger.debug("Using existingClusterId " + mostFrequentCellGroupId);
@@ -36,6 +38,7 @@ public class CorrectCellGroupID {
 
     private IValue findMostFrequentCellGroupId(CellGroup cellGroup) {
         Map<IValue, Integer> variableOccurrenceHistogram = buildOccurrenceHistogramForCellGroupId(cellGroup, cellGroup.getId());
+        if (logger.isDebugEnabled()) logger.debug("Occurrence histogram: " + LunaticUtility.printMap(variableOccurrenceHistogram));
         if (variableOccurrenceHistogram.isEmpty()) {
             return null;
         }
@@ -56,7 +59,7 @@ public class CorrectCellGroupID {
 
     private void computeFrequencyOfCellGroupId(Set<CellGroupCell> cells, IValue lubCellGroupId, Map<IValue, Integer> result) {
         for (CellGroupCell cell : cells) {
-            IValue originalCellGroupId = cell.getOriginalCellGroupId();
+            IValue originalCellGroupId = cell.getLastSavedCellGroupId();
             if (originalCellGroupId == null || !isCompatible(originalCellGroupId, lubCellGroupId)) {
                 continue;
             }
@@ -91,15 +94,15 @@ public class CorrectCellGroupID {
 
     private void correctToSaveInCell(CellGroupCell cell, IValue mostFrequentCellGroupId, IValue lubCellGroupId) {
         if (mostFrequentCellGroupId != null) {
-            if (cell.getOriginalCellGroupId() != null && cell.getOriginalCellGroupId().equals(mostFrequentCellGroupId)) {
+            if (cell.getLastSavedCellGroupId() != null && cell.getLastSavedCellGroupId().equals(mostFrequentCellGroupId)) {
                 cell.setToSave(false);
             } else {
                 cell.setToSave(true);
-                cell.setOriginalCellGroupId(mostFrequentCellGroupId);
+                cell.setLastSavedCellGroupId(mostFrequentCellGroupId); // new cell group id will be saved
             }
         } else {
             cell.setToSave(true);
-            cell.setOriginalCellGroupId(lubCellGroupId);
+            cell.setLastSavedCellGroupId(lubCellGroupId); // new cell group id will be saved
         }
     }
 }

@@ -48,15 +48,11 @@ public class StandardCostManager extends AbstractCostManager {
             // check if repairs with backward chasing are possible
             int chaseBranching = chaseTreeRoot.getNumberOfLeaves();
             int potentialSolutions = chaseTreeRoot.getPotentialSolutions();
-//            int repairsForDependenciesSize = repairsForDependency.size();
-//            int databaseSize = scenario.getTarget().getSize();
-//            if (isTreeSizeBelowThreshold(chaseTreeSize, potentialSolutions, repairsForDependenciesSize)) {
             if (isTreeSizeBelowThreshold(chaseBranching, potentialSolutions)) {
                 List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass.getTupleGroups(), scenario, chaseTreeRoot.getDeltaDB(), stepId, equivalenceClass);
                 for (Repair repair : backwardRepairs) {
                     LunaticUtility.addIfNotContained(result, repair);
                 }
-//                result.addAll(backwardRepairs);
                 if (logger.isDebugEnabled()) logger.debug("########Backward repairs: " + backwardRepairs);
             }
         }

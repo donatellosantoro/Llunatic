@@ -115,7 +115,7 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
         while (it.hasNext()) {
             Tuple tuple = it.next();
             CellGroupCell cellGroupCell = buildCellGroupCell(tuple, scenario);
-            IValue cellGroupId = cellGroupCell.getOriginalCellGroupId();
+            IValue cellGroupId = cellGroupCell.getLastSavedCellGroupId();
             CellGroup cellGroup = loadCellGroupFromId(cellGroupId, stepId, deltaDB, scenario);
             if (cellGroup == null) { //No cached version
                 cellGroup = new CellGroup(cellGroupId, false);
@@ -151,10 +151,10 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
         TupleOID tid = new TupleOID(LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_OID));
         String table = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_TABLE) + "";
         String attribute = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_ATTRIBUTE) + "";
-        IValue originalCellGroupId = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.GROUP_ID);
+        IValue cellGroupId = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.GROUP_ID);
         IValue originalValue = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_ORIGINAL_VALUE);
         String type = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_TYPE) + "";
-        IValue currentValue = CellGroupIDGenerator.getCellGroupValueFromGroupID(originalCellGroupId);
+        IValue currentValue = CellGroupIDGenerator.getCellGroupValueFromGroupID(cellGroupId);
         if (type.equals(LunaticConstants.TYPE_JUSTIFICATION)) {
             currentValue = originalValue;
         }
@@ -168,7 +168,7 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
             tableAlias.setAuthoritative(LunaticUtility.isAuthoritative(tableAlias.getTableName(), scenario));
         }
         CellGroupCell cellGroupCell = new CellGroupCell(cellRef, currentValue, originalValue, type, false);
-        cellGroupCell.setOriginalCellGroupId(originalCellGroupId);
+        cellGroupCell.setLastSavedCellGroupId(cellGroupId);
         return cellGroupCell;
     }
 

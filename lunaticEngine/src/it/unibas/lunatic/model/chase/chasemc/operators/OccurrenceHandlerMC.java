@@ -40,6 +40,8 @@ public class OccurrenceHandlerMC {
     private IInsertTuple insertOperator;
     private IDelete deleteOperator;
     private ICacheManager cacheManager;
+    
+    private FindOriginalValuesForCellGroupCells cellGroupMerger = new FindOriginalValuesForCellGroupCells();
 
     public OccurrenceHandlerMC(IRunQuery queryRunner, IInsertTuple insertOperator, IDelete deleteOperator, ICacheManager cacheManager) {
         this.queryRunner = queryRunner;
@@ -66,7 +68,6 @@ public class OccurrenceHandlerMC {
             addCellGroupForConstant(preliminaryCellGroup, deltaDB, step, cellGroupsToMerge, scenario);
         }
         addOriginalValuesForAdditionalCells(preliminaryCellGroup, deltaDB, step, scenario);
-        FindOriginalValuesForCellGroupCells cellGroupMerger = new FindOriginalValuesForCellGroupCells();
         CellGroup mergedCG = cellGroupMerger.findOriginalValues(cellGroupsToMerge, value);
         if (logger.isDebugEnabled()) logger.debug("Merged cell group: " + mergedCG);
         return mergedCG;

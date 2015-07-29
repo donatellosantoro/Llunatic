@@ -85,21 +85,21 @@ public class FindOriginalValuesForCellGroupCells {
         IValue value = firstCell.getValue();
         String type = firstCell.getType();
         IValue originalValue = firstCell.getOriginalValue();
-        IValue originalCellGroupId = firstCell.getOriginalCellGroupId();
+        IValue lastSavedCellGroupId = firstCell.getLastSavedCellGroupId();
         for (int i = 1; i < cells.size(); i++) {
             CellGroupCell cell = cells.get(i);
             if (cell.getOriginalValue() != null) {
                 originalValue = cell.getOriginalValue();
             }
-            if (cell.getOriginalCellGroupId() != null) {
-                originalCellGroupId = cell.getOriginalCellGroupId();
+            if (cell.getLastSavedCellGroupId() != null) {
+                lastSavedCellGroupId = cell.getLastSavedCellGroupId();
             }
         }
         if (originalValue == null) {
             originalValue = value;
         }
-        CellGroupCell result = new CellGroupCell(tupleOid, attributeRef, value, originalValue, type, null); //ToSave is decided afterwords
-        result.setOriginalCellGroupId(originalCellGroupId);
+        CellGroupCell result = new CellGroupCell(tupleOid, attributeRef, value, originalValue, type, null); //whether to save or not is decided later on
+        result.setLastSavedCellGroupId(lastSavedCellGroupId);
         return result;
     }
 

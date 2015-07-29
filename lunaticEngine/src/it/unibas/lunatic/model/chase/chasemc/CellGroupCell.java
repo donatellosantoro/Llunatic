@@ -10,11 +10,11 @@ import it.unibas.lunatic.model.database.TupleOID;
 
 public class CellGroupCell extends Cell {
 
-    private IValue originalValue;
     private String type;
     private Boolean toSave;
     private IValue additionalValue;
-    private IValue originalCellGroupId;
+    private IValue originalValue;
+    private IValue lastSavedCellGroupId;
 
     public CellGroupCell(TupleOID tupleOid, AttributeRef attributeRef, IValue value, IValue originalValue, String type, Boolean toSave) {
         super(tupleOid, attributeRef, value);
@@ -64,12 +64,12 @@ public class CellGroupCell extends Cell {
         this.additionalValue = additionalValue;
     }
 
-    public IValue getOriginalCellGroupId() {
-        return originalCellGroupId;
+    public IValue getLastSavedCellGroupId() {
+        return lastSavedCellGroupId;
     }
 
-    public void setOriginalCellGroupId(IValue originalCellGroupId) {
-        this.originalCellGroupId = originalCellGroupId;
+    public void setLastSavedCellGroupId(IValue lastSavedCellGroupId) {
+        this.lastSavedCellGroupId = lastSavedCellGroupId;
     }
 
     @Override
@@ -78,8 +78,8 @@ public class CellGroupCell extends Cell {
     }
 
     public String toLongString() {
-        return this.toString() + type + " toSave:" + toSave + (originalCellGroupId == null ? "" : " OriginalCellGroupId: " + originalCellGroupId)
-                + (additionalValue == null ? "" : " MaxAdditionalValue: " + additionalValue);
+        return this.toString() + type + " toSave:" + toSave + "last saved CGid=" + (lastSavedCellGroupId == null ? "[]" : lastSavedCellGroupId)
+                + (additionalValue == null ? "" : " additionalValue: " + additionalValue);
     }
 
 }

@@ -218,7 +218,7 @@ public class ChaseTGDEquivalenceClass {
     private void addNewCells(TargetCellsToInsertForTGD mergedCellsToInsert) {
         CellGroup cellGroup = mergedCellsToInsert.getCellGroup();
         for (CellGroupCell newCell : mergedCellsToInsert.getNewCells()) {
-            newCell.setOriginalCellGroupId(cellGroup.getId());
+            newCell.setLastSavedCellGroupId(cellGroup.getId()); // new cell will be saved
             cellGroup.addOccurrenceCell(newCell);
         }
     }
