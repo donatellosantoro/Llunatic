@@ -84,7 +84,8 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 if (logger.isDebugEnabled()) logger.debug("----Chasing tgd: " + eTgd);
                 IAlgebraOperator tgdQuery = tgdTreeMap.get(eTgd);
                 if (logger.isDebugEnabled()) logger.debug("----TGD Query: " + tgdQuery);
-                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), eTgd);
+//                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), eTgd);
+                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()); //TODO++ Optimize checking test deds workers
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database for step: " + databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()).printInstances());
                     logger.trace("DeltaDB: " + newStep.getDeltaDB().printInstances());

@@ -52,7 +52,7 @@ public class OccurrenceHandlerMC {
 
     public CellGroup loadCellGroupFromId(IValue value, IDatabase deltaDB, String stepId, Scenario scenario) {
         CellGroup cellGroup = this.cacheManager.loadCellGroupFromId(value, stepId, deltaDB, scenario);
-        if (logger.isDebugEnabled()) logger.debug("CellGroup for cluster id " + value + ": " + cellGroup);
+        if (logger.isDebugEnabled()) logger.debug("CellGroup for id " + value + ": " + cellGroup);
         return cellGroup;
     }
 
@@ -63,13 +63,15 @@ public class OccurrenceHandlerMC {
         List<CellGroup> cellGroupsToMerge = new ArrayList<CellGroup>();
         cellGroupsToMerge.add(preliminaryCellGroup);
         if (value instanceof NullValue || value instanceof LLUNValue) {
+            if (logger.isDebugEnabled()) logger.debug("Searching cellgroup for llun or null " + value);
             addCellGroupForLLunOrNull(value, deltaDB, step, cellGroupsToMerge, scenario);
         } else {
+            if (logger.isDebugEnabled()) logger.debug("Searching cellgroup for constant " + value);
             addCellGroupForConstant(preliminaryCellGroup, deltaDB, step, cellGroupsToMerge, scenario);
         }
         addOriginalValuesForAdditionalCells(preliminaryCellGroup, deltaDB, step, scenario);
         CellGroup mergedCG = cellGroupMerger.findOriginalValues(cellGroupsToMerge, value);
-        if (logger.isDebugEnabled()) logger.debug("Merged cell group: " + mergedCG);
+        if (logger.isDebugEnabled()) logger.debug("Merged cell group: " + mergedCG.toLongString());
         return mergedCG;
     }
 

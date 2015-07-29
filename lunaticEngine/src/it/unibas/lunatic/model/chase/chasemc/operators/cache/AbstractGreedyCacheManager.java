@@ -109,6 +109,7 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
 
     public void loadCellGroups(String stepId, IDatabase deltaDB, Scenario scenario) {
         if (logger.isTraceEnabled()) logger.trace("Loading occurrences value for step " + stepId);
+        if (logger.isTraceEnabled()) logger.trace("DeltaDB " + deltaDB.printInstances());
         IAlgebraOperator query = CellGroupTableUtility.buildQueryToExtractCellGroupCellsForStep(stepId);
         if (logger.isDebugEnabled()) logger.debug("QueryToExtractCellGroupIds:\n " + query);
         ITupleIterator it = queryRunner.run(query, null, deltaDB);
@@ -125,6 +126,7 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
             if (cellGroupCell.getType().equals(LunaticConstants.TYPE_OCCURRENCE) && cellGroupId instanceof ConstantValue) {
                 putClusterId(new CellRef(cellGroupCell), cellGroupId, stepId, deltaDB, scenario);
             }
+            if (logger.isDebugEnabled()) logger.debug("Added cellgroup cell " + cellGroupCell + " into cg:\n" + cellGroup.toLongString());
         }
         it.close();
     }

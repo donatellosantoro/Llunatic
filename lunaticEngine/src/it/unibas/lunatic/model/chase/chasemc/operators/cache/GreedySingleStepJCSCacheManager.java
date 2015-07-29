@@ -105,6 +105,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
     @Override
     protected void loadCacheForStep(String stepId, IDatabase deltaDB, Scenario scenario) {
         if (stepId.equals(currentCachedStepId)) {
+            if (logger.isDebugEnabled()) logger.debug("Cache for step " + stepId + " already loaded...");
             return;
         }
         if (LunaticConfiguration.sout) System.out.println("\t******Loading cache for step: " + stepId + " (current step: " + currentCachedStepId + ")");
@@ -121,6 +122,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
         currentCachedStepId = stepId;
         previousCachedStepIds.add(stepId);
         loadCellGroups(stepId, deltaDB, scenario);
+        if (logger.isDebugEnabled()) logger.debug("Cell group for step " + stepId + " loaded: " + this.cellGroupCache.getStats());
     }
 
     @Override
