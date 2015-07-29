@@ -5,17 +5,18 @@ import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
+import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
 import it.unibas.lunatic.test.checker.CheckTest;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestSQLSyntheticTGD05 extends CheckTest {
+public class TestSQLSyntheticTGD05 extends CheckExpectedSolutionsTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestSQLSyntheticTGD05.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T05_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T05_dbms,true);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
@@ -23,5 +24,7 @@ public class TestSQLSyntheticTGD05 extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getSolutions(result));
         Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
         checkSolutions(result);
+        checkExpectedSolutions("expectedSyntheticTGD05", result);
+
     }
 }
