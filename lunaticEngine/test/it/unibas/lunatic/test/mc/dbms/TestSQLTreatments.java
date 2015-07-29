@@ -17,14 +17,12 @@ public class TestSQLTreatments extends CheckExpectedSolutionsTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestSQLTreatments.class);
 
-    protected GenerateModifiedCells modifiedCellsGenerator = new GenerateModifiedCells(new SQLRunQuery());
-
-    public void testScenarioFRSPScript() throws Exception {
+    public void testScenarioPOFRSP() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_sp_dbms, true);
         setConfigurationForTest(scenario);
+        setCheckEGDsAfterEachStep(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
-        QueryStatManager.getInstance().printStatistics();
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of leaves: " + resultSizer.getPotentialSolutions(result));
@@ -33,11 +31,12 @@ public class TestSQLTreatments extends CheckExpectedSolutionsTest {
         checkSolutions(result);
         Assert.assertEquals(1, resultSizer.getSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
+//        exportResults("/Temp/expectedTreatmentsScenarioPOFRSP", result);
         checkExpectedSolutions("expectedTreatmentsScenarioPOFRSP", result);
     }
 
     public void testScenarioPOFRS5() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_s5_poset_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_s5_dbms, true);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
@@ -50,16 +49,18 @@ public class TestSQLTreatments extends CheckExpectedSolutionsTest {
         checkSolutions(result);
         Assert.assertEquals(3, resultSizer.getSolutions(result));
         Assert.assertEquals(21, resultSizer.getDuplicates(result));
+//        exportResults("/Temp/expectedTreatmentsScenarioPOFRS5", result);
+        checkExpectedSolutions("expectedTreatmentsScenarioPOFRS5", result);
     }
 
     public void testScenarioPOS50() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_poset_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_dbms, true);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         QueryStatManager.getInstance().printStatistics();
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
-//        if (logger.isDebugEnabled()) logger.debug("Result: " + result.toShortStringWithSort());
+        if (logger.isTraceEnabled()) logger.debug("Result: " + result.toShortStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of leaves: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
@@ -67,5 +68,21 @@ public class TestSQLTreatments extends CheckExpectedSolutionsTest {
 //        Assert.assertEquals(34, resultSizer.getSolutions(result));
         Assert.assertEquals(23, resultSizer.getSolutions(result));
         Assert.assertEquals(34, resultSizer.getDuplicates(result));
+    }
+
+    public void testScenarioFRSPScript() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_sp_script_dbms, true);
+        setConfigurationForTest(scenario);
+        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        DeltaChaseStep result = chaser.doChase(scenario);
+        QueryStatManager.getInstance().printStatistics();
+        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
+        if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug("Number of leaves: " + resultSizer.getPotentialSolutions(result));
+        if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getSolutions(result));
+        if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
+        checkSolutions(result);
+        Assert.assertEquals(1, resultSizer.getSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
     }
 }

@@ -54,10 +54,10 @@ public class ChaseEGDEquivalenceClass {
     }
 
     public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
-        if (logger.isDebugEnabled()) logger.debug("***** Chasing dependency: " + egd);
+        if (logger.isDebugEnabled()) logger.debug("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
         this.lastTuple = null;
         this.lastTupleHandled = false;
-        if (logger.isTraceEnabled()) logger.debug("Executing premise query: " + premiseQuery);
+        if (logger.isDebugEnabled()) logger.debug("Executing premise query: " + premiseQuery);
         if (logger.isTraceEnabled()) logger.debug("Result:\n" + LunaticUtility.printIterator(queryRunner.run(premiseQuery, scenario.getSource(), databaseForStep)));
         long violationQueryStart = new Date().getTime();
         ITupleIterator it = queryRunner.run(premiseQuery, scenario.getSource(), databaseForStep);

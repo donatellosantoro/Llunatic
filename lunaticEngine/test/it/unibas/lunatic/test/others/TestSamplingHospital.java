@@ -1,6 +1,5 @@
 package it.unibas.lunatic.test.others;
 
-import it.unibas.lunatic.test.mc.mainmemory.*;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
@@ -19,6 +18,7 @@ public class TestSamplingHospital extends CheckTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital);
         scenario.setCostManager(new SamplingCostManager(5));
         setConfigurationForTest(scenario);
+        scenario.getConfiguration().setRemoveDuplicates(false);
         ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("hospital", scenario));
