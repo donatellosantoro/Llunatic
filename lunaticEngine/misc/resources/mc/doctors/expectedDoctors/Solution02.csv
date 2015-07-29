@@ -1,0 +1,13 @@
+#doctor
+npi,name,hospital,email
+1112,R. Chase,Sacred Hearth,chase@sh.com
+1222,C. Taub,NULL,NULL
+5555,G. House,PPTH,house@ppth.com
+_L144,NULL,NULL,NULL
+
+#prescription
+rxid,patient,npiref
+P1,J. Doe,_L144
+P2,W. Smith,5555
+P3,M. White,5555
+

@@ -1,0 +1,11 @@
+#doctor
+npi,name,hospital,email
+5555,G. House,PPTH,house@ppth.com
+_L212,_L218,Sacred Hearth,chase@sh.com
+
+#prescription
+rxid,patient,npiref
+P1,J. Doe,_L212
+P2,W. Smith,5555
+P3,M. White,5555
+
