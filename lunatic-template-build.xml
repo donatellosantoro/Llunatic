@@ -164,6 +164,7 @@
             <batchtest todir="${test.report.dir}">
                 <fileset dir="${test.build.dir}">
                     <include name="**/Test*.class" />
+                    <exclude name="**/ded/**" />
                 </fileset>
             </batchtest>
             <formatter type="brief" usefile="false" />

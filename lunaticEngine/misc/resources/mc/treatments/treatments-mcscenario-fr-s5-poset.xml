@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-  <source>
-    <type>GENERATE</type>
-    <generate>
+    <source>
+        <type>GENERATE</type>
+        <generate>
 <![CDATA[
 SCHEMA:
 consttablecf1(insurance, treatment)
@@ -15,11 +15,11 @@ consttablecf2(insurance: "Cis", city: "NYC")
 masterdata(ssn: "222", name: "F. Lennon",  phone: "122-1876", str: "Sky Dr.", city: "SF")
 masterdata(ssn: "111", name: "M. White",  phone: "408-3334", str: "Red Ave.", city: "LA")
 ]]>
-    </generate>
-  </source>
-  <target>    
-    <type>GENERATE</type>
-    <generate>
+        </generate>
+    </source>
+    <target>    
+        <type>GENERATE</type>
+        <generate>
 <![CDATA[
 SCHEMA:
 customers(ssn, name, phone, cfphone, str, city, cc)
@@ -34,9 +34,9 @@ treatments(ssn: "111", salary: "25K", insurance: "Cis", treatment: "Cholest.",  
 treatments(ssn: "222", salary: "25K", insurance: "Cis", treatment: "Cholest.",  date: "2012-10-09")
 treatments(ssn: "222", salary: "30K", insurance: "Abx", treatment: "Eye surg.", date: "2012-10-06")
 ]]>
-    </generate>
-  </target>
-  <dependencies>
+        </generate>
+    </target>
+    <dependencies>
 <![CDATA[
 ExtEGDs:
 //MasterData: CUST[SSN,PHONE],MD[SSN,PHONE] -> NAME,STREET,CITY
@@ -77,38 +77,38 @@ fd2: treatments(ssn: $ssn, salary: $salary1, insurance: $insur1, treatment: $tre
     treatments(ssn: $ssn, salary: $salary2, insurance: $insur2, treatment: $treat2, date: $date2)
     -> $salary1 == $salary2.
 ]]>
-  </dependencies>
-  <authoritativeSources>
-    <source>consttablecf1</source>
-    <source>consttablecf2</source>
-    <source>masterdata</source>
-  </authoritativeSources>
-  <orderingAttributes>
-    <orderingAttribute>
-      <attribute>customers.phone</attribute>
-      <associatedAttribute>customers.cfphone</associatedAttribute>
-      <valueComparator sort="DESC">
-        <floatComparator/>
-      </valueComparator>
-    </orderingAttribute>    
-    <orderingAttribute>
-      <attribute>treatments.salary</attribute>
-      <associatedAttribute>treatments.date</associatedAttribute>
-      <valueComparator sort="DESC">
-        <dateComparator pattern="yyyy-MM-dd"/>
-      </valueComparator>
-    </orderingAttribute>
-  </orderingAttributes>
-  <costManager>
-    <type>Similarity</type>
-    <similarityStrategy>Mixed</similarityStrategy>
-    <similarityThreshold>0.60</similarityThreshold>
-    <leavesThreshold>5</leavesThreshold>
-    <potentialSolutionsThreshold>5</potentialSolutionsThreshold>
-  </costManager>
-  <partialOrder>
-    <type>Frequency</type>
-  </partialOrder>
-  <configuration/>
+    </dependencies>
+    <authoritativeSources>
+        <source>consttablecf1</source>
+        <source>consttablecf2</source>
+        <source>masterdata</source>
+    </authoritativeSources>
+    <orderingAttributes>
+        <orderingAttribute>
+            <attribute>customers.phone</attribute>
+            <associatedAttribute>customers.cfphone</associatedAttribute>
+            <valueComparator sort="DESC">
+                <floatComparator/>
+            </valueComparator>
+        </orderingAttribute>    
+        <orderingAttribute>
+            <attribute>treatments.salary</attribute>
+            <associatedAttribute>treatments.date</associatedAttribute>
+            <valueComparator sort="DESC">
+                <dateComparator pattern="yyyy-MM-dd"/>
+            </valueComparator>
+        </orderingAttribute>
+    </orderingAttributes>
+    <costManager>
+        <type>Similarity</type>
+        <similarityStrategy>Mixed</similarityStrategy>
+        <similarityThreshold>0.60</similarityThreshold>
+        <leavesThreshold>5</leavesThreshold>
+        <potentialSolutionsThreshold>5</potentialSolutionsThreshold>
+    </costManager>
+    <partialOrder>
+        <type>Frequency</type>
+    </partialOrder>
+    <configuration/>
 </scenario>
 

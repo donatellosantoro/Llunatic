@@ -34,7 +34,7 @@ public class TestTreatments extends CheckExpectedSolutionsTest {
         checkSolutions(result);
         Assert.assertEquals(1, resultSizer.getSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
-//        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedTreatmentsScenarioPOFRSP", result);
+//        exportResults("/Temp/expectedTreatmentsScenarioPOFRSP", result);
         checkExpectedSolutions("expectedTreatmentsScenarioPOFRSP", result);
     }
 
@@ -51,9 +51,8 @@ public class TestTreatments extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
         checkSolutions(result);
-//        Assert.assertEquals(8, resultSizer.getSolutions(result));
-        Assert.assertEquals(2, resultSizer.getSolutions(result));
-        Assert.assertEquals(34, resultSizer.getDuplicates(result));
+        Assert.assertEquals(3, resultSizer.getSolutions(result));
+        Assert.assertEquals(21, resultSizer.getDuplicates(result));
     }
 //    
 
