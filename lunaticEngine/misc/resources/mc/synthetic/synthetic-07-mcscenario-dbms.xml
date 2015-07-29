@@ -4,7 +4,7 @@
         <type>DBMS</type>
         <access-configuration>
             <driver>org.postgresql.Driver</driver>
-            <uri>jdbc:postgresql:synthetic_t03</uri>
+            <uri>jdbc:postgresql:synthetic_t07</uri>
             <schema>source</schema>
             <login>pguser</login>
             <password>pguser</password>
@@ -27,7 +27,7 @@ insert into const(a) values ('4');
         <type>DBMS</type>
         <access-configuration>
             <driver>org.postgresql.Driver</driver>
-            <uri>jdbc:postgresql:synthetic_t03</uri>
+            <uri>jdbc:postgresql:synthetic_t07</uri>
             <schema>target</schema>
             <login>pguser</login>
             <password>pguser</password>
