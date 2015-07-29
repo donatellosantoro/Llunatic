@@ -47,16 +47,16 @@ create table emp (
   manager varchar(50)
 );
 
-insert into emp(name, dept, salary, manager) values ('Bob', 'Marketing', 2500, 'John');
-insert into emp(name, dept, salary, manager) values ('John', 'Marketing', 2500, 'Carl');
-insert into emp(name, dept, salary, manager) values ('John', 'Marketing', 2500, 'Carl');
-insert into emp(name, dept, salary, manager) values ('Mark', 'Staff', 2500, 'Frank');
-insert into emp(name, dept, salary, manager) values ('Frank', 'Sales', 2500, 'Carl');
+insert into emp(name, dept, salary, manager) values ('Bob', 'Marketing', 1000, 'John');
+insert into emp(name, dept, salary, manager) values ('John', 'Marketing', 2000, 'Carl');
+insert into emp(name, dept, salary, manager) values ('John', 'Marketing', 3000, 'Carl');
+insert into emp(name, dept, salary, manager) values ('Mark', 'Staff', 1000, 'Frank');
+insert into emp(name, dept, salary, manager) values ('Frank', 'Sales', 2000, 'Carl');
 insert into emp(name, dept, salary, manager) values ('John', 'Sales', 2500, 'Carl');
 insert into emp(name, dept, salary, manager) values ('Carl', 'Marketing', 2500, 'Carl');
 insert into emp(name, dept, salary, manager) values ('John', 'Staff', 2500, 'Carl');
 insert into emp(name, dept, salary, manager) values ('Bob', 'Staff', 2500, 'Carl');
-insert into emp(name, dept, salary, manager) values ('Carl', 'Managment', 2500, 'Carl');
+insert into emp(name, dept, salary, manager) values ('Carl', 'Managment', 5000, 'Carl');
 ]]>
     </init-db>
   </target>

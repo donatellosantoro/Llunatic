@@ -5,17 +5,17 @@ import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
-import it.unibas.lunatic.test.checker.CheckTest;
+import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestSQLPersons extends CheckTest {
+public class TestSQLPersons extends CheckExpectedSolutionsTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestSQLPersons.class);
-    
+
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_dbms, true);
         setConfigurationForTest(scenario);
 //        setCheckEGDsAfterEachStep(scenario);
 //        scenario.getCostManager().setDoBackward(false);
@@ -30,5 +30,21 @@ public class TestSQLPersons extends CheckTest {
         checkSolutions(result);
 //        if (logger.isDebugEnabled()) logger.debug("Delta db:\n" + result.getDeltaDB().printInstances());
     }
-    
+
+    public void testScenarioNoPermutation() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_dbms, true);
+        setConfigurationForTest(scenario);
+//        setCheckEGDsAfterEachStep(scenario);
+        scenario.getCostManager().setDoBackward(false);
+        scenario.getCostManager().setDoPermutations(false);
+        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        DeltaChaseStep result = chaser.doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
+        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
+        if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
+        Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
+        checkSolutions(result);
+        checkExpectedSolutions("expected-nop", result);
+    }
 }
