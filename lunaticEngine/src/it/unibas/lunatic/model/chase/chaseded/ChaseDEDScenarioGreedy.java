@@ -56,6 +56,7 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DED_EGDS, scenario.getDEDEGDs().size());
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DED_EXTGDS, scenario.getDEDextTGDs().size());
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_GREEDY_SCENARIOS, dedScenarios.size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXECUTED_GREEDY_SCENARIOS, 0);
         if (logger.isDebugEnabled()) printDEDScenarios(dedScenarios);
         stChaser.doChase(scenario, true);
         IDatabase originalTarget = databaseManager.cloneTarget(scenario);
@@ -72,11 +73,15 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
                     rollbackChase(originalTarget, scenario);
                     continue;
                 }
+                if (logger.isDebugEnabled()) logger.debug("No more scenarios to chase. Returning");
                 break;
             } catch (ChaseFailedException ex) {
+                if (logger.isDebugEnabled()) logger.debug("Chase fail: " + ex);
                 if (logger.isDebugEnabled()) logger.debug("DED Scenario " + dedScenario.getId() + " failed!");
                 ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS, 1);
                 rollbackChase(originalTarget, scenario);
+            } catch (Exception ex) {
+                logger.error(ex.getLocalizedMessage());
             }
         }
         databaseManager.removeClone(originalTarget, scenario);

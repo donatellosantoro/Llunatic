@@ -35,7 +35,9 @@ public class CorrectCellGroupID {
     }
 
     private IValue findMostFrequentCellGroupId(CellGroup cellGroup) {
+        if (logger.isDebugEnabled()) logger.debug("Finding most frequent cell group id in " + cellGroup.toLongString());
         Map<IValue, Integer> variableOccurrenceHistogram = buildOccurrenceHistogramForCellGroupId(cellGroup, cellGroup.getId());
+        if (logger.isDebugEnabled()) logger.debug("Variable Occurrence Histogram: " + variableOccurrenceHistogram);
         if (variableOccurrenceHistogram.isEmpty()) {
             return null;
         }
@@ -71,7 +73,9 @@ public class CorrectCellGroupID {
     }
 
     private boolean isCompatible(IValue originalCellGroupId, IValue lubCellGroupId) {
+        if (logger.isDebugEnabled()) logger.debug("Checking compatibility of " + originalCellGroupId + " - " + lubCellGroupId);
         if (!originalCellGroupId.getType().equals(lubCellGroupId.getType())) {
+            if (logger.isDebugEnabled()) logger.debug("Returning false");
             return false;
         }
         if (originalCellGroupId.getType().equals(PartialOrderConstants.NULL)
@@ -80,7 +84,9 @@ public class CorrectCellGroupID {
         }
         IValue originalConstantValue = CellGroupIDGenerator.getCellGroupValueFromGroupID(originalCellGroupId);
         IValue lubConstantValue = CellGroupIDGenerator.getCellGroupValueFromGroupID(lubCellGroupId);
-        return (originalConstantValue.equals(lubConstantValue));
+        boolean result = (originalConstantValue.equals(lubConstantValue));
+        if (logger.isDebugEnabled()) logger.debug("Returning " + result);
+        return result;
     }
 
     private void correctToSaveInCells(Set<CellGroupCell> cells, IValue mostFrequentCellGroupId, IValue lubCellGroupId) {

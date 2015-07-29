@@ -323,6 +323,9 @@
         <fail if="test.failed">
             Esecuzione dell'operazione fallita a causa del fallimento dei test
         </fail>
+    </target>    
+    
+    <target name="test-de" depends="test-de-mainmemory, test-de-dbms" description="esegue i test">
     </target>
 
     <target name="test-dbms" depends="-prepare-test, build" description="esegue i test">
