@@ -3,11 +3,14 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
+import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
+import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -57,5 +60,47 @@ public class CellGroupUtility {
         }
         dest.addAllAdditionalCells(source.getAdditionalCells());
     }
+
+    public static List<CellGroup> extractCellGroups(List<TargetCellsToChangeForEGD> tupleGroups) {
+        List<CellGroup> cellGroups = new ArrayList<CellGroup>();
+        for (TargetCellsToChangeForEGD tupleGroup : tupleGroups) {
+            cellGroups.add(tupleGroup.getCellGroupForForwardRepair().clone());
+        }
+        return cellGroups;
+    }
+    
+    public static  Set<IValue> findDifferentValuesInCellGroupsWithOccurrences(List<CellGroup> cellGroups) {
+        Set<IValue> result = new HashSet<IValue>();
+        for (CellGroup cellGroup : cellGroups) {
+            if (cellGroup.getOccurrences().isEmpty()) {
+                continue;
+            }
+            result.add(cellGroup.getValue());
+        }
+        return result;
+    }    
+
+    public static  boolean checkContainment(List<CellGroup> cellGroups) {
+        Set<CellRef> allCellRefs = new HashSet<CellRef>();
+        for (CellGroup cellGroup : cellGroups) {
+            allCellRefs.addAll(extractAllCellRefs(cellGroup));
+        }
+        for (CellGroup cellGroup : cellGroups) {
+            Set<CellRef> allCellRefsForCellGroup = extractAllCellRefs(cellGroup);
+            if (allCellRefsForCellGroup.equals(allCellRefs)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static  Set<CellRef> extractAllCellRefs(CellGroup cellGroup) {
+        Set<CellRef> result = new HashSet<CellRef>();
+        for (CellGroupCell cell : cellGroup.getAllCells()) {
+            result.add(new CellRef(cell));
+        }
+        return result;
+    }
+
 
 }

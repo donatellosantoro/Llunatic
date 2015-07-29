@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.costmanager;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
@@ -29,6 +28,5 @@ public interface ICostManager {
     public void setChaseBranchingThreshold(int chaseBranchingThreshold);
     public int getPotentialSolutionsThreshold();
     public void setPotentialSolutionsThreshold(int PotentialSolutionsThreshold);
-    public boolean checkContainment(List<CellGroup> cellGroups);
     public String toLongString();
 }

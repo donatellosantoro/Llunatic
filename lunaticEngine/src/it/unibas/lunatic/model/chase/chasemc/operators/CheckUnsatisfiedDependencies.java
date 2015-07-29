@@ -167,7 +167,7 @@ public class CheckUnsatisfiedDependencies {
             return false;
         }
         List<CellGroup> cellGroups = Arrays.asList(new CellGroup[]{cellGroupForV1, cellGroupForV2});
-        boolean lubIsIdempotent = currentNode.getScenario().getCostManager().checkContainment(cellGroups);
+        boolean lubIsIdempotent = CellGroupUtility.checkContainment(cellGroups);
         if (logger.isDebugEnabled()) logger.debug("LUB is idempotent? " + lubIsIdempotent);
         if (logger.isDebugEnabled() && !lubIsIdempotent) logger.debug("Delta db:\n" + currentNode.getDeltaDB().printInstances());
         return lubIsIdempotent;

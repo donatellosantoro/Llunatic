@@ -49,7 +49,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         List<TargetCellsToChangeForEGD> tupleGroups = equivalenceClass.getTupleGroups();
         Collections.sort(tupleGroups, new TupleGroupComparator());
         Collections.reverse(tupleGroups);
-        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && isNotViolation(tupleGroups, scenario)) {
+        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && satisfactionChecker.isSatisfiedAfterUpgrades(tupleGroups, scenario)) {
             if (logger.isDebugEnabled()) logger.debug("No violations... Returning empty list");
             return Collections.EMPTY_LIST;
         }

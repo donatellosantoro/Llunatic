@@ -2,16 +2,21 @@ package it.unibas.lunatic.model.chase.chasemc.costmanager;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
+import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
+import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -58,7 +63,7 @@ public class MinCostRepairCostManager extends StandardCostManager {
         assert(scenario.getPartialOrder() instanceof StandardPartialOrder && scenario.getScriptPartialOrder() == null) : "No partial order allowed in min cost repair cost manager " + scenario;
         assert(this.isDoPermutations() == false) : "No permutations allowed in min cost repair cost manager " + scenario;
         assert(this.isDoBackward() == false) : "No backward allowed in min cost repair cost manager " + scenario;
-        List<Repair> repairs = super.chooseRepairStrategy(equivalenceClass, chaseTreeRoot, repairsForDependency, scenario, stepId, occurrenceHandler);
+        List<Repair> repairs = generateStandardRepairStrategy(equivalenceClass, chaseTreeRoot, repairsForDependency, scenario, stepId, occurrenceHandler);
         if (repairs.isEmpty()) {
             return repairs;
         }
@@ -67,6 +72,38 @@ public class MinCostRepairCostManager extends StandardCostManager {
         correctValuesInRepair(forwardRepair, equivalenceClass);
         return Arrays.asList(new Repair[]{forwardRepair});
     }
+    
+    @SuppressWarnings("unchecked")
+    private List<Repair> generateStandardRepairStrategy(EquivalenceClassForEGD equivalenceClass, DeltaChaseStep chaseTreeRoot,
+            List<Repair> repairsForDependency, Scenario scenario, String stepId,
+            OccurrenceHandlerMC occurrenceHandler) {
+        if (logger.isDebugEnabled()) logger.debug("########Current node: " + chaseTreeRoot.toStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug("########Choosing repair strategy for equivalence class: " + equivalenceClass);
+        List<TargetCellsToChangeForEGD> tupleGroupsWithSameConclusionValue = equivalenceClass.getTupleGroups();
+        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && isSatisfiedAfterUpgrades(tupleGroupsWithSameConclusionValue, scenario)) {
+            return Collections.EMPTY_LIST;
+        }
+        List<Repair> result = new ArrayList<Repair>();
+        // generate forward repair for all groups
+        ChangeSet changesForForwardRepair = generateForwardRepair(equivalenceClass.getTupleGroups(), scenario, chaseTreeRoot.getDeltaDB(), stepId);
+        Repair forwardRepair = new Repair();
+        forwardRepair.addChanges(changesForForwardRepair);
+        if (logger.isDebugEnabled()) logger.debug("########Forward repair: " + forwardRepair);
+        result.add(forwardRepair);
+        if (isDoBackward()) {
+            // check if repairs with backward chasing are possible
+            int chaseBranching = chaseTreeRoot.getNumberOfLeaves();
+            int potentialSolutions = chaseTreeRoot.getPotentialSolutions();
+            if (isTreeSizeBelowThreshold(chaseBranching, potentialSolutions)) {
+                List<Repair> backwardRepairs = super.generateBackwardRepairs(equivalenceClass.getTupleGroups(), scenario, chaseTreeRoot.getDeltaDB(), stepId, equivalenceClass);
+                for (Repair repair : backwardRepairs) {
+                    LunaticUtility.addIfNotContained(result, repair);
+                }
+                if (logger.isDebugEnabled()) logger.debug("########Backward repairs: " + backwardRepairs);
+            }
+        }
+        return result;
+    }    
 
     private void correctValuesInRepair(Repair repair, EquivalenceClassForEGD equivalenceClass) {
         IValue minCostValue = null;
@@ -92,11 +129,10 @@ public class MinCostRepairCostManager extends StandardCostManager {
         return cost;
     }
     
-    @Override
-    public boolean isNotViolation(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario) {
+    private boolean isSatisfiedAfterUpgrades(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Checking violations between tuple groups\n" + LunaticUtility.printCollection(tupleGroups));
         List<CellGroup> cellGroups = extractCellGroups(tupleGroups);
-        Set<IValue> differentValues = findDifferentValuesInCellGroupsWithOccurrences(cellGroups);
+        Set<IValue> differentValues = CellGroupUtility.findDifferentValuesInCellGroupsWithOccurrences(cellGroups);
         return (differentValues.size() == 1);
     }
 

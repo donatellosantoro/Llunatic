@@ -41,7 +41,7 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
         }
         if (logger.isDebugEnabled()) logger.debug("########?Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<TargetCellsToChangeForEGD> tupleGroups = equivalenceClass.getTupleGroups();
-        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && isNotViolation(tupleGroups, scenario)) {
+        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && satisfactionChecker.isSatisfiedAfterUpgrades(tupleGroups, scenario)) {
             return Collections.EMPTY_LIST;
         }
         List<Repair> result = new ArrayList<Repair>();
