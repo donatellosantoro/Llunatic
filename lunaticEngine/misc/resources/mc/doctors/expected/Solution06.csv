@@ -1,6 +1,5 @@
 #prescription
 rxid,patient,npiref
-P1,J. Doe,_L343
 P3,M. White,_L15
 P1,J. Doe,_L343
 P2,W. Smith,_L15
@@ -9,17 +8,4 @@ P2,W. Smith,_L15
 npi,name,hospital,email
 _L343,_L347,Sacred Hearth,chase@sh.com
 _L15,G. House,PPTH,_L323
-_L343,_L347,Sacred Hearth,chase@sh.com
-_L15,G. House,PPTH,_L323
-
-#prescription_join_doctor
-rxid,patient,npiref,npi,name,hospital,email
-P3,M. White,_L15,_L15,G. House,PPTH,_L323
-P3,M. White,_L15,_L15,G. House,PPTH,_L323
-P2,W. Smith,_L15,_L15,G. House,PPTH,_L323
-P2,W. Smith,_L15,_L15,G. House,PPTH,_L323
-P1,J. Doe,_L343,_L343,_L347,Sacred Hearth,chase@sh.com
-P1,J. Doe,_L343,_L343,_L347,Sacred Hearth,chase@sh.com
-P1,J. Doe,_L343,_L343,_L347,Sacred Hearth,chase@sh.com
-P1,J. Doe,_L343,_L343,_L347,Sacred Hearth,chase@sh.com
 

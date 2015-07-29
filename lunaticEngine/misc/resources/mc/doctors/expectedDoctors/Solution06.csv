@@ -1,0 +1,11 @@
+#doctor
+npi,name,hospital,email
+_L29,G. House,_L168,house@ppth.com
+_L472,_L478,Sacred Hearth,chase@sh.com
+
+#prescription
+rxid,patient,npiref
+P1,J. Doe,_L472
+P2,W. Smith,_L29
+P3,M. White,_L29
+

@@ -107,6 +107,7 @@ public class CheckExpectedSolutionsTest extends CheckTest {
     protected void checkQuality(Map<String, List<PrecisionAndRecall>> quality) {
         for (String expected : quality.keySet()) {
             List<PrecisionAndRecall> qualityForExpected = quality.get(expected);
+            if (logger.isDebugEnabled()) logger.debug("Comparing expected: "+ expected + " with: "+ qualityForExpected.get(0).getGeneratedInstance());
             Assert.assertEquals("Instance " + expected + " was not generated!", 1.0, qualityForExpected.get(0).getfMeasure());
         }
     }
