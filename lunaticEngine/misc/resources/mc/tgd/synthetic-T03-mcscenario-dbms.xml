@@ -11,8 +11,8 @@
         </access-configuration>
         <init-db>
 <![CDATA[
-create schema source
-SET search_path = sourcer, pg_catalog;
+create schema source;
+SET search_path = source, pg_catalog;
 
 create table r (
   oid serial,
@@ -28,7 +28,7 @@ insert into r(a,b) values ('1', '4');
         <type>DBMS</type>
         <access-configuration>
             <driver>org.postgresql.Driver</driver>
-            <uri>jdbc:postgresql:synthetic_t02</uri>
+            <uri>jdbc:postgresql:synthetic_t03</uri>
             <schema>target</schema>
             <login>pguser</login>
             <password>pguser</password>

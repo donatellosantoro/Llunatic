@@ -21,7 +21,7 @@ public class NodeClustering {
         }
         LunaticUtility.addIfNotContained(cluster, step);
         if (containsAncestor(cluster)) {
-            throw new IllegalArgumentException("Unable to set ancestor and descentant as duplicate. \nCluster: " + cluster + "\nStep:" + step);
+            throw new IllegalArgumentException("Unable to set ancestor and descentant as duplicate. \nCluster: " + printClusterId(cluster) + "\nStep:" + step.getId());
         }
         step.setDuplicateNodes(cluster);
     }
@@ -46,6 +46,14 @@ public class NodeClustering {
             }
         }
         return false;
+    }
+
+    private String printClusterId(List<DeltaChaseStep> cluster) {
+        StringBuilder sb = new StringBuilder();
+        for (DeltaChaseStep step : cluster) {
+            sb.append("\t").append(step.getId()).append("\n");
+        }
+        return sb.toString();
     }
 
 }

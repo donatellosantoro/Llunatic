@@ -10,9 +10,9 @@ import it.unibas.lunatic.test.checker.CheckTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestSamplingHospital extends CheckTest {
+public class TSamplingHospital extends CheckTest {
     
-    private static Logger logger = LoggerFactory.getLogger(TestSamplingHospital.class);
+    private static Logger logger = LoggerFactory.getLogger(TSamplingHospital.class);
     
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital);
