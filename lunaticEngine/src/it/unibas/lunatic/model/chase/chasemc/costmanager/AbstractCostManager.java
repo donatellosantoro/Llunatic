@@ -9,13 +9,13 @@ import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
+import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs;
+import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
@@ -25,19 +25,15 @@ import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
 import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +46,8 @@ public abstract class AbstractCostManager implements ICostManager {
     private int chaseBranchingThreshold = 50;
     private int potentialSolutionsThreshold = 50;
     private int dependencyLimit = -1;
+    
+    protected CheckSatisfactionAfterUpgradesEGD satisfactionChecker = new CheckSatisfactionAfterUpgradesEGD();
 
     public ChaseMCScenario getChaser(Scenario scenario) {
         IChaseSTTGDs stChaser = OperatorFactory.getInstance().getSTChaser(scenario);
@@ -62,74 +60,6 @@ public abstract class AbstractCostManager implements ICostManager {
         CheckSolution solutionChecker = OperatorFactory.getInstance().getSolutionChecker(scenario);
         ChaseDeltaExtEGDs egdChaser = OperatorFactory.getInstance().getEGDChaser(scenario);
         return new ChaseMCScenario(stChaser, extTgdChaser, deltaBuilder, stepBuilder, queryRunner, insertOperatorForEgds, occurrenceHandler, egdChaser, solutionChecker);
-    }
-
-    protected boolean isNotViolation(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario) {
-        if (logger.isDebugEnabled()) logger.debug("Checking violations between tuple groups\n" + LunaticUtility.printCollection(tupleGroups));
-        List<CellGroup> cellGroups = extractCellGroups(tupleGroups);
-        Set<IValue> differentValues = findDifferentValuesInCellGroupsWithOccurrences(cellGroups);
-        if (differentValues.size() > 1) {
-            return false;
-        }
-        return checkContainment(cellGroups);
-    }
-
-//    public boolean checkContainment(List<CellGroup> cellGroups) {
-//        Set<CellGroupCell> allCells = new HashSet<CellGroupCell>();
-//        for (CellGroup cellGroup : cellGroups) {
-//            allCells.addAll(cellGroup.getAllCells());
-//        }
-//        for (CellGroup cellGroup : cellGroups) {
-//            if (cellGroup.getAllCells().equals(allCells)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
-    public boolean checkContainment(List<CellGroup> cellGroups) {
-        Set<CellRef> allCellRefs = new HashSet<CellRef>();
-        for (CellGroup cellGroup : cellGroups) {
-            allCellRefs.addAll(extractAllCellRefs(cellGroup));
-        }
-        for (CellGroup cellGroup : cellGroups) {
-            Set<CellRef> allCellRefsForCellGroup = extractAllCellRefs(cellGroup);
-            if (allCellRefsForCellGroup.equals(allCellRefs)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Set<CellRef> extractAllCellRefs(CellGroup cellGroup) {
-        Set<CellRef> result = new HashSet<CellRef>();
-        for (CellGroupCell cell : cellGroup.getAllCells()) {
-            result.add(new CellRef(cell));
-        }
-        return result;
-    }
-    
-    
-//    public boolean checkIfLUBIsIdempotent(List<CellGroup> cellGroups, Scenario scenario) {
-//    public boolean checkContainment(List<CellGroup> cellGroups, Scenario scenario) {
-//        CellGroup scriptLUB = getLUB(cellGroups, scenario.getScriptPartialOrder(), scenario);
-//        CellGroup baseLUB = getLUB(cellGroups, scenario.getPartialOrder(), scenario);
-//        if (logger.isDebugEnabled()) logger.debug("Base LUB: " + baseLUB + "\nScript LUB: " + scriptLUB);
-//        if (cellGroups.contains(scriptLUB) || cellGroups.contains(baseLUB)) {
-//            if (logger.isDebugEnabled()) logger.debug("Tuple groups are not a violation.");
-//            return true;
-//        }
-//        return false;
-//    }
-    protected Set<IValue> findDifferentValuesInCellGroupsWithOccurrences(List<CellGroup> cellGroups) {
-        Set<IValue> result = new HashSet<IValue>();
-        for (CellGroup cellGroup : cellGroups) {
-            if (cellGroup.getOccurrences().isEmpty()) {
-                continue;
-            }
-            result.add(cellGroup.getValue());
-        }
-        return result;
     }
 
     protected boolean isSuspicious(CellGroup cellGroup, BackwardAttribute backwardAttribute, EquivalenceClassForEGD equivalenceClass) {

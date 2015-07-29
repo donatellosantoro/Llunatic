@@ -34,7 +34,7 @@ public class StandardCostManager extends AbstractCostManager {
         if (logger.isDebugEnabled()) logger.debug("########Current node: " + chaseTreeRoot.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("########Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<TargetCellsToChangeForEGD> tupleGroupsWithSameConclusionValue = equivalenceClass.getTupleGroups();
-        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && isNotViolation(tupleGroupsWithSameConclusionValue, scenario)) {
+        if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && satisfactionChecker.isSatisfiedAfterUpgrades(tupleGroupsWithSameConclusionValue, scenario)) {
             return Collections.EMPTY_LIST;
         }
         List<Repair> result = new ArrayList<Repair>();
@@ -59,7 +59,7 @@ public class StandardCostManager extends AbstractCostManager {
         return result;
     }
 
-    private List<Repair> generateBackwardRepairs(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId, EquivalenceClassForEGD equivalenceClass) {
+    protected List<Repair> generateBackwardRepairs(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId, EquivalenceClassForEGD equivalenceClass) {
         if (tupleGroups.size() > 5) {
             throw new ChaseException("Tuple group of excessive size, it is not possible to chase this scenario: " + tupleGroups);
         }

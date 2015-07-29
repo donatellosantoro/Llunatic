@@ -48,7 +48,7 @@ public class ChaseTGDEquivalenceClass {
     private ChangeCell cellChanger;
     
     private CorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
-    private FindIdMappingForTGDSAU idMappingFinder = new FindIdMappingForTGDSAU();
+    private CheckSatisfactionAfterUpgradesTGD satisfactionChecker = new CheckSatisfactionAfterUpgradesTGD();
 
     public ChaseTGDEquivalenceClass(IRunQuery queryRunner, IOIDGenerator oidGenerator, OccurrenceHandlerMC occurrenceHandler, ChangeCell cellChanger) {
         this.queryRunner = queryRunner;
@@ -87,7 +87,7 @@ public class ChaseTGDEquivalenceClass {
         it.close();
         if (logger.isDebugEnabled()) logger.debug("Equivalence classes\n " + LunaticUtility.printCollection(equivalenceClasses));
         if (logger.isDebugEnabled()) logger.debug("CellGroup Map\n " + LunaticUtility.printMap(cellGroupMap));
-        List<TargetCellsToInsertForTGD> updates = generateUpdates(cellGroupMap, currentNode.getDeltaDB(), currentNode.getId(), scenario);
+        List<TargetCellsToInsertForTGD> updates = generateUpdates(cellGroupMap, currentNode.getDeltaDB(), currentNode.getId(), tgd, scenario);
         applyChanges(updates, currentNode.getDeltaDB(), currentNode.getId(), scenario);
         if (logger.isDebugEnabled()) logger.debug("** Updates " + LunaticUtility.printCollection(updates));
         return !updates.isEmpty();
@@ -189,7 +189,7 @@ public class ChaseTGDEquivalenceClass {
         }
     }
 
-    private List<TargetCellsToInsertForTGD> generateUpdates(Map<CellGroupCell, List<TargetCellsToInsertForTGD>> cellMap, IDatabase deltaDB, String step, Scenario scenario) {
+    private List<TargetCellsToInsertForTGD> generateUpdates(Map<CellGroupCell, List<TargetCellsToInsertForTGD>> cellMap, IDatabase deltaDB, String step, Dependency tgd, Scenario scenario) {
         Set<List<TargetCellsToInsertForTGD>> analizedSets = new HashSet<List<TargetCellsToInsertForTGD>>();
         List<TargetCellsToInsertForTGD> candidateUpdates = new ArrayList<TargetCellsToInsertForTGD>();
         Set<TupleOID> tuplesToRemoveDueToSAU = new HashSet<TupleOID>();
@@ -204,7 +204,7 @@ public class ChaseTGDEquivalenceClass {
             mergedCellsToInsert.setCellGroup(enrichedCellGroup);
             this.cellGroupIDFixer.correctCellGroupId(mergedCellsToInsert.getCellGroup());
             checkAndSetOriginalValues(mergedCellsToInsert.getCellGroup());
-            if (generatesTuplesToRemoveDueToSAU(mergedCellsToInsert, tuplesToRemoveDueToSAU) || idMappingFinder.satisfiedAfterRepairs(mergedCellsToInsert, canonicalCellGroup, scenario)) {
+            if (generatesTuplesToRemoveDueToSAU(mergedCellsToInsert, tuplesToRemoveDueToSAU) || satisfactionChecker.isSatisfiedAfterUpgrades(mergedCellsToInsert, canonicalCellGroup, tgd, scenario)) {
                 tuplesToRemoveDueToSAU.addAll(getTupleOIDs(mergedCellsToInsert));
             } else {
                 addNewCells(mergedCellsToInsert);

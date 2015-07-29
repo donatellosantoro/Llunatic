@@ -8,6 +8,8 @@ import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
 import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.database.TupleOID;
+import it.unibas.lunatic.model.dependency.Dependency;
+import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.utility.combinatorial.GenericCombinationsGenerator;
 import it.unibas.lunatic.utility.combinatorial.GenericListGenerator;
@@ -22,13 +24,16 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FindIdMappingForTGDSAU {
+public class CheckSatisfactionAfterUpgradesTGD {
 
-    private static final Logger logger = LoggerFactory.getLogger(FindIdMappingForTGDSAU.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(CheckSatisfactionAfterUpgradesTGD.class.getName());
     
     private GenericListGenerator<Map<TupleOID, TupleOID>> listGenerator = new GenericListGenerator<Map<TupleOID, TupleOID>>();
 
-    public boolean satisfiedAfterRepairs(TargetCellsToInsertForTGD update, CellGroup canonicalCellGroup, Scenario scenario) {
+    public boolean isSatisfiedAfterUpgrades(TargetCellsToInsertForTGD update, CellGroup canonicalCellGroup, Dependency tgd, Scenario scenario) {
+        if (!DependencyUtility.hasSourceSymbols(tgd)) {
+            return false;
+        }
         CellGroup existingCellGroup = update.getCellGroup();
         Set<CellGroupCell> newCells = update.getNewCells();
         if (logger.isDebugEnabled()) logger.debug("Canonical cell group: " + canonicalCellGroup);
@@ -43,7 +48,7 @@ public class FindIdMappingForTGDSAU {
                 continue;
             }
             List<CellGroup> cellGroupsToCheck = Arrays.asList(new CellGroup[]{canonicalWithMapping, existingCellGroup});
-            boolean lubIsIdempotent = scenario.getCostManager().checkContainment(cellGroupsToCheck);
+            boolean lubIsIdempotent = CellGroupUtility.checkContainment(cellGroupsToCheck);
             if (lubIsIdempotent) {
                 if (logger.isDebugEnabled()) logger.debug("Found idempotent cell groups with mapping:\n" + LunaticUtility.printMap(idMapping) + "\n" + canonicalWithMapping + "\n" + existingCellGroup);
                 return true;
