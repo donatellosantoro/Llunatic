@@ -4,13 +4,13 @@ import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChangeSet {
+public class ViolationContext {
 
     private CellGroup cellGroup;
     private String chaseMode;
     private List<CellGroup> witnessCellGroups = new ArrayList<CellGroup>();
 
-    public ChangeSet(CellGroup cellGroup, String chaseMode, List<CellGroup> witnessCellGroups) {
+    public ViolationContext(CellGroup cellGroup, String chaseMode, List<CellGroup> witnessCellGroups) {
         this.cellGroup = cellGroup;
         this.chaseMode = chaseMode;
         this.witnessCellGroups = witnessCellGroups;
@@ -32,7 +32,7 @@ public class ChangeSet {
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        final ChangeSet other = (ChangeSet) obj;
+        final ViolationContext other = (ViolationContext) obj;
         if (this.cellGroup != other.cellGroup && (this.cellGroup == null || !this.cellGroup.equals(other.cellGroup))) return false;
         if ((this.chaseMode == null) ? (other.chaseMode != null) : !this.chaseMode.equals(other.chaseMode)) return false;
         return true;

@@ -6,18 +6,18 @@ import java.util.List;
 
 public class Repair {
 
-    private List<ChangeSet> changes = new ArrayList<ChangeSet>();
+    private List<ViolationContext> changes = new ArrayList<ViolationContext>();
     private boolean suspicious;
 
-    public List<ChangeSet> getChanges() {
+    public List<ViolationContext> getChanges() {
         return changes;
     }
 
-    public void setChanges(List<ChangeSet> changes) {
+    public void setChanges(List<ViolationContext> changes) {
         this.changes = changes;
     }
 
-    public void addChanges(ChangeSet changeSet) {
+    public void addChanges(ViolationContext changeSet) {
         if (changeSet == null) {
             throw new IllegalArgumentException("Unable to add null changeSet");
         }
@@ -35,12 +35,12 @@ public class Repair {
     public String getChaseModes() {
         boolean forward = false;
         boolean backward = false;
-        for (ChangeSet changeSet : changes) {
+        for (ViolationContext changeSet : changes) {
             if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_FORWARD)) {
                 forward = true;
             }
         }
-        for (ChangeSet changeSet : changes) {
+        for (ViolationContext changeSet : changes) {
             if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
                 backward = true;
             }
@@ -55,7 +55,7 @@ public class Repair {
     }
 
     public boolean isOnlyForward() {
-        for (ChangeSet changeSet : changes) {
+        for (ViolationContext changeSet : changes) {
             if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
                 return false;
             }
@@ -77,7 +77,7 @@ public class Repair {
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append("Repair: ").append(suspicious ? " (suspicious)" : "").append("\n");
-        for (ChangeSet changeSet : changes) {
+        for (ViolationContext changeSet : changes) {
             result.append("\t").append(changeSet).append("\n");
         }
         return result.toString();

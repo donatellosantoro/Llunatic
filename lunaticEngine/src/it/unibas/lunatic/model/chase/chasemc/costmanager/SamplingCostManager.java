@@ -5,7 +5,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
+import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
@@ -83,7 +83,7 @@ public class SamplingCostManager extends StandardCostManager {
     }
 
     private Repair generateRandomForwardRepair(EquivalenceClassForEGD equivalenceClass, Scenario scenario, IDatabase deltaDB, String stepId) {
-        ChangeSet changesForForwardRepair = super.generateForwardRepair(equivalenceClass.getTupleGroups(), scenario, deltaDB, stepId);
+        ViolationContext changesForForwardRepair = super.generateForwardRepair(equivalenceClass.getTupleGroups(), scenario, deltaDB, stepId);
         Repair forwardRepair = new Repair();
         forwardRepair.addChanges(changesForForwardRepair);
         correctValuesInRepair(forwardRepair, equivalenceClass);
@@ -147,7 +147,7 @@ public class SamplingCostManager extends StandardCostManager {
     }
 
     private void correctValuesInRepair(Repair repair, EquivalenceClassForEGD equivalenceClass) {
-        for (ChangeSet changeSet : repair.getChanges()) {
+        for (ViolationContext changeSet : repair.getChanges()) {
             if (!changeSet.getChaseMode().equals(LunaticConstants.CHASE_FORWARD)) {
                 continue;
             }

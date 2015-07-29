@@ -9,7 +9,7 @@ import it.unibas.lunatic.model.algebra.operators.IInsertTuple;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
+import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IDatabase;
@@ -51,7 +51,7 @@ public class ChangeCell {
         if (logger.isDebugEnabled()) logger.debug("New target: " + deltaDB.printInstances());
     }
 
-    public void deleteCells(ChangeSet changeSet, IDatabase deltaDB, String stepId) {
+    public void deleteCells(ViolationContext changeSet, IDatabase deltaDB, String stepId) {
         CellGroup cellGroup = changeSet.getCellGroup();
         occurrenceHandler.deleteCellGroup(cellGroup, deltaDB, stepId);
         Set<CellGroupCell> cellsToChange = cellGroup.getOccurrences();

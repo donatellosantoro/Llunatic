@@ -4,7 +4,7 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
+import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
@@ -35,7 +35,7 @@ public class AddUserNode {
         newCellGroup.addUserCell(userCell);
         IPartialOrder po = scenario.getPartialOrder();
         po.setCellGroupValue(newCellGroup, scenario);
-        ChangeSet changeSet = new ChangeSet(newCellGroup, LunaticConstants.CHASE_USER, Collections.EMPTY_LIST);
+        ViolationContext changeSet = new ViolationContext(newCellGroup, LunaticConstants.CHASE_USER, Collections.EMPTY_LIST);
         cellChanger.changeCells(changeSet.getCellGroup(), userNode.getDeltaDB(), userNode.getId(), scenario);
         return newCellGroup;
     }

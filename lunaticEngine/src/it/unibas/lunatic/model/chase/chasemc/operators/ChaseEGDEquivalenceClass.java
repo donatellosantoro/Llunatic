@@ -12,7 +12,7 @@ import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
+import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
@@ -217,12 +217,12 @@ public class ChaseEGDEquivalenceClass {
             String egdId = egd.getId();
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, currentNode, localId, egd, repair, repair.getChaseModes());
-            for (ChangeSet changeSet : repair.getChanges()) {
+            for (ViolationContext changeSet : repair.getChanges()) {
                 this.cellChanger.changeCells(changeSet.getCellGroup(), newStep.getDeltaDB(), newStep.getId(), scenario);
             }
             if (repair.isSuspicious() && !dependencyIsSatisfied(newStep, premiseQuery, egd, scenario)) {
                 if (logger.isDebugEnabled()) logger.debug("Generated step is not a solution \n" + newStep);
-                for (ChangeSet changeSet : repair.getChanges()) {
+                for (ViolationContext changeSet : repair.getChanges()) {
                     this.cellChanger.deleteCells(changeSet, newStep.getDeltaDB(), newStep.getId());
                 }
                 continue;
@@ -244,13 +244,13 @@ public class ChaseEGDEquivalenceClass {
 
     private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Scenario scenario) {
         if (egd.hasSymmetricAtoms() || scenario.getConfiguration().isUseLimit1ForEGDs()) {
-            return false;
+            return true;
         }
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);
         boolean consistent = true;
         Set<Cell> cellsToChange = new HashSet<Cell>();
-        for (Iterator<ChangeSet> it = repair.getChanges().iterator(); it.hasNext();) {
-            ChangeSet changeSet = it.next();
+        for (Iterator<ViolationContext> it = repair.getChanges().iterator(); it.hasNext();) {
+            ViolationContext changeSet = it.next();
             if (occurrencesOverlap(changeSet, cellsToChange) || witnessOverlaps(changeSet, cellsToChange)) {
                 if (logger.isDebugEnabled()) logger.debug("Violation context has overlaps: " + changeSet);
                 it.remove();
@@ -262,7 +262,7 @@ public class ChaseEGDEquivalenceClass {
         return consistent;
     }
 
-    private boolean occurrencesOverlap(ChangeSet changeSet, Set<Cell> cellsToChange) {
+    private boolean occurrencesOverlap(ViolationContext changeSet, Set<Cell> cellsToChange) {
         CellGroup cellGroup = changeSet.getCellGroup();
         boolean inconsistent = containsCells(cellGroup, cellsToChange);
         if (inconsistent && logger.isDebugEnabled()) logger.debug("Occurrences Overlap:\n" + changeSet);
@@ -270,7 +270,7 @@ public class ChaseEGDEquivalenceClass {
         return inconsistent;
     }
 
-    private boolean witnessOverlaps(ChangeSet changeSet, Set<Cell> cellsToChange) {
+    private boolean witnessOverlaps(ViolationContext changeSet, Set<Cell> cellsToChange) {
         if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
             return false;
         }
@@ -301,7 +301,7 @@ public class ChaseEGDEquivalenceClass {
 
     private List<AttributeRef> extractAffectedAttributes(Repair repair) {
         List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
-        for (ChangeSet changeSet : repair.getChanges()) {
+        for (ViolationContext changeSet : repair.getChanges()) {
             CellGroup cellGroupToChange = changeSet.getCellGroup();
             for (Cell occurrenceCell : cellGroupToChange.getOccurrences()) {
                 if (!affectedAttributes.contains(occurrenceCell.getAttributeRef())) {

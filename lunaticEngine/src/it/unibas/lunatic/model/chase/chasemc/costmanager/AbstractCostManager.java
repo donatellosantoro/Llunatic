@@ -10,7 +10,7 @@ import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
+import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
@@ -180,14 +180,14 @@ public abstract class AbstractCostManager implements ICostManager {
         return isBelow;
     }
 
-    protected ChangeSet generateForwardRepair(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
+    protected ViolationContext generateForwardRepair(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
         List<CellGroup> cellGroups = extractCellGroups(tupleGroups);
         // give preference to the script partial order, that may have additional rules to solve the violation
         CellGroup lub = getLUB(cellGroups, scenario.getScriptPartialOrder(), scenario);
         if (lub == null) {
             lub = getLUB(cellGroups, scenario.getPartialOrder(), scenario);
         }
-        ChangeSet changeSet = new ChangeSet(lub, LunaticConstants.CHASE_FORWARD, buildWitnessCellGroups(tupleGroups));
+        ViolationContext changeSet = new ViolationContext(lub, LunaticConstants.CHASE_FORWARD, buildWitnessCellGroups(tupleGroups));
         return changeSet;
     }
 

@@ -5,7 +5,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
+import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
@@ -94,7 +94,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             return null;
         }
         Repair repair = new Repair();
-        ChangeSet forwardChanges = new ChangeSet(cellGroup, LunaticConstants.CHASE_FORWARD, buildWitnessCellGroups(tupleGroups));
+        ViolationContext forwardChanges = new ViolationContext(cellGroup, LunaticConstants.CHASE_FORWARD, buildWitnessCellGroups(tupleGroups));
         repair.addChanges(forwardChanges);
         return repair;
     }
@@ -129,7 +129,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         if (logger.isTraceEnabled()) logger.trace("Generating repair for groups \nForward: " + forwardGroups + "\nBackward: " + backwardGroups);
         Repair repair = new Repair();
         if (forwardGroups.size() > 1) {
-            ChangeSet forwardChanges = generateForwardRepair(forwardGroups, scenario, deltaDB, stepId);
+            ViolationContext forwardChanges = generateForwardRepair(forwardGroups, scenario, deltaDB, stepId);
             if (logger.isDebugEnabled()) logger.debug("Forward changes: " + forwardChanges);
             if (forwardChanges != null) {
                 repair.addChanges(forwardChanges);
@@ -141,7 +141,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
                 LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
                 backwardCellGroup.setValue(llunValue);
                 backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
-                ChangeSet backwardChangesForGroup = new ChangeSet(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardGroups));
+                ViolationContext backwardChangesForGroup = new ViolationContext(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardGroups));
                 repair.addChanges(backwardChangesForGroup);
                 if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {
                     backwardGroup.setSuspicious(true);
@@ -156,7 +156,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
 
     private Repair generateForwardRepair(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId, EquivalenceClassForEGD equivalenceClass) {
         Repair repair = new Repair();
-        ChangeSet forwardChanges = generateForwardRepair(tupleGroups, scenario, deltaDB, stepId);
+        ViolationContext forwardChanges = generateForwardRepair(tupleGroups, scenario, deltaDB, stepId);
         if (logger.isDebugEnabled()) logger.debug("Forward changes: " + forwardChanges);
         repair.addChanges(forwardChanges);
         return repair;

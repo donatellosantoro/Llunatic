@@ -11,7 +11,7 @@ import it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
+import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
@@ -155,7 +155,7 @@ public class ChaseEGDs {
         Repair repair = new Repair();
         List<CellGroup> cellGroups = extractCellGroups(equivalenceClass.getTupleGroups());
         CellGroup cellGroup = findChanges(cellGroups);
-        ChangeSet changesForRepair = new ChangeSet(cellGroup, LunaticConstants.CHASE_FORWARD, Collections.EMPTY_LIST);
+        ViolationContext changesForRepair = new ViolationContext(cellGroup, LunaticConstants.CHASE_FORWARD, Collections.EMPTY_LIST);
         repair.addChanges(changesForRepair);
         return repair;
     }
@@ -204,7 +204,7 @@ public class ChaseEGDs {
     }
 
     private void applyRepairs(Repair repair, Scenario scenario) {
-        for (ChangeSet changeSet : repair.getChanges()) {
+        for (ViolationContext changeSet : repair.getChanges()) {
             IValue newValue = changeSet.getCellGroup().getValue();
             Set<CellRef> cellsToChange = ChaseUtility.createCellRefsFromCells(changeSet.getCellGroup().getOccurrences());
             for (CellRef cellRef : cellsToChange) {

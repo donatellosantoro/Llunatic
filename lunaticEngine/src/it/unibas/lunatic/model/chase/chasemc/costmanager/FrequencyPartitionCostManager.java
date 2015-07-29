@@ -7,7 +7,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.ChangeSet;
+import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
@@ -46,7 +46,7 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
         }
         List<Repair> result = new ArrayList<Repair>();
         // generate forward repair for all groups
-        ChangeSet changesForForwardRepair = generateForwardRepair(equivalenceClass.getTupleGroups(), scenario, chaseTreeRoot.getDeltaDB(), stepId);
+        ViolationContext changesForForwardRepair = generateForwardRepair(equivalenceClass.getTupleGroups(), scenario, chaseTreeRoot.getDeltaDB(), stepId);
         Repair forwardRepair = new Repair();
         forwardRepair.addChanges(changesForForwardRepair);
         if (logger.isDebugEnabled()) logger.debug("########Forward repair: " + forwardRepair);
@@ -144,7 +144,7 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
             Scenario scenario, IDatabase deltaDB, String stepId) {
         Repair repair = new Repair();
         if (forwardGroups.size() > 1) {
-            ChangeSet forwardChanges = generateForwardRepair(forwardGroups, scenario, deltaDB, stepId);
+            ViolationContext forwardChanges = generateForwardRepair(forwardGroups, scenario, deltaDB, stepId);
             repair.addChanges(forwardChanges);
         }
         for (TargetCellsToChangeForEGD backwardTupleGroup : backwardGroups) {
@@ -152,7 +152,7 @@ public class FrequencyPartitionCostManager extends AbstractCostManager {
             LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
             backwardCellGroup.setValue(llunValue);
             backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
-            ChangeSet backwardChangesForGroup = new ChangeSet(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardGroups));
+            ViolationContext backwardChangesForGroup = new ViolationContext(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardGroups));
             repair.addChanges(backwardChangesForGroup);
         }
         return repair;
