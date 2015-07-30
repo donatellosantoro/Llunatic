@@ -9,7 +9,6 @@ import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
@@ -18,11 +17,12 @@ import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.CellRef;
 import it.unibas.lunatic.model.database.IDatabase;
+import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -141,7 +141,7 @@ public class ChaseEGDEquivalenceClass {
             }
         }
         if (logger.isDebugEnabled()) logger.debug("Equivalence class loaded");
-        completeCellGroup(equivalenceClass, deltaDB, stepId, scenario);
+        enrichCellGroups(equivalenceClass, deltaDB, stepId, scenario);
         if (logger.isDebugEnabled()) logger.debug("-------- Equivalence class:\n" + equivalenceClass + "\n---------------");
         return equivalenceClass;
     }
@@ -173,17 +173,28 @@ public class ChaseEGDEquivalenceClass {
         return new EquivalenceClassForEGD(egd, occurrenceAttributesForConclusionVariable, egd.getAttributesForBackwardChasing());
     }
 
-    private void completeCellGroup(EquivalenceClassForEGD equivalenceClass, IDatabase deltaDB, String stepId, Scenario scenario) {
-        for (TargetCellsToChangeForEGD tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
+    private void enrichCellGroups(EquivalenceClassForEGD equivalenceClass, IDatabase deltaDB, String stepId, Scenario scenario) {
+        for (EGDEquivalenceClassCells tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
             CellGroup forwardCellGroup = this.occurrenceHandler.enrichCellGroups(tupleGroup.getCellGroupForForwardRepair(), deltaDB, stepId, scenario);
             tupleGroup.setCellGroupForForwardRepair(forwardCellGroup);
-            for (BackwardAttribute backwardAttribute : tupleGroup.getCellGroupsForBackwardRepairs().keySet()) {
-                CellGroup oldBackwardCellGroup = tupleGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute);
-                CellGroup newBackwardCellGroup = this.occurrenceHandler.enrichCellGroups(oldBackwardCellGroup, deltaDB, stepId, scenario);
-                tupleGroup.setCellGroupForBackwardRepair(backwardAttribute, newBackwardCellGroup);
+            for (BackwardAttribute backwardAttribute : tupleGroup.getWitnessCells().keySet()) {
+                Set<CellGroup> cellGroupsForAttribute = generateBackwardCellGroups(tupleGroup.getWitnessCells().get(backwardAttribute), scenario, deltaDB, stepId);
+                tupleGroup.addCellGroupsForBackwardRepair(backwardAttribute, cellGroupsForAttribute);                
             }
-        }
+        }        
     }
+    
+    private Set<CellGroup> generateBackwardCellGroups(Set<Cell> witnessCells, Scenario scenario, IDatabase deltaDB, String stepId) {
+        Set<CellGroup> result = new HashSet<CellGroup>();
+        for (Cell witnessCell : witnessCells) {
+            IValue value = witnessCell.getValue();
+            CellGroup backwardCellGroup = new CellGroup(value, true);
+            backwardCellGroup.addOccurrenceCell(new CellGroupCell(witnessCell, null, LunaticConstants.TYPE_OCCURRENCE, null));
+            CellGroup newBackwardCellGroup = this.occurrenceHandler.enrichCellGroups(backwardCellGroup, deltaDB, stepId, scenario);
+            result.add(newBackwardCellGroup);
+        }
+        return result;
+    }    
 
     private List<Repair> accumulateRepairs(List<Repair> repairsForDependency, List<Repair> repairsForEquivalenceClass, EquivalenceClassForEGD equivalenceClass) {
         if (logger.isDebugEnabled()) logger.debug("Accumulating new repairs. Repairs for dependency so far:\n" + LunaticUtility.printCollection(repairsForDependency) + "\nRepairs for equivalence class:\n" + LunaticUtility.printCollection(repairsForEquivalenceClass));
@@ -264,11 +275,10 @@ public class ChaseEGDEquivalenceClass {
         return consistent;
     }
 
-    private boolean occurrencesOverlap(ViolationContext changeSet, Set<CellGroupCell> cellsToChange) {
-        CellGroup cellGroup = changeSet.getCellGroup();
-        boolean inconsistent = containsCells(cellGroup, cellsToChange);
-        if (inconsistent && logger.isDebugEnabled()) logger.debug("Occurrences Overlap:\n" + changeSet);
-//        if (inconsistent) logger.warn("Inconsistent changes:\n" + changeSet);
+    private boolean occurrencesOverlap(ViolationContext violationContext, Set<CellGroupCell> cellsToChange) {
+        CellGroup cellGroup = violationContext.getCellGroup();
+        boolean inconsistent = containsCellRefs(CellGroupUtility.extractAllCellRefs(cellGroup), cellsToChange);
+        if (inconsistent && logger.isDebugEnabled()) logger.debug("Occurrences Overlap:\n" + violationContext);
         return inconsistent;
     }
 
@@ -276,21 +286,18 @@ public class ChaseEGDEquivalenceClass {
         if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
             return false;
         }
-        List<CellGroup> witnessGroups = changeSet.getWitnessCellGroups();
-        for (CellGroup witnessGroup : witnessGroups) {
-            if (containsCells(witnessGroup, cellsToChange)) {
-                if (logger.isDebugEnabled()) logger.debug("Witness Overlaps:\n" + witnessGroup);
-//                logger.warn("Inconsistent witness:\n" + witnessGroup);
-                return true;
-            }
+        Set<CellRef> witnessCells = CellGroupUtility.extractAllCellRefs(changeSet.getWitnessCells());
+        if (containsCellRefs(witnessCells, cellsToChange)) {
+            if (logger.isDebugEnabled()) logger.debug("Witness Overlaps:\n" + witnessCells);
+            return true;
         }
         return false;
     }
 
-    private boolean containsCells(CellGroup cellGroup, Set<CellGroupCell> cellsToChange) {
+    private boolean containsCellRefs(Set<CellRef> witnessCells, Set<CellGroupCell> cellsToChange) {
         Set<CellRef> cellRefsToChange = ChaseUtility.createCellRefsFromCells(cellsToChange);
-        for (CellGroupCell cell : cellGroup.getOccurrences()) {
-            if (cellRefsToChange.contains(new CellRef(cell))) {
+        for (CellRef cell : witnessCells) {
+            if (cellRefsToChange.contains(cell)) {
                 return true;
             }
         }
@@ -298,7 +305,6 @@ public class ChaseEGDEquivalenceClass {
     }
 
     private boolean isEGDSatisfied(Dependency egd, boolean consistentRepair, Scenario scenario) {
-//        return egd.hasSymmetricAtoms() && consistentRepair && !scenario.getConfiguration().isUseLimit1();
         return egd.hasSymmetricAtoms() && consistentRepair && !scenario.getConfiguration().isUseLimit1ForEGDs() && !egd.isOverlapBetweenAffectedAndQueried();
     }
 

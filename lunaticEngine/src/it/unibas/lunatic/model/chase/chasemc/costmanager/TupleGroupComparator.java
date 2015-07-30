@@ -1,10 +1,11 @@
 package it.unibas.lunatic.model.chase.chasemc.costmanager;
 
-import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
+import it.unibas.lunatic.model.database.Cell;
 import java.util.Comparator;
+import java.util.Set;
 
-class TupleGroupComparator implements Comparator<TargetCellsToChangeForEGD> {
+class TupleGroupComparator implements Comparator<EGDEquivalenceClassCells> {
 
     //V0
 //    public int compare(TupleGroup t1, TupleGroup t2) {
@@ -14,8 +15,9 @@ class TupleGroupComparator implements Comparator<TargetCellsToChangeForEGD> {
 //        }
 //        return t1.getConclusionGroup().getValue().toString().compareTo(t2.getConclusionGroup().getValue().toString());
 //    }
-    //V1
-    public int compare(TargetCellsToChangeForEGD t1, TargetCellsToChangeForEGD t2) {
+    
+    //V1 TODO++ check
+    public int compare(EGDEquivalenceClassCells t1, EGDEquivalenceClassCells t2) {
         int sizeDifference = getOccurrencesAndProvenances(t1) - getOccurrencesAndProvenances(t2);
         if (sizeDifference != 0) {
             return sizeDifference;
@@ -23,11 +25,10 @@ class TupleGroupComparator implements Comparator<TargetCellsToChangeForEGD> {
         return t1.getCellGroupForForwardRepair().getValue().toString().compareTo(t2.getCellGroupForForwardRepair().getValue().toString());
     }
 
-    private int getOccurrencesAndProvenances(TargetCellsToChangeForEGD t) {
+    private int getOccurrencesAndProvenances(EGDEquivalenceClassCells t) {
         int count = 0;
-        for (CellGroup cellGroup : t.getCellGroupsForBackwardRepairs().values()) {
-            count += cellGroup.getOccurrences().size();
-            count += cellGroup.getJustifications().size();
+        for (Set<Cell> witnessCells : t.getWitnessCells().values()) {
+            count += witnessCells.size();
         }
         return count;
     }

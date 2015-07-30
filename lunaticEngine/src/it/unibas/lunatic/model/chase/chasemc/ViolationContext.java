@@ -1,21 +1,26 @@
 package it.unibas.lunatic.model.chase.chasemc;
 
+import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.utility.LunaticUtility;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ViolationContext {
 
     private CellGroup cellGroup;
     private String chaseMode;
-    private List<CellGroup> witnessCellGroups = new ArrayList<CellGroup>();
+    private Set<Cell> witnessCells = new HashSet<Cell>();
 
-    public ViolationContext(CellGroup cellGroup, String chaseMode, List<CellGroup> witnessCellGroups) {
+    public ViolationContext(CellGroup cellGroup, String chaseMode) {
         this.cellGroup = cellGroup;
         this.chaseMode = chaseMode;
-        this.witnessCellGroups = witnessCellGroups;
     }
 
+    public ViolationContext(CellGroup cellGroup, String chaseMode, Set<Cell> witnessCells) {
+        this(cellGroup, chaseMode);
+        this.witnessCells = witnessCells;
+    }
+    
     public CellGroup getCellGroup() {
         return cellGroup;
     }
@@ -24,8 +29,8 @@ public class ViolationContext {
         return chaseMode;
     }
 
-    public List<CellGroup> getWitnessCellGroups() {
-        return witnessCellGroups;
+    public Set<Cell> getWitnessCells() {
+        return witnessCells;
     }
 
     @Override
@@ -44,6 +49,6 @@ public class ViolationContext {
     }
 
     public String toLongString() {
-        return super.toString() + " Witness cell groups:\n" + LunaticUtility.printCollection(witnessCellGroups);
+        return super.toString() + " Witness cell groups:\n" + LunaticUtility.printCollection(witnessCells);
     }
 }

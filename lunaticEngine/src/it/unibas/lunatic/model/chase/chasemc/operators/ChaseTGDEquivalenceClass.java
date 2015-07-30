@@ -8,7 +8,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForTGD;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToInsertForTGD;
+import it.unibas.lunatic.model.chase.chasemc.TGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
@@ -68,7 +68,7 @@ public class ChaseTGDEquivalenceClass {
         long violationQueryEnd = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.TGD_VIOLATION_QUERY_TIME, violationQueryEnd - violationQueryStart);
         List<EquivalenceClassForTGD> equivalenceClasses = new ArrayList<EquivalenceClassForTGD>();
-        Map<CellGroupCell, List<TargetCellsToInsertForTGD>> cellGroupMap = new HashMap<CellGroupCell, List<TargetCellsToInsertForTGD>>();
+        Map<CellGroupCell, List<TGDEquivalenceClassCells>> cellGroupMap = new HashMap<CellGroupCell, List<TGDEquivalenceClassCells>>();
         List<IValue> lastUniversalValues = null;
         while (it.hasNext()) {
             Tuple tuple = it.next();
@@ -87,20 +87,20 @@ public class ChaseTGDEquivalenceClass {
         it.close();
         if (logger.isDebugEnabled()) logger.debug("Equivalence classes\n " + LunaticUtility.printCollection(equivalenceClasses));
         if (logger.isDebugEnabled()) logger.debug("CellGroup Map\n " + LunaticUtility.printMap(cellGroupMap));
-        List<TargetCellsToInsertForTGD> updates = generateUpdates(cellGroupMap, currentNode.getDeltaDB(), currentNode.getId(), tgd, scenario);
+        List<TGDEquivalenceClassCells> updates = generateUpdates(cellGroupMap, currentNode.getDeltaDB(), currentNode.getId(), tgd, scenario);
         applyChanges(updates, currentNode.getDeltaDB(), currentNode.getId(), scenario);
         if (logger.isDebugEnabled()) logger.debug("** Updates " + LunaticUtility.printCollection(updates));
         return !updates.isEmpty();
     }
 
-    private void addTupleInEquivalenceClass(Tuple tuple, EquivalenceClassForTGD equivalenceClass, Dependency tgd, Map<CellGroupCell, List<TargetCellsToInsertForTGD>> cellGroupMap) {
+    private void addTupleInEquivalenceClass(Tuple tuple, EquivalenceClassForTGD equivalenceClass, Dependency tgd, Map<CellGroupCell, List<TGDEquivalenceClassCells>> cellGroupMap) {
         List<FormulaVariable> universalVariables = DependencyUtility.getUniversalVariablesInConclusion(tgd);
         for (FormulaVariable universalVariable : universalVariables) {
             List<CellGroupCell> cellsForVariable = findPremiseCells(tuple, universalVariable, tgd);
-            TargetCellsToInsertForTGD targetCellsToInsert = equivalenceClass.getTargetCellForVariable(universalVariable);
+            TGDEquivalenceClassCells targetCellsToInsert = equivalenceClass.getTargetCellForVariable(universalVariable);
             if (targetCellsToInsert == null) {
                 IValue cellGroupValue = cellsForVariable.get(0).getValue();
-                targetCellsToInsert = new TargetCellsToInsertForTGD(cellGroupValue);
+                targetCellsToInsert = new TGDEquivalenceClassCells(cellGroupValue);
                 equivalenceClass.setTargetCellToInsertForVariable(universalVariable, targetCellsToInsert);
             }
             CellGroup cellGroup = targetCellsToInsert.getCellGroup();
@@ -121,9 +121,9 @@ public class ChaseTGDEquivalenceClass {
         List<FormulaVariable> existentialVariables = DependencyUtility.getExistentialVariables(tgd);
         for (FormulaVariable existentialVariable : existentialVariables) {
             IValue nullValue = generateNullValueForVariable(existentialVariable, tgd.getTargetGenerators(), tuple);
-            TargetCellsToInsertForTGD targetCellsToInsert = equivalenceClass.getTargetCellForVariable(existentialVariable);
+            TGDEquivalenceClassCells targetCellsToInsert = equivalenceClass.getTargetCellForVariable(existentialVariable);
             if (targetCellsToInsert == null) {
-                targetCellsToInsert = new TargetCellsToInsertForTGD(nullValue);
+                targetCellsToInsert = new TGDEquivalenceClassCells(nullValue);
                 equivalenceClass.setTargetCellToInsertForVariable(existentialVariable, targetCellsToInsert);
             }
             if (!equivalenceClass.hasNewCellsForVariable(existentialVariable)) {
@@ -178,10 +178,10 @@ public class ChaseTGDEquivalenceClass {
         }
     }
 
-    private void addCellToCellGroupMap(CellGroupCell cell, TargetCellsToInsertForTGD targetCellsToInsert, Map<CellGroupCell, List<TargetCellsToInsertForTGD>> cellMap) {
-        List<TargetCellsToInsertForTGD> targetCellsForCell = cellMap.get(cell);
+    private void addCellToCellGroupMap(CellGroupCell cell, TGDEquivalenceClassCells targetCellsToInsert, Map<CellGroupCell, List<TGDEquivalenceClassCells>> cellMap) {
+        List<TGDEquivalenceClassCells> targetCellsForCell = cellMap.get(cell);
         if (targetCellsForCell == null) {
-            targetCellsForCell = new ArrayList<TargetCellsToInsertForTGD>();
+            targetCellsForCell = new ArrayList<TGDEquivalenceClassCells>();
             cellMap.put(cell, targetCellsForCell);
         }
         if (!targetCellsForCell.contains(targetCellsToInsert)) {
@@ -189,16 +189,16 @@ public class ChaseTGDEquivalenceClass {
         }
     }
 
-    private List<TargetCellsToInsertForTGD> generateUpdates(Map<CellGroupCell, List<TargetCellsToInsertForTGD>> cellMap, IDatabase deltaDB, String step, Dependency tgd, Scenario scenario) {
-        Set<List<TargetCellsToInsertForTGD>> analizedSets = new HashSet<List<TargetCellsToInsertForTGD>>();
-        List<TargetCellsToInsertForTGD> candidateUpdates = new ArrayList<TargetCellsToInsertForTGD>();
+    private List<TGDEquivalenceClassCells> generateUpdates(Map<CellGroupCell, List<TGDEquivalenceClassCells>> cellMap, IDatabase deltaDB, String step, Dependency tgd, Scenario scenario) {
+        Set<List<TGDEquivalenceClassCells>> analizedSets = new HashSet<List<TGDEquivalenceClassCells>>();
+        List<TGDEquivalenceClassCells> candidateUpdates = new ArrayList<TGDEquivalenceClassCells>();
         Set<TupleOID> tuplesToRemoveDueToSAU = new HashSet<TupleOID>();
-        for (List<TargetCellsToInsertForTGD> group : cellMap.values()) {
+        for (List<TGDEquivalenceClassCells> group : cellMap.values()) {
             if (analizedSets.contains(group)) {
                 continue;
             }
             analizedSets.add(group);
-            TargetCellsToInsertForTGD mergedCellsToInsert = mergeAll(group);
+            TGDEquivalenceClassCells mergedCellsToInsert = mergeAll(group);
             CellGroup canonicalCellGroup = mergedCellsToInsert.getCellGroup().clone();
             CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(mergedCellsToInsert.getCellGroup(), deltaDB, step, scenario);
             mergedCellsToInsert.setCellGroup(enrichedCellGroup);
@@ -211,9 +211,9 @@ public class ChaseTGDEquivalenceClass {
                 candidateUpdates.add(mergedCellsToInsert);
             }
         }
-        List<TargetCellsToInsertForTGD> result = new ArrayList<TargetCellsToInsertForTGD>();
+        List<TGDEquivalenceClassCells> result = new ArrayList<TGDEquivalenceClassCells>();
         // needs to filter at the end, some early updates might have survived
-        for (TargetCellsToInsertForTGD candidate : candidateUpdates) {
+        for (TGDEquivalenceClassCells candidate : candidateUpdates) {
             if (generatesTuplesToRemoveDueToSAU(candidate, tuplesToRemoveDueToSAU)) {
                 continue;
             }
@@ -222,11 +222,11 @@ public class ChaseTGDEquivalenceClass {
         return result;
     }
 
-    private TargetCellsToInsertForTGD mergeAll(List<TargetCellsToInsertForTGD> group) {
-        Iterator<TargetCellsToInsertForTGD> iterator = group.iterator();
-        TargetCellsToInsertForTGD result = iterator.next();
+    private TGDEquivalenceClassCells mergeAll(List<TGDEquivalenceClassCells> group) {
+        Iterator<TGDEquivalenceClassCells> iterator = group.iterator();
+        TGDEquivalenceClassCells result = iterator.next();
         while (iterator.hasNext()) {
-            TargetCellsToInsertForTGD otherCellsToInsert = iterator.next();
+            TGDEquivalenceClassCells otherCellsToInsert = iterator.next();
             CellGroupUtility.mergeCells(otherCellsToInsert.getCellGroup(), result.getCellGroup());
             result.getNewCells().addAll(otherCellsToInsert.getNewCells());
         }
@@ -235,7 +235,7 @@ public class ChaseTGDEquivalenceClass {
 
 
 
-    private void addNewCells(TargetCellsToInsertForTGD mergedCellsToInsert) {
+    private void addNewCells(TGDEquivalenceClassCells mergedCellsToInsert) {
         CellGroup cellGroup = mergedCellsToInsert.getCellGroup();
         for (CellGroupCell newCell : mergedCellsToInsert.getNewCells()) {
             newCell.setLastSavedCellGroupId(cellGroup.getId()); // new cell will be saved
@@ -243,8 +243,8 @@ public class ChaseTGDEquivalenceClass {
         }
     }
 
-    private void applyChanges(List<TargetCellsToInsertForTGD> updates, IDatabase deltaDB, String id, Scenario scenario) {
-        for (TargetCellsToInsertForTGD update : updates) {
+    private void applyChanges(List<TGDEquivalenceClassCells> updates, IDatabase deltaDB, String id, Scenario scenario) {
+        for (TGDEquivalenceClassCells update : updates) {
             this.cellChanger.changeCells(update.getCellGroup(), deltaDB, id, scenario);
         }
     }
@@ -264,7 +264,7 @@ public class ChaseTGDEquivalenceClass {
         }
     }
 
-    private Set<TupleOID> getTupleOIDs(TargetCellsToInsertForTGD mergedCellsToInsert) {
+    private Set<TupleOID> getTupleOIDs(TGDEquivalenceClassCells mergedCellsToInsert) {
         Set<TupleOID> result = new HashSet<TupleOID>();
         for (CellGroupCell cell : mergedCellsToInsert.getNewCells()) {
             result.add(cell.getTupleOID());
@@ -272,7 +272,7 @@ public class ChaseTGDEquivalenceClass {
         return result;
     }
 
-    private boolean generatesTuplesToRemoveDueToSAU(TargetCellsToInsertForTGD candidate, Set<TupleOID> tuplesToRemoveDueToSAU) {
+    private boolean generatesTuplesToRemoveDueToSAU(TGDEquivalenceClassCells candidate, Set<TupleOID> tuplesToRemoveDueToSAU) {
         Set<TupleOID> tuplesInCandidate = getTupleOIDs(candidate);
         for (TupleOID candidateTupleOID : tuplesInCandidate) {
             if (tuplesToRemoveDueToSAU.contains(candidateTupleOID)) {

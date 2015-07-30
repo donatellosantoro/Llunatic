@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility;
+import it.unibas.lunatic.model.chase.chasemc.operators.EquivalenceClassUtility;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;

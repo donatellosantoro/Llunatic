@@ -9,11 +9,14 @@ import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
+import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
+import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution;
@@ -26,14 +29,17 @@ import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.IDatabase;
+import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
 import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +52,7 @@ public abstract class AbstractCostManager implements ICostManager {
     private int chaseBranchingThreshold = 50;
     private int potentialSolutionsThreshold = 50;
     private int dependencyLimit = -1;
-    
+
     protected CheckSatisfactionAfterUpgradesEGD satisfactionChecker = new CheckSatisfactionAfterUpgradesEGD();
 
     public ChaseMCScenario getChaser(Scenario scenario) {
@@ -60,6 +66,10 @@ public abstract class AbstractCostManager implements ICostManager {
         CheckSolution solutionChecker = OperatorFactory.getInstance().getSolutionChecker(scenario);
         ChaseDeltaExtEGDs egdChaser = OperatorFactory.getInstance().getEGDChaser(scenario);
         return new ChaseMCScenario(stChaser, extTgdChaser, deltaBuilder, stepBuilder, queryRunner, insertOperatorForEgds, occurrenceHandler, egdChaser, solutionChecker);
+    }
+
+    protected OccurrenceHandlerMC getOccurrenceHandler(Scenario scenario) {
+        return OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario);
     }
 
     protected boolean isSuspicious(CellGroup cellGroup, BackwardAttribute backwardAttribute, EquivalenceClassForEGD equivalenceClass) {
@@ -112,46 +122,75 @@ public abstract class AbstractCostManager implements ICostManager {
         }
         return isBelow;
     }
+    
+    protected Repair generateForwardRepair(List<EGDEquivalenceClassCells> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
+        Repair repair = new Repair();
+        ViolationContext forwardChanges = generateViolationContextForForwardRepair(tupleGroups, scenario, deltaDB, stepId);
+        if (logger.isDebugEnabled()) logger.debug("Forward changes: " + forwardChanges);
+        repair.addViolationContext(forwardChanges);
+        return repair;
+    }
 
-    protected ViolationContext generateForwardRepair(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
-        List<CellGroup> cellGroups = extractCellGroups(tupleGroups);
+    protected ViolationContext generateViolationContextForForwardRepair(List<EGDEquivalenceClassCells> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
+        List<CellGroup> cellGroups = extractForwardCellGroups(tupleGroups);
         // give preference to the script partial order, that may have additional rules to solve the violation
-        CellGroup lub = getLUB(cellGroups, scenario.getScriptPartialOrder(), scenario);
-        if (lub == null) {
-            lub = getLUB(cellGroups, scenario.getPartialOrder(), scenario);
-        }
-        ViolationContext changeSet = new ViolationContext(lub, LunaticConstants.CHASE_FORWARD, buildWitnessCellGroups(tupleGroups));
+        CellGroup lub = getLUB(cellGroups, scenario);
+        ViolationContext changeSet = new ViolationContext(lub, LunaticConstants.CHASE_FORWARD, buildWitnessCells(tupleGroups));
         return changeSet;
     }
 
-    protected List<CellGroup> extractCellGroups(List<TargetCellsToChangeForEGD> tupleGroups) {
+    protected Repair generateRepairWithBackwards(EquivalenceClassForEGD equivalenceClass, List<EGDEquivalenceClassCells> forwardTupleGroups, List<EGDEquivalenceClassCells> backwardTupleGroups, BackwardAttribute backwardAttribute,
+            Scenario scenario, IDatabase deltaDB, String stepId) {
+        Repair repair = new Repair();
+        if (forwardTupleGroups.size() > 1) {
+            ViolationContext forwardChanges = generateViolationContextForForwardRepair(forwardTupleGroups, scenario, deltaDB, stepId);
+            repair.addViolationContext(forwardChanges);
+        }
+        for (EGDEquivalenceClassCells backwardTupleGroup : backwardTupleGroups) {
+            Set<CellGroup> backwardCellGroups = backwardTupleGroup.getCellGroupsForBackwardRepair().get(backwardAttribute);
+            for (CellGroup backwardCellGroup : backwardCellGroups) {
+                LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
+                backwardCellGroup.setValue(llunValue);
+                backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
+                ViolationContext backwardChangesForGroup = new ViolationContext(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCells(backwardTupleGroups));
+                repair.addViolationContext(backwardChangesForGroup);
+                if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {
+                    backwardTupleGroup.setSuspicious(true);
+                    repair.setSuspicious(true);
+                }
+            }
+        }
+        return repair;
+    }    
+    
+    protected List<CellGroup> extractForwardCellGroups(List<EGDEquivalenceClassCells> tupleGroups) {
         List<CellGroup> cellGroups = new ArrayList<CellGroup>();
-        for (TargetCellsToChangeForEGD tupleGroup : tupleGroups) {
+        for (EGDEquivalenceClassCells tupleGroup : tupleGroups) {
             cellGroups.add(tupleGroup.getCellGroupForForwardRepair().clone());
         }
         return cellGroups;
     }
 
-    protected CellGroup getLUB(List<CellGroup> cellGroups, IPartialOrder po, Scenario scenario) {
-        if (po == null) {
-            return null;
+    protected CellGroup getLUB(List<CellGroup> cellGroups, Scenario scenario) {
+        CellGroup lub = null;
+        IPartialOrder scriptPo = scenario.getScriptPartialOrder();
+        if (scriptPo != null) {
+            lub = scriptPo.findLUB(cellGroups, scenario);
         }
-        if (!po.canHandleAttributes(LunaticUtility.extractAttributesInCellGroups(cellGroups))) {
-            return null;
+        if (lub == null) {
+            lub = scenario.getPartialOrder().findLUB(cellGroups, scenario);
         }
-        return po.findLUB(cellGroups, scenario);
+        return lub;
     }
 
-    protected List<CellGroup> buildWitnessCellGroups(List<TargetCellsToChangeForEGD> tupleGroups) {
-        List<CellGroup> witnessCellGroups = new ArrayList<CellGroup>();
-        for (TargetCellsToChangeForEGD targetCellsToChange : tupleGroups) {
-            LunaticUtility.addAllIfNotContained(witnessCellGroups, targetCellsToChange.getCellGroupsForBackwardRepairs().values());
+    protected Set<Cell> buildWitnessCells(List<EGDEquivalenceClassCells> equivalenceClassCellList) {
+        Set<Cell> witnessCells = new HashSet<Cell>();
+        for (EGDEquivalenceClassCells equivalenceClassCells : equivalenceClassCellList) {
+            for (Set<Cell> witnessCellsInEquivalenceClass : equivalenceClassCells.getWitnessCells().values()) {
+                witnessCells.addAll(witnessCellsInEquivalenceClass);
+            }
         }
-        List<CellGroup> result = new ArrayList<CellGroup>();
-        for (CellGroup cellGroup : witnessCellGroups) {
-            result.add(cellGroup.clone());
-        }
-        return result;
+        return witnessCells;
     }
 
     public List<Dependency> selectDependenciesToChase(List<Dependency> unsatisfiedDependencies, DeltaChaseStep chaseRoot) {
@@ -178,6 +217,15 @@ public abstract class AbstractCostManager implements ICostManager {
         }
         if (logger.isDebugEnabled()) logger.debug("To chase: " + LunaticUtility.printDependencyIds(result));
         return result;
+    }
+
+    protected boolean backwardIsAllowed(Set<CellGroup> cellGroups) {
+        for (CellGroup cellGroup : cellGroups) {
+            if (!backwardIsAllowed(cellGroup)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     protected boolean backwardIsAllowed(CellGroup cellGroup) {

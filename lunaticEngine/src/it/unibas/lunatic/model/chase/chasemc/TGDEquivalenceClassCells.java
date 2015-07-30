@@ -4,12 +4,12 @@ import it.unibas.lunatic.model.database.IValue;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TargetCellsToInsertForTGD implements Cloneable {
+public class TGDEquivalenceClassCells implements Cloneable {
 
     private CellGroup cellGroup;
     private Set<CellGroupCell> newCells = new HashSet<CellGroupCell>();
 
-    public TargetCellsToInsertForTGD(IValue value) {
+    public TGDEquivalenceClassCells(IValue value) {
         this.cellGroup = new CellGroup(value, true);
     }
 
@@ -37,14 +37,14 @@ public class TargetCellsToInsertForTGD implements Cloneable {
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        final TargetCellsToInsertForTGD other = (TargetCellsToInsertForTGD) obj;
+        final TGDEquivalenceClassCells other = (TGDEquivalenceClassCells) obj;
         boolean result = this.toShortString().equals(other.toShortString());
         return result;
     }
 
-    public TargetCellsToInsertForTGD clone() {
+    public TGDEquivalenceClassCells clone() {
         try {
-            TargetCellsToInsertForTGD clone = (TargetCellsToInsertForTGD) super.clone();
+            TGDEquivalenceClassCells clone = (TGDEquivalenceClassCells) super.clone();
             clone.cellGroup = this.cellGroup.clone();
             clone.newCells = new HashSet<CellGroupCell>();
             for (CellGroupCell newCell : this.newCells) {

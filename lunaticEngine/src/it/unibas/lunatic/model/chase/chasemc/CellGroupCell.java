@@ -36,6 +36,13 @@ public class CellGroupCell extends Cell {
         this.toSave = toSave;
     }
 
+    public CellGroupCell(Cell cell, IValue originalValue, String type, Boolean toSave) {
+        super(new CellRef(cell), cell.getValue());
+        this.originalValue = originalValue;
+        this.type = type;
+        this.toSave = toSave;
+    }
+
     public IValue getOriginalValue() {
         return originalValue;
     }

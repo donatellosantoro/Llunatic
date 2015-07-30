@@ -2,7 +2,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
@@ -14,7 +14,7 @@ public class CheckSatisfactionAfterUpgradesEGD {
     
     private static final Logger logger = LoggerFactory.getLogger(CheckSatisfactionAfterUpgradesEGD.class.getName());
     
-    public boolean isSatisfiedAfterUpgrades(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario) {
+    public boolean isSatisfiedAfterUpgrades(List<EGDEquivalenceClassCells> tupleGroups, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Checking violations between tuple groups\n" + LunaticUtility.printCollection(tupleGroups));
         List<CellGroup> cellGroups = CellGroupUtility.extractCellGroups(tupleGroups);
         Set<IValue> differentValues = CellGroupUtility.findDifferentValuesInCellGroupsWithOccurrences(cellGroups);

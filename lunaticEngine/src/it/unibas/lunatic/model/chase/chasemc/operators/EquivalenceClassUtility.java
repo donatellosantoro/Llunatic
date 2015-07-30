@@ -1,11 +1,11 @@
-package it.unibas.lunatic.model.chase.commons;
+package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
-import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
+import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.CellRef;
@@ -17,6 +17,7 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ public class EquivalenceClassUtility {
             Cell cellToChangeForForwardChasing = tuple.getCell(occurrenceAttributesForConclusionVariable);
             if (logger.isDebugEnabled()) logger.trace("Attribute: " + occurrenceAttributesForConclusionVariable + " - Cell: " + cellToChangeForForwardChasing);
             IValue conclusionValue = cellToChangeForForwardChasing.getValue();
-            TargetCellsToChangeForEGD targetCellsToChange = getOrCreateTargetCellsToChange(equivalenceClass, conclusionValue);
+            EGDEquivalenceClassCells targetCellsToChange = getOrCreateTargetCellsToChange(equivalenceClass, conclusionValue);
             TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, occurrenceAttributesForConclusionVariable));
             CellRef cellRef = new CellRef(originalOid, ChaseUtility.unAlias(occurrenceAttributesForConclusionVariable));
             if (occurrenceAttributesForConclusionVariable.isSource()) {
@@ -58,27 +59,28 @@ public class EquivalenceClassUtility {
             for (BackwardAttribute backwardAttribute : equivalenceClass.getAttributesToChangeForBackwardChasing()) {
                 AttributeRef attributeForBackwardChasing = backwardAttribute.getAttributeRef();
                 Cell cellForBackward = tuple.getCell(attributeForBackwardChasing);
-                CellGroup cellGroupForBackward = targetCellsToChange.getOrCreateCellGroupForBackwardRepair(backwardAttribute, cellForBackward.getValue());
+//                CellGroup cellGroupForBackward = targetCellsToChange.getOrCreateCellsForBackwardRepair(backwardAttribute, cellForBackward.getValue());
+                Set<Cell> cellsForBackward = targetCellsToChange.getOrCreateCellsForBackwardRepair(backwardAttribute);
                 TupleOID tupleOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, attributeForBackwardChasing));
-                CellGroupCell backwardCell = new CellGroupCell(tupleOid, ChaseUtility.unAlias(attributeForBackwardChasing), cellForBackward.getValue(), null, LunaticConstants.TYPE_OCCURRENCE, null);
-                cellGroupForBackward.addOccurrenceCell(backwardCell);
+                Cell backwardCell = new Cell(tupleOid, ChaseUtility.unAlias(attributeForBackwardChasing), cellForBackward.getValue());
+                cellsForBackward.add(backwardCell);
             }
             addAdditionalAttributes(targetCellsToChange, originalOid, tuple, equivalenceClass);
         }
         if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
     }
 
-    private static TargetCellsToChangeForEGD getOrCreateTargetCellsToChange(EquivalenceClassForEGD equivalenceClass, IValue conclusionValue) {
-        TargetCellsToChangeForEGD targetCellsToChange = equivalenceClass.getTupleGroupsWithSameConclusionValue().get(conclusionValue);
+    private static EGDEquivalenceClassCells getOrCreateTargetCellsToChange(EquivalenceClassForEGD equivalenceClass, IValue conclusionValue) {
+        EGDEquivalenceClassCells targetCellsToChange = equivalenceClass.getTupleGroupsWithSameConclusionValue().get(conclusionValue);
         if (logger.isDebugEnabled()) logger.trace("Target cells to change: " + targetCellsToChange);
         if (targetCellsToChange == null) {
-            targetCellsToChange = new TargetCellsToChangeForEGD(conclusionValue);
+            targetCellsToChange = new EGDEquivalenceClassCells(conclusionValue);
             equivalenceClass.getTupleGroupsWithSameConclusionValue().put(conclusionValue, targetCellsToChange);
         }
         return targetCellsToChange;
     }
 
-    private static void addAdditionalAttributes(TargetCellsToChangeForEGD targetCellsToChange, TupleOID originalOIDForConclusionValue, Tuple tuple, EquivalenceClassForEGD equivalenceClass) {
+    private static void addAdditionalAttributes(EGDEquivalenceClassCells targetCellsToChange, TupleOID originalOIDForConclusionValue, Tuple tuple, EquivalenceClassForEGD equivalenceClass) {
         for (AttributeRef additionalAttribute : equivalenceClass.getEGD().getAdditionalAttributes()) {
             for (Cell additionalCell : tuple.getCells()) {
                 AttributeRef unaliasedAttribute = ChaseUtility.unAlias(additionalCell.getAttributeRef());

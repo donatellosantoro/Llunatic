@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToInsertForTGD;
+import it.unibas.lunatic.model.chase.chasemc.TGDEquivalenceClassCells;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;
 import it.unibas.lunatic.model.database.NullValue;
@@ -30,7 +30,7 @@ public class CheckSatisfactionAfterUpgradesTGD {
     
     private GenericListGenerator<Map<TupleOID, TupleOID>> listGenerator = new GenericListGenerator<Map<TupleOID, TupleOID>>();
 
-    public boolean isSatisfiedAfterUpgrades(TargetCellsToInsertForTGD update, CellGroup canonicalCellGroup, Dependency tgd, Scenario scenario) {
+    public boolean isSatisfiedAfterUpgrades(TGDEquivalenceClassCells update, CellGroup canonicalCellGroup, Dependency tgd, Scenario scenario) {
         if (!DependencyUtility.hasSourceSymbols(tgd)) {
             return false;
         }

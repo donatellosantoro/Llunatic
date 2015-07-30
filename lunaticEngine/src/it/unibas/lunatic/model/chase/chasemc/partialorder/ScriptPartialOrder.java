@@ -7,6 +7,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.IValue;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.io.*;
 import java.util.List;
 import java.util.Set;
@@ -33,8 +34,15 @@ public class ScriptPartialOrder extends StandardPartialOrder {
         }
         loadScript();
     }
-
+    
     @Override
+    public CellGroup findLUB(List<CellGroup> cellGroups, Scenario scenario) throws PartialOrderException {
+        if (!canHandleAttributes(LunaticUtility.extractAttributesInCellGroups(cellGroups))) {
+            return null;
+        }
+        return super.findLUB(cellGroups, scenario);
+    }
+    
     public boolean canHandleAttributes(List<AttributeRef> attributes) {
         try {
             Invocable invocableEngine = (Invocable) jsEngine;

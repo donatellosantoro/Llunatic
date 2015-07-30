@@ -29,11 +29,7 @@ public class StandardPartialOrder implements IPartialOrder {
     private static Logger logger = LoggerFactory.getLogger(StandardPartialOrder.class);
     
     private CorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
-
-    public boolean canHandleAttributes(List<AttributeRef> attributes) {
-        return true;
-    }
-
+    
     public CellGroup findLUB(List<CellGroup> cellGroups, Scenario scenario) throws PartialOrderException {
         if (logger.isDebugEnabled()) logger.debug("Finding lub of cell groups\n" + LunaticUtility.printCollection(cellGroups));
         CellGroup lubCellGroup = new CellGroup(LunaticConstants.NULL_IVALUE, true);

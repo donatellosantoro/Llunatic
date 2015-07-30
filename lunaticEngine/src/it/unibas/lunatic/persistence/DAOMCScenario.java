@@ -5,8 +5,6 @@ import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.MinCostRepairCostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.SamplingCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityToMostFrequentCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
@@ -34,7 +32,6 @@ import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.persistence.xml.DAOXmlUtility;
 import it.unibas.lunatic.persistence.xml.operators.TransformFilePaths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.script.ScriptException;
 import org.jdom.Attribute;
@@ -317,16 +314,6 @@ public class DAOMCScenario {
             if (similarityThresholdElement != null) {
                 ((SimilarityToMostFrequentCostManager) costManager).setSimilarityThreshold(Double.parseDouble(similarityThresholdElement.getValue()));
             }
-        }
-        if (COST_MANAGER_SAMPLING.equals(costManagerType)) {
-            costManager = new SamplingCostManager();
-            Element maxRepairsForStepElement = costManagerElement.getChild("maxRepairsForStep");
-            if (maxRepairsForStepElement != null) {
-                ((SamplingCostManager) costManager).setMaxRepairsForStep(Integer.parseInt(maxRepairsForStepElement.getValue()));
-            }
-        }
-        if (COST_MANAGER_MINCOST.equals(costManagerType)) {
-            costManager = new MinCostRepairCostManager();
         }
         if (costManager == null) {
             throw new DAOException("Unable to load scenario from file " + fileScenario + ". Unknown cost-manager type " + costManagerType);

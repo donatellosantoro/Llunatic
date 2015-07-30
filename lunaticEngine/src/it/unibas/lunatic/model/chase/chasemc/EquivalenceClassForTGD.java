@@ -11,7 +11,7 @@ import java.util.Map;
 public class EquivalenceClassForTGD {
 
     private Dependency tgd;
-    private Map<FormulaVariable, TargetCellsToInsertForTGD> cellGroupForVariables = new HashMap<FormulaVariable, TargetCellsToInsertForTGD>();
+    private Map<FormulaVariable, TGDEquivalenceClassCells> cellGroupForVariables = new HashMap<FormulaVariable, TGDEquivalenceClassCells>();
     private Map<TableAlias, TupleOID> newTupleOIDs = new HashMap<TableAlias, TupleOID>();
 
     public EquivalenceClassForTGD(Dependency tgd) {
@@ -22,15 +22,15 @@ public class EquivalenceClassForTGD {
         return tgd;
     }
 
-    public void setTargetCellToInsertForVariable(FormulaVariable variable, TargetCellsToInsertForTGD targetCell) {
+    public void setTargetCellToInsertForVariable(FormulaVariable variable, TGDEquivalenceClassCells targetCell) {
         this.cellGroupForVariables.put(variable, targetCell);
     }
 
-    public TargetCellsToInsertForTGD getTargetCellForVariable(FormulaVariable variable) {
+    public TGDEquivalenceClassCells getTargetCellForVariable(FormulaVariable variable) {
         return cellGroupForVariables.get(variable);
     }
 
-    public Map<FormulaVariable, TargetCellsToInsertForTGD> getCellGroupForVariables() {
+    public Map<FormulaVariable, TGDEquivalenceClassCells> getCellGroupForVariables() {
         return cellGroupForVariables;
     }
 

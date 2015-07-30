@@ -3,7 +3,6 @@ package it.unibas.lunatic.model.chase.chasemc;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.database.LLUNValue;

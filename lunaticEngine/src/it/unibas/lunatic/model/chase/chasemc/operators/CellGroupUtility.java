@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.model.database.CellRef;
@@ -61,9 +61,9 @@ public class CellGroupUtility {
         dest.addAllAdditionalCells(source.getAdditionalCells());
     }
 
-    public static List<CellGroup> extractCellGroups(List<TargetCellsToChangeForEGD> tupleGroups) {
+    public static List<CellGroup> extractCellGroups(List<EGDEquivalenceClassCells> tupleGroups) {
         List<CellGroup> cellGroups = new ArrayList<CellGroup>();
-        for (TargetCellsToChangeForEGD tupleGroup : tupleGroups) {
+        for (EGDEquivalenceClassCells tupleGroup : tupleGroups) {
             cellGroups.add(tupleGroup.getCellGroupForForwardRepair().clone());
         }
         return cellGroups;
@@ -102,5 +102,12 @@ public class CellGroupUtility {
         return result;
     }
 
+    public static  Set<CellRef> extractAllCellRefs(Set<Cell> cells) {
+        Set<CellRef> result = new HashSet<CellRef>();
+        for (Cell cell : cells) {
+            result.add(new CellRef(cell));
+        }
+        return result;
+    }
 
 }

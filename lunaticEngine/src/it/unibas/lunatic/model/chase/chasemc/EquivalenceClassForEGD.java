@@ -14,7 +14,7 @@ public class EquivalenceClassForEGD {
     private Dependency egd;
     private List<AttributeRef> occurrenceAttributesForConclusionVariable;
     private List<BackwardAttribute> attributesToChangeForBackwardChasing;
-    private Map<IValue, TargetCellsToChangeForEGD> tupleGroupsWithSameConclusionValue = new HashMap<IValue, TargetCellsToChangeForEGD>();
+    private Map<IValue, EGDEquivalenceClassCells> tupleGroupsWithSameConclusionValue = new HashMap<IValue, EGDEquivalenceClassCells>();
 
     public EquivalenceClassForEGD(Dependency egd, List<AttributeRef> occurrenceAttributesForConclusionVariable, 
             List<BackwardAttribute> attributesForBackwardChasing) {
@@ -35,12 +35,12 @@ public class EquivalenceClassForEGD {
         return attributesToChangeForBackwardChasing;
     }
 
-    public Map<IValue, TargetCellsToChangeForEGD> getTupleGroupsWithSameConclusionValue() {
+    public Map<IValue, EGDEquivalenceClassCells> getTupleGroupsWithSameConclusionValue() {
         return tupleGroupsWithSameConclusionValue;
     }
 
-    public List<TargetCellsToChangeForEGD> getTupleGroups() {
-        return new ArrayList<TargetCellsToChangeForEGD>(tupleGroupsWithSameConclusionValue.values());
+    public List<EGDEquivalenceClassCells> getTupleGroups() {
+        return new ArrayList<EGDEquivalenceClassCells>(tupleGroupsWithSameConclusionValue.values());
     }
 
     @Override

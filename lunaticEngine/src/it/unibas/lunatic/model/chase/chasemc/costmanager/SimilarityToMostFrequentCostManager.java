@@ -9,7 +9,7 @@ import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
@@ -24,7 +24,10 @@ import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +49,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             logger.warn("##################################################################################");
             throw new ChaseException("SimilarityToMostFrequentCostManager requires FrequencyPartialOrder");
         }
-        List<TargetCellsToChangeForEGD> tupleGroups = equivalenceClass.getTupleGroups();
+        List<EGDEquivalenceClassCells> tupleGroups = equivalenceClass.getTupleGroups();
         Collections.sort(tupleGroups, new TupleGroupComparator());
         Collections.reverse(tupleGroups);
         if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && satisfactionChecker.isSatisfiedAfterUpgrades(tupleGroups, scenario)) {
@@ -54,27 +57,25 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             return Collections.EMPTY_LIST;
         }
         List<Repair> result = new ArrayList<Repair>();
-        Repair standardRepair = generateConstantRepairWithPartialOrder(equivalenceClass, tupleGroups, new StandardPartialOrder(), scenario);
+        Repair standardRepair = generateConstantRepairWithStandardPartialOrder(equivalenceClass, tupleGroups, scenario);
         if (standardRepair != null) {
             if (logger.isDebugEnabled()) logger.debug("Returning standard repair " + standardRepair);
             result.add(standardRepair);
+            // if lub is a constant, no need to search for frequency/similarity
             return result;
         }
-        Repair scriptRepair = generateConstantRepairWithPartialOrder(equivalenceClass, tupleGroups, scenario.getScriptPartialOrder(), scenario);
-        if (scriptRepair != null) {
-            if (logger.isDebugEnabled()) logger.debug("Returning script repair " + scriptRepair);
-            result.add(scriptRepair);
-            return result;
-        }
-        List<TargetCellsToChangeForEGD> forwardGroups = new ArrayList<TargetCellsToChangeForEGD>();
-        List<TargetCellsToChangeForEGD> backwardGroups = new ArrayList<TargetCellsToChangeForEGD>();
-        partitionGroups(tupleGroups, forwardGroups, backwardGroups, chaseTreeRoot, scenario);
+        // search similarity/frequency
+        List<EGDEquivalenceClassCells> forwardGroups = new ArrayList<EGDEquivalenceClassCells>();
+        List<EGDEquivalenceClassCells> backwardGroups = new ArrayList<EGDEquivalenceClassCells>();
+        Map<EGDEquivalenceClassCells, BackwardAttribute> backwardAttributes = partitionGroups(tupleGroups, forwardGroups, backwardGroups, chaseTreeRoot, stepId, scenario);
         if (logger.isDebugEnabled()) logger.debug("Forward groups: " + forwardGroups);
         if (logger.isDebugEnabled()) logger.debug("Backward groups: " + backwardGroups);
-        Repair repair = generateRepairWithBackwards(forwardGroups, backwardGroups, scenario, chaseTreeRoot.getDeltaDB(), stepId, equivalenceClass);
+        System.out.println("Forward groups: " + forwardGroups);
+        System.out.println("Backward groups: " + backwardGroups);
+        Repair repair = generateRepairWithBackwards(equivalenceClass, forwardGroups, backwardGroups, backwardAttributes, scenario, chaseTreeRoot.getDeltaDB(), stepId);
         if (allSuspicious(backwardGroups)) {
             if (logger.isDebugEnabled()) logger.debug("CostManager generates a repair with all suspicious changes\n" + repair);
-            repair = generateForwardRepair(tupleGroups, scenario, chaseTreeRoot.getDeltaDB(), stepId, equivalenceClass);
+            repair = generateForwardRepair(tupleGroups, scenario, chaseTreeRoot.getDeltaDB(), stepId);
         }
         if (repair != null) {
             if (logger.isDebugEnabled()) logger.debug("Returning repair " + repair);
@@ -83,38 +84,66 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         return result;
     }
 
-    private Repair generateConstantRepairWithPartialOrder(EquivalenceClassForEGD equivalenceClass, List<TargetCellsToChangeForEGD> tupleGroups, IPartialOrder partialOrder, Scenario scenario) {
-        List<CellGroup> cellGroups = extractCellGroups(tupleGroups);
-        CellGroup cellGroup = getLUB(cellGroups, partialOrder, scenario);
-        if (cellGroup == null) {
-            return null;
-        }
+    private Repair generateConstantRepairWithStandardPartialOrder(EquivalenceClassForEGD equivalenceClass, List<EGDEquivalenceClassCells> tupleGroups, Scenario scenario) {
+        List<CellGroup> cellGroups = extractForwardCellGroups(tupleGroups);
+        CellGroup cellGroup = new StandardPartialOrder().findLUB(cellGroups, scenario);
         IValue poValue = cellGroup.getValue();
         if (!(poValue instanceof ConstantValue)) {
             return null;
         }
         Repair repair = new Repair();
-        ViolationContext forwardChanges = new ViolationContext(cellGroup, LunaticConstants.CHASE_FORWARD, buildWitnessCellGroups(tupleGroups));
+        ViolationContext forwardChanges = new ViolationContext(cellGroup, LunaticConstants.CHASE_FORWARD, buildWitnessCells(tupleGroups));
         repair.addViolationContext(forwardChanges);
         return repair;
     }
-
-    private void partitionGroups(List<TargetCellsToChangeForEGD> tupleGroups, List<TargetCellsToChangeForEGD> forwardGroups, List<TargetCellsToChangeForEGD> backwardGroups, DeltaChaseStep chaseTreeRoot, Scenario scenario) {
-        TargetCellsToChangeForEGD t1 = tupleGroups.get(0);
-        forwardGroups.add(t1);
+    
+    private Map<EGDEquivalenceClassCells, BackwardAttribute> partitionGroups(List<EGDEquivalenceClassCells> tupleGroups, List<EGDEquivalenceClassCells> forwardGroups, List<EGDEquivalenceClassCells> backwardGroups, DeltaChaseStep chaseTreeRoot, String stepId, Scenario scenario) {
+        Map<EGDEquivalenceClassCells, BackwardAttribute> result = new HashMap<EGDEquivalenceClassCells, BackwardAttribute>();
+        EGDEquivalenceClassCells tupleGroup0 = tupleGroups.get(0);
+        forwardGroups.add(tupleGroup0);
         for (int j = 1; j < tupleGroups.size(); j++) {
-            TargetCellsToChangeForEGD ti = tupleGroups.get(j);
-//            if (ti.getOccurrenceSize() > 0 && ti.getOccurrenceSize() < t1.getOccurrenceSize() && canDoBackward(ti) && !areSimilar(t1, ti)) {
-            // OLD version
-            if (ti.getOccurrenceSize() > 0 && canDoBackward(ti) && !areSimilar(t1, ti)) {
-                backwardGroups.add(ti);
-            } else {
-                forwardGroups.add(ti);
+            EGDEquivalenceClassCells tupleGroupj = tupleGroups.get(j);
+            if (tupleGroupj.getOccurrenceSize() == 0 || areSimilar(tupleGroup0, tupleGroupj)) {
+                forwardGroups.add(tupleGroupj);
+                continue;
             }
+            BackwardAttribute backwardAttribute = canDoBackward(tupleGroupj);
+            if (backwardAttribute == null) {
+                forwardGroups.add(tupleGroupj);
+                continue;
+            }            
+            backwardGroups.add(tupleGroupj);
+            result.put(tupleGroupj, backwardAttribute);            
         }
+        return result;
     }
 
-    private boolean areSimilar(TargetCellsToChangeForEGD t1, TargetCellsToChangeForEGD t2) {
+    private Repair generateRepairWithBackwards(EquivalenceClassForEGD equivalenceClass, List<EGDEquivalenceClassCells> forwardTupleGroups, 
+            List<EGDEquivalenceClassCells> backwardTupleGroups, Map<EGDEquivalenceClassCells, BackwardAttribute> backwardAttributes, Scenario scenario, IDatabase deltaDB, String stepId) {
+        Repair repair = new Repair();
+        if (forwardTupleGroups.size() > 1) {
+            ViolationContext forwardChanges = generateViolationContextForForwardRepair(forwardTupleGroups, scenario, deltaDB, stepId);
+            repair.addViolationContext(forwardChanges);
+        }
+        for (EGDEquivalenceClassCells backwardTupleGroup : backwardTupleGroups) {
+            BackwardAttribute backwardAttribute = backwardAttributes.get(backwardTupleGroup);
+            Set<CellGroup> backwardCellGroups = backwardTupleGroup.getCellGroupsForBackwardRepair().get(backwardAttribute);
+            for (CellGroup backwardCellGroup : backwardCellGroups) {
+                LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
+                backwardCellGroup.setValue(llunValue);
+                backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
+                ViolationContext backwardChangesForGroup = new ViolationContext(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCells(backwardTupleGroups));
+                repair.addViolationContext(backwardChangesForGroup);
+                if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {
+                    backwardTupleGroup.setSuspicious(true);
+                    repair.setSuspicious(true);
+                }
+            }
+        }
+        return repair;
+    }         
+
+    private boolean areSimilar(EGDEquivalenceClassCells t1, EGDEquivalenceClassCells t2) {
         IValue v1 = t1.getCellGroupForForwardRepair().getValue();
         IValue v2 = t2.getCellGroupForForwardRepair().getValue();
         if (v1 instanceof NullValue || v2 instanceof NullValue) {
@@ -125,58 +154,21 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         return similarity > similarityThreshold;
     }
 
-    protected Repair generateRepairWithBackwards(List<TargetCellsToChangeForEGD> forwardGroups, List<TargetCellsToChangeForEGD> backwardGroups, Scenario scenario, IDatabase deltaDB, String stepId, EquivalenceClassForEGD equivalenceClass) {
-        if (logger.isTraceEnabled()) logger.trace("Generating repair for groups \nForward: " + forwardGroups + "\nBackward: " + backwardGroups);
-        Repair repair = new Repair();
-        if (forwardGroups.size() > 1) {
-            ViolationContext forwardChanges = generateForwardRepair(forwardGroups, scenario, deltaDB, stepId);
-            if (logger.isDebugEnabled()) logger.debug("Forward changes: " + forwardChanges);
-            if (forwardChanges != null) {
-                repair.addViolationContext(forwardChanges);
+    private BackwardAttribute canDoBackward(EGDEquivalenceClassCells tupleGroup) {
+        for (BackwardAttribute backwardAttribute : tupleGroup.getWitnessCells().keySet()) {
+            Set<CellGroup> backwardCellGroups = tupleGroup.getCellGroupsForBackwardRepair().get(backwardAttribute);
+            if (backwardIsAllowed(backwardCellGroups)) {
+                return backwardAttribute;
             }
         }
-        for (TargetCellsToChangeForEGD backwardGroup : backwardGroups) {
-            for (BackwardAttribute backwardAttribute : backwardGroup.getCellGroupsForBackwardRepairs().keySet()) {
-                CellGroup backwardCellGroup = backwardGroup.getCellGroupsForBackwardRepairs().get(backwardAttribute).clone();
-                LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
-                backwardCellGroup.setValue(llunValue);
-                backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
-                ViolationContext backwardChangesForGroup = new ViolationContext(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCellGroups(backwardGroups));
-                repair.addViolationContext(backwardChangesForGroup);
-                if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {
-                    backwardGroup.setSuspicious(true);
-                }
-            }
-        }
-        if (repair.getViolationContexts().isEmpty()) {
-            return null;
-        }
-        return repair;
+        return null;
     }
 
-    private Repair generateForwardRepair(List<TargetCellsToChangeForEGD> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId, EquivalenceClassForEGD equivalenceClass) {
-        Repair repair = new Repair();
-        ViolationContext forwardChanges = generateForwardRepair(tupleGroups, scenario, deltaDB, stepId);
-        if (logger.isDebugEnabled()) logger.debug("Forward changes: " + forwardChanges);
-        repair.addViolationContext(forwardChanges);
-        return repair;
-    }
-
-    private boolean canDoBackward(TargetCellsToChangeForEGD tupleGroup) {
-        for (BackwardAttribute premiseAttribute : tupleGroup.getCellGroupsForBackwardRepairs().keySet()) {
-            CellGroup cellGroup = tupleGroup.getCellGroupsForBackwardRepairs().get(premiseAttribute);
-            if (!backwardIsAllowed(cellGroup)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean allSuspicious(List<TargetCellsToChangeForEGD> backwardGroups) {
+    private boolean allSuspicious(List<EGDEquivalenceClassCells> backwardGroups) {
         if (backwardGroups.isEmpty()) {
             return false;
         }
-        for (TargetCellsToChangeForEGD targetCellsToChange : backwardGroups) {
+        for (EGDEquivalenceClassCells targetCellsToChange : backwardGroups) {
             if (!targetCellsToChange.isSuspicious()) {
                 return false;
             }

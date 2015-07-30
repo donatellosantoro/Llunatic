@@ -7,14 +7,14 @@ import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForEGD;
 import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility;
+import it.unibas.lunatic.model.chase.chasemc.operators.EquivalenceClassUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
-import it.unibas.lunatic.model.chase.chasemc.TargetCellsToChangeForEGD;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.database.AttributeRef;
@@ -155,7 +155,7 @@ public class ChaseEGDs {
         Repair repair = new Repair();
         List<CellGroup> cellGroups = extractCellGroups(equivalenceClass.getTupleGroups());
         CellGroup cellGroup = findChanges(cellGroups);
-        ViolationContext changesForRepair = new ViolationContext(cellGroup, LunaticConstants.CHASE_FORWARD, Collections.EMPTY_LIST);
+        ViolationContext changesForRepair = new ViolationContext(cellGroup, LunaticConstants.CHASE_FORWARD);
         repair.addViolationContext(changesForRepair);
         return repair;
     }
@@ -195,9 +195,9 @@ public class ChaseEGDs {
         return newGroup;
     }
 
-    private List<CellGroup> extractCellGroups(List<TargetCellsToChangeForEGD> tupleGroups) {
+    private List<CellGroup> extractCellGroups(List<EGDEquivalenceClassCells> tupleGroups) {
         List<CellGroup> cellGroups = new ArrayList<CellGroup>();
-        for (TargetCellsToChangeForEGD tupleGroup : tupleGroups) {
+        for (EGDEquivalenceClassCells tupleGroup : tupleGroups) {
             cellGroups.add(tupleGroup.getCellGroupForForwardRepair());
         }
         return cellGroups;
@@ -254,7 +254,7 @@ public class ChaseEGDs {
     }
 
     private void addOccurrencesForEquivalenceClass(EquivalenceClassForEGD equivalenceClass, IDatabase target) {
-        for (TargetCellsToChangeForEGD tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
+        for (EGDEquivalenceClassCells tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
             addOccurrencesForCellGroup(tupleGroup.getCellGroupForForwardRepair(), target);
 //            for (CellGroup premiseGroup : tupleGroup.getCellGroupsForBackwardAttributes().values()) {
 //                addOccurrencesForCellGroup(premiseGroup, target);

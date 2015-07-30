@@ -8,7 +8,6 @@ import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
-import java.util.Collections;
 
 public class AddUserNode {
 
@@ -25,7 +24,6 @@ public class AddUserNode {
         return newStep;
     }
 
-    @SuppressWarnings("unchecked")
     public CellGroup addChange(DeltaChaseStep userNode, CellGroup cellGroup, ConstantValue newValue, Scenario scenario) {
         if (!userNode.isEditedByUser()) {
             throw new IllegalArgumentException("Changes are allowed only into nodes edited by user");
@@ -35,7 +33,7 @@ public class AddUserNode {
         newCellGroup.addUserCell(userCell);
         IPartialOrder po = scenario.getPartialOrder();
         po.setCellGroupValue(newCellGroup, scenario);
-        ViolationContext changeSet = new ViolationContext(newCellGroup, LunaticConstants.CHASE_USER, Collections.EMPTY_LIST);
+        ViolationContext changeSet = new ViolationContext(newCellGroup, LunaticConstants.CHASE_USER);
         cellChanger.changeCells(changeSet.getCellGroup(), userNode.getDeltaDB(), userNode.getId(), scenario);
         return newCellGroup;
     }
