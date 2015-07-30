@@ -133,9 +133,12 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
                 repair.addViolationContext(backwardChangesForGroup);
                 if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {
                     backwardTupleGroup.setSuspicious(true);
-                    repair.setSuspicious(true);
+//                    repair.setSuspicious(true);
                 }
             }
+        }
+        if (repair.getViolationContexts().isEmpty()) {
+            return null;
         }
         return repair;
     }         
