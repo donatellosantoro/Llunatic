@@ -69,8 +69,6 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         Map<EGDEquivalenceClassCells, BackwardAttribute> backwardAttributes = partitionGroups(tupleGroups, forwardGroups, backwardGroups, chaseTreeRoot, stepId, scenario);
         if (logger.isDebugEnabled()) logger.debug("Forward groups: " + forwardGroups);
         if (logger.isDebugEnabled()) logger.debug("Backward groups: " + backwardGroups);
-        System.out.println("Forward groups: " + forwardGroups);
-        System.out.println("Backward groups: " + backwardGroups);
         Repair repair = generateRepairWithBackwards(equivalenceClass, forwardGroups, backwardGroups, backwardAttributes, scenario, chaseTreeRoot.getDeltaDB(), stepId);
         if (allSuspicious(backwardGroups)) {
             if (logger.isDebugEnabled()) logger.debug("CostManager generates a repair with all suspicious changes\n" + repair);
