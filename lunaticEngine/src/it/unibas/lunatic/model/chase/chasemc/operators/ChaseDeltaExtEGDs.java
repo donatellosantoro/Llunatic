@@ -123,7 +123,7 @@ public class ChaseDeltaExtEGDs {
                 }
             } else {
                 if (newChaseSteps.getChaseSteps().isEmpty()) {
-                    throw new ChaseException("Unable to repair dependency " + egd + " in node\n" + currentNode);
+                    throw new ChaseException("Unable to repair dependency " + egd + " in node\n" + currentNode.getId());
                 }
                 newSteps.addAll(newChaseSteps.getChaseSteps());
                 if (scenario.getConfiguration().isCheckAllNodesForEGDSatisfaction()) {
