@@ -66,6 +66,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         // search similarity/frequency
         List<EGDEquivalenceClassCells> forwardGroups = new ArrayList<EGDEquivalenceClassCells>();
         List<EGDEquivalenceClassCells> backwardGroups = new ArrayList<EGDEquivalenceClassCells>();
+        //TODO++ check: we need a single backward attribute per group of cells
         Map<EGDEquivalenceClassCells, BackwardAttribute> backwardAttributes = partitionGroups(tupleGroups, forwardGroups, backwardGroups, chaseTreeRoot, stepId, scenario);
         if (logger.isDebugEnabled()) logger.debug("Forward groups: " + forwardGroups);
         if (logger.isDebugEnabled()) logger.debug("Backward groups: " + backwardGroups);

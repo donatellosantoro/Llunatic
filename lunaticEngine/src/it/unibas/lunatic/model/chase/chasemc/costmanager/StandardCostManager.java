@@ -44,6 +44,7 @@ public class StandardCostManager extends AbstractCostManager {
         if (canDoBackward(chaseTreeRoot)) {
             List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass.getTupleGroups(), scenario, chaseTreeRoot.getDeltaDB(), stepId, equivalenceClass);
             for (Repair repair : backwardRepairs) {
+                //TODO++ check: backward repairs are generated twice
                 LunaticUtility.addIfNotContained(result, repair);
             }
         }
