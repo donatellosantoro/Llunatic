@@ -2,8 +2,6 @@ package it.unibas.lunatic.model.chase.chasemc;
 
 import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
-import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
-import java.util.List;
 
 public class BackwardAttribute {
 

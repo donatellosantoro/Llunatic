@@ -150,6 +150,7 @@ public class ChaseEGDEquivalenceClass {
         List<AttributeRef> occurrenceAttributesForConclusionVariable = new ArrayList<AttributeRef>();
         FormulaVariable v1 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(0);
         FormulaVariable v2 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(1);
+        //TODO++ refactor to extract positive occurrences only
         for (FormulaVariableOccurrence occurrence : v1.getPremiseRelationalOccurrences()) {
             if (!ChaseUtility.containsAlias(egd.getPremise().getPositiveFormula(), occurrence.getTableAlias())) {
                 continue;
@@ -256,7 +257,7 @@ public class ChaseEGDEquivalenceClass {
     }
 
     private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Scenario scenario) {
-        if (egd.hasSymmetricAtoms() || scenario.getConfiguration().isUseLimit1ForEGDs()) {
+        if (egd.hasSymmetricChase() || scenario.getConfiguration().isUseLimit1ForEGDs()) {
             return true;
         }
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);
@@ -305,7 +306,7 @@ public class ChaseEGDEquivalenceClass {
     }
 
     private boolean isEGDSatisfied(Dependency egd, boolean consistentRepair, Scenario scenario) {
-        return egd.hasSymmetricAtoms() && consistentRepair && !scenario.getConfiguration().isUseLimit1ForEGDs() && !egd.isOverlapBetweenAffectedAndQueried();
+        return egd.hasSymmetricChase() && consistentRepair && !scenario.getConfiguration().isUseLimit1ForEGDs() && !egd.isOverlapBetweenAffectedAndQueried();
     }
 
     private List<AttributeRef> extractAffectedAttributes(Repair repair) {

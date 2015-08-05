@@ -39,6 +39,8 @@ public class EquivalenceClassUtility {
         return true;
     }
 
+    //TODO++ refactor: this method is used twice, once for chasemc, once for chasede; consider separating those
+    //       for chase de no need to consider backard attributes
     public static void addTuple(Tuple tuple, EquivalenceClassForEGD equivalenceClass) {
         if (logger.isDebugEnabled()) logger.trace("Adding tuple " + tuple + " to equivalence class: " + equivalenceClass);
         if (logger.isDebugEnabled()) logger.debug("OccurrenceAttributesForConclusionVariable: " + equivalenceClass.getOccurrenceAttributesForConclusionVariable());
@@ -46,31 +48,32 @@ public class EquivalenceClassUtility {
             Cell cellToChangeForForwardChasing = tuple.getCell(occurrenceAttributesForConclusionVariable);
             if (logger.isDebugEnabled()) logger.trace("Attribute: " + occurrenceAttributesForConclusionVariable + " - Cell: " + cellToChangeForForwardChasing);
             IValue conclusionValue = cellToChangeForForwardChasing.getValue();
-            EGDEquivalenceClassCells targetCellsToChange = getOrCreateTargetCellsToChange(equivalenceClass, conclusionValue);
+            EGDEquivalenceClassCells equivalenceClassCells = getOrCreateEquivanceClassCells(equivalenceClass, conclusionValue);
             TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, occurrenceAttributesForConclusionVariable));
             CellRef cellRef = new CellRef(originalOid, ChaseUtility.unAlias(occurrenceAttributesForConclusionVariable));
             if (occurrenceAttributesForConclusionVariable.isSource()) {
                 CellGroupCell sourceCell = new CellGroupCell(cellRef, conclusionValue, conclusionValue, LunaticConstants.TYPE_JUSTIFICATION, null);
-                targetCellsToChange.getCellGroupForForwardRepair().addJustificationCell(sourceCell);
+                equivalenceClassCells.getCellGroupForForwardRepair().addJustificationCell(sourceCell);
                 continue;
             }
             CellGroupCell targetCell = new CellGroupCell(cellRef, conclusionValue, null, LunaticConstants.TYPE_OCCURRENCE, null);
-            targetCellsToChange.getCellGroupForForwardRepair().addOccurrenceCell(targetCell);
+            equivalenceClassCells.getCellGroupForForwardRepair().addOccurrenceCell(targetCell);
+            //TODO++ refactor: avoid nesting by extracting conclusion values
             for (BackwardAttribute backwardAttribute : equivalenceClass.getAttributesToChangeForBackwardChasing()) {
                 AttributeRef attributeForBackwardChasing = backwardAttribute.getAttributeRef();
                 Cell cellForBackward = tuple.getCell(attributeForBackwardChasing);
 //                CellGroup cellGroupForBackward = targetCellsToChange.getOrCreateCellsForBackwardRepair(backwardAttribute, cellForBackward.getValue());
-                Set<Cell> cellsForBackward = targetCellsToChange.getOrCreateCellsForBackwardRepair(backwardAttribute);
+                Set<Cell> cellsForBackward = equivalenceClassCells.getOrCreateCellsForBackwardRepair(backwardAttribute);
                 TupleOID tupleOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, attributeForBackwardChasing));
                 Cell backwardCell = new Cell(tupleOid, ChaseUtility.unAlias(attributeForBackwardChasing), cellForBackward.getValue());
                 cellsForBackward.add(backwardCell);
             }
-            addAdditionalAttributes(targetCellsToChange, originalOid, tuple, equivalenceClass);
+            addAdditionalAttributes(equivalenceClassCells, originalOid, tuple, equivalenceClass);
         }
         if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
     }
 
-    private static EGDEquivalenceClassCells getOrCreateTargetCellsToChange(EquivalenceClassForEGD equivalenceClass, IValue conclusionValue) {
+    private static EGDEquivalenceClassCells getOrCreateEquivanceClassCells(EquivalenceClassForEGD equivalenceClass, IValue conclusionValue) {
         EGDEquivalenceClassCells targetCellsToChange = equivalenceClass.getTupleGroupsWithSameConclusionValue().get(conclusionValue);
         if (logger.isDebugEnabled()) logger.trace("Target cells to change: " + targetCellsToChange);
         if (targetCellsToChange == null) {
@@ -98,7 +101,7 @@ public class EquivalenceClassUtility {
     }
 
     public static AttributeRef correctAttributeForSymmetricEGDs(AttributeRef attributeRef, Dependency egd) {
-        if (!egd.hasSymmetricAtoms()) {
+        if (!egd.hasSymmetricChase()) {
             return attributeRef;
         }
         for (TableAlias tableAlias : egd.getSymmetricAtoms().getSymmetricAliases()) {
@@ -111,7 +114,7 @@ public class EquivalenceClassUtility {
 
     private static List<AttributeRef> getTargetJoinAttributes(Dependency egd) {
         List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributesInPositiveFormula(egd);
-        if (!egd.hasSymmetricAtoms()) {
+        if (!egd.hasSymmetricChase()) {
             return targetJoinAttributes;
         }
         List<AttributeRef> result = new ArrayList<AttributeRef>();

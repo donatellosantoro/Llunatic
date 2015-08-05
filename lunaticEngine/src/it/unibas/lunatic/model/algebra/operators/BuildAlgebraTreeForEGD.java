@@ -50,7 +50,7 @@ public class BuildAlgebraTreeForEGD {
 
     public IAlgebraOperator buildTreeForExtEGDPremise(Dependency dependency, boolean useSymmetry, Scenario scenario) {
         IAlgebraOperator premiseRoot;
-        if (!dependency.hasSymmetricAtoms() || !useSymmetry) {
+        if (!dependency.hasSymmetricChase() || !useSymmetry) {
             if (logger.isDebugEnabled()) logger.debug("Building tree for non-symmetric dependency...");
             premiseRoot = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, dependency.getPremise().getPositiveFormula(), true);
             IAlgebraOperator select = addSelectionsForViolations(dependency);

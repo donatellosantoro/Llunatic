@@ -48,7 +48,7 @@ class DependencyToStringVisitor implements IFormulaVisitor {
             result.append("\nAdditional Attributes: ").append(dependency.getAdditionalAttributes());
         }
         result.append(".\n");
-        if (dependency.hasSymmetricAtoms()) {
+        if (dependency.hasSymmetricChase()) {
             result.append("(symmetric)\n");
         }
 //        if (!useSaveFormat && printSkolems) {

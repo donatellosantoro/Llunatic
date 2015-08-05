@@ -137,7 +137,7 @@ public class Dependency implements Cloneable {
         this.attributesForBackwardChasing = attributesForBackwardChasing;
     }
 
-    public boolean hasSymmetricAtoms() {
+    public boolean hasSymmetricChase() {
         // in case there are overlaps, conclusion variables become part of the witness, and therefore generate different equivalence classes
         return !this.symmetricAtoms.isEmpty() && !hasNegations() && !isOverlapBetweenAffectedAndQueried();
     }
@@ -207,7 +207,7 @@ public class Dependency implements Cloneable {
         result.append("  Overlap between queried and affected: ").append(overlapBetweenAffectedAndQueried).append("\n");
         result.append("  Attributes for backward chasing: ").append(attributesForBackwardChasing).append("\n");
         result.append("  Symmetric atoms: ").append(symmetricAtoms).append("\n");
-        result.append("  Has Symmetric Atoms: ").append(hasSymmetricAtoms()).append("\n");
+        result.append("  Has Symmetric Atoms: ").append(hasSymmetricChase()).append("\n");
         result.append("  Join Graph Is Cyclic: ").append(joinGraphIsCyclic).append("\n");
 //        result.append("  Extended dependencies:\n");
 //        for (ExtendedDependency extendedDependency : extendedDependencies) {

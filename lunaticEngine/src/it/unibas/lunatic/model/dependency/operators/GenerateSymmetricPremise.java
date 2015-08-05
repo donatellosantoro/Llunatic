@@ -25,7 +25,7 @@ public class GenerateSymmetricPremise {
     private FindVariableEquivalenceClasses equivalenceClassFinder = new FindVariableEquivalenceClasses();
 
     public PositiveFormula generateSymmetricPremise(Dependency dependency) {
-        if (!dependency.hasSymmetricAtoms()) {
+        if (!dependency.hasSymmetricChase()) {
             throw new IllegalArgumentException("Dependency must have symmetric atoms: " + dependency);
         }
         if (logger.isDebugEnabled()) logger.debug("Generating symmetring premise for dependency " + dependency.toLongString());
