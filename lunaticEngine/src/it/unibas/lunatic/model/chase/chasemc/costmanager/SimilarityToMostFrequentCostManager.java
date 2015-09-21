@@ -21,6 +21,7 @@ import it.unibas.lunatic.model.database.LLUNValue;
 import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -94,7 +95,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         repair.addViolationContext(forwardChanges);
         return repair;
     }
-    
+
     private Map<EGDEquivalenceClassCells, BackwardAttribute> partitionGroups(List<EGDEquivalenceClassCells> tupleGroups, List<EGDEquivalenceClassCells> forwardGroups, List<EGDEquivalenceClassCells> backwardGroups, DeltaChaseStep chaseTreeRoot, String stepId, Scenario scenario) {
         Map<EGDEquivalenceClassCells, BackwardAttribute> result = new HashMap<EGDEquivalenceClassCells, BackwardAttribute>();
         EGDEquivalenceClassCells tupleGroup0 = tupleGroups.get(0);
@@ -109,14 +110,14 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             if (backwardAttribute == null) {
                 forwardGroups.add(tupleGroupj);
                 continue;
-            }            
+            }
             backwardGroups.add(tupleGroupj);
-            result.put(tupleGroupj, backwardAttribute);            
+            result.put(tupleGroupj, backwardAttribute);
         }
         return result;
     }
 
-    private Repair generateRepairWithBackwards(EquivalenceClassForEGD equivalenceClass, List<EGDEquivalenceClassCells> forwardTupleGroups, 
+    private Repair generateRepairWithBackwards(EquivalenceClassForEGD equivalenceClass, List<EGDEquivalenceClassCells> forwardTupleGroups,
             List<EGDEquivalenceClassCells> backwardTupleGroups, Map<EGDEquivalenceClassCells, BackwardAttribute> backwardAttributes, Scenario scenario, IDatabase deltaDB, String stepId) {
         Repair repair = new Repair();
         if (forwardTupleGroups.size() > 1) {
@@ -142,7 +143,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             return null;
         }
         return repair;
-    }         
+    }
 
     private boolean areSimilar(EGDEquivalenceClassCells t1, EGDEquivalenceClassCells t2) {
         IValue v1 = t1.getCellGroupForForwardRepair().getValue();
@@ -151,6 +152,13 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             return true;
         }
         double similarity = SimilarityFactory.getInstance().getStrategy(similarityStrategy).computeSimilarity(v1, v2);
+        //TODO: Handling numerical values
+        try{
+            double d1 = Double.parseDouble(v1.toString());
+            double d2 = Double.parseDouble(v2.toString());
+            similarity = 0.9;
+        }catch(NumberFormatException nfe){}
+        //
         if (logger.isDebugEnabled()) logger.debug("Checking similarity between " + v1 + " and " + v2 + ". Result: " + similarity);
         return similarity > similarityThreshold;
     }

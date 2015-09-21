@@ -42,8 +42,8 @@ class ToSQLStringVisitor implements ParserVisitor {
 
     public Object visit(ASTFunNode node, Object data) throws ParseException {
         if (isOperator(node)) {
-            String sqlName = node.getSQLName(node,jepExpression);
-            if(sqlName==null){
+            String sqlName = node.getSQLName(node, jepExpression);
+            if (sqlName == null) {
                 sqlName = node.getOperator().getName();
             }
             if (isUnaryOperator(node)) {
@@ -63,8 +63,8 @@ class ToSQLStringVisitor implements ParserVisitor {
                 result.append(")");
             }
         } else if (isFunction(node)) {
-            String sql = node.getSQLName(node,jepExpression);
-            if(sql!=null){
+            String sql = node.getSQLName(node, jepExpression);
+            if (sql != null) {
                 result.append(sql);
                 return null;
             }
@@ -95,6 +95,7 @@ class ToSQLStringVisitor implements ParserVisitor {
     public Object visit(ASTConstant node, Object data) throws ParseException {
         String valueString = node.getValue().toString();
         if (((ASTConstant) node).getType() == ASTConstant.STRING) {
+            valueString = valueString.replaceAll("'", "''");
             valueString = "\'" + valueString + "\'";
         } else {
             Double doubleValue = Double.parseDouble(valueString);

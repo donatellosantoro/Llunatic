@@ -417,11 +417,10 @@ public class AlgebraTreeToSQL {
             } else {
                 attributeResult = DBMSUtility.attributeRefToSQLDot(attribute);
             }
-            if (logger.isDebugEnabled()) logger.debug(" ### Attribute: " + attribute);
-            if (logger.isDebugEnabled()) logger.debug(" ### Operator: " + operator);
-            if (logger.isDebugEnabled()) logger.debug(" ### NestedOperator: " + nestedOperator);
-            if (logger.isDebugEnabled()) logger.debug(" ### Result: " + attributeResult);
-            if (logger.isDebugEnabled()) logger.debug(" ##########");
+            if (logger.isDebugEnabled()) logger.debug(" Attribute: " + attribute);
+            if (logger.isDebugEnabled()) logger.debug(" Operator: " + operator);
+            if (logger.isDebugEnabled()) logger.debug(" NestedOperator: " + nestedOperator);
+            if (logger.isDebugEnabled()) logger.debug(" Result: " + attributeResult);
             return attributeResult;
         }
 
