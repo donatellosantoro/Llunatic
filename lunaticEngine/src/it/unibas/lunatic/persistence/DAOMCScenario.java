@@ -191,9 +191,9 @@ public class DAOMCScenario {
                     String type = inputFileElement.getAttribute("type").getValue();
                     fileName = filePathTransformator.expand(fileScenario, fileName);
                     IImportFile fileToImport;
-                    if (type.equals(SpeedyConstants.XML)) {
+                    if (type.equalsIgnoreCase(SpeedyConstants.XML)) {
                         fileToImport = new XMLFile(fileName);
-                    } else if (type.equals(SpeedyConstants.CSV)) {
+                    } else if (type.equalsIgnoreCase(SpeedyConstants.CSV)) {
                         fileToImport = new CSVFile(fileName);
                     }else{
                         throw new DAOException("Type " + type + " is not supported");
