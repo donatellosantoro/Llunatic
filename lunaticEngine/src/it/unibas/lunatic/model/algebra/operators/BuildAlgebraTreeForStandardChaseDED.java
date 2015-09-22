@@ -1,11 +1,6 @@
 package it.unibas.lunatic.model.algebra.operators;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.Difference;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.algebra.Join;
-import it.unibas.lunatic.model.algebra.Project;
-import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.DED;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
@@ -14,6 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.Difference;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.Join;
+import speedy.model.algebra.Project;
+import speedy.model.database.AttributeRef;
+import speedy.utility.SpeedyUtility;
 
 public class BuildAlgebraTreeForStandardChaseDED {
 
@@ -50,7 +51,7 @@ public class BuildAlgebraTreeForStandardChaseDED {
         IAlgebraOperator negatedRoot = algebraTreeBuilder.buildTreeForConclusion(negatedDependency, scenario);
         if (logger.isDebugEnabled()) logger.debug("Adding negated tree:\n" + negatedRoot);
         IAlgebraOperator joinRoot = addJoinForDifference(premiseOperator, negatedRoot, negatedDependency);
-        IAlgebraOperator project = new Project(root.getAttributes(scenario.getSource(), scenario.getTarget()));
+        IAlgebraOperator project = new Project(SpeedyUtility.createProjectionAttributes(root.getAttributes(scenario.getSource(), scenario.getTarget())));
         project.addChild(joinRoot);
         IAlgebraOperator difference = new Difference();
         difference.addChild(root);

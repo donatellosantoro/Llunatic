@@ -2,13 +2,8 @@ package it.unibas.lunatic.test.algebra;
 
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.*;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
-import it.unibas.lunatic.model.expressions.Expression;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import java.util.ArrayList;
@@ -19,6 +14,22 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.GroupBy;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.Join;
+import speedy.model.algebra.OrderBy;
+import speedy.model.algebra.Project;
+import speedy.model.algebra.Scan;
+import speedy.model.algebra.Select;
+import speedy.model.algebra.SelectIn;
+import speedy.model.algebra.aggregatefunctions.CountAggregateFunction;
+import speedy.model.algebra.aggregatefunctions.IAggregateFunction;
+import speedy.model.algebra.aggregatefunctions.ValueAggregateFunction;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
+import speedy.model.expressions.Expression;
+import speedy.utility.SpeedyUtility;
 
 @SuppressWarnings("unchecked")
 public class TestAlgebra extends TestCase {
@@ -74,12 +85,14 @@ public class TestAlgebra extends TestCase {
         TableAlias innerTableAlias = new TableAlias("IBDBookSet", true);
         List<AttributeRef> attributeToProject = new ArrayList<AttributeRef>();
         attributeToProject.add(new AttributeRef(innerTableAlias, "title"));
-        Project project = new Project(attributeToProject);
+        Project project = new Project(SpeedyUtility.createProjectionAttributes(attributeToProject));
         project.addChild(new Scan(innerTableAlias));
         TableAlias tableAlias = new TableAlias("IBLBookSet", true);
         List<AttributeRef> attributesToSelect = new ArrayList<AttributeRef>();
         attributesToSelect.add(new AttributeRef(tableAlias, "title"));
-        SelectIn selectIn = new SelectIn(attributesToSelect, project);
+        List<IAlgebraOperator> selectionOperators = new ArrayList<IAlgebraOperator>();
+        selectionOperators.add(project);
+        SelectIn selectIn = new SelectIn(attributesToSelect, selectionOperators);
         Scan scan = new Scan(tableAlias);
         selectIn.addChild(scan);
         if (logger.isTraceEnabled()) logger.debug(selectIn.toString());
@@ -94,7 +107,7 @@ public class TestAlgebra extends TestCase {
         TableAlias tableAlias = new TableAlias("S_Employee", true);
         List<AttributeRef> attributes = new ArrayList<AttributeRef>();
         attributes.add(new AttributeRef(tableAlias, "name"));
-        Project project = new Project(attributes);
+        Project project = new Project(SpeedyUtility.createProjectionAttributes(attributes));
         project.addChild(new Scan(tableAlias));
         if (logger.isTraceEnabled()) logger.debug(project.toString());
         Iterator<Tuple> result = project.execute(scenario.getSource(), scenario.getTarget());
@@ -110,7 +123,7 @@ public class TestAlgebra extends TestCase {
         List<AttributeRef> attributes = new ArrayList<AttributeRef>();
         attributes.add(new AttributeRef(tableAlias, "name"));
         attributes.add(new AttributeRef(tableAlias, "age"));
-        Project project = new Project(attributes);
+        Project project = new Project(SpeedyUtility.createProjectionAttributes(attributes));
         project.addChild(new Scan(tableAlias));
         if (logger.isTraceEnabled()) logger.debug(project.toString());
         Iterator<Tuple> result = project.execute(scenario.getSource(), scenario.getTarget());
@@ -133,7 +146,7 @@ public class TestAlgebra extends TestCase {
         List<AttributeRef> attributes = new ArrayList<AttributeRef>();
         attributes.add(new AttributeRef(tableAliasR, "a"));
         attributes.add(new AttributeRef(tableAliasS, "a"));
-        Project project = new Project(attributes);
+        Project project = new Project(SpeedyUtility.createProjectionAttributes(attributes));
         project.addChild(join);
         if (logger.isTraceEnabled()) logger.debug(project.toString());
         Iterator<Tuple> result = project.execute(scenario.getSource(), scenario.getTarget());
@@ -181,7 +194,7 @@ public class TestAlgebra extends TestCase {
         expression.changeVariableDescription("count", countVariable);
         Select select = new Select(expression);
         select.addChild(groupBy);
-        Project project = new Project(groupingAttribute);
+        Project project = new Project(SpeedyUtility.createProjectionAttributes(groupingAttribute));
         project.addChild(select);
         if (logger.isTraceEnabled()) logger.debug(project.toString());
         Iterator<Tuple> result = project.execute(scenario.getSource(), scenario.getTarget());
@@ -219,14 +232,15 @@ public class TestAlgebra extends TestCase {
         secondGroupBy.addChild(firstGroupBy);
         Select select = new Select(expression);
         select.addChild(secondGroupBy);
-        Project violationProject = new Project(secondGroupingAttribute);
+        Project violationProject = new Project(SpeedyUtility.createProjectionAttributes(secondGroupingAttribute));
         violationProject.addChild(select);
-        
-        
+
         Scan scan = new Scan(tableAlias);
         List<AttributeRef> selectInAttribute = new ArrayList<AttributeRef>();
         selectInAttribute.add(nameAttribute);
-        SelectIn selectIn = new SelectIn(selectInAttribute, violationProject);
+        List<IAlgebraOperator> selectionOperators = new ArrayList<IAlgebraOperator>();
+        selectionOperators.add(violationProject);
+        SelectIn selectIn = new SelectIn(selectInAttribute, selectionOperators);
         selectIn.addChild(scan);
         OrderBy orderBy = new OrderBy(selectInAttribute);
         orderBy.addChild(selectIn);

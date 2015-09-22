@@ -1,8 +1,8 @@
 package it.unibas.lunatic.model.database.lazyloading;
 
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
-import it.unibas.lunatic.model.database.Tuple;
 import java.util.Iterator;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.Tuple;
 
 public class MainMemoryTupleLoaderIterator implements Iterator<ITupleLoader> {
 

@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator;
 
-import it.unibas.lunatic.model.database.IValue;
+import speedy.model.database.IValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

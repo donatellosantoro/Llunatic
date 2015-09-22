@@ -1,11 +1,11 @@
 package it.unibas.lunatic.model.algebra.operators;
 
-import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.expressions.Expression;
 import java.util.ArrayList;
 import java.util.List;
+import speedy.SpeedyConstants;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.TableAlias;
+import speedy.model.expressions.Expression;
 
 class EqualityGroup {
 
@@ -63,9 +63,9 @@ class EqualityGroup {
         }
         if (leftTable.getTableName().equals(rightTable.getTableName()) && !isCyclicJoinGraph()) {
             String inequalityOperator = "!=";
-            Expression oidInequality = new Expression(leftTable.toString() + "." + LunaticConstants.OID + inequalityOperator + rightTable.toString() + "." + LunaticConstants.OID);
-            oidInequality.changeVariableDescription(leftTable.toString() + "." + LunaticConstants.OID, new AttributeRef(leftTable, LunaticConstants.OID));
-            oidInequality.changeVariableDescription(rightTable.toString() + "." + LunaticConstants.OID, new AttributeRef(rightTable, LunaticConstants.OID));
+            Expression oidInequality = new Expression(leftTable.toString() + "." + SpeedyConstants.OID + inequalityOperator + rightTable.toString() + "." + SpeedyConstants.OID);
+            oidInequality.changeVariableDescription(leftTable.toString() + "." + SpeedyConstants.OID, new AttributeRef(leftTable, SpeedyConstants.OID));
+            oidInequality.changeVariableDescription(rightTable.toString() + "." + SpeedyConstants.OID, new AttributeRef(rightTable, SpeedyConstants.OID));
             result.add(oidInequality);
         }
         return result;

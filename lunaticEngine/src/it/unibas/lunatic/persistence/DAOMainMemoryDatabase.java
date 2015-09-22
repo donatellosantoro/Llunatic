@@ -1,13 +1,14 @@
 package it.unibas.lunatic.persistence;
 
 import it.unibas.lunatic.exceptions.DAOException;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
-import it.unibas.lunatic.model.database.mainmemory.datasource.DataSource;
 import it.unibas.lunatic.parser.operators.ParseDatabase;
-import it.unibas.lunatic.persistence.xml.DAOXsd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.IDatabase;
+import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.mainmemory.datasource.DataSource;
+import speedy.persistence.PersistenceUtility;
+import speedy.persistence.xml.DAOXsd;
 
 public class DAOMainMemoryDatabase {
 

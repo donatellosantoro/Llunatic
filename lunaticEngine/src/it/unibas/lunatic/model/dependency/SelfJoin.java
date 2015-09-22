@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.model.database.TableAlias;
 import java.util.List;
+import speedy.model.database.TableAlias;
 
 public class SelfJoin {
 

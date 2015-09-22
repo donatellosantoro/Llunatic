@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.model.database.AttributeRef;
+import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.List;
 

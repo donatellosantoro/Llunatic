@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc;
 
-import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
+import speedy.model.database.AttributeRef;
 
 public class BackwardAttribute {
 

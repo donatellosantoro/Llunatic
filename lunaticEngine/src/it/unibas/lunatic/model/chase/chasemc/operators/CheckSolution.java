@@ -2,13 +2,14 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.LLUNValue;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.IValue;
+import speedy.model.database.LLUNValue;
+import speedy.model.database.operators.IRunQuery;
 
 public class CheckSolution {
 

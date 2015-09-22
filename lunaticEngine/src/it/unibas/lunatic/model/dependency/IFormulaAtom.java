@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.model.expressions.Expression;
 import java.util.List;
+import speedy.model.expressions.Expression;
 
 public interface IFormulaAtom extends Cloneable {
 

@@ -2,7 +2,7 @@ package it.unibas.lunatic.test.de.mainmemory;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
-import it.unibas.lunatic.model.database.IDatabase;
+import speedy.model.database.IDatabase;
 import it.unibas.lunatic.test.UtilityTest;
 import junit.framework.TestCase;
 import org.slf4j.Logger;

@@ -14,11 +14,11 @@
       <login>pguser</login>
       <password>pguser</password>
     </access-configuration>
-    <import-xml createTables="true">
-      <input>xml/instance&instance;_sworkers.xml</input>
-      <input>xml/instance&instance;_sstats.xml</input>
-      <input>xml/instance&instance;_sprojects.xml</input>
-    </import-xml>
+    <import createTables="true">
+      <input type="xml" table="sworker">xml/instance&instance;_sworkers.xml</input>
+      <input type="xml" table="sstats">xml/instance&instance;_sstats.xml</input>
+      <input type="xml" table="sprojects">xml/instance&instance;_sprojects.xml</input>
+    </import>
   </source>
   <target> 
     <type>DBMS</type>

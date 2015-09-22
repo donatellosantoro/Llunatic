@@ -353,6 +353,7 @@
             src.dir            = src
             build.top.dir      = build
             resources.dir      = misc/resources
+            speedy.dir         = ${speedy.dir}
             experiments.dir    = misc/experiments
             build.dir          = build/classes
             test.src.dir       = test

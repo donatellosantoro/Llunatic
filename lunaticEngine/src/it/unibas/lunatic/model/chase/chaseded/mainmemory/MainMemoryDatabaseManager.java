@@ -2,7 +2,7 @@ package it.unibas.lunatic.model.chase.chaseded.mainmemory;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chaseded.IDatabaseManager;
-import it.unibas.lunatic.model.database.IDatabase;
+import speedy.model.database.IDatabase;
 
 public class MainMemoryDatabaseManager implements IDatabaseManager {
 

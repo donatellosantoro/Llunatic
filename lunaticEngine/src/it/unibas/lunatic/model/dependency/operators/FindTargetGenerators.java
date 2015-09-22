@@ -1,21 +1,22 @@
 package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.dependency.*;
-import it.unibas.lunatic.model.expressions.Expression;
-import it.unibas.lunatic.model.generators.ExpressionGenerator;
-import it.unibas.lunatic.model.generators.IValueGenerator;
-import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
 import it.unibas.lunatic.model.database.skolem.AppendSkolemPart;
 import it.unibas.lunatic.model.database.skolem.ISkolemPart;
 import it.unibas.lunatic.model.database.skolem.StringSkolemPart;
 import it.unibas.lunatic.model.database.skolem.SubGeneratorSkolemPart;
+import it.unibas.lunatic.utility.LunaticUtility;
+import speedy.model.database.AttributeRef;
+import it.unibas.lunatic.model.dependency.*;
+import speedy.model.expressions.Expression;
+import it.unibas.lunatic.model.generators.ExpressionGenerator;
+import it.unibas.lunatic.model.generators.IValueGenerator;
+import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import speedy.SpeedyConstants;
 
 public class FindTargetGenerators {
 
@@ -70,7 +71,7 @@ public class FindTargetGenerators {
             return generatorForVariable;
         }
         ISkolemPart root = new AppendSkolemPart();
-        ISkolemPart name = new StringSkolemPart(LunaticConstants.SKOLEM_PREFIX + dependency.getId() + LunaticConstants.SKOLEM_SEPARATOR + variable.getId());
+        ISkolemPart name = new StringSkolemPart(SpeedyConstants.SKOLEM_PREFIX + dependency.getId() + SpeedyConstants.SKOLEM_SEPARATOR + variable.getId());
         root.addChild(name);
         AppendSkolemPart append = new AppendSkolemPart("(", ")", ";");
         root.addChild(append);

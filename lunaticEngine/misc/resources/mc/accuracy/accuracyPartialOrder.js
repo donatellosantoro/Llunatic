@@ -1,5 +1,5 @@
 importPackage(Packages.it.unibas.lunatic);
-importPackage(Packages.it.unibas.lunatic.model.database);
+importPackage(Packages.speedy.model.database);
 importPackage(Packages.it.unibas.lunatic.model.chasemc);
 importPackage(Packages.it.unibas.lunatic.model.chasemc.partialorder);
 importPackage(java.util);

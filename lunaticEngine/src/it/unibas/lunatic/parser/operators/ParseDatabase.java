@@ -2,26 +2,26 @@ package it.unibas.lunatic.parser.operators;
 
 import it.unibas.lunatic.exceptions.ParserException;
 import it.unibas.lunatic.parser.output.*;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
-import it.unibas.lunatic.model.database.mainmemory.datasource.DataSource;
-import it.unibas.lunatic.model.database.mainmemory.datasource.INode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.AttributeNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.LeafNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.SetNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.TupleNode;
-import it.unibas.lunatic.persistence.PersistenceConstants;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
-import it.unibas.lunatic.model.database.mainmemory.datasource.NullValueFactory;
 import it.unibas.lunatic.parser.*;
-import it.unibas.lunatic.persistence.PersistenceUtility;
-import it.unibas.lunatic.persistence.Types;
 import it.unibas.lunatic.utility.LunaticUtility;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.IDatabase;
+import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.mainmemory.datasource.DataSource;
+import speedy.model.database.mainmemory.datasource.INode;
+import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
+import speedy.model.database.mainmemory.datasource.NullValueFactory;
+import speedy.model.database.mainmemory.datasource.nodes.AttributeNode;
+import speedy.model.database.mainmemory.datasource.nodes.LeafNode;
+import speedy.model.database.mainmemory.datasource.nodes.SetNode;
+import speedy.model.database.mainmemory.datasource.nodes.TupleNode;
+import speedy.persistence.PersistenceConstants;
+import speedy.persistence.PersistenceUtility;
+import speedy.persistence.Types;
 
 public class ParseDatabase {
 

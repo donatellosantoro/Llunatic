@@ -2,16 +2,17 @@ package it.unibas.lunatic.model.chase.chasemc;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.ConstantValue;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.LLUNValue;
-import it.unibas.lunatic.model.database.NullValue;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import speedy.SpeedyConstants;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.ConstantValue;
+import speedy.model.database.IValue;
+import speedy.model.database.LLUNValue;
+import speedy.model.database.NullValue;
 
 public class CellGroup implements Cloneable, Serializable {
 
@@ -92,13 +93,13 @@ public class CellGroup implements Cloneable, Serializable {
     }
 
     public final void setId(IValue value) {
-        assert (value instanceof LLUNValue || value instanceof NullValue || value.toString().contains(LunaticConstants.VALUE_LABEL)) : "Trying to build a cell group with value in place of id: " + value;
+        assert (value instanceof LLUNValue || value instanceof NullValue || value.toString().contains(SpeedyConstants.VALUE_LABEL)) : "Trying to build a cell group with value in place of id: " + value + " (" + value.getClass().getName() + ")";
         this.id = value;
         this.value = CellGroupIDGenerator.getCellGroupValueFromGroupID(value);
     }
 
     public final void setValue(IValue value) {
-        assert (!value.toString().contains(LunaticConstants.VALUE_LABEL)) : "Trying to build a cell group with id in place of value: " + value;
+        assert (!value.toString().contains(SpeedyConstants.VALUE_LABEL)) : "Trying to build a cell group with id in place of value: " + value;
         this.value = value;
         this.id = CellGroupIDGenerator.generateNewId(value);
     }
@@ -212,7 +213,7 @@ public class CellGroup implements Cloneable, Serializable {
         if (this.justifications != other.justifications && (this.justifications == null || !this.justifications.equals(other.justifications))) return false;
         if (this.userCells != other.userCells && (this.userCells == null || !this.userCells.equals(other.userCells))) return false;
 //        if (this.invalidCell != other.invalidCell && (this.invalidCell == null || !this.invalidCell.equals(other.invalidCell))) return false;
-        if(this.hasInvalidCell() != other.hasInvalidCell()) return false;
+        if (this.hasInvalidCell() != other.hasInvalidCell()) return false;
         return true;
     }
 

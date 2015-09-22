@@ -1,10 +1,12 @@
 package it.unibas.lunatic;
 
+import speedy.SpeedyConstants;
+
 public class PartialOrderConstants {
 
-    public static final String CONST = LunaticConstants.CONST;
-    public static final String NULL = LunaticConstants.NULL;
-    public static final String LLUN = LunaticConstants.LLUN;
+    public static final String CONST = SpeedyConstants.CONST;
+    public static final String NULL = SpeedyConstants.NULL;
+    public static final String LLUN = SpeedyConstants.LLUN;
     
     public static final String TABLE_FOR_CONSTANT_VALUE = "CONSTTABLE";
     

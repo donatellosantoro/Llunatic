@@ -1,13 +1,13 @@
 package it.unibas.lunatic.model.chase.chasemc;
 
-import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.dependency.Dependency;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.IValue;
 
 public class EquivalenceClassForEGD {
 

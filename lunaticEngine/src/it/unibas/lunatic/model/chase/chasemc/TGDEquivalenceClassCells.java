@@ -1,8 +1,8 @@
 package it.unibas.lunatic.model.chase.chasemc;
 
-import it.unibas.lunatic.model.database.IValue;
 import java.util.HashSet;
 import java.util.Set;
+import speedy.model.database.IValue;
 
 public class TGDEquivalenceClassCells implements Cloneable {
 

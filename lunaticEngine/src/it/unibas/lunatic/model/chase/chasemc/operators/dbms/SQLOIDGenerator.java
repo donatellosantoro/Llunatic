@@ -1,16 +1,16 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.dbms;
 
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.exceptions.DBMSException;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.dbms.DBMSTable;
-import it.unibas.lunatic.model.database.mainmemory.datasource.OID;
-import it.unibas.lunatic.persistence.relational.QueryManager;
+import speedy.model.database.IDatabase;
+import speedy.model.database.dbms.DBMSTable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import speedy.SpeedyConstants;
+import speedy.model.database.mainmemory.datasource.OID;
+import speedy.persistence.relational.QueryManager;
 
 public class SQLOIDGenerator implements IOIDGenerator {
 
@@ -56,7 +56,7 @@ public class SQLOIDGenerator implements IOIDGenerator {
 
     private Long getMaxOID(DBMSTable table) {
         Long maxOID = 0L;
-        String query = "SELECT max(" + LunaticConstants.OID + ") FROM " + table.getAccessConfiguration().getSchemaName() + "." + table.getName();
+        String query = "SELECT max(" + SpeedyConstants.OID + ") FROM " + table.getAccessConfiguration().getSchemaName() + "." + table.getName();
         ResultSet rs = QueryManager.executeQuery(query, table.getAccessConfiguration());
         try {
             if (rs.next()) {

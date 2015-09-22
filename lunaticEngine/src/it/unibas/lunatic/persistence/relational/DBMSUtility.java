@@ -4,13 +4,9 @@ import it.unibas.lunatic.model.database.lazyloading.DBMSTupleLoader;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.exceptions.DBMSException;
-import it.unibas.lunatic.model.database.*;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
-import it.unibas.lunatic.model.expressions.Expression;
-import it.unibas.lunatic.persistence.Types;
+import speedy.model.expressions.Expression;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -21,11 +17,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.nfunk.jep.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.database.Attribute;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.ConstantValue;
+import speedy.model.database.ForeignKey;
+import speedy.model.database.IValue;
+import speedy.model.database.Key;
+import speedy.model.database.LLUNValue;
+import speedy.model.database.NullValue;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
+import speedy.persistence.Types;
+import speedy.persistence.relational.AccessConfiguration;
+import speedy.persistence.relational.QueryManager;
+import speedy.persistence.relational.SimpleDbConnectionFactory;
 
 public class DBMSUtility {
 
@@ -217,26 +231,26 @@ public class DBMSUtility {
     }
 
     public static ResultSet getTableResultSet(String tableName, AccessConfiguration accessConfiguration) {
-        String query = "SELECT " + LunaticConstants.OID + ",* FROM " + accessConfiguration.getSchemaName() + "." + tableName;
+        String query = "SELECT " + SpeedyConstants.OID + ",* FROM " + accessConfiguration.getSchemaName() + "." + tableName;
         return QueryManager.executeQuery(query, accessConfiguration);
     }
 
     public static String createTablePaginationQuery(String tableName, AccessConfiguration accessConfiguration, int offset, int limit) {
-        return "SELECT " + LunaticConstants.OID + ",* FROM " + accessConfiguration.getSchemaName() + "." + tableName + " LIMIT " + limit + " OFFSET " + offset;
+        return "SELECT " + SpeedyConstants.OID + ",* FROM " + accessConfiguration.getSchemaName() + "." + tableName + " LIMIT " + limit + " OFFSET " + offset;
     }
 
     public static ResultSet getTableOidsResultSet(String tableName, AccessConfiguration accessConfiguration) {
-        String query = "SELECT " + LunaticConstants.OID + " FROM " + accessConfiguration.getSchemaName() + "." + tableName;
+        String query = "SELECT " + SpeedyConstants.OID + " FROM " + accessConfiguration.getSchemaName() + "." + tableName;
         return QueryManager.executeQuery(query, accessConfiguration);
     }
 
     public static ResultSet getTupleResultSet(String tableName, TupleOID oid, AccessConfiguration accessConfiguration, Connection c) {
-        String query = "SELECT " + LunaticConstants.OID + ",* FROM " + accessConfiguration.getSchemaName() + "." + tableName + " WHERE " + LunaticConstants.OID + "=" + oid.toString();
+        String query = "SELECT " + SpeedyConstants.OID + ",* FROM " + accessConfiguration.getSchemaName() + "." + tableName + " WHERE " + SpeedyConstants.OID + "=" + oid.toString();
         return QueryManager.executeQuery(query, c, accessConfiguration);
     }
 
     public static ResultSet getTableResultSetForSchema(String tableName, AccessConfiguration accessConfiguration) {
-        String query = "SELECT " + LunaticConstants.OID + ",* FROM " + accessConfiguration.getSchemaName() + "." + tableName + " LIMIT 0";
+        String query = "SELECT " + SpeedyConstants.OID + ",* FROM " + accessConfiguration.getSchemaName() + "." + tableName + " LIMIT 0";
         return QueryManager.executeQuery(query, accessConfiguration);
     }
 
@@ -248,7 +262,7 @@ public class DBMSUtility {
         try {
             ResultSetMetaData metadata = resultSet.getMetaData();
             Object oidValue = findOIDColumn(metadata, resultSet);
-            if (metadata.getColumnCount() >= 1 && metadata.getColumnName(1).equals(LunaticConstants.OID)) {
+            if (metadata.getColumnCount() >= 1 && metadata.getColumnName(1).equals(SpeedyConstants.OID)) {
                 oidValue = resultSet.getObject(1);
             }
             TupleOID tupleOID = new TupleOID(oidValue);
@@ -265,16 +279,16 @@ public class DBMSUtility {
             ResultSetMetaData metadata = resultSet.getMetaData();
             int startColumn = 1;
             Object oidValue = findOIDColumn(metadata, resultSet);
-            if (metadata.getColumnCount() >= 1 && metadata.getColumnName(1).equals(LunaticConstants.OID)) {
+            if (metadata.getColumnCount() >= 1 && metadata.getColumnName(1).equals(SpeedyConstants.OID)) {
                 oidValue = resultSet.getObject(1);
                 startColumn = 2;
             }
-            if (metadata.getColumnCount() >= 2 && metadata.getColumnName(2).equals(LunaticConstants.OID)) {
+            if (metadata.getColumnCount() >= 2 && metadata.getColumnName(2).equals(SpeedyConstants.OID)) {
                 startColumn = 3;
             }
             TupleOID tupleOID = new TupleOID(oidValue);
             Tuple tuple = new Tuple(tupleOID);
-            Cell oidCell = new Cell(tupleOID, new AttributeRef(tableName, LunaticConstants.OID), new ConstantValue(tupleOID));
+            Cell oidCell = new Cell(tupleOID, new AttributeRef(tableName, SpeedyConstants.OID), new ConstantValue(tupleOID));
             tuple.addCell(oidCell);
             int columns = metadata.getColumnCount();
             for (int col = startColumn; col <= columns; col++) {
@@ -299,7 +313,7 @@ public class DBMSUtility {
 
     private static Object findOIDColumn(ResultSetMetaData metadata, ResultSet resultSet) throws SQLException {
         for (int i = 1; i <= metadata.getColumnCount(); i++) {
-            if (metadata.getColumnName(i).equalsIgnoreCase(LunaticConstants.OID)) {
+            if (metadata.getColumnName(i).equalsIgnoreCase(SpeedyConstants.OID)) {
                 return resultSet.getObject(i);
             }
         }
@@ -391,11 +405,11 @@ public class DBMSUtility {
 
     public static IValue convertDBMSValue(Object attributeValue) {
         IValue value;
-        if (attributeValue == null || attributeValue.toString().equalsIgnoreCase(LunaticConstants.NULL)) {
-            value = new NullValue(LunaticConstants.NULL_VALUE);
-        } else if (attributeValue.toString().startsWith(LunaticConstants.SKOLEM_PREFIX)) {
+        if (attributeValue == null || attributeValue.toString().equalsIgnoreCase(SpeedyConstants.NULL)) {
+            value = new NullValue(SpeedyConstants.NULL_VALUE);
+        } else if (attributeValue.toString().startsWith(SpeedyConstants.SKOLEM_PREFIX)) {
             value = new NullValue(attributeValue);
-        } else if (attributeValue.toString().startsWith(LunaticConstants.LLUN_PREFIX)) {
+        } else if (attributeValue.toString().startsWith(SpeedyConstants.LLUN_PREFIX)) {
             value = new LLUNValue(attributeValue);
         } else {
             value = new ConstantValue(attributeValue);
@@ -545,7 +559,7 @@ public class DBMSUtility {
         StringBuilder result = new StringBuilder();
         result.append("DROP SCHEMA IF EXISTS ").append(LunaticConstants.WORK_SCHEMA).append(" CASCADE;\n");
         result.append("CREATE SCHEMA ").append(LunaticConstants.WORK_SCHEMA).append(";\n\n");
-        QueryManager.executeScript(result.toString(), accessConfiguration, true, true, false);
+        QueryManager.executeScript(result.toString(), accessConfiguration, true, true, false, false);
     }
 
     public static void deleteSkolemOccurrencesTable(DBMSDB targetDB, AccessConfiguration accessConfiguration) {
@@ -562,6 +576,6 @@ public class DBMSUtility {
             result.append(" ON ").append(targetDB.getAccessConfiguration().getSchemaName()).append(".").append(tableName).append(";").append("\n\n");
         }
         result.append("\n");
-        QueryManager.executeScript(result.toString(), accessConfiguration, true, true, false);
+        QueryManager.executeScript(result.toString(), accessConfiguration, true, true, false, false);
     }
 }

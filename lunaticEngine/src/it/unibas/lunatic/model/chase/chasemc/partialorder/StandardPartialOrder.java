@@ -12,9 +12,6 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.CorrectCellGroupID;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.CellComparatorUsingAdditionalValue;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.IValueComparator;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +20,10 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.IValue;
+import speedy.model.database.NullValue;
 
 public class StandardPartialOrder implements IPartialOrder {
 
@@ -82,7 +83,7 @@ public class StandardPartialOrder implements IPartialOrder {
             return generalizeNonAuthoritativeConstantCells(nonAuthoritativeConstantCells, lubCellGroup, scenario);
         }
         // Null Value
-        return new NullValue(LunaticConstants.NULL_VALUE);
+        return new NullValue(SpeedyConstants.NULL_VALUE);
     }
 
     private Set<CellGroupCell> extractNonAuthoritativeConstantCells(CellGroup cellGroup) {

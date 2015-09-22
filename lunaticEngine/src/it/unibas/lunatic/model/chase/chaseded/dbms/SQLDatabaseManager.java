@@ -2,11 +2,11 @@ package it.unibas.lunatic.model.chase.chaseded.dbms;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chaseded.IDatabaseManager;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.persistence.relational.AccessConfiguration;
+import speedy.model.database.IDatabase;
+import speedy.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
-import it.unibas.lunatic.persistence.relational.QueryManager;
+import speedy.persistence.relational.AccessConfiguration;
+import speedy.persistence.relational.QueryManager;
 
 public class SQLDatabaseManager implements IDatabaseManager {
 
@@ -60,12 +60,12 @@ public class SQLDatabaseManager implements IDatabaseManager {
         StringBuilder script = new StringBuilder();
         script.append(getCloneFunction()).append("\n");
         script.append("SELECT clone_schema('").append(src).append("','").append(dest).append("');");
-        QueryManager.executeScript(script.toString(), ac, true, true, true);
+        QueryManager.executeScript(script.toString(), ac, true, true, true, false);
     }
 
     private void removeSchema(String schema, AccessConfiguration ac) {
         String function = "drop schema " + schema + " cascade;";
-        QueryManager.executeScript(function, ac, true, true, false);
+        QueryManager.executeScript(function, ac, true, true, false, false);
     }
     
     private String getCloneFunction(){

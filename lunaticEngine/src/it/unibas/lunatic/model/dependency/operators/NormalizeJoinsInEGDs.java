@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.dependency.operators;
 
-import it.unibas.lunatic.model.algebra.operators.StringComparator;
 import it.unibas.lunatic.model.dependency.BuiltInAtom;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -13,7 +12,7 @@ import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
-import it.unibas.lunatic.model.expressions.Expression;
+import speedy.model.expressions.Expression;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.operators.StringComparator;
 
 public class NormalizeJoinsInEGDs {
 

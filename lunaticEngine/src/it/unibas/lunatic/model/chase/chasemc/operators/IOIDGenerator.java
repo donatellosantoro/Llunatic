@@ -1,8 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.ITable;
-import it.unibas.lunatic.model.database.mainmemory.datasource.OID;
+import speedy.model.database.IDatabase;
+import speedy.model.database.mainmemory.datasource.OID;
 
 public interface IOIDGenerator {
 

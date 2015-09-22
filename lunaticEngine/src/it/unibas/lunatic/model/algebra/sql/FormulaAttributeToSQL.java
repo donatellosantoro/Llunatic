@@ -1,17 +1,18 @@
 package it.unibas.lunatic.model.algebra.sql;
 
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.model.database.skolem.AppendSkolemPart;
+import it.unibas.lunatic.model.database.skolem.ISkolemPart;
+import it.unibas.lunatic.model.database.skolem.StringSkolemPart;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
-import it.unibas.lunatic.model.database.skolem.AppendSkolemPart;
-import it.unibas.lunatic.model.database.skolem.ISkolemPart;
-import it.unibas.lunatic.model.database.skolem.StringSkolemPart;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import speedy.SpeedyConstants;
 
 public class FormulaAttributeToSQL {
 
@@ -45,7 +46,7 @@ public class FormulaAttributeToSQL {
             return generatorForVariable;
         }
         ISkolemPart root = new AppendSkolemPart();
-        ISkolemPart name = new StringSkolemPart("'" + LunaticConstants.SKOLEM_PREFIX + dependency.getId() + LunaticConstants.SKOLEM_SEPARATOR + variable.getId());
+        ISkolemPart name = new StringSkolemPart("'" + SpeedyConstants.SKOLEM_PREFIX + dependency.getId() + SpeedyConstants.SKOLEM_SEPARATOR + variable.getId());
         root.addChild(name);
         AppendSkolemPart append = new AppendSkolemPart("(['||", "||'])'", "||']-['||");
         root.addChild(append);

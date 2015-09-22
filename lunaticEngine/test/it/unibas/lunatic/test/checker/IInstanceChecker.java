@@ -1,6 +1,6 @@
 package it.unibas.lunatic.test.checker;
 
-import it.unibas.lunatic.model.database.mainmemory.datasource.INode;
+import speedy.model.database.mainmemory.datasource.INode;
 
 public interface IInstanceChecker {
 

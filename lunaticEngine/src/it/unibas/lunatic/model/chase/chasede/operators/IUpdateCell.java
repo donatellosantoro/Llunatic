@@ -1,9 +1,8 @@
 package it.unibas.lunatic.model.chase.chasede.operators;
 
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.IValue;
-
+import speedy.model.database.CellRef;
+import speedy.model.database.IDatabase;
+import speedy.model.database.IValue;
 
 public interface IUpdateCell {
 

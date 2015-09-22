@@ -1,27 +1,11 @@
 package it.unibas.lunatic.utility;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.database.*;
-import it.unibas.lunatic.model.database.mainmemory.datasource.INode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.AttributeNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.LeafNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.MetadataNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.SequenceNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.SetNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.TupleNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IDataSourceNullValue;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
-import it.unibas.lunatic.model.database.ConstantValue;
-import it.unibas.lunatic.model.database.LLUNValue;
-import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
-import it.unibas.lunatic.persistence.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +14,30 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.FilenameUtils;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.Attribute;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.CellRef;
+import speedy.model.database.ConstantValue;
+import speedy.model.database.IDatabase;
+import speedy.model.database.ITable;
+import speedy.model.database.IValue;
+import speedy.model.database.LLUNValue;
+import speedy.model.database.NullValue;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
+import speedy.model.database.mainmemory.datasource.IDataSourceNullValue;
+import speedy.model.database.mainmemory.datasource.INode;
+import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
+import speedy.model.database.mainmemory.datasource.nodes.AttributeNode;
+import speedy.model.database.mainmemory.datasource.nodes.LeafNode;
+import speedy.model.database.mainmemory.datasource.nodes.MetadataNode;
+import speedy.model.database.mainmemory.datasource.nodes.SequenceNode;
+import speedy.model.database.mainmemory.datasource.nodes.SetNode;
+import speedy.model.database.mainmemory.datasource.nodes.TupleNode;
+import speedy.persistence.Types;
 
 public class LunaticUtility {
     
@@ -161,7 +169,7 @@ public class LunaticUtility {
     public static Tuple createTuple(INode tupleNode, String tableName) {
         TupleOID tupleOID = new TupleOID(tupleNode.getValue());
         Tuple tuple = new Tuple(tupleOID);
-        Cell oidCell = new Cell(tupleOID, new AttributeRef(tableName, LunaticConstants.OID), new ConstantValue(tupleOID));
+        Cell oidCell = new Cell(tupleOID, new AttributeRef(tableName, SpeedyConstants.OID), new ConstantValue(tupleOID));
         tuple.addCell(oidCell);
         for (INode attributeNode : tupleNode.getChildren()) {
             String attributeName = attributeNode.getLabel();
@@ -285,7 +293,7 @@ public class LunaticUtility {
     public static String printIterator(ITupleIterator iterator) {
         StringBuilder result = new StringBuilder();
         while (iterator.hasNext()) {
-            result.append(LunaticConstants.INDENT).append(iterator.next().toStringWithOID()).append("\n");
+            result.append(SpeedyConstants.INDENT).append(iterator.next().toStringWithOID()).append("\n");
         }
         iterator.reset();
         return result.toString();
@@ -318,10 +326,10 @@ public class LunaticUtility {
         return result.toString();
     }
 //    public static String extractValueFromLabel(String label) {
-//        if (!label.contains(LunaticConstants.VALUE_LABEL)) {
+//        if (!label.contains(SpeedyConstants.VALUE_LABEL)) {
 //            return label;
 //        }
-//        return label.substring(0, label.indexOf(LunaticConstants.VALUE_LABEL));
+//        return label.substring(0, label.indexOf(SpeedyConstants.VALUE_LABEL));
 //    }
 
     public static Attribute getAttribute(AttributeRef attributeRef, IDatabase db) {

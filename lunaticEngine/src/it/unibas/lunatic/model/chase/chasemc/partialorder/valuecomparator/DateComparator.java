@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator;
 
 import it.unibas.lunatic.exceptions.ChaseException;
-import it.unibas.lunatic.model.database.IValue;
+import speedy.model.database.IValue;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

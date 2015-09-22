@@ -1,9 +1,9 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.expressions.Expression;
+import speedy.model.expressions.Expression;
 import java.util.ArrayList;
 import java.util.List;
+import speedy.model.database.TableAlias;
 
 public class RelationalAtom implements IFormulaAtom, Cloneable {
     

@@ -1,25 +1,11 @@
 package it.unibas.lunatic;
 
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.ConstantValue;
-import it.unibas.lunatic.model.database.IValue;
+import static speedy.SpeedyConstants.NULL_VALUE;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.ConstantValue;
+import speedy.model.database.IValue;
 
 public class LunaticConstants {
-
-    public static final double TRUE = 1.0;
-    public static final double FALSE = 0.0;
-
-    public static final String INDENT = "    ";
-    public static final String SECONDARY_INDENT = "  ";
-
-    public static final String CONST = "constant";
-    public static final String NULL = "null";
-    public static final String LLUN = "llun";
-    public static final String NULL_VALUE = "NULL";
-
-    public static final String OID = "oid";
-    public static final String TID = "tid";
-    public static final String STEP = "step";
 
     public static final String STTGD = "STGD";
     public static final String ExtTGD = "ExtTGD";
@@ -27,12 +13,6 @@ public class LunaticConstants {
     public static final String EGD = "EGD";
     public static final String DC = "DC";
     public static final String DED = "DED";
-
-    public static final String SKOLEM_PREFIX = "_SK";
-    public static final String SKOLEM_SEPARATOR = "-";
-
-    public static final String LLUN_PREFIX = "_L";
-    public static final String LLUN_SEPARATOR = "|";
 
     public static final String WORK_SCHEMA = "work";
     public static final String SKOLEM_OCC_TABLE = "skolem_occ";
@@ -63,21 +43,6 @@ public class LunaticConstants {
     public static final String TYPE_USER = "USER";
     public static final String TYPE_INVALID = "INVALID";
     public static final String TYPE_ADDITIONAL = "ADDTL_FOR_";
-
-    public static String VALUE_LABEL = "_@=";
-
-    public static String GEN_GROUP_ID = "GEN";
-
-    public static String AGGR = "aggr";
-    public static String COUNT = "count";
-
-    /////////////////////// OPERATORS
-    public static final String EQUAL = "==";
-    public static final String NOT_EQUAL = "!=";
-    public static final String GREATER = ">";
-    public static final String LOWER = "<";
-    public static final String GREATER_EQ = ">=";
-    public static final String LOWER_EQ = "<=";
 
     ///////////////    CACHE STRATEGIES    ///////////////////
 //    public static final String NO_CACHE = "NO_CACHE";

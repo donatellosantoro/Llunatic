@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.similarity;
 
-import it.unibas.lunatic.model.database.IValue;
+import speedy.model.database.IValue;
 
 public class MixedSimilarity implements ISimilarityStrategy {
     

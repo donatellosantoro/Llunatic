@@ -2,10 +2,6 @@ package it.unibas.lunatic.utility;
 
 import it.unibas.lunatic.model.algebra.operators.AlgebraUtility;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
@@ -16,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.IValue;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
 
 public class DependencyUtility {
 

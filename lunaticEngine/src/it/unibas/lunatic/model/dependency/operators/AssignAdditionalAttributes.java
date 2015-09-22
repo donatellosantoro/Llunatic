@@ -2,7 +2,7 @@ package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.OrderingAttribute;
-import it.unibas.lunatic.model.database.AttributeRef;
+import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;

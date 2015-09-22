@@ -2,11 +2,11 @@ package it.unibas.lunatic.model.chase.chasemc.usermanager;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.LLUNValue;
+import speedy.model.database.IValue;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import java.util.List;
+import speedy.model.database.LLUNValue;
 
 public class AfterLLUNUserManager implements IUserManager {
 

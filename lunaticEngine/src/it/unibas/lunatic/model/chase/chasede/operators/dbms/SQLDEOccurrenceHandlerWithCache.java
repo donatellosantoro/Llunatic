@@ -3,15 +3,6 @@ package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.exceptions.DBMSException;
 import it.unibas.lunatic.model.chase.chasede.operators.IValueOccurrenceHandlerDE;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.NullValue;
-import it.unibas.lunatic.model.database.TupleOID;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.persistence.relational.AccessConfiguration;
-import it.unibas.lunatic.persistence.relational.QueryManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,6 +11,15 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.CellRef;
+import speedy.model.database.IDatabase;
+import speedy.model.database.NullValue;
+import speedy.model.database.TupleOID;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.persistence.relational.AccessConfiguration;
+import speedy.persistence.relational.QueryManager;
 
 public class SQLDEOccurrenceHandlerWithCache implements IValueOccurrenceHandlerDE {
 

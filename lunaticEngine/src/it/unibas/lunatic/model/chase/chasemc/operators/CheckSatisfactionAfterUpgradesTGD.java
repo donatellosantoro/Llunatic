@@ -4,10 +4,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.TGDEquivalenceClassCells;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.LLUNValue;
-import it.unibas.lunatic.model.database.NullValue;
-import it.unibas.lunatic.model.database.TupleOID;
+import speedy.model.database.IValue;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -23,6 +20,9 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.LLUNValue;
+import speedy.model.database.NullValue;
+import speedy.model.database.TupleOID;
 
 public class CheckSatisfactionAfterUpgradesTGD {
 

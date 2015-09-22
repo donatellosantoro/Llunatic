@@ -4,11 +4,11 @@ import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.ArrayList;
 import java.util.List;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.IDatabase;
 
 public class DeltaChaseStep {
 

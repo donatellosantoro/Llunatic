@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.model.expressions.Expression;
+import speedy.model.expressions.Expression;
 
 public class FormulaExpression implements IFormulaValue {
 

@@ -3,10 +3,10 @@ package it.unibas.lunatic.model.chase.chasemc.operators.cache;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.IValue;
 import java.util.Set;
+import speedy.model.database.CellRef;
+import speedy.model.database.IDatabase;
+import speedy.model.database.IValue;
 
 public interface ICacheManager {
 

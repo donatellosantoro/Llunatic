@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.model.database.AttributeRef;
+import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.*;
 import java.util.List;
 import org.slf4j.Logger;

@@ -1,12 +1,12 @@
 package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
 import it.unibas.lunatic.model.chase.chasede.operators.IValueOccurrenceHandlerDE;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
-import it.unibas.lunatic.model.database.NullValue;
+import speedy.model.database.Cell;
+import speedy.model.database.IDatabase;
 import java.util.ArrayList;
 import java.util.List;
+import speedy.model.database.NullValue;
+import speedy.model.database.mainmemory.MainMemoryDB;
 
 public class MainMemoryDEOccurrenceHandler implements IValueOccurrenceHandlerDE {
 

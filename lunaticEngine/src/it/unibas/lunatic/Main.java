@@ -8,10 +8,10 @@ import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
-import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import java.io.File;
 import java.util.Date;
+import speedy.model.database.IDatabase;
 
 public class Main {
 

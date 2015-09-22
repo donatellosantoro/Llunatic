@@ -1,11 +1,11 @@
 package it.unibas.lunatic.test;
 
-import it.unibas.lunatic.model.database.ConstantValue;
-import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.ConstantValue;
+import speedy.model.database.IValue;
 
 public class TSimilarity extends TestCase {
 

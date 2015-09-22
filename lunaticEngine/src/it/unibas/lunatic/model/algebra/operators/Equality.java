@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.algebra.operators;
 
-import it.unibas.lunatic.model.database.AttributeRef;
+import speedy.model.database.AttributeRef;
+
 
 class Equality {
 

@@ -1,14 +1,7 @@
 package it.unibas.lunatic.model.algebra.operators;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.Difference;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.algebra.Join;
-import it.unibas.lunatic.model.algebra.Project;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
@@ -21,6 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.Difference;
+import speedy.model.algebra.Join;
+import speedy.model.algebra.Project;
+import speedy.model.algebra.ProjectionAttribute;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.TableAlias;
+import speedy.utility.SpeedyUtility;
 
 public class BuildAlgebraTree {
 
@@ -47,13 +49,13 @@ public class BuildAlgebraTree {
     public IAlgebraOperator addDeltaDifferences(Dependency dependency, IAlgebraOperator root, FormulaWithNegations negatedFormula, Scenario scenario, boolean premise) {
         IAlgebraOperator negatedRoot = buildDeltaTreeForFormulaWithNegations(dependency, negatedFormula, scenario, premise);
         IAlgebraOperator joinRoot = addJoinForDifference(root, negatedRoot, negatedFormula);
-        List<AttributeRef> projectionAttributes = new ArrayList<AttributeRef>();
+        List<ProjectionAttribute> projectionAttributes = new ArrayList<ProjectionAttribute>();
         List<AttributeRef> requiredAttributes = DependencyUtility.extractRequestedAttributes(dependency);
         if (logger.isDebugEnabled()) logger.debug("Required attributes for dependency: " + requiredAttributes);
         if (logger.isDebugEnabled()) logger.debug("Possible projection attributes for dependency: " + root.getAttributes(scenario.getSource(), scenario.getTarget()));
         for (AttributeRef projectionAttribute : root.getAttributes(scenario.getSource(), scenario.getTarget())) {
-            if (requiredAttributes.contains(ChaseUtility.unAlias(projectionAttribute)) || projectionAttribute.getName().equals(LunaticConstants.OID)) {
-                projectionAttributes.add(projectionAttribute);
+            if (requiredAttributes.contains(ChaseUtility.unAlias(projectionAttribute)) || projectionAttribute.getName().equals(SpeedyConstants.OID)) {
+                projectionAttributes.add(new ProjectionAttribute(projectionAttribute));
             }
         }
         IAlgebraOperator project = new Project(projectionAttributes);
@@ -85,7 +87,7 @@ public class BuildAlgebraTree {
     private IAlgebraOperator addStandardDifferences(Dependency dependency, IAlgebraOperator root, FormulaWithNegations negatedFormula, Scenario scenario, boolean premise) {
         IAlgebraOperator negatedRoot = buildStandardTreeForFormulaWithNegations(dependency, negatedFormula, scenario, premise);
         IAlgebraOperator joinRoot = addJoinForDifference(root, negatedRoot, negatedFormula);
-        IAlgebraOperator project = new Project(root.getAttributes(scenario.getSource(), scenario.getTarget()));
+        IAlgebraOperator project = new Project(SpeedyUtility.createProjectionAttributes(root.getAttributes(scenario.getSource(), scenario.getTarget())));
         project.addChild(joinRoot);
         IAlgebraOperator difference = new Difference();
         difference.addChild(root);

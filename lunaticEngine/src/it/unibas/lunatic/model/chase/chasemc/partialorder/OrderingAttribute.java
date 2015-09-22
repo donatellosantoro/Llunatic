@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.partialorder;
 
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.IValueComparator;
-import it.unibas.lunatic.model.database.AttributeRef;
+import speedy.model.database.AttributeRef;
 
 public class OrderingAttribute {
 

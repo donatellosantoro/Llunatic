@@ -1,9 +1,9 @@
 package it.unibas.lunatic.model.dependency.operators;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.dependency.*;
 import java.util.List;
 import java.util.Stack;
+import speedy.SpeedyConstants;
 
 public class DependencyToString {
 
@@ -41,7 +41,7 @@ class DependencyToStringVisitor implements IFormulaVisitor {
         }
         dependency.getPremise().accept(this);
         result.append(" -> ");
-//        this.indentStack.push(LunaticConstants.INDENT);
+//        this.indentStack.push(SpeedyConstants.INDENT);
         this.premise = false;
         dependency.getConclusion().accept(this);
         if (!dependency.getAdditionalAttributes().isEmpty()) {
@@ -71,7 +71,7 @@ class DependencyToStringVisitor implements IFormulaVisitor {
                 if (premise) {
                     result.append(getIndent()).append("for each ");
                 } else {
-                    this.indentStack.push(LunaticConstants.INDENT);
+                    this.indentStack.push(SpeedyConstants.INDENT);
                     result.append("\n").append(getIndent());
                     if (!formula.getLocalVariables().isEmpty()) {
                         result.append("exist ");
@@ -91,10 +91,10 @@ class DependencyToStringVisitor implements IFormulaVisitor {
     }
 
     public void visitFormulaWithNegations(FormulaWithNegations formula) {
-//        this.indentStack.push(LunaticConstants.INDENT);
+//        this.indentStack.push(SpeedyConstants.INDENT);
         formula.getPositiveFormula().accept(this);
         for (IFormula negatedFormula : formula.getNegatedSubFormulas()) {
-            this.indentStack.push(LunaticConstants.SECONDARY_INDENT);
+            this.indentStack.push(SpeedyConstants.SECONDARY_INDENT);
             negatedFormula.accept(this);
             this.indentStack.pop();
         }

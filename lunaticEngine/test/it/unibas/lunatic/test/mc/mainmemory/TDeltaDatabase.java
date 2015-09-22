@@ -2,30 +2,32 @@ package it.unibas.lunatic.test.mc.mainmemory;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.operators.mainmemory.InsertTuple;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.TupleOID;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryTable;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
-import it.unibas.lunatic.model.database.mainmemory.datasource.OID;
-import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.operators.IInsertTuple;
+import speedy.model.algebra.operators.mainmemory.MainMemoryInsertTuple;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.ConstantValue;
+import speedy.model.database.IValue;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
+import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.mainmemory.MainMemoryTable;
+import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
+import speedy.model.database.mainmemory.datasource.OID;
 
 public class TDeltaDatabase extends CheckTest {
 
     private static Logger logger = LoggerFactory.getLogger(TDeltaDatabase.class);
 
-    private InsertTuple insertOperator = new InsertTuple();
+    private IInsertTuple insertOperator = new MainMemoryInsertTuple();
 
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons);
@@ -40,8 +42,8 @@ public class TDeltaDatabase extends CheckTest {
     private Tuple buildTuple(TupleOID tid, String stepId, IValue newValue, String tableName, String attributeName) {
         TupleOID oid = new TupleOID(IntegerOIDGenerator.getNextOID());
         Tuple tuple = new Tuple(oid);
-        tuple.addCell(new Cell(oid, new AttributeRef(tableName, LunaticConstants.TID), new ConstantValue(tid)));
-        tuple.addCell(new Cell(oid, new AttributeRef(tableName, LunaticConstants.STEP), new ConstantValue(stepId)));
+        tuple.addCell(new Cell(oid, new AttributeRef(tableName, SpeedyConstants.TID), new ConstantValue(tid)));
+        tuple.addCell(new Cell(oid, new AttributeRef(tableName, SpeedyConstants.STEP), new ConstantValue(stepId)));
         tuple.addCell(new Cell(oid, new AttributeRef(tableName, attributeName), newValue));
         return tuple;
     }

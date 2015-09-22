@@ -1,18 +1,18 @@
 package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 
 import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
-import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.database.Attribute;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.persistence.Types;
-import it.unibas.lunatic.persistence.relational.QueryManager;
+import speedy.model.database.Attribute;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.CellRef;
+import speedy.model.database.IDatabase;
+import speedy.model.database.IValue;
+import speedy.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.utility.LunaticUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.persistence.Types;
+import speedy.persistence.relational.QueryManager;
 
 public class SQLUpdateCell implements IUpdateCell {
 
@@ -35,11 +35,11 @@ public class SQLUpdateCell implements IUpdateCell {
         if(attribute.getType().equals(Types.STRING)){
             query.append("'");
         }
-        query.append(" WHERE ").append(LunaticConstants.OID).append("=");
+        query.append(" WHERE ").append(SpeedyConstants.OID).append("=");
         query.append(cellRef.getTupleOID());
         query.append(";");
         if (logger.isDebugEnabled()) logger.debug("Update script: \n" + query.toString());
-        QueryManager.executeScript(query.toString(), ((DBMSDB) database).getAccessConfiguration(), true, true, false);
+        QueryManager.executeScript(query.toString(), ((DBMSDB) database).getAccessConfiguration(), true, true, false, false);
     }
 
     private String cleanValue(String string) {

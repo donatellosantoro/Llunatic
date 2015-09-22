@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc;
 
-import it.unibas.lunatic.model.database.IValue;
+import speedy.model.database.IValue;
 import java.util.List;
 
 public class TGDViolation {

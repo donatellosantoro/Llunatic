@@ -12,7 +12,7 @@ package it.unibas.lunatic.parser.output;
 @header {
 package it.unibas.lunatic.parser.output;
 
-import it.unibas.lunatic.model.expressions.Expression;
+import speedy.model.expressions.Expression;
 import it.unibas.lunatic.parser.operators.ParseDatabase;
 import it.unibas.lunatic.parser.*;
 }

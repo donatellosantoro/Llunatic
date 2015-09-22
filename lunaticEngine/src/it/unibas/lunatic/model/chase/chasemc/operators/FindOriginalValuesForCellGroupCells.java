@@ -2,10 +2,9 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.TupleOID;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.CellRef;
+import speedy.model.database.IValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.TupleOID;
 
 public class FindOriginalValuesForCellGroupCells {
 

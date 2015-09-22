@@ -1,6 +1,6 @@
 package it.unibas.lunatic.parser;
 
-import it.unibas.lunatic.model.expressions.Expression;
+import speedy.model.expressions.Expression;
 
 public class ParserAttribute implements Cloneable {
 

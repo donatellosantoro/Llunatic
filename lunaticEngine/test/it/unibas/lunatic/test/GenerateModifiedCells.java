@@ -1,30 +1,8 @@
 package it.unibas.lunatic.test;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.model.algebra.Difference;
-import it.unibas.lunatic.model.algebra.GroupBy;
-import it.unibas.lunatic.model.algebra.IAggregateFunction;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.algebra.Join;
-import it.unibas.lunatic.model.algebra.MaxAggregateFunction;
-import it.unibas.lunatic.model.algebra.Project;
-import it.unibas.lunatic.model.algebra.Scan;
-import it.unibas.lunatic.model.algebra.Select;
-import it.unibas.lunatic.model.algebra.ValueAggregateFunction;
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.database.Attribute;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.ITable;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.LLUNValue;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.expressions.Expression;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,6 +13,29 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.Difference;
+import speedy.model.algebra.GroupBy;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.Join;
+import speedy.model.algebra.Project;
+import speedy.model.algebra.Scan;
+import speedy.model.algebra.Select;
+import speedy.model.algebra.aggregatefunctions.IAggregateFunction;
+import speedy.model.algebra.aggregatefunctions.MaxAggregateFunction;
+import speedy.model.algebra.aggregatefunctions.ValueAggregateFunction;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.Attribute;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.IDatabase;
+import speedy.model.database.ITable;
+import speedy.model.database.IValue;
+import speedy.model.database.LLUNValue;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
+import speedy.model.database.operators.IRunQuery;
+import speedy.model.expressions.Expression;
+import speedy.utility.SpeedyUtility;
 
 public class GenerateModifiedCells {
 
@@ -103,7 +104,7 @@ public class GenerateModifiedCells {
         StringBuilder result = new StringBuilder();
         IAlgebraOperator operator = buildOperatorForModifiedCells(table, attribute, stepId);
         ITupleIterator iterator = queryRunner.run(operator, null, deltaDB);
-        AttributeRef oidAttribute = new AttributeRef(new TableAlias(table.getName()), LunaticConstants.TID);
+        AttributeRef oidAttribute = new AttributeRef(new TableAlias(table.getName()), SpeedyConstants.TID);
         AttributeRef valueAttribute = new AttributeRef(new TableAlias(table.getName(), "0"), attribute.getName());
         Map<IValue, List<String>> cellGroups = new HashMap<IValue, List<String>>();
         while (iterator.hasNext()) {
@@ -142,13 +143,13 @@ public class GenerateModifiedCells {
         // select * from R_A where step
         TableAlias tableAlias = new TableAlias(table.getName());
         Scan tableScan = new Scan(tableAlias);
-        Expression stepExpression = new Expression("startswith(" + stepId + ", " + LunaticConstants.STEP + ")");
-        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(tableAlias, LunaticConstants.STEP));
+        Expression stepExpression = new Expression("startswith(" + stepId + ", " + SpeedyConstants.STEP + ")");
+        stepExpression.changeVariableDescription(SpeedyConstants.STEP, new AttributeRef(tableAlias, SpeedyConstants.STEP));
         Select stepSelect = new Select(stepExpression);
         stepSelect.addChild(tableScan);
         // select max(step), oid from R_A group by oid
-        AttributeRef oid = new AttributeRef(tableAlias, LunaticConstants.TID);
-        AttributeRef step = new AttributeRef(tableAlias, LunaticConstants.STEP);
+        AttributeRef oid = new AttributeRef(tableAlias, SpeedyConstants.TID);
+        AttributeRef step = new AttributeRef(tableAlias, SpeedyConstants.STEP);
         List<AttributeRef> groupingAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oid}));
         IAggregateFunction max = new MaxAggregateFunction(step);
         IAggregateFunction oidValue = new ValueAggregateFunction(oid);
@@ -160,8 +161,8 @@ public class GenerateModifiedCells {
         Scan aliasScan = new Scan(alias);
         // select * from (group-by) join R_A_1 on oid, step
         List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oid, step}));
-        AttributeRef oidInAlias = new AttributeRef(alias, LunaticConstants.TID);
-        AttributeRef stepInAlias = new AttributeRef(alias, LunaticConstants.STEP);
+        AttributeRef oidInAlias = new AttributeRef(alias, SpeedyConstants.TID);
+        AttributeRef stepInAlias = new AttributeRef(alias, SpeedyConstants.STEP);
         List<AttributeRef> rightAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oidInAlias, stepInAlias}));
         Join join = new Join(leftAttributes, rightAttributes);
         join.addChild(groupBy);
@@ -169,17 +170,17 @@ public class GenerateModifiedCells {
         // select oid, A from (join)
         AttributeRef attributeInAlias = new AttributeRef(alias, attribute.getName());
         List<AttributeRef> projectionAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oid, attributeInAlias}));
-        Project project = new Project(projectionAttributes);
+        Project project = new Project(SpeedyUtility.createProjectionAttributes(projectionAttributes));
         project.addChild(join);
         // except oid, A from ('r') 
         Scan rootScan = new Scan(tableAlias);
-        Expression rootExpression = new Expression("\"r\" == " + LunaticConstants.STEP);
-        rootExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(tableAlias, LunaticConstants.STEP));
+        Expression rootExpression = new Expression("\"r\" == " + SpeedyConstants.STEP);
+        rootExpression.changeVariableDescription(SpeedyConstants.STEP, new AttributeRef(tableAlias, SpeedyConstants.STEP));
         Select rootSelect = new Select(rootExpression);
         rootSelect.addChild(rootScan);
         AttributeRef rootAttributeInAlias = new AttributeRef(tableAlias, attribute.getName());
         List<AttributeRef> rootProjectionAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oid, rootAttributeInAlias}));
-        Project rootProject = new Project(rootProjectionAttributes);
+        Project rootProject = new Project(SpeedyUtility.createProjectionAttributes(rootProjectionAttributes));
         rootProject.addChild(rootSelect);
         Difference difference = new Difference();
         difference.addChild(project);

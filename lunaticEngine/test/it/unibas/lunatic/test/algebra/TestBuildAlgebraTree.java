@@ -2,9 +2,7 @@ package it.unibas.lunatic.test.algebra;
 
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
@@ -12,6 +10,8 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.operators.ITupleIterator;
 
 public class TestBuildAlgebraTree extends TestCase {
 

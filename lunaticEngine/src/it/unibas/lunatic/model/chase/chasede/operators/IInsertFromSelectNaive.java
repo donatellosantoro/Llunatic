@@ -1,8 +1,8 @@
 package it.unibas.lunatic.model.chase.chasede.operators;
 
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.database.IDatabase;
+import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
+import speedy.model.algebra.IAlgebraOperator;
 
 
 public interface IInsertFromSelectNaive {

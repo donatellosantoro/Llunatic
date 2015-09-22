@@ -2,10 +2,6 @@ package it.unibas.lunatic.model.algebra.sql;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.database.Attribute;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.model.database.dbms.DBMSTable;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -13,6 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import speedy.SpeedyConstants;
+import speedy.model.database.Attribute;
+import speedy.model.database.TableAlias;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.model.database.dbms.DBMSTable;
 
 public class GenerateTargetInsert {
 
@@ -51,7 +52,7 @@ public class GenerateTargetInsert {
 
     private String generateSelectForInsert(RelationalAtom relationalAtom, Dependency stTgd) {
         StringBuilder result = new StringBuilder();
-        result.append(LunaticConstants.INDENT).append("SELECT DISTINCT ");
+        result.append(SpeedyConstants.INDENT).append("SELECT DISTINCT ");
         Map<FormulaVariable, SkolemFunctionGenerator> skolems = new HashMap<FormulaVariable, SkolemFunctionGenerator>();
         for (FormulaAttribute formulaAttribute : relationalAtom.getAttributes()) {
             result.append(attributeGenerator.generateSQL(formulaAttribute, stTgd, skolems));
@@ -85,7 +86,7 @@ public class GenerateTargetInsert {
         DBMSTable table = (DBMSTable) target.getTable(tableToInsert);
         StringBuilder attributes = new StringBuilder("(");
         for (Attribute attribute : table.getAttributes()) {
-            if(attribute.getName().equals(LunaticConstants.OID)){
+            if(attribute.getName().equals(SpeedyConstants.OID)){
                 continue;
             }
             attributes.append(attribute.getName()).append(", ");

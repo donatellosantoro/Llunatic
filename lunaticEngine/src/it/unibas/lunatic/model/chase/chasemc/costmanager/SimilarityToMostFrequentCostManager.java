@@ -14,14 +14,11 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
-import it.unibas.lunatic.model.database.ConstantValue;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.LLUNValue;
-import it.unibas.lunatic.model.database.NullValue;
+import speedy.model.database.ConstantValue;
+import speedy.model.database.IDatabase;
+import speedy.model.database.IValue;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import it.unibas.lunatic.utility.DependencyUtility;
-import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,6 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.LLUNValue;
+import speedy.model.database.NullValue;
 
 public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
 

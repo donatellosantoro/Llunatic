@@ -1,7 +1,6 @@
 package it.unibas.lunatic.utility.graph;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.dependency.DED;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
@@ -15,6 +14,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.Multigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.TableAlias;
 
 public class DependencyGraph {
 

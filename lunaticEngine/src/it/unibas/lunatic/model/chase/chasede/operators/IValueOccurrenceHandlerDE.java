@@ -1,9 +1,9 @@
 package it.unibas.lunatic.model.chase.chasede.operators;
 
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.NullValue;
+import speedy.model.database.Cell;
+import speedy.model.database.IDatabase;
 import java.util.List;
+import speedy.model.database.NullValue;
 
 public interface IValueOccurrenceHandlerDE {
 

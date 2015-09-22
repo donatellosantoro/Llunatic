@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.similarity;
 
-import it.unibas.lunatic.model.database.IValue;
+import speedy.model.database.IValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.shef.wit.simmetrics.similaritymetrics.InterfaceStringMetric;

@@ -1,7 +1,6 @@
 package it.unibas.lunatic.utility.graph;
 
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
@@ -16,6 +15,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.TableAlias;
 
 public class DualGaifmanGraph {
 

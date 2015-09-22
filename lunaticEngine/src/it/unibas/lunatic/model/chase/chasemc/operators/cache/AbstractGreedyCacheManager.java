@@ -2,27 +2,13 @@ package it.unibas.lunatic.model.chase.chasemc.operators.cache;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupStats;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupTableUtility;
-import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.ConstantValue;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.LLUNValue;
-import it.unibas.lunatic.model.database.NullValue;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.TupleOID;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +16,20 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.CellRef;
+import speedy.model.database.ConstantValue;
+import speedy.model.database.IDatabase;
+import speedy.model.database.IValue;
+import speedy.model.database.LLUNValue;
+import speedy.model.database.NullValue;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
+import speedy.model.database.operators.IRunQuery;
 
 public abstract class AbstractGreedyCacheManager implements ICacheManager {
 

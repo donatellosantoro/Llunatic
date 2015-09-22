@@ -1,8 +1,8 @@
 package it.unibas.lunatic.model.database.skolem;
 
-import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import java.util.List;
+import speedy.model.database.Tuple;
 
 public class SubGeneratorSkolemPart implements ISkolemPart {
 

@@ -1,13 +1,13 @@
 package it.unibas.lunatic.model.generators;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.algebra.operators.EvaluateExpression;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.ConstantValue;
-import it.unibas.lunatic.model.database.LLUNValue;
-import it.unibas.lunatic.model.database.NullValue;
-import it.unibas.lunatic.model.expressions.Expression;
+import speedy.SpeedyConstants;
+import speedy.model.database.IValue;
+import speedy.model.database.ConstantValue;
+import speedy.model.database.LLUNValue;
+import speedy.model.database.NullValue;
+import speedy.model.database.Tuple;
+import speedy.model.expressions.Expression;
 
 public class ExpressionGenerator implements IValueGenerator {
 
@@ -24,10 +24,10 @@ public class ExpressionGenerator implements IValueGenerator {
     public IValue generateValue(Tuple sourceTuple) {
         EvaluateExpression evaluator = new EvaluateExpression();
         Object result = evaluator.evaluateFunction(expression, sourceTuple);
-        if (result == null || result.toString().startsWith(LunaticConstants.SKOLEM_PREFIX)) {
+        if (result == null || result.toString().startsWith(SpeedyConstants.SKOLEM_PREFIX)) {
             return new NullValue(result);
         }
-        if (result.toString().startsWith(LunaticConstants.LLUN_PREFIX)) {
+        if (result.toString().startsWith(SpeedyConstants.LLUN_PREFIX)) {
             return new LLUNValue(result);
         }
         return new ConstantValue(result);

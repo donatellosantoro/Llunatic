@@ -1,9 +1,9 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.expressions.Expression;
 import java.util.ArrayList;
 import java.util.List;
+import speedy.SpeedyConstants;
+import speedy.model.expressions.Expression;
 
 public class ComparisonAtom implements IFormulaAtom {
 
@@ -54,7 +54,7 @@ public class ComparisonAtom implements IFormulaAtom {
     }
 
     public boolean isEqualityComparison() {
-        return LunaticConstants.EQUAL.equals(operator.trim());
+        return SpeedyConstants.EQUAL.equals(operator.trim());
     }
 
     public FormulaVariable getLeftVariable() {

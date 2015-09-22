@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.dependency;
 
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
-import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.operators.CloneDependency;
 import it.unibas.lunatic.model.dependency.operators.DependencyToString;
 import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;
@@ -10,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import speedy.model.database.AttributeRef;
 
 public class Dependency implements Cloneable {
 

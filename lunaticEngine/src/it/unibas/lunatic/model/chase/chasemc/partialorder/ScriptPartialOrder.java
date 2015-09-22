@@ -5,8 +5,6 @@ import it.unibas.lunatic.PartialOrderConstants;
 import it.unibas.lunatic.exceptions.PartialOrderException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.IValue;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.io.*;
 import java.util.List;
@@ -17,6 +15,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.IValue;
 
 public class ScriptPartialOrder extends StandardPartialOrder {
 

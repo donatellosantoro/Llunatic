@@ -1,19 +1,8 @@
 package it.unibas.lunatic.test.persistence.dbms;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.CartesianProduct;
-import it.unibas.lunatic.model.algebra.Join;
-import it.unibas.lunatic.model.algebra.Scan;
-import it.unibas.lunatic.model.algebra.Select;
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.algebra.sql.AlgebraTreeToSQL;
-import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery;
-import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
-import it.unibas.lunatic.model.expressions.Expression;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
@@ -23,6 +12,17 @@ import java.util.List;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.CartesianProduct;
+import speedy.model.algebra.Join;
+import speedy.model.algebra.Scan;
+import speedy.model.algebra.Select;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.TableAlias;
+import speedy.model.database.operators.IRunQuery;
+import speedy.model.database.operators.dbms.SQLRunQuery;
+import speedy.model.expressions.Expression;
 
 public class TestAlgebraToSQL extends CheckTest {
 
@@ -41,7 +41,7 @@ public class TestAlgebraToSQL extends CheckTest {
     public void testScan() {
         TableAlias tableAlias = new TableAlias("ibdbookset", true);
         Scan scan = new Scan(tableAlias);
-        String query = sqlGenerator.treeToSQL(scan, scenario, "");
+        String query = sqlGenerator.treeToSQL(scan, scenario.getSource(), scenario.getTarget(), "");
         if (logger.isDebugEnabled()) logger.debug(query);
 //        query = query.replaceAll("(\\s)+", " ");
 //        Assert.assertEquals("SELECT source_ibdbookset.oid AS source_ibdbookset" + LunaticConstants.DELTA_TABLE_SEPARATOR + "oid, source_ibdbookset.title AS source_ibdbookset" + LunaticConstants.DELTA_TABLE_SEPARATOR + "title FROM source.ibdbookset AS source_ibdbookset", query);
@@ -65,7 +65,7 @@ public class TestAlgebraToSQL extends CheckTest {
         Select select = new Select(expressions);
         Scan scan = new Scan(tableAlias);
         select.addChild(scan);
-        String query = sqlGenerator.treeToSQL(select, scenario, "");
+        String query = sqlGenerator.treeToSQL(select, scenario.getSource(), scenario.getTarget(), "");
         if (logger.isDebugEnabled()) logger.debug(query);
 //        query = query.replaceAll("(\\s)+", " ");
 //        Assert.assertEquals("SELECT source_ibdbookset.oid AS source" + LunaticConstants.DELTA_TABLE_SEPARATOR + "ibdbookset_oid, source_ibdbookset.title AS source" + LunaticConstants.DELTA_TABLE_SEPARATOR + "ibdbookset_title FROM source.ibdbookset AS source_ibdbookset WHERE (source_ibdbookset.title = 'The Hobbit')", query);
@@ -89,7 +89,7 @@ public class TestAlgebraToSQL extends CheckTest {
         Select select = new Select(expressions);
         Scan scan = new Scan(tableAlias);
         select.addChild(scan);
-        String query = sqlGenerator.treeToSQL(select, scenario, "");
+        String query = sqlGenerator.treeToSQL(select, scenario.getSource(), scenario.getTarget(), "");
         if (logger.isDebugEnabled()) logger.debug(query);
 //        query = query.replaceAll("(\\s)+", " ");
 //        Assert.assertEquals("SELECT source_ibdbookset.oid AS source_ibdbookset_oid, source_ibdbookset.title AS source_ibdbookset_title FROM source.ibdbookset AS source_ibdbookset WHERE (source_ibdbookset.title = 'The Hobbit') AND source_ibdbookset.title IS NOT NULL", query);
@@ -116,7 +116,7 @@ public class TestAlgebraToSQL extends CheckTest {
         Select select = new Select(expressions);
         Scan scan = new Scan(tableAlias);
         select.addChild(scan);
-        String query = sqlGenerator.treeToSQL(select, scenario, "");
+        String query = sqlGenerator.treeToSQL(select, scenario.getSource(), scenario.getTarget(), "");
         if (logger.isDebugEnabled()) logger.debug(query);
 //        query = query.replaceAll("(\\s)+", " ");
 //        Assert.assertEquals("SELECT source_ibdbookset.oid AS source_ibdbookset_oid, source_ibdbookset.title AS source_ibdbookset_title FROM source.ibdbookset AS source_ibdbookset WHERE (source_ibdbookset.title = 'The Hobbit') AND source_ibdbookset.title IS NOT NULL", query);
@@ -138,7 +138,7 @@ public class TestAlgebraToSQL extends CheckTest {
         Join join = new Join(leftAttributes, rightAttributes);
         join.addChild(new Scan(tableAliasLeft));
         join.addChild(new Scan(tableAliasRight));
-        String query = sqlGenerator.treeToSQL(join, scenario, "");
+        String query = sqlGenerator.treeToSQL(join, scenario.getSource(), scenario.getTarget(), "");
         if (logger.isDebugEnabled()) logger.debug(query);
 //        query = query.replaceAll("(\\s)+", " ");
 //        Assert.assertEquals("SELECT source_iblbookset.oid AS source_iblbookset_oid, source_iblbookset.title AS source_iblbookset_title, source_iblbookset.pubid AS source_iblbookset_pubid, source_iblpublisherset.oid AS source_iblpublisherset_oid, source_iblpublisherset.id AS source_iblpublisherset_id, source_iblpublisherset.name AS source_iblpublisherset_name FROM source.iblbookset AS source_iblbookset JOIN source.iblpublisherset AS source_iblpublisherset ON source_iblbookset.pubid = source_iblpublisherset.id", query);
@@ -162,7 +162,7 @@ public class TestAlgebraToSQL extends CheckTest {
         Join join = new Join(leftAttributes, rightAttributes);
         join.addChild(new Scan(tableAliasR));
         join.addChild(new Scan(tableAliasL));
-        String query = sqlGenerator.treeToSQL(join, scenario, "");
+        String query = sqlGenerator.treeToSQL(join, scenario.getSource(), scenario.getTarget(), "");
         if (logger.isDebugEnabled()) logger.debug(query);
 //        query = query.replaceAll("(\\s)+", " ");
 //        Assert.assertEquals("SELECT source_iblbookset.oid AS source_iblbookset_oid, source_iblbookset.title AS source_iblbookset_title, source_iblbookset.pubid AS source_iblbookset_pubid, source_iblpublisherset.oid AS source_iblpublisherset_oid, source_iblpublisherset.id AS source_iblpublisherset_id, source_iblpublisherset.name AS source_iblpublisherset_name FROM source.iblbookset AS source_iblbookset JOIN source.iblpublisherset AS source_iblpublisherset ON source_iblbookset.pubid = source_iblpublisherset.id AND source_iblbookset.title = source_iblpublisherset.name", query);
@@ -180,7 +180,7 @@ public class TestAlgebraToSQL extends CheckTest {
         CartesianProduct cartesianProduct = new CartesianProduct();
         cartesianProduct.addChild(new Scan(bookSet));
         cartesianProduct.addChild(new Scan(publisherSet));
-        String query = sqlGenerator.treeToSQL(cartesianProduct, scenario, "");
+        String query = sqlGenerator.treeToSQL(cartesianProduct, scenario.getSource(), scenario.getTarget(), "");
         if (logger.isDebugEnabled()) logger.debug(query);
         ITupleIterator result = queryRunner.run(cartesianProduct, scenario.getSource(), scenario.getTarget());
         String stringResult = LunaticUtility.printTupleIterator(result);
@@ -197,7 +197,7 @@ public class TestAlgebraToSQL extends CheckTest {
         cartesianProduct.addChild(new Scan(bookSet));
         cartesianProduct.addChild(new Scan(publisherSet));
         cartesianProduct.addChild(new Scan(locSet));
-        String query = sqlGenerator.treeToSQL(cartesianProduct, scenario, "");
+        String query = sqlGenerator.treeToSQL(cartesianProduct, scenario.getSource(), scenario.getTarget(), "");
         if (logger.isDebugEnabled()) logger.debug(query);
         ITupleIterator result = queryRunner.run(cartesianProduct, scenario.getSource(), scenario.getTarget());
         String stringResult = LunaticUtility.printTupleIterator(result);

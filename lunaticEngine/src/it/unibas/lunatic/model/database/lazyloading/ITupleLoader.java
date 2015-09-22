@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.database.lazyloading;
 
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.TupleOID;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
 
 public interface ITupleLoader {
 

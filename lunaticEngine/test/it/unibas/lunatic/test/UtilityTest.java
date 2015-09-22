@@ -1,12 +1,8 @@
 package it.unibas.lunatic.test;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.database.ITable;
 import it.unibas.lunatic.persistence.DAOMCScenario;
-import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
-import it.unibas.lunatic.persistence.relational.QueryManager;
-import it.unibas.lunatic.persistence.xml.DAOXmlUtility;
 import it.unibas.lunatic.test.comparator.repairs.DAOException;
 import java.io.File;
 import java.net.URISyntaxException;
@@ -16,6 +12,10 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.ITable;
+import speedy.persistence.relational.AccessConfiguration;
+import speedy.persistence.relational.QueryManager;
+import speedy.persistence.xml.DAOXmlUtility;
 
 public class UtilityTest {
 
@@ -73,7 +73,7 @@ public class UtilityTest {
     public static void deleteDB(AccessConfiguration accessConfiguration) {
         String script = "DROP DATABASE " + accessConfiguration.getDatabaseName() + ";\n";
         if (logger.isDebugEnabled()) logger.debug("Executing script " + script);
-        QueryManager.executeScript(script, DBMSUtility.getTempAccessConfiguration(accessConfiguration), true, true, true);
+        QueryManager.executeScript(script, DBMSUtility.getTempAccessConfiguration(accessConfiguration), true, true, true, false);
     }
 
     public static String getAbsoluteFileName(String fileName) {
@@ -87,7 +87,7 @@ public class UtilityTest {
         return miscDir + fileName;
     }
 
-    public static int getSize(ITable table) {
+    public static long getSize(ITable table) {
         return table.getSize();
     }
 

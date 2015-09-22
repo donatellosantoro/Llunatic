@@ -1,8 +1,8 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.model.expressions.Expression;
 import java.util.ArrayList;
 import java.util.List;
+import speedy.model.expressions.Expression;
 
 public class BuiltInAtom implements IFormulaAtom {
 

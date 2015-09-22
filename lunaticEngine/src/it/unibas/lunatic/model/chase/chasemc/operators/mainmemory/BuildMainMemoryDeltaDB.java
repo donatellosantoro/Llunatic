@@ -2,36 +2,37 @@ package it.unibas.lunatic.model.chase.chasemc.operators.mainmemory;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.persistence.PersistenceConstants;
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.AbstractBuildDeltaDB;
-import it.unibas.lunatic.model.database.Attribute;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.ITable;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
-import it.unibas.lunatic.model.database.mainmemory.datasource.DataSource;
-import it.unibas.lunatic.model.database.mainmemory.datasource.INode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.AttributeNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.LeafNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.SetNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.TupleNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
-import it.unibas.lunatic.model.database.mainmemory.datasource.OID;
-import it.unibas.lunatic.model.database.NullValue;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.TupleOID;
-import it.unibas.lunatic.persistence.Types;
+import speedy.model.database.Attribute;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.CellRef;
+import speedy.model.database.IDatabase;
+import speedy.model.database.ITable;
+import speedy.model.database.IValue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.NullValue;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
+import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.mainmemory.datasource.DataSource;
+import speedy.model.database.mainmemory.datasource.INode;
+import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
+import speedy.model.database.mainmemory.datasource.OID;
+import speedy.model.database.mainmemory.datasource.nodes.AttributeNode;
+import speedy.model.database.mainmemory.datasource.nodes.LeafNode;
+import speedy.model.database.mainmemory.datasource.nodes.SetNode;
+import speedy.model.database.mainmemory.datasource.nodes.TupleNode;
+import speedy.persistence.PersistenceConstants;
+import speedy.persistence.Types;
 
 public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
 
@@ -65,8 +66,8 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
                     schemaNode.addChild(setNodeSchema);
                     TupleNode tupleNodeSchema = new TupleNode(deltaRelationName + "Tuple");
                     setNodeSchema.addChild(tupleNodeSchema);
-                    tupleNodeSchema.addChild(createAttributeSchema(LunaticConstants.STEP));
-                    tupleNodeSchema.addChild(createAttributeSchema(LunaticConstants.TID));
+                    tupleNodeSchema.addChild(createAttributeSchema(SpeedyConstants.STEP));
+                    tupleNodeSchema.addChild(createAttributeSchema(SpeedyConstants.TID));
                     tupleNodeSchema.addChild(createAttributeSchema(attribute.getName()));
                     tupleNodeSchema.addChild(createAttributeSchema(LunaticConstants.CELL_ORIGINAL_VALUE));
                     tupleNodeSchema.addChild(createAttributeSchema(LunaticConstants.GROUP_ID));
@@ -87,7 +88,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         schemaNode.addChild(setNodeSchema);
         TupleNode tupleNodeSchema = new TupleNode(deltaRelationName + "Tuple");
         setNodeSchema.addChild(tupleNodeSchema);
-        tupleNodeSchema.addChild(createAttributeSchema(LunaticConstants.TID));
+        tupleNodeSchema.addChild(createAttributeSchema(SpeedyConstants.TID));
         for (Attribute attribute : tableNonAffectedAttributes) {
             tupleNodeSchema.addChild(createAttributeSchema(attribute.getName()));
         }
@@ -97,7 +98,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         INode cellGroupTableSet = new SetNode(LunaticConstants.CELLGROUP_TABLE);
         TupleNode occurrenceTuple = new TupleNode(LunaticConstants.CELLGROUP_TABLE + "Tuple");
         cellGroupTableSet.addChild(occurrenceTuple);
-        occurrenceTuple.addChild(createAttributeSchema(LunaticConstants.STEP));
+        occurrenceTuple.addChild(createAttributeSchema(SpeedyConstants.STEP));
         occurrenceTuple.addChild(createAttributeSchema(LunaticConstants.GROUP_ID));
         occurrenceTuple.addChild(createAttributeSchema(LunaticConstants.CELL_OID));
         occurrenceTuple.addChild(createAttributeSchema(LunaticConstants.CELL_TABLE));
@@ -133,7 +134,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
                 TupleOID tupleOID = tuple.getOid();
                 List<Cell> nonAffectedCells = new ArrayList<Cell>();
                 for (Cell cell : tuple.getCells()) {
-                    if (cell.getAttribute().equals(LunaticConstants.OID)) {
+                    if (cell.getAttribute().equals(SpeedyConstants.OID)) {
                         continue;
                     }
                     if (isAffected(cell.getAttributeRef(), affectedAttributes)) {
@@ -145,8 +146,8 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
 //                        }
                         OID oid = IntegerOIDGenerator.getNextOID();
                         TupleNode tupleNodeInstance = new TupleNode(deltaRelationName + "Tuple", oid);
-                        tupleNodeInstance.addChild(createAttributeInstance(LunaticConstants.TID, tupleOID));
-                        tupleNodeInstance.addChild(createAttributeInstance(LunaticConstants.STEP, rootName));
+                        tupleNodeInstance.addChild(createAttributeInstance(SpeedyConstants.TID, tupleOID));
+                        tupleNodeInstance.addChild(createAttributeInstance(SpeedyConstants.STEP, rootName));
                         IValue value = cell.getValue();
                         tupleNodeInstance.addChild(createAttributeInstance(cell.getAttribute(), value));
                         tupleNodeInstance.addChild(createAttributeInstance(LunaticConstants.CELL_ORIGINAL_VALUE, value));
@@ -169,7 +170,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
 
     private void initInstanceNode(ITable table, INode instanceNode, List<AttributeRef> affectedAttributes) {
         for (Attribute attribute : table.getAttributes()) {
-            if (attribute.getName().equals(LunaticConstants.OID)) {
+            if (attribute.getName().equals(SpeedyConstants.OID)) {
                 continue;
             }
             if (isAffected(new AttributeRef(attribute.getTableName(), attribute.getName()), affectedAttributes)) {
@@ -205,7 +206,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         }
         OID oid = IntegerOIDGenerator.getNextOID();
         TupleNode tupleNodeInstance = new TupleNode(deltaRelationName + "Tuple", oid);
-        tupleNodeInstance.addChild(createAttributeInstance(LunaticConstants.TID, tupleOID));
+        tupleNodeInstance.addChild(createAttributeInstance(SpeedyConstants.TID, tupleOID));
         for (Cell cell : nonAffectedCells) {
             tupleNodeInstance.addChild(createAttributeInstance(cell.getAttribute(), cell.getValue()));
         }
@@ -217,7 +218,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         TupleNode nullInsertTuple = new TupleNode(LunaticConstants.CELLGROUP_TABLE + "Tuple", IntegerOIDGenerator.getNextOID());
         nullInsertSet.addChild(nullInsertTuple);
         nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.GROUP_ID, value));
-        nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.STEP, LunaticConstants.CHASE_STEP_ROOT));
+        nullInsertTuple.addChild(createAttributeInstance(SpeedyConstants.STEP, LunaticConstants.CHASE_STEP_ROOT));
         nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.CELL_OID, cellRef.getTupleOID()));
         nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.CELL_TABLE, cellRef.getAttributeRef().getTableName()));
         nullInsertTuple.addChild(createAttributeInstance(LunaticConstants.CELL_ATTRIBUTE, cellRef.getAttributeRef().getName()));

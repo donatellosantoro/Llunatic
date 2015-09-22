@@ -1,31 +1,32 @@
 package it.unibas.lunatic.model.algebra.operators;
 
-import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.algebra.CountAggregateFunction;
-import it.unibas.lunatic.model.algebra.GroupBy;
-import it.unibas.lunatic.model.algebra.IAggregateFunction;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.algebra.OrderBy;
-import it.unibas.lunatic.model.algebra.Project;
-import it.unibas.lunatic.model.algebra.Select;
-import it.unibas.lunatic.model.algebra.SelectIn;
-import it.unibas.lunatic.model.algebra.ValueAggregateFunction;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.operators.GenerateSymmetricPremise;
-import it.unibas.lunatic.model.expressions.Expression;
+import speedy.model.expressions.Expression;
 import it.unibas.lunatic.model.dependency.SymmetricAtoms;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.GroupBy;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.OrderBy;
+import speedy.model.algebra.Project;
+import speedy.model.algebra.Select;
+import speedy.model.algebra.SelectIn;
+import speedy.model.algebra.aggregatefunctions.CountAggregateFunction;
+import speedy.model.algebra.aggregatefunctions.IAggregateFunction;
+import speedy.model.algebra.aggregatefunctions.ValueAggregateFunction;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.TableAlias;
+import speedy.utility.SpeedyUtility;
 
 public class BuildAlgebraTreeForSymmetricEGD {
 
@@ -55,7 +56,7 @@ public class BuildAlgebraTreeForSymmetricEGD {
         for (AttributeRef queriedAttribute : symmetricQueriedAttributes) {
             aggreatesForQueriedAttributes.add(new ValueAggregateFunction(queriedAttribute));
         }
-        AttributeRef countAttribute = new AttributeRef(new TableAlias(LunaticConstants.AGGR), LunaticConstants.COUNT);
+        AttributeRef countAttribute = new AttributeRef(new TableAlias(SpeedyConstants.AGGR), SpeedyConstants.COUNT);
         GroupBy groupByQueriedAttributes = new GroupBy(symmetricQueriedAttributes, aggreatesForQueriedAttributes);
         groupByQueriedAttributes.addChild(premiseRoot);
 
@@ -75,7 +76,7 @@ public class BuildAlgebraTreeForSymmetricEGD {
         expression.changeVariableDescription("count", countAttribute);
         Select select = new Select(expression);
         select.addChild(secondGroupBy);
-        Project violationProject = new Project(symmetricWitnessAttributes);
+        Project violationProject = new Project(SpeedyUtility.createProjectionAttributes(symmetricWitnessAttributes));
         violationProject.addChild(select);
         return violationProject;
     }
@@ -84,7 +85,9 @@ public class BuildAlgebraTreeForSymmetricEGD {
         List<AttributeRef> targetJoinAttributes = DependencyUtility.findTargetJoinAttributesInPositiveFormula(dependency);
         List<AttributeRef> symmetricWitnessAttributes = filterAttributesForSymmetricPremise(targetJoinAttributes, dependency);
         symmetricWitnessAttributes = filterConclusionOccurrences(symmetricWitnessAttributes, dependency);
-        SelectIn selectIn = new SelectIn(symmetricWitnessAttributes, violationValues);
+        List<IAlgebraOperator> selectionOperators = new ArrayList<IAlgebraOperator>();
+        selectionOperators.add(violationValues);
+        SelectIn selectIn = new SelectIn(symmetricWitnessAttributes, selectionOperators);
         return selectIn;
     }
 
@@ -103,7 +106,7 @@ public class BuildAlgebraTreeForSymmetricEGD {
         orderBy.addChild(premiseRoot);
         return orderBy;
     }
-    
+
     private List<AttributeRef> filterAttributesForSymmetricPremise(List<AttributeRef> attributes, Dependency dependency) {
 //        String tableName = dependency.getTableNameForSymmetricAtom();
         if (logger.isDebugEnabled()) logger.debug("Filtering attributes for symmetric premise: " + attributes + " - " + dependency.getSymmetricAtoms());
@@ -139,7 +142,7 @@ public class BuildAlgebraTreeForSymmetricEGD {
         }
         return result;
     }
-    
+
     public boolean containsOccurrences(AttributeRef attribute, FormulaVariable v, SymmetricAtoms symmetricAtoms) {
         for (FormulaVariableOccurrence formulaVariableOccurrence : v.getPremiseRelationalOccurrences()) {
             if (!symmetricAtoms.getSymmetricAliases().contains(formulaVariableOccurrence.getAttributeRef().getTableAlias())) {
@@ -152,5 +155,5 @@ public class BuildAlgebraTreeForSymmetricEGD {
         }
         return false;
     }
-    
+
 }

@@ -1,17 +1,17 @@
 package it.unibas.lunatic.model.algebra.operators;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.exceptions.ExpressionSyntaxException;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
-import it.unibas.lunatic.model.expressions.Expression;
+import speedy.model.expressions.Expression;
 import org.nfunk.jep.JEP;
 import org.nfunk.jep.SymbolTable;
 import org.nfunk.jep.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Tuple;
 
 public class EvaluateExpression {
 
@@ -31,7 +31,7 @@ public class EvaluateExpression {
     public Double evaluateCondition(Expression expression, Tuple tuple) throws ExpressionSyntaxException {
         if (logger.isDebugEnabled()) logger.debug("Evaluating condition: " + expression + " on tuple " + tuple);
         if (expression.toString().equals("true")) {
-            return LunaticConstants.TRUE;
+            return SpeedyConstants.TRUE;
         }
         setVariableValues(expression, tuple);
         Object value = expression.getJepExpression().getValueAsObject();

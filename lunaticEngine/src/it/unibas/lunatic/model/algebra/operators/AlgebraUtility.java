@@ -1,8 +1,11 @@
 package it.unibas.lunatic.model.algebra.operators;
 
-import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.database.*;
-import it.unibas.lunatic.model.dependency.*;
+import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.StringComparator;
+import it.unibas.lunatic.model.dependency.FormulaVariable;
+import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
+import it.unibas.lunatic.model.dependency.IFormulaAtom;
+import it.unibas.lunatic.model.dependency.PositiveFormula;
+import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +14,12 @@ import java.util.List;
 import org.nfunk.jep.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.IValue;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
 
 @SuppressWarnings("unchecked")
 public class AlgebraUtility {
@@ -42,7 +51,7 @@ public class AlgebraUtility {
     public static List<Object> getTupleValuesExceptOIDs(Tuple tuple) {
         List<Object> values = new ArrayList<Object>();
         for (Cell cell : tuple.getCells()) {
-            if(cell.getAttribute().equals(LunaticConstants.OID)){
+            if(cell.getAttribute().equals(SpeedyConstants.OID)){
                 continue;
             }
             IValue attributeValue = cell.getValue();
@@ -54,7 +63,7 @@ public class AlgebraUtility {
     public static List<Object> getNonOidTupleValues(Tuple tuple) {
         List<Object> values = new ArrayList<Object>();
         for (Cell cell : tuple.getCells()) {
-            if (cell.getAttribute().equals(LunaticConstants.OID)) {
+            if (cell.getAttribute().equals(SpeedyConstants.OID)) {
                 continue;
             }                
             IValue attributeValue = cell.getValue();

@@ -1,10 +1,9 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.mainmemory;
 
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.ITable;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
-import it.unibas.lunatic.model.database.mainmemory.datasource.OID;
+import speedy.model.database.IDatabase;
+import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
+import speedy.model.database.mainmemory.datasource.OID;
 
 public class MainMemoryOIDGenerator implements IOIDGenerator{
 

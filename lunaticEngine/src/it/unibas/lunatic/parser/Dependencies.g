@@ -15,10 +15,10 @@ package it.unibas.lunatic.parser.output;
 import it.unibas.lunatic.LunaticConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.parser.operators.ParseDependencies;
 import it.unibas.lunatic.model.dependency.*;
-import it.unibas.lunatic.model.expressions.Expression;
+import speedy.model.database.AttributeRef;
+import speedy.model.expressions.Expression;
 }
 
 @members {

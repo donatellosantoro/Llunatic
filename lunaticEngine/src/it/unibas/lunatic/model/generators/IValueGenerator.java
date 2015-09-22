@@ -1,7 +1,8 @@
 package it.unibas.lunatic.model.generators;
 
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.Tuple;
+import speedy.model.database.IValue;
+import speedy.model.database.Tuple;
+
 
 public interface IValueGenerator extends Cloneable {
 

@@ -1,9 +1,9 @@
 package it.unibas.lunatic.model.generators;
 
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.NullValue;
 import it.unibas.lunatic.model.database.skolem.ISkolemPart;
+import speedy.model.database.IValue;
+import speedy.model.database.NullValue;
+import speedy.model.database.Tuple;
 
 public class SkolemFunctionGenerator implements IValueGenerator {
 

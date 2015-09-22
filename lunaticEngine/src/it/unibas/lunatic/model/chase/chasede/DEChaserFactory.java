@@ -18,7 +18,7 @@ import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.ChaseMainMemor
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryDEOccurrenceHandler;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectNaive;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryRemoveDuplicates;
-import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
+import speedy.model.database.operators.IRunQuery;
 
 public class DEChaserFactory {
     

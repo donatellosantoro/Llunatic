@@ -1,11 +1,11 @@
 package it.unibas.lunatic.model.chase.chasemc;
 
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.IValue;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import speedy.model.database.Cell;
+import speedy.model.database.IValue;
 
 // a group of target cells with equal values for conclusion variables that need to be changed to solve a conflict
 public class EGDEquivalenceClassCells {

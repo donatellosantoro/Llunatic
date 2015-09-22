@@ -2,10 +2,6 @@ package it.unibas.lunatic;
 
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager;
-import it.unibas.lunatic.model.database.EmptyDB;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.OrderingAttribute;
@@ -17,6 +13,10 @@ import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.List;
+import speedy.model.database.EmptyDB;
+import speedy.model.database.IDatabase;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.model.database.mainmemory.MainMemoryDB;
 
 public class Scenario {
 

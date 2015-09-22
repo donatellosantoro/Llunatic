@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.algebra.operators;
 
-import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.LabeledEdge;
 import java.util.ArrayList;
@@ -12,6 +11,7 @@ import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.SimpleGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.TableAlias;
 
 public class FindConnectedTables {
 

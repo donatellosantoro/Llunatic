@@ -1,14 +1,13 @@
 package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
-import it.unibas.lunatic.model.algebra.operators.StringComparator;
 import it.unibas.lunatic.model.chase.chasede.operators.IRemoveDuplicates;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
-import it.unibas.lunatic.model.database.mainmemory.datasource.INode;
-import it.unibas.lunatic.model.algebra.operators.AlgebraUtility;
+import speedy.model.database.IDatabase;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import speedy.model.algebra.operators.StringComparator;
+import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.mainmemory.datasource.INode;
 
 @SuppressWarnings("unchecked")
 public class MainMemoryRemoveDuplicates implements IRemoveDuplicates {

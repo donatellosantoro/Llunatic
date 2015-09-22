@@ -6,13 +6,6 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.TupleOID;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
@@ -20,6 +13,13 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.CellRef;
+import speedy.model.database.IValue;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
 
 public class EquivalenceClassUtility {
 

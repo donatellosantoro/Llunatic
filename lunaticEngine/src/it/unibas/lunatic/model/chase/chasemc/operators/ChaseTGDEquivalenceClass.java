@@ -2,8 +2,6 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
@@ -12,14 +10,6 @@ import it.unibas.lunatic.model.chase.chasemc.TGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.NullValue;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.TupleOID;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
@@ -27,7 +17,6 @@ import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +26,18 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.CellRef;
+import speedy.model.database.IDatabase;
+import speedy.model.database.IValue;
+import speedy.model.database.NullValue;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
+import speedy.model.database.operators.IRunQuery;
 
 public class ChaseTGDEquivalenceClass {
 
@@ -173,7 +174,7 @@ public class ChaseTGDEquivalenceClass {
                 tupleOID = new TupleOID(oidGenerator.getNextOID(tableAlias.getTableName()));
                 equivalenceClass.putTupleOIDForTableAlias(tableAlias, tupleOID);
             }
-            CellGroupCell newCell = new CellGroupCell(tupleOID, ChaseUtility.unAlias(attributeRef), value, new NullValue(LunaticConstants.NULL), LunaticConstants.TYPE_OCCURRENCE, true);
+            CellGroupCell newCell = new CellGroupCell(tupleOID, ChaseUtility.unAlias(attributeRef), value, new NullValue(SpeedyConstants.NULL), LunaticConstants.TYPE_OCCURRENCE, true);
             equivalenceClass.getTargetCellForVariable(universalVariable).addNewCell(newCell);
         }
     }

@@ -3,11 +3,6 @@ package it.unibas.lunatic.model.chase.chasemc.operators.cache;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.persistence.relational.QueryStatManager;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +10,11 @@ import org.apache.jcs.JCS;
 import org.apache.jcs.access.exception.CacheException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.CellRef;
+import speedy.model.database.IDatabase;
+import speedy.model.database.IValue;
+import speedy.model.database.operators.IRunQuery;
+import speedy.persistence.relational.QueryStatManager;
 
 public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager {
 

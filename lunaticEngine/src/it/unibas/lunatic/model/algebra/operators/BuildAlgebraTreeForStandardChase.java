@@ -1,17 +1,18 @@
 package it.unibas.lunatic.model.algebra.operators;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.Difference;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.algebra.Limit;
-import it.unibas.lunatic.model.algebra.ProjectWithoutOIDs;
-import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.Difference;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.Limit;
+import speedy.model.algebra.ProjectWithoutOIDs;
+import speedy.model.database.AttributeRef;
+import speedy.utility.SpeedyUtility;
 
 public class BuildAlgebraTreeForStandardChase {
 
@@ -45,7 +46,7 @@ public class BuildAlgebraTreeForStandardChase {
         IAlgebraOperator premiseOperator = treeBuilder.buildTreeForPremise(dependency, scenario);
         List<AttributeRef> universalAttributes = DependencyUtility.getUniversalAttributesInPremise(universalVariables);
         if (logger.isDebugEnabled()) logger.debug("Universal attributes in premise: " + universalAttributes);
-        ProjectWithoutOIDs root = new ProjectWithoutOIDs(universalAttributes);
+        ProjectWithoutOIDs root = new ProjectWithoutOIDs(SpeedyUtility.createProjectionAttributes(universalAttributes));
         root.addChild(premiseOperator);
         return root;
     }
@@ -54,7 +55,7 @@ public class BuildAlgebraTreeForStandardChase {
         IAlgebraOperator conclusion = treeBuilder.buildTreeForConclusion(dependency, scenario);
         List<AttributeRef> universalAttributes = DependencyUtility.getUniversalAttributesInConclusion(universalVariables);
         if (logger.isDebugEnabled()) logger.debug("Universal attributes in conclusion: " + universalAttributes);
-        ProjectWithoutOIDs root = new ProjectWithoutOIDs(universalAttributes);
+        ProjectWithoutOIDs root = new ProjectWithoutOIDs(SpeedyUtility.createProjectionAttributes(universalAttributes));
         root.addChild(conclusion);
         return root;
     }

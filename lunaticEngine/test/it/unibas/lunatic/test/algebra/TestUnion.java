@@ -2,10 +2,6 @@ package it.unibas.lunatic.test.algebra;
 
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.Scan;
-import it.unibas.lunatic.model.algebra.Union;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import java.util.Iterator;
@@ -13,6 +9,10 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.Scan;
+import speedy.model.algebra.Union;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
 
 public class TestUnion extends TestCase{
     

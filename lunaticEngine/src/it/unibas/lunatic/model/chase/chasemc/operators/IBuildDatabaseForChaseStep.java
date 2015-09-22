@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
+import speedy.model.database.IDatabase;
 
 public interface IBuildDatabaseForChaseStep {
 

@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
-import it.unibas.lunatic.model.database.IValue;
+import speedy.model.database.IValue;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
 import java.util.Set;

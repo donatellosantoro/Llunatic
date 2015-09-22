@@ -3,22 +3,10 @@ package it.unibas.lunatic.model.chase.commons;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.exceptions.ChaseException;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.algebra.Scan;
-import it.unibas.lunatic.model.algebra.Select;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.TupleOID;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
-import it.unibas.lunatic.model.database.ConstantValue;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
@@ -27,7 +15,7 @@ import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
-import it.unibas.lunatic.model.expressions.Expression;
+import speedy.model.expressions.Expression;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,6 +27,19 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.Scan;
+import speedy.model.algebra.Select;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.CellRef;
+import speedy.model.database.ConstantValue;
+import speedy.model.database.IValue;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
+import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 
 public class ChaseUtility {
 
@@ -81,11 +82,11 @@ public class ChaseUtility {
     public static IAlgebraOperator buildQuery(String deltaTableName, TupleOID tid, String stepId) {
         Scan scan = new Scan(new TableAlias(deltaTableName));
         List<Expression> expressions = new ArrayList<Expression>();
-        Expression tidExpression = new Expression(LunaticConstants.TID + " == \"" + tid + "\"");
-        tidExpression.changeVariableDescription(LunaticConstants.TID, new AttributeRef(deltaTableName, LunaticConstants.TID));
+        Expression tidExpression = new Expression(SpeedyConstants.TID + " == \"" + tid + "\"");
+        tidExpression.changeVariableDescription(SpeedyConstants.TID, new AttributeRef(deltaTableName, SpeedyConstants.TID));
         expressions.add(tidExpression);
-        Expression stepExpression = new Expression(LunaticConstants.STEP + " == \"" + stepId + "\"");
-        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(deltaTableName, LunaticConstants.STEP));
+        Expression stepExpression = new Expression(SpeedyConstants.STEP + " == \"" + stepId + "\"");
+        stepExpression.changeVariableDescription(SpeedyConstants.STEP, new AttributeRef(deltaTableName, SpeedyConstants.STEP));
         expressions.add(stepExpression);
         Select select = new Select(expressions);
         select.addChild(scan);
@@ -95,8 +96,8 @@ public class ChaseUtility {
     public static Tuple buildTuple(TupleOID tid, String stepId, IValue newValue, IValue originalValue, IValue groupID, String deltaTableName, String attributeName) {
         TupleOID oid = new TupleOID(IntegerOIDGenerator.getNextOID());
         Tuple tuple = new Tuple(oid);
-        tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, LunaticConstants.TID), new ConstantValue(tid)));
-        tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, LunaticConstants.STEP), new ConstantValue(stepId)));
+        tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, SpeedyConstants.TID), new ConstantValue(tid)));
+        tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, SpeedyConstants.STEP), new ConstantValue(stepId)));
         tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, attributeName), newValue));
         tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, LunaticConstants.GROUP_ID), groupID));
         tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, LunaticConstants.CELL_ORIGINAL_VALUE), originalValue));
@@ -252,7 +253,7 @@ public class ChaseUtility {
     }
 
     public static IValue getOriginalOid(Tuple tuple, AttributeRef attributeRef) {
-        Cell oidCell = tuple.getCell(new AttributeRef(attributeRef.getTableAlias(), LunaticConstants.OID));
+        Cell oidCell = tuple.getCell(new AttributeRef(attributeRef.getTableAlias(), SpeedyConstants.OID));
         return oidCell.getValue();
     }
 

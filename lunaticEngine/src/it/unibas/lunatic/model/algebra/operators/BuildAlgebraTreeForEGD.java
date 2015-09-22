@@ -1,17 +1,11 @@
 package it.unibas.lunatic.model.algebra.operators;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.algebra.Limit;
-import it.unibas.lunatic.model.algebra.OrderBy;
-import it.unibas.lunatic.model.algebra.Select;
-import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaWithNegations;
 import it.unibas.lunatic.model.dependency.IFormula;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
-import it.unibas.lunatic.model.expressions.Expression;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
@@ -20,6 +14,12 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.Limit;
+import speedy.model.algebra.OrderBy;
+import speedy.model.algebra.Select;
+import speedy.model.database.AttributeRef;
+import speedy.model.expressions.Expression;
 
 public class BuildAlgebraTreeForEGD {
 

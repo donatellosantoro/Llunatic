@@ -2,11 +2,11 @@ package it.unibas.lunatic.model.chase.chasemc;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.PartialOrderConstants;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.CellRef;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.TupleOID;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.CellRef;
+import speedy.model.database.IValue;
+import speedy.model.database.TupleOID;
 
 public class CellGroupCell extends Cell {
 

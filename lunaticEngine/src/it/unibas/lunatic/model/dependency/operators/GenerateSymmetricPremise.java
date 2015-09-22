@@ -1,7 +1,5 @@
 package it.unibas.lunatic.model.dependency.operators;
 
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.dependency.BuiltInAtom;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -17,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.TableAlias;
 
 public class GenerateSymmetricPremise {
 

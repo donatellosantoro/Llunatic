@@ -1,12 +1,12 @@
 package it.unibas.lunatic.model.chase.chasemc;
 
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.TupleOID;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.HashMap;
 import java.util.Map;
+import speedy.model.database.TableAlias;
+import speedy.model.database.TupleOID;
 
 public class EquivalenceClassForTGD {
 

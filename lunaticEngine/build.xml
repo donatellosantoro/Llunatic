@@ -13,6 +13,7 @@
         <property name="build.sysclasspath" value="ignore" />
         <path id="compile.classpath">
             <pathelement location="${build.dir}" />
+            <pathelement location="${lib.dir}/speedy-${speedy.ver}.jar" />
             <pathelement location="${lib.dir}/slf4j-api-${slf4j.ver}.jar" />
             <pathelement location="${lib.dir}/logback-core-${logback.ver}.jar" />
             <pathelement location="${lib.dir}/logback-classic-${logback.ver}.jar" />
@@ -43,11 +44,22 @@
         </path>
     </target>
     
+    <target name="-light-deploy-speedy" depends="-init-speedy-dir" if="speedy.src.exists">
+        <ant dir="${speedy.dir}" inheritAll="false" target="light-jar" />
+        <copy file="${speedy.dir}/dist/speedy-${speedy.ver}.jar" todir="${lib.dir}"/>
+    </target>
+
+    <target name="-init-speedy-dir">
+        <condition property="speedy.src.exists">
+            <available file="${speedy.dir}" type="dir"/>
+        </condition>
+    </target>
+
     <target name="-light-deploy-jep" depends="init">
         <ant dir="${jep.dir}" inheritAll="false" target="light-deploy" />    
     </target>   
 
-    <target name="build" depends="-light-deploy-jep, compile, compile-test" description="compila ed esegue i test">
+    <target name="build" depends="-light-deploy-speedy, -light-deploy-jep, compile, compile-test" description="compila ed esegue i test">
     </target>
     
     <target name="-create-manifest" depends="init, -init-version">

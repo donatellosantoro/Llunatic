@@ -1,6 +1,5 @@
 package it.unibas.lunatic.test.checker;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
@@ -18,6 +17,7 @@ import java.util.Map;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
 
 public class CheckExpectedSolutionsTest extends CheckTest {
 
@@ -118,7 +118,7 @@ public class CheckExpectedSolutionsTest extends CheckTest {
 
     protected void checkExpectedSolutions(String folderName, DeltaChaseStep result) {
         if (logger.isDebugEnabled()) logger.debug("Checking expected solutions...");
-        Map<String, List<PrecisionAndRecall>> quality = compareWithExpectedInstances(result, folderName, Arrays.asList(new String[]{LunaticConstants.OID, LunaticConstants.TID}), 0.0, false);
+        Map<String, List<PrecisionAndRecall>> quality = compareWithExpectedInstances(result, folderName, Arrays.asList(new String[]{SpeedyConstants.OID, SpeedyConstants.TID}), 0.0, false);
         if (logger.isTraceEnabled()) logger.debug(printPrecisionAndRecall(quality));
         checkQuality(quality);
     }

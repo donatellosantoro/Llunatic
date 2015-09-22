@@ -3,8 +3,6 @@ package it.unibas.lunatic.parser.operators;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ParserException;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.TableAlias;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.dependency.operators.AssignAliasesInFormulas;
 import it.unibas.lunatic.model.dependency.operators.CheckRecursion;
@@ -26,6 +24,8 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.IDatabase;
+import speedy.model.database.TableAlias;
 
 @SuppressWarnings("unchecked")
 public class ParseDependencies {

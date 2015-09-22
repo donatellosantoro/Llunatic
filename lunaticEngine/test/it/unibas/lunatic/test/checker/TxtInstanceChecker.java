@@ -1,12 +1,12 @@
 package it.unibas.lunatic.test.checker;
 
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.model.database.mainmemory.datasource.INode;
-import it.unibas.lunatic.model.database.NullValue;
 import java.util.*;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.NullValue;
+import speedy.model.database.mainmemory.datasource.INode;
 
 public class TxtInstanceChecker {
 

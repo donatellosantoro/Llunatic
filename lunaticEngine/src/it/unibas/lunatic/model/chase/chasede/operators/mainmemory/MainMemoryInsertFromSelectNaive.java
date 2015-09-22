@@ -1,26 +1,15 @@
 package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.AlgebraUtility;
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
 import it.unibas.lunatic.model.chase.chasede.operators.IInsertFromSelectNaive;
-import it.unibas.lunatic.model.algebra.operators.mainmemory.InsertTuple;
 import it.unibas.lunatic.model.chase.chasede.operators.IValueOccurrenceHandlerDE;
-import it.unibas.lunatic.model.database.Attribute;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.ITable;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.TupleOID;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryTable;
-import it.unibas.lunatic.model.database.mainmemory.datasource.INode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
-import it.unibas.lunatic.model.database.NullValue;
+import speedy.model.database.Attribute;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.IDatabase;
+import speedy.model.database.ITable;
+import speedy.model.database.IValue;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import java.util.ArrayList;
@@ -28,12 +17,24 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.operators.IInsertTuple;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.algebra.operators.mainmemory.MainMemoryInsertTuple;
+import speedy.model.database.NullValue;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
+import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.mainmemory.MainMemoryTable;
+import speedy.model.database.mainmemory.datasource.INode;
+import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 
 public class MainMemoryInsertFromSelectNaive implements IInsertFromSelectNaive {
 
     private static Logger logger = LoggerFactory.getLogger(MainMemoryInsertFromSelectNaive.class);
 
-    private InsertTuple insertOperator = new InsertTuple();
+    private IInsertTuple insertOperator = new MainMemoryInsertTuple();
     private IValueOccurrenceHandlerDE occurrenceHandlerDE = new MainMemoryDEOccurrenceHandler();
 
     @Override

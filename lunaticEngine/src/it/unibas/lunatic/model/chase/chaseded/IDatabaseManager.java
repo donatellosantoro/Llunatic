@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chaseded;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.database.IDatabase;
+import speedy.model.database.IDatabase;
 
 
 public interface IDatabaseManager {

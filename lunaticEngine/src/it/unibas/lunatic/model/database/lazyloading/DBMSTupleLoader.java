@@ -1,14 +1,14 @@
 package it.unibas.lunatic.model.database.lazyloading;
 
 import it.unibas.lunatic.exceptions.DBMSException;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.TupleOID;
-import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
-import it.unibas.lunatic.persistence.relational.QueryManager;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
+import speedy.persistence.relational.AccessConfiguration;
+import speedy.persistence.relational.QueryManager;
 
 public class DBMSTupleLoader implements ITupleLoader {
 

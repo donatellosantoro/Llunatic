@@ -1,20 +1,20 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.dbms;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ICreateTablesForConstants;
-import it.unibas.lunatic.model.database.EmptyDB;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.model.database.dbms.DBMSTable;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.model.database.dbms.DBMSTable;
 import it.unibas.lunatic.model.dependency.ConstantsInFormula;
-import it.unibas.lunatic.persistence.Types;
-import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
-import it.unibas.lunatic.persistence.relational.QueryManager;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.database.EmptyDB;
+import speedy.persistence.Types;
+import speedy.persistence.relational.AccessConfiguration;
+import speedy.persistence.relational.QueryManager;
 
 public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
 
@@ -39,7 +39,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         sourceAccessConfiguration.setSchemaName("source");
         StringBuilder createSchemaStatement = new StringBuilder();
         createSchemaStatement.append("CREATE SCHEMA ").append(sourceAccessConfiguration.getSchemaName()).append(";\n\n");
-        QueryManager.executeScript(createSchemaStatement.toString(), sourceAccessConfiguration, true, true, false);
+        QueryManager.executeScript(createSchemaStatement.toString(), sourceAccessConfiguration, true, true, false, false);
         return new DBMSDB(sourceAccessConfiguration);
     }
 
@@ -47,7 +47,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         String createStatement = generateCreateStatement(constantsInFormula, dbmsSourceDB);
         String insertStatement = generateInsertStatement(constantsInFormula, dbmsSourceDB);
         String statement = createStatement + insertStatement;
-        QueryManager.executeScript(statement, dbmsSourceDB.getAccessConfiguration(), true, true, true);
+        QueryManager.executeScript(statement, dbmsSourceDB.getAccessConfiguration(), true, true, true, false);
         DBMSTable newConstantTable = new DBMSTable(constantsInFormula.getTableName(), dbmsSourceDB.getAccessConfiguration());
         dbmsSourceDB.addTable(newConstantTable);
     }
@@ -65,7 +65,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
             String type = LunaticUtility.findType(constantValue);
             type = Types.STRING;//TODO++
             String dbmsType = DBMSUtility.convertDataSourceTypeToDBType(type);
-            script.append(LunaticConstants.INDENT).append(attributeName).append(" ").append(dbmsType).append(",").append("\n");
+            script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(dbmsType).append(",").append("\n");
         }
         LunaticUtility.removeChars(", ".length(), script);
         script.append(") WITH OIDS;").append("\n\n");
@@ -87,7 +87,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
             if (type.equals(Types.STRING)) {
                 valueString = "'" + valueString + "'";
             }
-            script.append(LunaticConstants.INDENT).append(valueString).append(",").append("\n");
+            script.append(SpeedyConstants.INDENT).append(valueString).append(",").append("\n");
         }
         LunaticUtility.removeChars(", ".length(), script);
         script.append(");\n");

@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator;
 
-import it.unibas.lunatic.model.database.IValue;
 import java.util.Comparator;
+import speedy.model.database.IValue;
 
 public interface IValueComparator extends Comparator<IValue>{
 

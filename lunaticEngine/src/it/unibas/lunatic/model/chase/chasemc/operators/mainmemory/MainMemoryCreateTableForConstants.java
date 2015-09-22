@@ -2,22 +2,22 @@ package it.unibas.lunatic.model.chase.chasemc.operators.mainmemory;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ICreateTablesForConstants;
-import it.unibas.lunatic.model.database.EmptyDB;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
-import it.unibas.lunatic.model.database.mainmemory.datasource.DataSource;
-import it.unibas.lunatic.model.database.mainmemory.datasource.INode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.AttributeNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.LeafNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.SetNode;
-import it.unibas.lunatic.model.database.mainmemory.datasource.nodes.TupleNode;
 import it.unibas.lunatic.model.dependency.ConstantsInFormula;
-import it.unibas.lunatic.persistence.PersistenceConstants;
-import it.unibas.lunatic.persistence.Types;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.EmptyDB;
+import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.mainmemory.datasource.DataSource;
+import speedy.model.database.mainmemory.datasource.INode;
+import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
+import speedy.model.database.mainmemory.datasource.nodes.AttributeNode;
+import speedy.model.database.mainmemory.datasource.nodes.LeafNode;
+import speedy.model.database.mainmemory.datasource.nodes.SetNode;
+import speedy.model.database.mainmemory.datasource.nodes.TupleNode;
+import speedy.persistence.PersistenceConstants;
+import speedy.persistence.Types;
 
 public class MainMemoryCreateTableForConstants implements ICreateTablesForConstants {
 

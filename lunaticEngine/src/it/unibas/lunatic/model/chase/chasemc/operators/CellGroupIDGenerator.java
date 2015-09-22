@@ -2,14 +2,15 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.database.ConstantValue;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.LLUNValue;
-import it.unibas.lunatic.model.database.NullValue;
-import it.unibas.lunatic.model.database.TupleOID;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.database.ConstantValue;
+import speedy.model.database.IValue;
+import speedy.model.database.LLUNValue;
+import speedy.model.database.NullValue;
+import speedy.model.database.TupleOID;
+import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 
 public class CellGroupIDGenerator {
 
@@ -26,11 +27,11 @@ public class CellGroupIDGenerator {
             return value;
         }
         String valueString = value.toString();
-        return new ConstantValue(valueString + LunaticConstants.VALUE_LABEL + (counter++));
+        return new ConstantValue(valueString + SpeedyConstants.VALUE_LABEL + (counter++));
     }
 
     public static LLUNValue getNextLLUNID() {
-        return new LLUNValue(LunaticConstants.LLUN_PREFIX + (counter++));
+        return new LLUNValue(SpeedyConstants.LLUN_PREFIX + (counter++));
     }
 
     public static CellGroupCell getNextInvalidCell() {
@@ -44,8 +45,8 @@ public class CellGroupIDGenerator {
     public static IValue getCellGroupValueFromGroupID(IValue cellGroupId) {
         IValue value = cellGroupId;
         if (cellGroupId instanceof ConstantValue) {
-            if (cellGroupId.toString().contains(LunaticConstants.VALUE_LABEL)) {
-                value = new ConstantValue(cellGroupId.toString().substring(0, cellGroupId.toString().indexOf(LunaticConstants.VALUE_LABEL)));
+            if (cellGroupId.toString().contains(SpeedyConstants.VALUE_LABEL)) {
+                value = new ConstantValue(cellGroupId.toString().substring(0, cellGroupId.toString().indexOf(SpeedyConstants.VALUE_LABEL)));
             }
         }
         return value;

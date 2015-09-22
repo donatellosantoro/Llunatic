@@ -2,29 +2,14 @@ package it.unibas.lunatic.model.chase.chasemc.operators.mainmemory;
 
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.algebra.Distinct;
-import it.unibas.lunatic.model.algebra.GroupBy;
-import it.unibas.lunatic.model.algebra.IAggregateFunction;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.algebra.Join;
-import it.unibas.lunatic.model.algebra.MaxAggregateFunction;
-import it.unibas.lunatic.model.algebra.Project;
-import it.unibas.lunatic.model.algebra.RestoreOIDs;
-import it.unibas.lunatic.model.algebra.Scan;
-import it.unibas.lunatic.model.algebra.Select;
-import it.unibas.lunatic.model.algebra.ValueAggregateFunction;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.database.Attribute;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.ITable;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryVirtualDB;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryVirtualTable;
+import speedy.model.database.Attribute;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.IDatabase;
+import speedy.model.database.ITable;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.model.expressions.Expression;
+import speedy.model.expressions.Expression;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
@@ -37,6 +22,23 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.Distinct;
+import speedy.model.algebra.GroupBy;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.Join;
+import speedy.model.algebra.Project;
+import speedy.model.algebra.RestoreOIDs;
+import speedy.model.algebra.Scan;
+import speedy.model.algebra.Select;
+import speedy.model.algebra.aggregatefunctions.IAggregateFunction;
+import speedy.model.algebra.aggregatefunctions.MaxAggregateFunction;
+import speedy.model.algebra.aggregatefunctions.ValueAggregateFunction;
+import speedy.model.database.TableAlias;
+import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.mainmemory.MainMemoryVirtualDB;
+import speedy.model.database.mainmemory.MainMemoryVirtualTable;
+import speedy.utility.SpeedyUtility;
 
 public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep {
 
@@ -102,7 +104,7 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
             IAlgebraOperator initialTable = generateInitialTable(tableName, affectedAttributes, nonAffectedAttributes, deltaDB, deltaTableAttributes, stepId);
             AttributeRef oidAttributeRef = findOidAttribute(initialTable, deltaDB);
             if (affectedAttributes.isEmpty()) {
-                IAlgebraOperator projection = new Project(deltaTableAttributes, cleanNames(deltaTableAttributes), true);
+                IAlgebraOperator projection = new Project(SpeedyUtility.createProjectionAttributes(deltaTableAttributes), cleanNames(deltaTableAttributes), true);
                 projection.addChild(initialTable);
                 if (distinct) {
                     projection = createDistinctTable(projection, table.getAttributes());
@@ -121,7 +123,7 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
             ////////
             MainMemoryVirtualTable lastTable = virtualTables.get(virtualTables.size() - 1);
             IAlgebraOperator queryRoot = lastTable.getQuery();
-            RestoreOIDs restore = new RestoreOIDs(new AttributeRef(table.getName(), LunaticConstants.OID));
+            RestoreOIDs restore = new RestoreOIDs(new AttributeRef(table.getName(), SpeedyConstants.OID));
             restore.addChild(queryRoot);
             lastTable.setQuery(restore);
             if (logger.isDebugEnabled()) logger.debug("Algebra tree for table: " + table.getName() + "\n" + restore);
@@ -135,12 +137,12 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
     private IAlgebraOperator createDistinctTable(IAlgebraOperator algebraRoot, List<Attribute> originalAttributes) {
         List<AttributeRef> attributes = new ArrayList<AttributeRef>();
         for (Attribute attribute : originalAttributes) {
-            if (LunaticConstants.OID.equals(attribute.getName()) || LunaticConstants.TID.equals(attribute.getName())) {
+            if (SpeedyConstants.OID.equals(attribute.getName()) || SpeedyConstants.TID.equals(attribute.getName())) {
                 continue;
             }
             attributes.add(new AttributeRef(attribute.getTableName(), attribute.getName()));
         }
-        Project project = new Project(attributes);
+        Project project = new Project(SpeedyUtility.createProjectionAttributes(attributes));
         project.addChild(algebraRoot);
         Distinct distinct = new Distinct();
         distinct.addChild(project);
@@ -149,7 +151,7 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
 
     private AttributeRef findOidAttribute(IAlgebraOperator initialTable, IDatabase deltaDB) {
         for (AttributeRef attribute : initialTable.getAttributes(null, deltaDB)) {
-            if (attribute.getName().equals(LunaticConstants.TID)) {
+            if (attribute.getName().equals(SpeedyConstants.TID)) {
                 return attribute;
             }
         }
@@ -169,14 +171,14 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
             String tableNameForNonAffected = tableName + LunaticConstants.NA_TABLE_SUFFIX;
             Scan scan = new Scan(new TableAlias(tableNameForNonAffected));
             initialTable = scan;
-            deltaTableAttributes.add(new AttributeRef(tableNameForNonAffected, LunaticConstants.TID));
+            deltaTableAttributes.add(new AttributeRef(tableNameForNonAffected, SpeedyConstants.TID));
             for (AttributeRef attributeRef : nonAffectedAttributes) {
                 deltaTableAttributes.add(new AttributeRef(tableNameForNonAffected, attributeRef.getName()));
             }
         } else {
             AttributeRef firstAttributeRef = affectedAttributes.remove(0);
             nonAffectedAttributes.add(firstAttributeRef);
-            deltaTableAttributes.add(new AttributeRef(ChaseUtility.getDeltaRelationName(tableName, firstAttributeRef.getName()), LunaticConstants.TID));
+            deltaTableAttributes.add(new AttributeRef(ChaseUtility.getDeltaRelationName(tableName, firstAttributeRef.getName()), SpeedyConstants.TID));
             deltaTableAttributes.add(new AttributeRef(new TableAlias(ChaseUtility.getDeltaRelationName(tableName, firstAttributeRef.getName()), "0"), firstAttributeRef.getName()));
             initialTable = buildTreeForAttribute(firstAttributeRef, stepId);
         }
@@ -187,13 +189,13 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
         // select * from R_A where step
         TableAlias table = new TableAlias(ChaseUtility.getDeltaRelationName(attribute.getTableName(), attribute.getName()));
         Scan tableScan = new Scan(table);
-        Expression stepExpression = new Expression("startswith(\"" + stepId + "\", " + LunaticConstants.STEP + ")");
-        stepExpression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(table, LunaticConstants.STEP));
+        Expression stepExpression = new Expression("startswith(\"" + stepId + "\", " + SpeedyConstants.STEP + ")");
+        stepExpression.changeVariableDescription(SpeedyConstants.STEP, new AttributeRef(table, SpeedyConstants.STEP));
         Select stepSelect = new Select(stepExpression);
         stepSelect.addChild(tableScan);
         // select max(step), oid from R_A group by oid
-        AttributeRef oid = new AttributeRef(table, LunaticConstants.TID);
-        AttributeRef step = new AttributeRef(table, LunaticConstants.STEP);
+        AttributeRef oid = new AttributeRef(table, SpeedyConstants.TID);
+        AttributeRef step = new AttributeRef(table, SpeedyConstants.STEP);
         List<AttributeRef> groupingAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oid}));
         IAggregateFunction max = new MaxAggregateFunction(step);
         IAggregateFunction oidValue = new ValueAggregateFunction(oid);
@@ -205,8 +207,8 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
         Scan aliasScan = new Scan(alias);
         // select * from (group-by) join R_A_1 on oid, step
         List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oid, step}));
-        AttributeRef oidInAlias = new AttributeRef(alias, LunaticConstants.TID);
-        AttributeRef stepInAlias = new AttributeRef(alias, LunaticConstants.STEP);
+        AttributeRef oidInAlias = new AttributeRef(alias, SpeedyConstants.TID);
+        AttributeRef stepInAlias = new AttributeRef(alias, SpeedyConstants.STEP);
         List<AttributeRef> rightAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oidInAlias, stepInAlias}));
         Join join = new Join(leftAttributes, rightAttributes);
         join.addChild(groupBy);
@@ -214,7 +216,7 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
         // select oid, A from (join)
         AttributeRef attributeInAlias = new AttributeRef(alias, attribute.getName());
         List<AttributeRef> projectionAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oid, attributeInAlias}));
-        Project project = new Project(projectionAttributes);
+        Project project = new Project(SpeedyUtility.createProjectionAttributes(projectionAttributes));
         project.addChild(join);
         if (logger.isDebugEnabled()) logger.debug("Algebra tree for attribute: " + attribute + "\n" + project);
         return project;
@@ -225,21 +227,21 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
         for (AttributeRef attributeRef : affectedAttributes) {
             deltaTableAttributes.add(new AttributeRef(new TableAlias(ChaseUtility.getDeltaRelationName(table.getName(), attributeRef.getName()), "0"), attributeRef.getName()));
             IAlgebraOperator deltaForAttribute = buildTreeForAttribute(attributeRef, stepId);
-            AttributeRef oid = new AttributeRef(ChaseUtility.getDeltaRelationName(table.getName(), attributeRef.getName()), LunaticConstants.TID);
+            AttributeRef oid = new AttributeRef(ChaseUtility.getDeltaRelationName(table.getName(), attributeRef.getName()), SpeedyConstants.TID);
             Join join = new Join(oidAttributeRef, oid);
             join.addChild(leftChild);
             join.addChild(deltaForAttribute);
             leftChild = join;
         }
         List<AttributeRef> projectionAttributes = new ArrayList<AttributeRef>();
-        projectionAttributes.add(new AttributeRef(table.getName(), LunaticConstants.OID));
+        projectionAttributes.add(new AttributeRef(table.getName(), SpeedyConstants.OID));
         projectionAttributes.addAll(nonAffectedAttributes);
         projectionAttributes.addAll(affectedAttributes);
 //        sortAttributes(deltaTableAttributes, table.getAttributes());
 //        sortAttributes(projectionAttributes, table.getAttributes());
-        Project project = new Project(deltaTableAttributes, projectionAttributes, true);
+        Project project = new Project(SpeedyUtility.createProjectionAttributes(deltaTableAttributes), projectionAttributes, true);
         project.addChild(leftChild);
-        IAlgebraOperator restore = new RestoreOIDs(new AttributeRef(table.getName(), LunaticConstants.OID));
+        IAlgebraOperator restore = new RestoreOIDs(new AttributeRef(table.getName(), SpeedyConstants.OID));
         restore.addChild(project);
         if (logger.isDebugEnabled()) logger.debug("Algebra tree for table: " + table.getName() + "\n" + restore);
         return restore;
@@ -260,8 +262,8 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
 //            tableName = tableName.replaceAll(LunaticConstants.NA_TABLE_SUFFIX, "");
             tableName = tableName.substring(0, tableName.indexOf(LunaticConstants.DELTA_TABLE_SEPARATOR));
             String attributeName = attributeRef.getName();
-            if (attributeRef.getName().equals(LunaticConstants.TID)) {
-                attributeName = LunaticConstants.OID;
+            if (attributeRef.getName().equals(SpeedyConstants.TID)) {
+                attributeName = SpeedyConstants.OID;
             }
             result.add(new AttributeRef(tableName, attributeName));
         }

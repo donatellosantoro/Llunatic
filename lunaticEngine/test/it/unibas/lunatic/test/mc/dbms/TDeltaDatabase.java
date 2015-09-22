@@ -5,15 +5,15 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDeltaDB;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
+import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies;
-import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.persistence.relational.AccessConfiguration;
 
 public class TDeltaDatabase extends CheckTest {
 

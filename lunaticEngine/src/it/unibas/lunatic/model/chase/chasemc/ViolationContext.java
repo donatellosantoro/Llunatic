@@ -1,9 +1,9 @@
 package it.unibas.lunatic.model.chase.chasemc;
 
-import it.unibas.lunatic.model.database.Cell;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.HashSet;
 import java.util.Set;
+import speedy.model.database.Cell;
 
 public class ViolationContext {
 

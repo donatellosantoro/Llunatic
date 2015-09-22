@@ -3,18 +3,18 @@ package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DBMSException;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.model.algebra.sql.GenerateTargetInsert;
 import it.unibas.lunatic.model.algebra.sql.GenerateTrigger;
 import it.unibas.lunatic.model.algebra.sql.MaterializePremiseQueries;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
-import it.unibas.lunatic.persistence.relational.AccessConfiguration;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
-import it.unibas.lunatic.persistence.relational.QueryManager;
 import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.persistence.relational.AccessConfiguration;
+import speedy.persistence.relational.QueryManager;
 
 public class ChaseSQLSTTGDs implements IChaseSTTGDs {
 
@@ -49,7 +49,7 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
         result.append("\nCOMMIT;\n");
         result.append("--DROP SCHEMA ").append(LunaticConstants.WORK_SCHEMA).append(" CASCADE;\n");
         if (logger.isDebugEnabled()) logger.debug("----Script for STTGDs: " + result);
-        QueryManager.executeScript(result.toString(), accessConfiguration, true, true, true);
+        QueryManager.executeScript(result.toString(), accessConfiguration, true, true, true, false);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.STTGD_TIME, end - start);
     }

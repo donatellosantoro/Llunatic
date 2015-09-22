@@ -1,8 +1,8 @@
 package it.unibas.lunatic.model.algebra.operators;
 
-import it.unibas.lunatic.model.database.TableAlias;
 import java.util.List;
 import java.util.Set;
+import speedy.model.database.TableAlias;
 
 class ConnectedTables {
 

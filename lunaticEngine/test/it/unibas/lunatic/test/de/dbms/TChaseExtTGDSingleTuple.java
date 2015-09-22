@@ -4,8 +4,6 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.commons.control.ImmutableChaseState;
 import it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectNaive;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.persistence.relational.QueryManager;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
@@ -14,6 +12,8 @@ import java.util.UUID;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.persistence.relational.QueryManager;
 
 public class TChaseExtTGDSingleTuple extends CheckTest {
 

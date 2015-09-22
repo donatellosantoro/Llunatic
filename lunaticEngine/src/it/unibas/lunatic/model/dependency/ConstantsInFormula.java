@@ -1,12 +1,12 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.model.algebra.operators.StringComparator;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import speedy.model.algebra.operators.StringComparator;
 
 public class ConstantsInFormula {
     

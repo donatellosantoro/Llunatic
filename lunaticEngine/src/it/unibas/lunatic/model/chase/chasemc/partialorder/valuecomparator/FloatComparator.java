@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator;
 
 import it.unibas.lunatic.exceptions.ChaseException;
-import it.unibas.lunatic.model.database.IValue;
+import speedy.model.database.IValue;
 
 public class FloatComparator extends StringComparator {
 

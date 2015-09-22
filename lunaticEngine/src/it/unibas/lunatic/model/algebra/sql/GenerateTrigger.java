@@ -3,8 +3,6 @@ package it.unibas.lunatic.model.algebra.sql;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
@@ -14,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.dbms.DBMSDB;
 
 public class GenerateTrigger {
 
@@ -26,10 +27,10 @@ public class GenerateTrigger {
         }
         result.append("----- Generating trigger for skolem occurrences -----\n");
         result.append("CREATE TABLE ").append(getSchema(scenario)).append(".").append(LunaticConstants.SKOLEM_OCC_TABLE).append("(").append("\n");
-        result.append(LunaticConstants.INDENT).append("skolem text,").append("\n");
-        result.append(LunaticConstants.INDENT).append("table_name text,").append("\n");
-        result.append(LunaticConstants.INDENT).append("tuple_oid oid,").append("\n");
-        result.append(LunaticConstants.INDENT).append("attribute text").append("\n");
+        result.append(SpeedyConstants.INDENT).append("skolem text,").append("\n");
+        result.append(SpeedyConstants.INDENT).append("table_name text,").append("\n");
+        result.append(SpeedyConstants.INDENT).append("tuple_oid oid,").append("\n");
+        result.append(SpeedyConstants.INDENT).append("attribute text").append("\n");
         result.append(") WITH OIDS;").append("\n\n");
 //        result.append("DELETE FROM ").append(getSchema(scenario)).append(".").append(LunaticConstants.SKOLEM_OCC_TABLE).append(";\n\n");
         result.append(generateTrigger(scenario));
@@ -55,9 +56,9 @@ public class GenerateTrigger {
         StringBuilder result = new StringBuilder();
         result.append("CREATE OR REPLACE FUNCTION update_skolem_occurrences_");
         result.append(tableName).append("() RETURNS TRIGGER AS $$").append("\n");
-        result.append(LunaticConstants.INDENT).append("BEGIN").append("\n");
-        String indent = LunaticConstants.INDENT + LunaticConstants.INDENT;
-        String longIndent = indent + LunaticConstants.INDENT;
+        result.append(SpeedyConstants.INDENT).append("BEGIN").append("\n");
+        String indent = SpeedyConstants.INDENT + SpeedyConstants.INDENT;
+        String longIndent = indent + SpeedyConstants.INDENT;
         result.append(indent).append("IF (TG_OP = 'DELETE') THEN").append("\n");
         result.append(longIndent).append("DELETE FROM ").append(getSchema(scenario));
         result.append(".").append(LunaticConstants.SKOLEM_OCC_TABLE).append(" WHERE table_name = TG_TABLE_NAME AND tuple_oid = OLD.oid;").append("\n");
@@ -69,29 +70,29 @@ public class GenerateTrigger {
         result.append(createInsertPart(attributes, longIndent, scenario));
         result.append(longIndent).append("RETURN NEW;").append("\n");
         result.append(indent).append("END IF;").append("\n");
-        result.append(LunaticConstants.INDENT).append("END;").append("\n");
+        result.append(SpeedyConstants.INDENT).append("END;").append("\n");
         result.append("$$ LANGUAGE plpgsql;").append("\n\n");
         return result.toString();
     }
 
     private String createUpdatePart(List<String> attributes, String indent, Scenario scenario) {
         StringBuilder result = new StringBuilder();
-        String longIndent = indent + LunaticConstants.INDENT;
+        String longIndent = indent + SpeedyConstants.INDENT;
         for (String attribute : attributes) {
             result.append(indent).append("IF (OLD.").append(attribute);
             result.append(" != NEW.").append(attribute).append(") ");
             result.append("THEN").append("\n");
             result.append(longIndent).append("IF (OLD.").append(attribute);
-            result.append(" LIKE '").append(LunaticConstants.SKOLEM_PREFIX).append("%') THEN").append("\n");
-            result.append(longIndent).append(LunaticConstants.INDENT);
+            result.append(" LIKE '").append(SpeedyConstants.SKOLEM_PREFIX).append("%') THEN").append("\n");
+            result.append(longIndent).append(SpeedyConstants.INDENT);
             result.append("DELETE FROM ").append(getSchema(scenario));
             result.append(".").append(LunaticConstants.SKOLEM_OCC_TABLE).append(" WHERE table_name = TG_TABLE_NAME ");
             result.append("AND tuple_oid = OLD.oid AND attribute = '").append(attribute).append("';").append("\n");
             result.append(longIndent).append("END IF;").append("\n");
 
             result.append(longIndent).append("IF (NEW.").append(attribute);
-            result.append(" LIKE '").append(LunaticConstants.SKOLEM_PREFIX).append("%') THEN").append("\n");
-            result.append(longIndent).append(LunaticConstants.INDENT);
+            result.append(" LIKE '").append(SpeedyConstants.SKOLEM_PREFIX).append("%') THEN").append("\n");
+            result.append(longIndent).append(SpeedyConstants.INDENT);
             result.append("INSERT INTO ").append(getSchema(scenario));
             result.append(".").append(LunaticConstants.SKOLEM_OCC_TABLE).append(" VALUES(NEW.").append(attribute).append(", TG_TABLE_NAME, NEW.oid, ");
             result.append("'").append(attribute).append("');").append("\n");
@@ -104,10 +105,10 @@ public class GenerateTrigger {
 
     private String createInsertPart(List<String> attributes, String indent, Scenario scenario) {
         StringBuilder result = new StringBuilder();
-        String longIndent = indent + LunaticConstants.INDENT;
+        String longIndent = indent + SpeedyConstants.INDENT;
         for (String attribute : attributes) {
             result.append(indent).append("IF (NEW.").append(attribute);
-            result.append(" LIKE '").append(LunaticConstants.SKOLEM_PREFIX).append("%') THEN").append("\n");
+            result.append(" LIKE '").append(SpeedyConstants.SKOLEM_PREFIX).append("%') THEN").append("\n");
             result.append(longIndent).append("INSERT INTO ");
             result.append(getSchema(scenario)).append(".").append(LunaticConstants.SKOLEM_OCC_TABLE).append(" VALUES(");
             result.append("NEW.").append(attribute).append(", TG_TABLE_NAME, NEW.oid, ");

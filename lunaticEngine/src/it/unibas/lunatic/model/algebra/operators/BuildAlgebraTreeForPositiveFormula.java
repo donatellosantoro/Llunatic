@@ -1,15 +1,14 @@
 package it.unibas.lunatic.model.algebra.operators;
 
-import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.algebra.CartesianProduct;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
-import it.unibas.lunatic.model.algebra.Join;
-import it.unibas.lunatic.model.algebra.Scan;
-import it.unibas.lunatic.model.algebra.Select;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.dependency.*;
-import it.unibas.lunatic.model.expressions.Expression;
+import it.unibas.lunatic.model.dependency.BuiltInAtom;
+import it.unibas.lunatic.model.dependency.ComparisonAtom;
+import it.unibas.lunatic.model.dependency.Dependency;
+import it.unibas.lunatic.model.dependency.FormulaAttribute;
+import it.unibas.lunatic.model.dependency.FormulaVariable;
+import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
+import it.unibas.lunatic.model.dependency.IFormulaAtom;
+import it.unibas.lunatic.model.dependency.PositiveFormula;
+import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +18,15 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.CartesianProduct;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.Join;
+import speedy.model.algebra.Scan;
+import speedy.model.algebra.Select;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.TableAlias;
+import speedy.model.expressions.Expression;
 
 public class BuildAlgebraTreeForPositiveFormula {
 
@@ -379,9 +387,9 @@ public class BuildAlgebraTreeForPositiveFormula {
 
     private Select addOidInequality(TableAlias leftTable, TableAlias rightTable, IAlgebraOperator root) {
         String inequalityOperator = "!=";
-        Expression oidInequality = new Expression(leftTable.toString() + "." + LunaticConstants.OID + inequalityOperator + rightTable.toString() + "." + LunaticConstants.OID);
-        oidInequality.changeVariableDescription(leftTable.toString() + "." + LunaticConstants.OID, new AttributeRef(leftTable, LunaticConstants.OID));
-        oidInequality.changeVariableDescription(rightTable.toString() + "." + LunaticConstants.OID, new AttributeRef(rightTable, LunaticConstants.OID));
+        Expression oidInequality = new Expression(leftTable.toString() + "." + SpeedyConstants.OID + inequalityOperator + rightTable.toString() + "." + SpeedyConstants.OID);
+        oidInequality.changeVariableDescription(leftTable.toString() + "." + SpeedyConstants.OID, new AttributeRef(leftTable, SpeedyConstants.OID));
+        oidInequality.changeVariableDescription(rightTable.toString() + "." + SpeedyConstants.OID, new AttributeRef(rightTable, SpeedyConstants.OID));
         Select select = new Select(oidInequality);
         select.addChild(root);
         return select;

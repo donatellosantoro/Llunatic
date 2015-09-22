@@ -12,8 +12,7 @@ import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.LLUNValue;
+import speedy.model.database.IDatabase;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.utility.combinatorial.GenericPowersetGenerator;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.LLUNValue;
 
 public class StandardCostManager extends AbstractCostManager {
 

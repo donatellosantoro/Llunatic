@@ -3,23 +3,9 @@ package it.unibas.lunatic.persistence.relational;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
-import it.unibas.lunatic.model.algebra.IAlgebraOperator;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForTGD;
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
-import it.unibas.lunatic.model.algebra.sql.AlgebraTreeToSQL;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.database.Attribute;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.ITable;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.model.database.dbms.DBMSTable;
-import it.unibas.lunatic.model.database.dbms.DBMSVirtualDB;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryVirtualDB;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryVirtualTable;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
@@ -32,6 +18,23 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
+import speedy.model.database.Attribute;
+import speedy.model.database.Cell;
+import speedy.model.database.IDatabase;
+import speedy.model.database.ITable;
+import speedy.model.database.Tuple;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.model.database.dbms.DBMSTable;
+import speedy.model.database.dbms.DBMSVirtualDB;
+import speedy.model.database.mainmemory.MainMemoryVirtualDB;
+import speedy.model.database.mainmemory.MainMemoryVirtualTable;
+import speedy.model.database.operators.IRunQuery;
+import speedy.persistence.relational.AccessConfiguration;
+import speedy.persistence.relational.QueryManager;
 
 public class ExportChaseStepResultsCSV {
 
@@ -126,7 +129,7 @@ public class ExportChaseStepResultsCSV {
 //                if (LunaticConstants.NULL_VALUE.equals(value)) {
 //                    value = "";
 //                }
-                if (value.startsWith(LunaticConstants.SKOLEM_PREFIX)) {
+                if (value.startsWith(SpeedyConstants.SKOLEM_PREFIX)) {
                     value = "NULL";
                 }
                 line.append(value).append(CSV_SEPARATOR);
@@ -165,9 +168,9 @@ public class ExportChaseStepResultsCSV {
     }
 
     private boolean excludeAttribute(String attribute) {
-        return LunaticConstants.OID.equals(attribute) || LunaticConstants.TID.equals(attribute);
+        return SpeedyConstants.OID.equals(attribute) || SpeedyConstants.TID.equals(attribute);
 //        return false;
-//        return LunaticConstants.OID.equals(attribute) || LunaticConstants.TID.equals(attribute) || attribute.endsWith("_" + LunaticConstants.OID);
+//        return SpeedyConstants.OID.equals(attribute) || SpeedyConstants.TID.equals(attribute) || attribute.endsWith("_" + SpeedyConstants.OID);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     ///////                       MATERIALIZE FOREIGN KEY JOINS                                  //////
@@ -202,7 +205,7 @@ public class ExportChaseStepResultsCSV {
         script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(tableName).append(" WITH OIDS AS (\n");
         script.append(queryBuilder.treeToSQL(satisfactionQuery, null, databaseForStep, ""));
         script.append(");\n");
-        QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true);
+        QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true, false);
     }
 
     private void materializeFKJoinsMainMemory(IDatabase database, DeltaChaseStep step) {

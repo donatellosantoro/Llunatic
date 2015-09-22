@@ -1,16 +1,16 @@
 package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 
 import it.unibas.lunatic.model.chase.chasede.operators.IRemoveDuplicates;
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.model.database.Attribute;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.ITable;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.persistence.relational.QueryManager;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.database.Attribute;
+import speedy.model.database.IDatabase;
+import speedy.model.database.ITable;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.persistence.relational.QueryManager;
 
 public class SQLRemoveDuplicates implements IRemoveDuplicates {
 
@@ -29,7 +29,7 @@ public class SQLRemoveDuplicates implements IRemoveDuplicates {
         }
         result.append("\nCOMMIT;\n");
         if (logger.isDebugEnabled()) logger.debug("----Script for STTGDs: " + result);
-        QueryManager.executeScript(result.toString(), dbmsDB.getAccessConfiguration(), true, false, false);
+        QueryManager.executeScript(result.toString(), dbmsDB.getAccessConfiguration(), true, false, false, false);
     }
 
     private String removeDuplicatesFromTable(String tableName, List<Attribute> attributes, String schema) {
@@ -38,7 +38,7 @@ public class SQLRemoveDuplicates implements IRemoveDuplicates {
         result.append(" SELECT min(oid) FROM ").append(schema).append(".").append(tableName);
         result.append(" GROUP BY ");
         for (Attribute attribute : attributes) {
-            if (!attribute.getName().equals(LunaticConstants.OID)) {
+            if (!attribute.getName().equals(SpeedyConstants.OID)) {
                 result.append(attribute.getName());
                 result.append(", ");
             }

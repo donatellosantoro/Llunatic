@@ -8,9 +8,6 @@ import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityToMostFrequentCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.EmptyDB;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.parser.operators.ParseDependencies;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.OrderingAttribute;
@@ -26,11 +23,7 @@ import it.unibas.lunatic.model.chase.chasemc.usermanager.AfterLLUNUserManager;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.IUserManager;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.InteractiveUserManager;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.StandardUserManager;
-import it.unibas.lunatic.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.persistence.relational.AccessConfiguration;
-import it.unibas.lunatic.persistence.xml.DAOXmlUtility;
-import it.unibas.lunatic.persistence.xml.operators.TransformFilePaths;
 import java.util.ArrayList;
 import java.util.List;
 import javax.script.ScriptException;
@@ -39,6 +32,17 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.EmptyDB;
+import speedy.model.database.IDatabase;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.persistence.file.CSVFile;
+import speedy.persistence.file.IImportFile;
+import speedy.persistence.file.XMLFile;
+import speedy.persistence.relational.AccessConfiguration;
+import speedy.persistence.xml.DAOXmlUtility;
+import speedy.persistence.xml.operators.TransformFilePaths;
 
 public class DAOMCScenario {
 
@@ -174,17 +178,27 @@ public class DAOMCScenario {
             if (initDbElement != null) {
                 database.getInitDBConfiguration().setInitDBScript(initDbElement.getValue());
             }
-            Element importXmlElement = databaseElement.getChild("import-xml");
+            Element importXmlElement = databaseElement.getChild("import");
             if (importXmlElement != null) {
                 Attribute createTableAttribute = importXmlElement.getAttribute("createTables");
                 if (createTableAttribute != null) {
-                    database.getInitDBConfiguration().setCreateTablesFromXML(Boolean.parseBoolean(createTableAttribute.getValue()));
+                    database.getInitDBConfiguration().setCreateTablesFromFiles(Boolean.parseBoolean(createTableAttribute.getValue()));
                 }
                 for (Object inputFileObj : importXmlElement.getChildren("input")) {
                     Element inputFileElement = (Element) inputFileObj;
-                    String xmlFile = inputFileElement.getText();
-                    xmlFile = filePathTransformator.expand(fileScenario, xmlFile);
-                    database.getInitDBConfiguration().addXmlFileToImport(xmlFile);
+                    String fileName = inputFileElement.getText();
+                    String tableName = inputFileElement.getAttribute("table").getValue();
+                    String type = inputFileElement.getAttribute("type").getValue();
+                    fileName = filePathTransformator.expand(fileScenario, fileName);
+                    IImportFile fileToImport;
+                    if (type.equals(SpeedyConstants.XML)) {
+                        fileToImport = new XMLFile(fileName);
+                    } else if (type.equals(SpeedyConstants.CSV)) {
+                        fileToImport = new CSVFile(fileName);
+                    }else{
+                        throw new DAOException("Type " + type + " is not supported");
+                    }
+                    database.getInitDBConfiguration().addFileToImportForTable(tableName, fileToImport);
                 }
             }
             return database;

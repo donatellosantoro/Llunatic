@@ -1,11 +1,13 @@
 package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
 import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
-import it.unibas.lunatic.model.database.*;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
-import it.unibas.lunatic.model.database.mainmemory.datasource.INode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.CellRef;
+import speedy.model.database.IDatabase;
+import speedy.model.database.IValue;
+import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.mainmemory.datasource.INode;
 
 public class MainMemoryUpdateCell implements IUpdateCell {
 

@@ -1,26 +1,26 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.Scan;
-import it.unibas.lunatic.model.algebra.Select;
-import it.unibas.lunatic.model.algebra.operators.IDelete;
-import it.unibas.lunatic.model.algebra.operators.IInsertTuple;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.Tuple;
-import it.unibas.lunatic.model.database.TupleOID;
-import it.unibas.lunatic.model.expressions.Expression;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.Scan;
+import speedy.model.algebra.Select;
+import speedy.model.algebra.operators.IDelete;
+import speedy.model.algebra.operators.IInsertTuple;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.Cell;
+import speedy.model.database.IDatabase;
+import speedy.model.database.IValue;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
+import speedy.model.expressions.Expression;
 
 public class ChangeCell {
 
@@ -78,8 +78,8 @@ public class ChangeCell {
     private void delete(String tableName, String attributeName, String stepId, IDatabase deltaDB) {
         String deltaTableName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
         Scan scan = new Scan(new TableAlias(deltaTableName));
-        Expression expression = new Expression(LunaticConstants.STEP + "== \"" + stepId + "\"");
-        expression.changeVariableDescription(LunaticConstants.STEP, new AttributeRef(deltaTableName, LunaticConstants.STEP));
+        Expression expression = new Expression(SpeedyConstants.STEP + "== \"" + stepId + "\"");
+        expression.changeVariableDescription(SpeedyConstants.STEP, new AttributeRef(deltaTableName, SpeedyConstants.STEP));
         Select select = new Select(expression);
         select.addChild(scan);
         deleteOperator.execute(deltaTableName, select, null, deltaDB);

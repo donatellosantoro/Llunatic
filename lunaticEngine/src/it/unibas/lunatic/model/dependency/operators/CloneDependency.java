@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.dependency.operators;
 
-import it.unibas.lunatic.model.database.AttributeRef;
+import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedDependency;
 import it.unibas.lunatic.model.generators.IValueGenerator;

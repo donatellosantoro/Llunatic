@@ -2,8 +2,10 @@ package it.unibas.lunatic.model.dependency;
 
 import java.util.ArrayList;
 import java.util.List;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.IVariableDescription;
 
-public class FormulaVariable implements Cloneable {
+public class FormulaVariable implements Cloneable, IVariableDescription {
 
     private String id;
     private List<FormulaVariableOccurrence> premiseRelationalOccurrences = new ArrayList<FormulaVariableOccurrence>();
@@ -62,6 +64,14 @@ public class FormulaVariable implements Cloneable {
 
     public boolean isUniversal() {
         return this.premiseRelationalOccurrences.size() > 0;
+    }
+
+    public List<AttributeRef> getAttributeRefs() {
+        List<AttributeRef> result = new ArrayList<AttributeRef>();
+        for (FormulaVariableOccurrence variableOccurrence : this.getPremiseRelationalOccurrences()) {
+            result.add(variableOccurrence.getAttributeRef());
+        }
+        return result;
     }
 
     @Override

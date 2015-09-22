@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.database.skolem;
 
-import it.unibas.lunatic.model.database.Tuple;
 import java.util.List;
+import speedy.model.database.Tuple;
 
 public interface ISkolemPart {
 

@@ -2,11 +2,6 @@ package it.unibas.lunatic.test.algebra;
 
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.Join;
-import it.unibas.lunatic.model.algebra.Scan;
-import it.unibas.lunatic.model.database.AttributeRef;
-import it.unibas.lunatic.model.database.TableAlias;
-import it.unibas.lunatic.model.database.Tuple;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import java.util.ArrayList;
@@ -16,6 +11,11 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.Join;
+import speedy.model.algebra.Scan;
+import speedy.model.database.AttributeRef;
+import speedy.model.database.TableAlias;
+import speedy.model.database.Tuple;
 
 public class TestJoin extends TestCase{
     

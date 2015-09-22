@@ -1,11 +1,5 @@
 package it.unibas.lunatic;
 
-import it.unibas.lunatic.model.algebra.operators.IDelete;
-import it.unibas.lunatic.model.algebra.operators.IInsertTuple;
-import it.unibas.lunatic.model.algebra.operators.mainmemory.Delete;
-import it.unibas.lunatic.model.algebra.operators.mainmemory.InsertTuple;
-import it.unibas.lunatic.model.algebra.sql.SQLDelete;
-import it.unibas.lunatic.model.algebra.sql.SQLInsertTuple;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDs;
@@ -26,24 +20,30 @@ import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseSte
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
-import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLOIDGenerator;
-import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedyJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.ICacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryOIDGenerator;
-import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryRunQuery;
 import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.operators.IDelete;
+import speedy.model.algebra.operators.IInsertTuple;
+import speedy.model.algebra.operators.mainmemory.MainMemoryDelete;
+import speedy.model.algebra.operators.mainmemory.MainMemoryInsertTuple;
+import speedy.model.algebra.operators.sql.SQLDelete;
+import speedy.model.algebra.operators.sql.SQLInsertTuple;
+import speedy.model.database.operators.IRunQuery;
+import speedy.model.database.operators.dbms.SQLRunQuery;
+import speedy.model.database.operators.mainmemory.MainMemoryRunQuery;
 
 public class OperatorFactory {
 
@@ -56,10 +56,10 @@ public class OperatorFactory {
     private IBuildDatabaseForChaseStep mainMemoryDatabaseBuilder = new BuildMainMemoryDBForChaseStep();
     private IBuildDatabaseForChaseStep sqlDatabaseBuilder = new BuildSQLDBForChaseStep();
     //
-    private IInsertTuple mainMemoryInsertTuple = new InsertTuple();
+    private IInsertTuple mainMemoryInsertTuple = new MainMemoryInsertTuple();
     private IInsertTuple sqlInsertTuple = new SQLInsertTuple();
     //
-    private IDelete mainMemoryDeleteOperator = new Delete();
+    private IDelete mainMemoryDeleteOperator = new MainMemoryDelete();
     private IDelete sqlDeleteOperator = new SQLDelete();
     //
     private IUpdateCell mainMemoryCellUpdater = new MainMemoryUpdateCell();

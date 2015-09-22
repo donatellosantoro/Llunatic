@@ -6,11 +6,8 @@ import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.mainmemory.datasource.IntegerOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
-import it.unibas.lunatic.persistence.relational.QueryStatManager;
 import it.unibas.lunatic.test.GenerateModifiedCells;
 import it.unibas.lunatic.test.comparator.repairs.RepairsComparator;
 import it.unibas.lunatic.test.comparator.repairs.PrecisionAndRecall;
@@ -19,6 +16,9 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.IDatabase;
+import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
+import speedy.persistence.relational.QueryStatManager;
 
 public class CheckTest extends TestCase {
 

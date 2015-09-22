@@ -3,13 +3,13 @@ package it.unibas.lunatic.test.mc.mainmemory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryRunQuery;
 import it.unibas.lunatic.test.GenerateModifiedCells;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.operators.mainmemory.MainMemoryRunQuery;
 
 public class TestTreatmentsICDE extends CheckTest {
 
