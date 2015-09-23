@@ -121,7 +121,8 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         instanceNode.setRoot(true);
         instanceNode.addChild(new SetNode(LunaticConstants.CELLGROUP_TABLE, IntegerOIDGenerator.getNextOID()));
         insertTargetTablesIntoDeltaDB(database, instanceNode, affectedAttributes, rootName);
-        dataSource.addInstanceWithCheck(instanceNode);
+//        dataSource.addInstanceWithCheck(instanceNode);
+        dataSource.addInstance(instanceNode);
     }
 
     private void insertTargetTablesIntoDeltaDB(MainMemoryDB database, INode instanceNode, List<AttributeRef> affectedAttributes, String rootName) {

@@ -13,10 +13,18 @@ import speedy.model.database.IDatabase;
 public class TestBookPublisher extends CheckTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestBookPublisher.class);
-    
+
     public void testScenarioST() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
         scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        checkExpectedInstances(result, scenario);
+    }
+
+    public void testScenarioSTProxy() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
+        scenario.getConfiguration().setDeChaser(LunaticConstants.PROXY_MC_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

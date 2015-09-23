@@ -24,6 +24,7 @@ public class References {
     public static final String bookPublisher_plain = "de/bookPublisher/bookPublisher-mcscenario-plain.xml";
     public static final String bookPublisher_egd = "de/bookPublisher/bookPublisher-mcscenario-egd.xml";
     public static final String bookPublisher_dbms = "de/bookPublisher/bookPublisher-mcscenario-dbms.xml";
+    public static final String bookPublisher_ded = "deds/bookPublisher/bookPublisher-unfolded-mcscenario.xml";
     
     public static final String verticalPartition_10k_dbms = "de/verticalPartition/verticalPartition-10k-scenario-dbms.xml";
     public static final String verticalPartition_100k_dbms = "de/verticalPartition/verticalPartition-100k-scenario-dbms.xml";

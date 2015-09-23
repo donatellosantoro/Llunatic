@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><scenario>
+  <source>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+IBDBookSet(title)
+IBLBookSet(title, pubId)
+IBLPublisherSet(id, name)
+LOCSet(title, publisher)
+INSTANCE:
+IBDBookSet(title: "TheHobbit")
+IBDBookSet(title: "TheDaVinciCode")
+IBDBookSet(title: "TheLordOfTheRings")
+IBLBookSet(title: "TheHobbit", pubId: "245")
+IBLBookSet(title: "TheCatcherInTheRye", pubId: "901")
+IBLPublisherSet(id: "245", name: "Ballantine")
+IBLPublisherSet(id: "901", name: "LbBooks")
+LOCSet(title: "TheLordOfTheRings", publisher: "Houghton")
+LOCSet(title: "TheCatcherInTheRye", publisher: "LbBooks")
+]]>
+    </generate>
+  </source>
+  <target>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+TargetPublisherSet(tid, tname)
+TargetBookSet(ttitle, tpubId)
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+DED-STTGDs:
+IBDBookSet(title: $x1) -> [TargetBookSet(ttitle: $x1, tpubId: $x2)].
+IBLBookSet(title: $x1, pubId: $x2) -> [TargetBookSet(ttitle: $x1, tpubId: $x2)].
+IBLPublisherSet(id: $x1, name: $x2) -> [TargetPublisherSet(tid: $x1, tname: $x2)].
+LOCSet(title: $x1, publisher: $x2) -> [TargetPublisherSet(tid: $x3, tname: $x2), TargetBookSet(ttitle: $x1, tpubId: $x3)].
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>

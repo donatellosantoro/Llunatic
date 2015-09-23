@@ -14,14 +14,14 @@ public class TestSQLBookPublisher extends CheckTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestSQLBookPublisher.class);
 
-//    public void testScenarioClassic() throws Exception {
-//        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_dbms, true);
-//        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
-//        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
-//        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
-//        if (logger.isDebugEnabled()) logger.debug(result.toString());
-//        checkExpectedInstances(result, scenario);
-//    }
+    public void testScenarioClassic() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_dbms, true);
+        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        checkExpectedInstances(result, scenario);
+    }
 
     public void testScenarioProxy() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_dbms, true);
