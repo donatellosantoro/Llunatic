@@ -1,6 +1,6 @@
 package it.unibas.lunatic.gui.node;
 
-import it.unibas.lunatic.model.database.lazyloading.ITupleLoader;
+import speedy.model.database.operators.lazyloading.ITupleLoader;
 import java.util.Iterator;
 import java.util.List;
 import org.openide.nodes.ChildFactory;

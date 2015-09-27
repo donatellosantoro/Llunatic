@@ -3,10 +3,10 @@ package it.unibas.lunatic.core.persistence;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.core.GenerateModifiedCells;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
-import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery;
-import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryRunQuery;
 import java.io.IOException;
+import speedy.model.database.operators.IRunQuery;
+import speedy.model.database.operators.dbms.SQLRunQuery;
+import speedy.model.database.operators.mainmemory.MainMemoryRunQuery;
 
 public class DaoChaseStep {
 

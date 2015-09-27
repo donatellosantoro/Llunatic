@@ -12,7 +12,7 @@ import it.unibas.lunatic.gui.window.db.TableWindow;
 import it.unibas.lunatic.gui.window.db.TableWindowManager;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.operators.AddUserNode;
-import it.unibas.lunatic.model.database.ConstantValue;
+import speedy.model.database.ConstantValue;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import org.openide.DialogDisplayer;

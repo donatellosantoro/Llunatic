@@ -1,9 +1,6 @@
 package it.unibas.lunatic.core;
 
-import it.unibas.lunatic.model.chase.chasemc.costmanager.FrequencyPartitionCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.MinCostRepairCostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.SamplingCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityToMostFrequentCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager;
 import java.util.ArrayList;
@@ -21,18 +18,6 @@ public class CostManagerProvider {
         return instance;
     }
 
-    public FrequencyPartitionCostManager getFrequencyPartitionCostManager() {
-        return new FrequencyPartitionCostManager();
-    }
-
-    public MinCostRepairCostManager getMinCostRepairCostManager() {
-        return new MinCostRepairCostManager();
-    }
-
-    public SamplingCostManager getSamplingCostManager() {
-        return new SamplingCostManager();
-    }
-
     public SimilarityToMostFrequentCostManager getSimilarityToMostFrequentCostManager() {
         return new SimilarityToMostFrequentCostManager();
     }
@@ -44,10 +29,7 @@ public class CostManagerProvider {
     public Collection<ICostManager> getAll() {
         List<ICostManager> list = new ArrayList<ICostManager>();
         list.add(getStandardCostManager());
-        list.add(getFrequencyPartitionCostManager());
-        list.add(getMinCostRepairCostManager());
         list.add(getSimilarityToMostFrequentCostManager());
-        list.add(getSamplingCostManager());
         return list;
     }
 }

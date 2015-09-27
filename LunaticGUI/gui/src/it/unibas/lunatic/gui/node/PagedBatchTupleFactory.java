@@ -1,8 +1,8 @@
 package it.unibas.lunatic.gui.node;
 
-import it.unibas.lunatic.model.algebra.operators.ITupleIterator;
-import it.unibas.lunatic.model.database.ITable;
-import it.unibas.lunatic.model.database.Tuple;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.ITable;
+import speedy.model.database.Tuple;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.Action;

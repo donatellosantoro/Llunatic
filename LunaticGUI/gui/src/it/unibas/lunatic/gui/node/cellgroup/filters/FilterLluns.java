@@ -1,8 +1,8 @@
 package it.unibas.lunatic.gui.node.cellgroup.filters;
 
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.database.IValue;
-import it.unibas.lunatic.model.database.LLUNValue;
+import speedy.model.database.IValue;
+import speedy.model.database.LLUNValue;
 
 public class FilterLluns implements ICellGroupValueFilter {
 

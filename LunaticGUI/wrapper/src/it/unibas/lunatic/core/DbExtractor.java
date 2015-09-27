@@ -3,9 +3,9 @@ package it.unibas.lunatic.core;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.IDatabase;
+import speedy.model.database.dbms.DBMSDB;
+import speedy.model.database.mainmemory.MainMemoryDB;
 
 public class DbExtractor {
 

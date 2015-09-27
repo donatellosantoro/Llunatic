@@ -2,7 +2,7 @@ package it.unibas.lunatic.gui.node.chase.de;
 
 import it.unibas.lunatic.gui.model.DeChaseResult;
 import it.unibas.lunatic.gui.node.DbNode;
-import it.unibas.lunatic.model.database.IDatabase;
+import speedy.model.database.IDatabase;
 import java.util.List;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;

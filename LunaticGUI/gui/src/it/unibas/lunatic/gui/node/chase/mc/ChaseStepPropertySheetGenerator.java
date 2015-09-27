@@ -4,7 +4,7 @@ import it.unibas.lunatic.LunaticConstants;
 import static it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode.*;
 import it.unibas.lunatic.gui.node.utils.StringProperty;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.database.AttributeRef;
+import speedy.model.database.AttributeRef;
 import java.lang.reflect.InvocationTargetException;
 import java.util.MissingResourceException;
 import org.openide.nodes.PropertySupport;

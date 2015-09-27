@@ -20,9 +20,7 @@
                 <package>it.unibas.lunatic.core</package>
                 <package>it.unibas.lunatic.core.persistence</package>
                 <package>it.unibas.lunatic.exceptions</package>
-                <package>it.unibas.lunatic.model.algebra</package>
                 <package>it.unibas.lunatic.model.algebra.operators</package>
-                <package>it.unibas.lunatic.model.algebra.operators.mainmemory</package>
                 <package>it.unibas.lunatic.model.algebra.sql</package>
                 <package>it.unibas.lunatic.model.chase.chasede</package>
                 <package>it.unibas.lunatic.model.chase.chasede.operators</package>
@@ -42,20 +40,10 @@
                 <package>it.unibas.lunatic.model.chase.chasemc.usermanager</package>
                 <package>it.unibas.lunatic.model.chase.commons</package>
                 <package>it.unibas.lunatic.model.chase.commons.control</package>
-                <package>it.unibas.lunatic.model.database</package>
-                <package>it.unibas.lunatic.model.database.dbms</package>
-                <package>it.unibas.lunatic.model.database.dbms.operators</package>
                 <package>it.unibas.lunatic.model.database.lazyloading</package>
-                <package>it.unibas.lunatic.model.database.mainmemory</package>
-                <package>it.unibas.lunatic.model.database.mainmemory.datasource</package>
-                <package>it.unibas.lunatic.model.database.mainmemory.datasource.nodes</package>
-                <package>it.unibas.lunatic.model.database.mainmemory.datasource.operators</package>
-                <package>it.unibas.lunatic.model.database.mainmemory.paths</package>
-                <package>it.unibas.lunatic.model.database.mainmemory.paths.operators</package>
                 <package>it.unibas.lunatic.model.database.skolem</package>
                 <package>it.unibas.lunatic.model.dependency</package>
                 <package>it.unibas.lunatic.model.dependency.operators</package>
-                <package>it.unibas.lunatic.model.expressions</package>
                 <package>it.unibas.lunatic.model.generators</package>
                 <package>it.unibas.lunatic.model.similarity</package>
                 <package>it.unibas.lunatic.parser</package>
@@ -63,12 +51,38 @@
                 <package>it.unibas.lunatic.parser.output</package>
                 <package>it.unibas.lunatic.persistence</package>
                 <package>it.unibas.lunatic.persistence.relational</package>
-                <package>it.unibas.lunatic.persistence.xml</package>
-                <package>it.unibas.lunatic.persistence.xml.model</package>
-                <package>it.unibas.lunatic.persistence.xml.operators</package>
                 <package>it.unibas.lunatic.utility</package>
                 <package>it.unibas.lunatic.utility.combinatorial</package>
                 <package>it.unibas.lunatic.utility.graph</package>
+                <package>speedy</package>
+                <package>speedy.exceptions</package>
+                <package>speedy.model.algebra</package>
+                <package>speedy.model.algebra.aggregatefunctions</package>
+                <package>speedy.model.algebra.operators</package>
+                <package>speedy.model.algebra.operators.mainmemory</package>
+                <package>speedy.model.algebra.operators.sql</package>
+                <package>speedy.model.algebra.sampling</package>
+                <package>speedy.model.database</package>
+                <package>speedy.model.database.dbms</package>
+                <package>speedy.model.database.mainmemory</package>
+                <package>speedy.model.database.mainmemory.datasource</package>
+                <package>speedy.model.database.mainmemory.datasource.nodes</package>
+                <package>speedy.model.database.mainmemory.datasource.operators</package>
+                <package>speedy.model.database.mainmemory.paths</package>
+                <package>speedy.model.database.mainmemory.paths.operators</package>
+                <package>speedy.model.database.operators</package>
+                <package>speedy.model.database.operators.dbms</package>
+                <package>speedy.model.database.operators.lazyloading</package>
+                <package>speedy.model.database.operators.mainmemory</package>
+                <package>speedy.model.expressions</package>
+                <package>speedy.persistence</package>
+                <package>speedy.persistence.file</package>
+                <package>speedy.persistence.relational</package>
+                <package>speedy.persistence.xml</package>
+                <package>speedy.persistence.xml.model</package>
+                <package>speedy.persistence.xml.operators</package>
+                <package>speedy.utility</package>
+                <package>speedy.utility.comparator</package>
             </public-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/logback-classic-1.1.2.jar</runtime-relative-path>
@@ -149,6 +163,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/simmetrics-1.6.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/simmetrics-1.6.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/speedy-0.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/speedy-0.1.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

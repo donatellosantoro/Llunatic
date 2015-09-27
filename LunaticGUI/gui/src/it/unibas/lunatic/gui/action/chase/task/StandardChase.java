@@ -9,7 +9,7 @@ import it.unibas.lunatic.gui.model.McChaseResult;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
-import it.unibas.lunatic.model.database.IDatabase;
+import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 

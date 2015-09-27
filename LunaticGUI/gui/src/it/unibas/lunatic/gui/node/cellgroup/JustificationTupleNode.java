@@ -4,7 +4,7 @@ import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
 import it.unibas.lunatic.gui.node.utils.ITableColumnGenerator;
 import it.unibas.lunatic.gui.node.utils.StringProperty;
-import it.unibas.lunatic.model.database.Cell;
+import speedy.model.database.Cell;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.Action;
 import org.openide.awt.Actions;

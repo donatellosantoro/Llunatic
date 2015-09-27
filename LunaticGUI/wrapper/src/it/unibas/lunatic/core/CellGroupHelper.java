@@ -7,15 +7,15 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.AddUserNode;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.operators.IRunQuery;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.operators.ValueExtractor;
-import it.unibas.lunatic.model.database.IValue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import speedy.model.database.IValue;
+import speedy.model.database.operators.IRunQuery;
 
 public class CellGroupHelper {
 

@@ -2,7 +2,7 @@ package it.unibas.lunatic.gui.node;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.database.IDatabase;
+import speedy.model.database.IDatabase;
 import java.util.List;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;

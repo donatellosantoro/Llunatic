@@ -1,9 +1,9 @@
 package it.unibas.lunatic.gui.table;
 
-import it.unibas.lunatic.LunaticConstants;
+import speedy.SpeedyConstants;
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.node.TableTupleNode;
-import it.unibas.lunatic.model.database.Cell;
+import speedy.model.database.Cell;
 import java.awt.Component;
 import javax.swing.Action;
 import javax.swing.JMenuItem;
@@ -36,7 +36,7 @@ public class TablePopupFactory extends NodePopupFactory {
                 if (tuple.isMcResultNode()) {
                     String columnName = table.getColumnName(column);
                     Cell c = tuple.getCell(columnName);
-                    if (c.getValue().getType().equals(LunaticConstants.LLUN)) {
+                    if (c.getValue().getType().equals(SpeedyConstants.LLUN)) {
                         popup.add(separator);
                         popup.add(cellGroup);
                     }

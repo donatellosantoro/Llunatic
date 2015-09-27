@@ -21,6 +21,7 @@
         </copy>
         <copy toDir="./release/modules/ext" flatten="true" verbose="true">
             <path>
+                <pathelement location="${lib.dir}/speedy-${speedy.ver}.jar" />
                 <pathelement location="${lib.dir}/jcs-1.3.jar" />
                 <pathelement location="${lib.dir}/concurrent.jar" />
                 <pathelement location="${lib.dir}/postgresql-9.1-903.jdbc3.jar" />

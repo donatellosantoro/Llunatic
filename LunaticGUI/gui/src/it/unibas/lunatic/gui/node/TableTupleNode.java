@@ -2,10 +2,10 @@ package it.unibas.lunatic.gui.node;
 
 import it.unibas.lunatic.gui.node.utils.StringProperty;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.database.Cell;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.ITable;
-import it.unibas.lunatic.model.database.Tuple;
+import speedy.model.database.Cell;
+import speedy.model.database.IDatabase;
+import speedy.model.database.ITable;
+import speedy.model.database.Tuple;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import org.apache.commons.logging.Log;

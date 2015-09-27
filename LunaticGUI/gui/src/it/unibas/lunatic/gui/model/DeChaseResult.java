@@ -1,7 +1,7 @@
 package it.unibas.lunatic.gui.model;
 
 import it.unibas.lunatic.gui.R;
-import it.unibas.lunatic.model.database.IDatabase;
+import speedy.model.database.IDatabase;
 
 public class DeChaseResult implements IChaseResult {
 

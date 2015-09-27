@@ -3,7 +3,7 @@ package it.unibas.lunatic.gui.node.cellgroup;
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.database.LLUNValue;
+import speedy.model.database.LLUNValue;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;

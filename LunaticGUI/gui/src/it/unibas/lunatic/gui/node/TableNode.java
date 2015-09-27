@@ -1,12 +1,12 @@
 package it.unibas.lunatic.gui.node;
 
-import it.unibas.lunatic.LunaticConstants;
+import speedy.SpeedyConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.database.Attribute;
-import it.unibas.lunatic.model.database.IDatabase;
-import it.unibas.lunatic.model.database.ITable;
+import speedy.model.database.Attribute;
+import speedy.model.database.IDatabase;
+import speedy.model.database.ITable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
@@ -57,7 +57,7 @@ public class TableNode extends AbstractNode implements IChaseNode {
             columns = new ArrayList<String>();
             List<Attribute> attributes = table.getAttributes();
             for (Attribute a : attributes) {
-                if (!(a.getName().equals(LunaticConstants.TID) || a.getName().equals(LunaticConstants.OID))) {
+                if (!(a.getName().equals(SpeedyConstants.TID) || a.getName().equals(SpeedyConstants.OID))) {
                     columns.add(a.getName());
                 }
             }

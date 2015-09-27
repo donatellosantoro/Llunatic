@@ -11,7 +11,7 @@ import it.unibas.lunatic.gui.window.db.actions.ActionGotoPage;
 import it.unibas.lunatic.gui.window.db.actions.ActionLastPage;
 import it.unibas.lunatic.gui.window.db.actions.ActionNextPage;
 import it.unibas.lunatic.gui.window.db.actions.ActionPreviousPage;
-import it.unibas.lunatic.model.database.Cell;
+import speedy.model.database.Cell;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
@@ -279,7 +279,7 @@ public final class DbPagedTableTopComponent extends TableWindow implements Paged
 
     @Override
     public int getTableSize() {
-        return tableNode.getTable().getSize();
+        return (int)tableNode.getTable().getSize();
     }
 
     public void updatePageText() {

@@ -6,7 +6,7 @@ import it.unibas.lunatic.gui.node.TableNode;
 import it.unibas.lunatic.gui.node.TableTupleNode;
 import it.unibas.lunatic.gui.node.TupleGenerationStrategy;
 import it.unibas.lunatic.gui.table.TablePopupFactory;
-import it.unibas.lunatic.model.database.Cell;
+import speedy.model.database.Cell;
 import java.lang.reflect.InvocationTargetException;
 import org.netbeans.swing.etable.ETable;
 import org.netbeans.swing.outline.DefaultOutlineModel;

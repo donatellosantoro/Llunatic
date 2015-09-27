@@ -3,8 +3,8 @@ package it.unibas.lunatic.gui.window.db;
 import it.unibas.lunatic.gui.ExplorerTopComponent;
 import it.unibas.lunatic.gui.node.TableNode;
 import it.unibas.lunatic.gui.node.TableTupleNode;
-import it.unibas.lunatic.model.database.Cell;
 import java.lang.reflect.InvocationTargetException;
+import speedy.model.database.Cell;
 
 public abstract class TableWindow extends ExplorerTopComponent {
 

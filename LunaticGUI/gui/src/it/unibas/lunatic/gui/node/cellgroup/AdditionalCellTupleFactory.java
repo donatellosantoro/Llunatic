@@ -1,7 +1,7 @@
 package it.unibas.lunatic.gui.node.cellgroup;
 
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.database.AttributeRef;
+import speedy.model.database.AttributeRef;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
