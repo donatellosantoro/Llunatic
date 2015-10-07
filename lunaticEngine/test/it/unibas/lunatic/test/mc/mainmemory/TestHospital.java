@@ -16,9 +16,9 @@ public class TestHospital extends CheckTest {
 
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital);
-//        scenario.getCostManager().setDoBackward(false);
+//        scenario.getSymmetricCostManager().setDoBackward(false);
         setConfigurationForTest(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("hospital", scenario));
 //        if (logger.isDebugEnabled()) logger.debug(result.toShortStringWithSortWithoutDuplicates());

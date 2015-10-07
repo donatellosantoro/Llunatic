@@ -43,7 +43,6 @@ public class AnalyzeDependencies {
         findAllQueriedAttributesForTGDs(scenario.getExtTGDs());
         DependencyStratification stratification = generateStratification(scenario);
         symmetryFinder.findSymmetricAtoms(scenario.getExtEGDs(), scenario);
-        findAttributesForBackwardChasing(scenario.getExtEGDs());
         findAllAffectedAttributes(scenario.getExtEGDs());
         assignAdditionalAttributes(scenario.getExtEGDs(), scenario);
         scenario.setStratification(stratification);
@@ -125,25 +124,6 @@ public class AnalyzeDependencies {
             result.add(extendedDependency.getDependency());
         }
         return result;
-    }
-
-    private void findAttributesForBackwardChasing(List<Dependency> extEGDs) {
-        for (Dependency egd : extEGDs) {
-            List<BackwardAttribute> attributesForBackwardChasing = new ArrayList<BackwardAttribute>();
-            for (ExtendedDependency extendedDependency : egd.getExtendedDependencies()) {
-                if (extendedDependency.isForward()) {
-                    continue;
-                }
-                AttributeRef occurrenceAttribute = EquivalenceClassUtility.correctAttributeForSymmetricEGDs(extendedDependency.getOccurrence().getAttributeRef(), egd);
-                FormulaVariable variable = LunaticUtility.findPremiseVariableInDepedency(extendedDependency.getOccurrence(), egd);
-                BackwardAttribute backwardAttribute = new BackwardAttribute(occurrenceAttribute, variable);
-                if (attributesForBackwardChasing.contains(backwardAttribute)) {
-                    continue;
-                }
-                attributesForBackwardChasing.add(backwardAttribute);
-            }
-            egd.setAttributesForBackwardChasing(attributesForBackwardChasing);
-        }
     }
 
     private void findAllAffectedAttributes(List<Dependency> extEGDs) {

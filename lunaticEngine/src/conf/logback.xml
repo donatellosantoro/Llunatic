@@ -31,18 +31,20 @@
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.FindVariableEquivalenceClasses" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.GenerateSymmetricPremise" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.NormalizeJoinsInEGDs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.BuildExtendedDependencies" level="DEBUG"/>-->
 
     <!--     ALGEBRA     -->
-    <!--<logger name="it.unibas.lunatic.model.algebra.Difference" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.algebra.Join" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.algebra.operators.mainmemory.InsertTuple" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForSymmetricEGD" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.dependency.operators.NormalizeDependency" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.algebra.sql.AlgebraTreeToSQL" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.algebra.sql.GenerateTrigger" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.Difference" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.Join" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.GroupBy" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.operators.mainmemory.InsertTuple" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.operators.BuildAlgebraTreeForPositiveFormula" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.operators.BuildAlgebraTreeForSymmetricEGD" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.dependency.operators.NormalizeDependency" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.sql.AlgebraTreeToSQL" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.sql.GenerateTrigger" level="DEBUG"/>-->
     
     <!--     DBMS     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery" level="DEBUG"/>-->
@@ -52,7 +54,8 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryInsertTuplesForTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseDeltaDCs" level="DEBUG"/>-->
 
-    <!--     CHASE MC     -->
+    <!--     CHASE MC     -->    
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseEGDEquivalenceClass" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.AbstractCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityToMostFrequentCostManager" level="DEBUG"/>-->
@@ -67,7 +70,6 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.AbstractCacheManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseEGDEquivalenceClass" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseTGDEquivalenceClass" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep" level="DEBUG"/>-->

@@ -18,10 +18,11 @@ public class TestPersons extends CheckExpectedSolutionsTest {
     public void testScenarioNoPermutation() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons);
         setConfigurationForTest(scenario);
+        scenario.getConfiguration().setUseSymmetricOptimization(false); //TODO++ Remove
 //        setCheckEGDsAfterEachStep(scenario);
-        scenario.getCostManager().setDoBackward(false);
-        scenario.getCostManager().setDoPermutations(false);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        scenario.getSymmetricCostManager().setDoBackward(false);
+        scenario.getSymmetricCostManager().setDoPermutations(false);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
@@ -34,11 +35,13 @@ public class TestPersons extends CheckExpectedSolutionsTest {
 
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons);
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         setConfigurationForTest(scenario);
+        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
 //        setCheckEGDsAfterEachStep(scenario);
-//        scenario.getCostManager().setDoBackward(false);
-//        scenario.getCostManager().setDoPermutations(false);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+//        scenario.getSymmetricCostManager().setDoBackward(false);
+//        scenario.getSymmetricCostManager().setDoPermutations(false);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
 //        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());

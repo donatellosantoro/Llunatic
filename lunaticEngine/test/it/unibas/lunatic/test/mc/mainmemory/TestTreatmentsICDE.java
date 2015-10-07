@@ -19,11 +19,11 @@ public class TestTreatmentsICDE extends CheckTest {
 
     public void testScenarioICDE() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_icde);
-        scenario.getCostManager().setDoBackward(false);
-        scenario.getCostManager().setDoPermutations(false);
+        scenario.getSymmetricCostManager().setDoBackward(false);
+        scenario.getSymmetricCostManager().setDoPermutations(false);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());

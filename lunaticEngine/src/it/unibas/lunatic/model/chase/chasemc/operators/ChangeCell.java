@@ -4,7 +4,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
+import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +37,7 @@ public class ChangeCell {
     }
 
     public void changeCells(CellGroup cellGroup, IDatabase deltaDB, String stepId, Scenario scenario) {
+        if (logger.isDebugEnabled()) logger.debug("Saving cell group " + cellGroup.toLongString());
         occurrenceHandler.saveNewCellGroup(cellGroup, deltaDB, stepId, scenario);
         IValue newValue = cellGroup.getValue();
         IValue groupID = cellGroup.getId();
@@ -44,6 +45,7 @@ public class ChangeCell {
         if (logger.isDebugEnabled()) logger.debug("Changing cells " + cellsToChange + " with " + newValue);
         for (CellGroupCell cell : cellsToChange) {
             if (cell.isToSave() != null && !cell.isToSave()) {
+                if (logger.isTraceEnabled()) logger.debug("Cell " + cell + " is already saved. Skipping...");
                 continue;
             }
             insertNewValue(cell, stepId, newValue, groupID, deltaDB);
@@ -51,7 +53,7 @@ public class ChangeCell {
         if (logger.isDebugEnabled()) logger.debug("New target: " + deltaDB.printInstances());
     }
 
-    public void deleteCells(ViolationContext changeSet, IDatabase deltaDB, String stepId) {
+    public void deleteCells(ChangeDescription changeSet, IDatabase deltaDB, String stepId) {
         CellGroup cellGroup = changeSet.getCellGroup();
         occurrenceHandler.deleteCellGroup(cellGroup, deltaDB, stepId);
         Set<CellGroupCell> cellsToChange = cellGroup.getOccurrences();

@@ -5,11 +5,12 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
+import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
@@ -39,7 +40,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
     private String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;
 
     @SuppressWarnings("unchecked")
-    public List<Repair> chooseRepairStrategy(EquivalenceClassForEGD equivalenceClass, DeltaChaseStep chaseTreeRoot,
+    public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot,
             List<Repair> repairsForDependency, Scenario scenario, String stepId,
             OccurrenceHandlerMC occurrenceHandler) {
         if (!(scenario.getPartialOrder() instanceof FrequencyPartialOrder)) {
@@ -48,9 +49,11 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             logger.warn("##################################################################################");
             throw new ChaseException("SimilarityToMostFrequentCostManager requires FrequencyPartialOrder");
         }
+        EquivalenceClassForSymmetricEGD equivalenceClass = (EquivalenceClassForSymmetricEGD) equivalenceClassProxy.getEquivalenceClass();
         List<EGDEquivalenceClassCells> tupleGroups = equivalenceClass.getTupleGroups();
         Collections.sort(tupleGroups, new TupleGroupComparator());
         Collections.reverse(tupleGroups);
+        if (logger.isDebugEnabled()) logger.debug("Sorted tuple groups: " + tupleGroups);
         if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && satisfactionChecker.isSatisfiedAfterUpgrades(tupleGroups, scenario)) {
             if (logger.isDebugEnabled()) logger.debug("No violations... Returning empty list");
             return Collections.EMPTY_LIST;
@@ -73,7 +76,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         Repair repair = generateRepairWithBackwards(equivalenceClass, forwardGroups, backwardGroups, backwardAttributes, scenario, chaseTreeRoot.getDeltaDB(), stepId);
         if (allSuspicious(backwardGroups)) {
             if (logger.isDebugEnabled()) logger.debug("CostManager generates a repair with all suspicious changes\n" + repair);
-            repair = generateForwardRepair(tupleGroups, scenario, chaseTreeRoot.getDeltaDB(), stepId);
+            repair = generateSymmetricForwardRepair(tupleGroups, scenario, chaseTreeRoot.getDeltaDB(), stepId);
         }
         if (repair != null) {
             if (logger.isDebugEnabled()) logger.debug("Returning repair " + repair);
@@ -82,7 +85,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         return result;
     }
 
-    private Repair generateConstantRepairWithStandardPartialOrder(EquivalenceClassForEGD equivalenceClass, List<EGDEquivalenceClassCells> tupleGroups, Scenario scenario) {
+    private Repair generateConstantRepairWithStandardPartialOrder(EquivalenceClassForSymmetricEGD equivalenceClass, List<EGDEquivalenceClassCells> tupleGroups, Scenario scenario) {
         List<CellGroup> cellGroups = extractForwardCellGroups(tupleGroups);
         CellGroup cellGroup = new StandardPartialOrder().findLUB(cellGroups, scenario);
         IValue poValue = cellGroup.getValue();
@@ -90,7 +93,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             return null;
         }
         Repair repair = new Repair();
-        ViolationContext forwardChanges = new ViolationContext(cellGroup, LunaticConstants.CHASE_FORWARD, buildWitnessCells(tupleGroups));
+        ChangeDescription forwardChanges = new ChangeDescription(cellGroup, LunaticConstants.CHASE_FORWARD, buildWitnessCells(tupleGroups));
         repair.addViolationContext(forwardChanges);
         return repair;
     }
@@ -116,11 +119,11 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         return result;
     }
 
-    private Repair generateRepairWithBackwards(EquivalenceClassForEGD equivalenceClass, List<EGDEquivalenceClassCells> forwardTupleGroups,
+    private Repair generateRepairWithBackwards(EquivalenceClassForSymmetricEGD equivalenceClass, List<EGDEquivalenceClassCells> forwardTupleGroups,
             List<EGDEquivalenceClassCells> backwardTupleGroups, Map<EGDEquivalenceClassCells, BackwardAttribute> backwardAttributes, Scenario scenario, IDatabase deltaDB, String stepId) {
         Repair repair = new Repair();
         if (forwardTupleGroups.size() > 1) {
-            ViolationContext forwardChanges = generateViolationContextForForwardRepair(forwardTupleGroups, scenario, deltaDB, stepId);
+            ChangeDescription forwardChanges = generateChangeDescriptionForForwardRepair(forwardTupleGroups, scenario, deltaDB, stepId);
             repair.addViolationContext(forwardChanges);
         }
         for (EGDEquivalenceClassCells backwardTupleGroup : backwardTupleGroups) {
@@ -130,7 +133,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
                 LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
                 backwardCellGroup.setValue(llunValue);
                 backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
-                ViolationContext backwardChangesForGroup = new ViolationContext(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCells(backwardTupleGroups));
+                ChangeDescription backwardChangesForGroup = new ChangeDescription(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCells(backwardTupleGroups));
                 repair.addViolationContext(backwardChangesForGroup);
                 if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {
                     backwardTupleGroup.setSuspicious(true);
@@ -138,7 +141,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
                 }
             }
         }
-        if (repair.getViolationContexts().isEmpty()) {
+        if (repair.getChangeDescriptions().isEmpty()) {
             return null;
         }
         return repair;
@@ -152,11 +155,12 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
         }
         double similarity = SimilarityFactory.getInstance().getStrategy(similarityStrategy).computeSimilarity(v1, v2);
         //TODO: Handling numerical values
-        try{
+        try {
             double d1 = Double.parseDouble(v1.toString());
             double d2 = Double.parseDouble(v2.toString());
             similarity = 0.9;
-        }catch(NumberFormatException nfe){}
+        } catch (NumberFormatException nfe) {
+        }
         //
         if (logger.isDebugEnabled()) logger.debug("Checking similarity between " + v1 + " and " + v2 + ". Result: " + similarity);
         return similarity > similarityThreshold;

@@ -19,9 +19,9 @@ public class TestPersonsNoPermutations extends CheckExpectedSolutionsTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_fr_sp);
         setConfigurationForTest(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         Assert.assertTrue(scenario.getPartialOrder() instanceof FrequencyPartialOrder);
-        Assert.assertTrue(scenario.getCostManager() instanceof SimilarityToMostFrequentCostManager);
+        Assert.assertTrue(scenario.getSymmetricCostManager() instanceof SimilarityToMostFrequentCostManager);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
 //        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         DeltaChaseStep result = chaser.doChase(scenario);

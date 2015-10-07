@@ -18,7 +18,7 @@ public class TestCustomers extends CheckTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.customers_cfd);
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());
 //        Assert.assertEquals(26, resultSizer.getSolutions(result));

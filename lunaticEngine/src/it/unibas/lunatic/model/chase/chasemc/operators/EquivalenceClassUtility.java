@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -41,7 +41,7 @@ public class EquivalenceClassUtility {
 
     //TODO++ refactor: this method is used twice, once for chasemc, once for chasede; consider separating those
     //       for chase de no need to consider backard attributes
-    public static void addTuple(Tuple tuple, EquivalenceClassForEGD equivalenceClass) {
+    public static void addTuple(Tuple tuple, EquivalenceClassForSymmetricEGD equivalenceClass) {
         if (logger.isDebugEnabled()) logger.trace("Adding tuple " + tuple + " to equivalence class: " + equivalenceClass);
         if (logger.isDebugEnabled()) logger.debug("OccurrenceAttributesForConclusionVariable: " + equivalenceClass.getOccurrenceAttributesForConclusionVariable());
         for (AttributeRef occurrenceAttributesForConclusionVariable : equivalenceClass.getOccurrenceAttributesForConclusionVariable()) {
@@ -73,7 +73,7 @@ public class EquivalenceClassUtility {
         if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
     }
 
-    private static EGDEquivalenceClassCells getOrCreateEquivanceClassCells(EquivalenceClassForEGD equivalenceClass, IValue conclusionValue) {
+    private static EGDEquivalenceClassCells getOrCreateEquivanceClassCells(EquivalenceClassForSymmetricEGD equivalenceClass, IValue conclusionValue) {
         EGDEquivalenceClassCells targetCellsToChange = equivalenceClass.getTupleGroupsWithSameConclusionValue().get(conclusionValue);
         if (logger.isDebugEnabled()) logger.trace("Target cells to change: " + targetCellsToChange);
         if (targetCellsToChange == null) {
@@ -83,7 +83,7 @@ public class EquivalenceClassUtility {
         return targetCellsToChange;
     }
 
-    private static void addAdditionalAttributes(EGDEquivalenceClassCells targetCellsToChange, TupleOID originalOIDForConclusionValue, Tuple tuple, EquivalenceClassForEGD equivalenceClass) {
+    private static void addAdditionalAttributes(EGDEquivalenceClassCells targetCellsToChange, TupleOID originalOIDForConclusionValue, Tuple tuple, EquivalenceClassForSymmetricEGD equivalenceClass) {
         for (AttributeRef additionalAttribute : equivalenceClass.getEGD().getAdditionalAttributes()) {
             for (Cell additionalCell : tuple.getCells()) {
                 AttributeRef unaliasedAttribute = ChaseUtility.unAlias(additionalCell.getAttributeRef());

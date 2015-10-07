@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.dependency.operators.CloneDependency;
 import it.unibas.lunatic.model.dependency.operators.DependencyToString;
 import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;
@@ -22,7 +21,6 @@ public class Dependency implements Cloneable {
     private Map<AttributeRef, IValueGenerator> targetGenerators = new HashMap<AttributeRef, IValueGenerator>();
     private List<AttributeRef> queriedAttributes = new ArrayList<AttributeRef>();
     private List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
-    private List<BackwardAttribute> attributesForBackwardChasing = new ArrayList<BackwardAttribute>();
     private SymmetricAtoms symmetricAtoms = new SymmetricAtoms();
     private boolean joinGraphIsCyclic; // R(v1, v1)
     private boolean overlapBetweenAffectedAndQueried;
@@ -76,7 +74,7 @@ public class Dependency implements Cloneable {
     public void setAdditionalAttributes(List<AttributeRef> additionalAttributes) {
         this.additionalAttributes = additionalAttributes;
     }
-    
+
     public void addAdditionalAttribute(AttributeRef attributeRef) {
         this.additionalAttributes.add(attributeRef);
     }
@@ -95,7 +93,7 @@ public class Dependency implements Cloneable {
 
     public void setTargetGenerators(Map<AttributeRef, IValueGenerator> targetGenerators) {
         this.targetGenerators = targetGenerators;
-    }    
+    }
 
     public List<ExtendedDependency> getExtendedDependencies() {
         return extendedDependencies;
@@ -127,14 +125,6 @@ public class Dependency implements Cloneable {
 
     public void setAffectedAttributes(List<AttributeRef> affectedAttributes) {
         this.affectedAttributes = affectedAttributes;
-    }
-
-    public List<BackwardAttribute> getAttributesForBackwardChasing() {
-        return attributesForBackwardChasing;
-    }
-
-    public void setAttributesForBackwardChasing(List<BackwardAttribute> attributesForBackwardChasing) {
-        this.attributesForBackwardChasing = attributesForBackwardChasing;
     }
 
     public boolean hasSymmetricChase() {
@@ -190,7 +180,7 @@ public class Dependency implements Cloneable {
             throw new UnsupportedOperationException("Unable to clone dependency");
         }
     }
-    
+
     @Override
     public String toString() {
         return new DependencyToString().toLogicalString(this, "", false);
@@ -205,7 +195,6 @@ public class Dependency implements Cloneable {
         result.append("  Queried attributes: ").append(queriedAttributes).append("\n");
         result.append("  Affected attributes: ").append(affectedAttributes).append("\n");
         result.append("  Overlap between queried and affected: ").append(overlapBetweenAffectedAndQueried).append("\n");
-        result.append("  Attributes for backward chasing: ").append(attributesForBackwardChasing).append("\n");
         result.append("  Symmetric atoms: ").append(symmetricAtoms).append("\n");
         result.append("  Has Symmetric Atoms: ").append(hasSymmetricChase()).append("\n");
         result.append("  Join Graph Is Cyclic: ").append(joinGraphIsCyclic).append("\n");

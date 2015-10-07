@@ -18,7 +18,7 @@ public class TestTreatments extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_sp);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringWithSort());
@@ -36,7 +36,7 @@ public class TestTreatments extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_s5);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringWithSort());
@@ -53,7 +53,7 @@ public class TestTreatments extends CheckExpectedSolutionsTest {
     public void testScenarioPOS50() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments);
         setConfigurationForTest(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isTraceEnabled()) logger.debug("Result: " + result.toShortStringWithSort());
@@ -70,7 +70,7 @@ public class TestTreatments extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_sp_script);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringWithSort());

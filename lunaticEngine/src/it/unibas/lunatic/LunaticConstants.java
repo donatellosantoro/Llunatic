@@ -25,6 +25,7 @@ public class LunaticConstants {
 
     public static final String DELTA_TABLE_SEPARATOR = "__";
     public static final String NA_TABLE_SUFFIX = DELTA_TABLE_SEPARATOR + "NA";
+    public static final String FINGERPRINT_SEPARATOR = "|";
 
     public static String CELLGROUP_TABLE = "cellgroup_table";
 //    public static String OCCURRENCE_TABLE = "OccurrenceTable";
@@ -62,7 +63,7 @@ public class LunaticConstants {
     ///////////////    DEBUG MODE     ///////////////////
 //    public static final boolean DBMS_DEBUG = true;
     public static final boolean DBMS_DEBUG = false;
-    
+
     // NULL OBJECTS
     public static final AttributeRef NULL_ATTRIBUTE_REF = new AttributeRef("_NullTable_", "_NullAttribute_");
     public static final AttributeRef INVALID_ATTRIBUTE_REF = new AttributeRef("_InvalidTable_", "_InvalidAttribute_");

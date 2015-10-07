@@ -9,8 +9,8 @@ import it.unibas.lunatic.model.chase.chasemc.operators.EquivalenceClassUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
+import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
@@ -111,7 +111,7 @@ public class ChaseEGDs {
         try {
             while (true) {
                 if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
-                EquivalenceClassForEGD equivalenceClass = readNextEquivalenceClass(it, egd, scenario, chaseState);
+                EquivalenceClassForSymmetricEGD equivalenceClass = readNextEquivalenceClass(it, egd, scenario, chaseState);
                 if (equivalenceClass == null) {
                     break;
                 }
@@ -132,7 +132,7 @@ public class ChaseEGDs {
             it.close();
         }
         if (logger.isDebugEnabled()) logger.debug("Repair for dependency: " + repairForDependency);
-        if (repairForDependency.getViolationContexts().isEmpty()) {
+        if (repairForDependency.getChangeDescriptions().isEmpty()) {
             return false;
         }
         long repairStart = new Date().getTime();
@@ -147,15 +147,15 @@ public class ChaseEGDs {
     }
 
     private void accumulateRepairs(Repair repairForDependency, Repair repairForEquivalenceClass) {
-        repairForDependency.getViolationContexts().addAll(repairForEquivalenceClass.getViolationContexts());
+        repairForDependency.getChangeDescriptions().addAll(repairForEquivalenceClass.getChangeDescriptions());
     }
 
     @SuppressWarnings("unchecked")
-    private Repair generateRepair(EquivalenceClassForEGD equivalenceClass) {
+    private Repair generateRepair(EquivalenceClassForSymmetricEGD equivalenceClass) {
         Repair repair = new Repair();
         List<CellGroup> cellGroups = extractCellGroups(equivalenceClass.getTupleGroups());
         CellGroup cellGroup = findChanges(cellGroups);
-        ViolationContext changesForRepair = new ViolationContext(cellGroup, LunaticConstants.CHASE_FORWARD);
+        ChangeDescription changesForRepair = new ChangeDescription(cellGroup, LunaticConstants.CHASE_FORWARD);
         repair.addViolationContext(changesForRepair);
         return repair;
     }
@@ -204,7 +204,7 @@ public class ChaseEGDs {
     }
 
     private void applyRepairs(Repair repair, Scenario scenario) {
-        for (ViolationContext changeSet : repair.getViolationContexts()) {
+        for (ChangeDescription changeSet : repair.getChangeDescriptions()) {
             IValue newValue = changeSet.getCellGroup().getValue();
             Set<CellRef> cellsToChange = ChaseUtility.createCellRefsFromCells(changeSet.getCellGroup().getOccurrences());
             for (CellRef cellRef : cellsToChange) {
@@ -218,11 +218,11 @@ public class ChaseEGDs {
         }
     }
 
-    private EquivalenceClassForEGD readNextEquivalenceClass(ITupleIterator it, Dependency egd, Scenario scenario, IChaseState chaseState) {
+    private EquivalenceClassForSymmetricEGD readNextEquivalenceClass(ITupleIterator it, Dependency egd, Scenario scenario, IChaseState chaseState) {
         if (!it.hasNext() && (this.lastTupleHandled || this.lastTuple == null)) {
             return null;
         }
-        EquivalenceClassForEGD equivalenceClass = buildEquivalenceClass(egd);
+        EquivalenceClassForSymmetricEGD equivalenceClass = buildEquivalenceClass(egd);
         if (lastTuple != null && !this.lastTupleHandled) {
             if (logger.isDebugEnabled()) logger.debug("Reading tuple : " + this.lastTuple.toStringWithOIDAndAlias());
             EquivalenceClassUtility.addTuple(this.lastTuple, equivalenceClass);
@@ -253,7 +253,7 @@ public class ChaseEGDs {
         return equivalenceClass;
     }
 
-    private void addOccurrencesForEquivalenceClass(EquivalenceClassForEGD equivalenceClass, IDatabase target) {
+    private void addOccurrencesForEquivalenceClass(EquivalenceClassForSymmetricEGD equivalenceClass, IDatabase target) {
         for (EGDEquivalenceClassCells tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
             addOccurrencesForCellGroup(tupleGroup.getCellGroupForForwardRepair(), target);
 //            for (CellGroup premiseGroup : tupleGroup.getCellGroupsForBackwardAttributes().values()) {
@@ -277,7 +277,7 @@ public class ChaseEGDs {
     }
 
     @SuppressWarnings("unchecked")
-    private EquivalenceClassForEGD buildEquivalenceClass(Dependency egd) {
+    private EquivalenceClassForSymmetricEGD buildEquivalenceClass(Dependency egd) {
         List<AttributeRef> attributesForForwardChasing = new ArrayList<AttributeRef>();
         FormulaVariable v1 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(0);
         FormulaVariable v2 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(1);
@@ -295,6 +295,6 @@ public class ChaseEGDs {
             }
             attributesForForwardChasing.add(occurrenceAttribute);
         }
-        return new EquivalenceClassForEGD(egd, attributesForForwardChasing, Collections.EMPTY_LIST);
+        return new EquivalenceClassForSymmetricEGD(egd, attributesForForwardChasing, Collections.EMPTY_LIST);
     }
 }

@@ -17,9 +17,9 @@ public class TestSynthetic10 extends CheckExpectedSolutionsTest {
 //    public void testScenario() throws Exception {
 //        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_10);
 //        setConfigurationForTest(scenario);
-////        scenario.getCostManager().setDoBackward(false);
+////        scenario.getSymmetricCostManager().setDoBackward(false);
 //        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
-//        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+//        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
 //        DeltaChaseStep result = chaser.doChase(scenario);
 //        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
 //        if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
@@ -35,9 +35,9 @@ public class TestSynthetic10 extends CheckExpectedSolutionsTest {
     public void testScenarioSimilarity() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_10_similarity);
         setConfigurationForTest(scenario);
-//        scenario.getCostManager().setDoBackward(false);
+//        scenario.getSymmetricCostManager().setDoBackward(false);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));

@@ -34,10 +34,5 @@ r(a: $a2, b: $b2,  conf: $conf2, c: $c)
       </valueComparator>
     </orderingAttribute>  
   </orderingAttributes>
-  <costManager>
-      <type>Standard</type>
-      <doPermutations>false</doPermutations>
-      <doBackward>false</doBackward>
-  </costManager>
 </scenario>
 

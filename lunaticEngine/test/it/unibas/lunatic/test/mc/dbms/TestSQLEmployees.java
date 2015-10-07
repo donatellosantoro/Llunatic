@@ -18,7 +18,7 @@ public class TestSQLEmployees extends CheckTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_comparisons_dbms);
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setUseSymmetricOptimization(false);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());
         Assert.assertEquals(3, resultSizer.getSolutions(result));

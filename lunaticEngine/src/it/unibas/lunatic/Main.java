@@ -68,7 +68,7 @@ public class Main {
     }
 
     private static void chaseMCScenario(Scenario scenario) {
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         long start = new Date().getTime();
         DeltaChaseStep result = chaser.doChase(scenario);
         long end = new Date().getTime();

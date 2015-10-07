@@ -18,7 +18,7 @@ public class TestSQLSyntheticTGD04 extends CheckExpectedSolutionsTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T04_dbms, true);
         setConfigurationForTest(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.getDeltaDB().getTable(LunaticConstants.CELLGROUP_TABLE).toString());
         if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());

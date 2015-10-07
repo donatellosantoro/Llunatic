@@ -19,7 +19,7 @@ public class TestSQLCustomers extends CheckTest {
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setDebugMode(true);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());
         Assert.assertEquals(19, resultSizer.getSolutions(result));

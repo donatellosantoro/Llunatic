@@ -19,7 +19,7 @@ public class TestSQLSynthetic03Const extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario\n" + scenario.toString());
 //        scenario.getConfiguration().setRemoveDuplicates(true);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));

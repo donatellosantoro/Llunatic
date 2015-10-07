@@ -145,6 +145,24 @@ public class ChaseUtility {
         return result;
     }
 
+    public static List<FormulaVariableOccurrence> findPositivePremiseOccurrences(Dependency dependency, FormulaVariable variable) {
+        List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
+        for (FormulaVariableOccurrence formulaVariableOccurrence : variable.getPremiseRelationalOccurrences()) {
+            if (containsAlias(dependency.getPremise().getPositiveFormula(), formulaVariableOccurrence.getTableAlias())) {
+                result.add(formulaVariableOccurrence);
+            }
+        }
+        return result;
+    }
+
+    public static List<FormulaVariableOccurrence> findPositivePremiseOccurrences(Dependency dependency, VariableEquivalenceClass eqv) {
+        List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
+        for (FormulaVariable variable : eqv.getVariables()) {
+            result.addAll(findPositivePremiseOccurrences(dependency, variable));
+        }
+        return result;
+    }
+
     public static List<FormulaVariableOccurrence> findPositiveOccurrences(PositiveFormula positiveFormula, List<FormulaVariableOccurrence> premiseRelationalOccurrences) {
         List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
         for (FormulaVariableOccurrence formulaVariableOccurrence : premiseRelationalOccurrences) {

@@ -10,7 +10,7 @@ import it.unibas.lunatic.model.chase.chasede.IDEChaser;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardSymmetricCostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.DEPartialOrder;
 import speedy.model.database.IDatabase;
@@ -31,14 +31,14 @@ public class ChaseDEScenarioProxy implements IDEChaser {
         }
         scenario.setEGDs(new ArrayList<Dependency>());
         scenario.setExtEGDs(egds);
-        ICostManager forwardOnlyCostManager = new StandardCostManager();
+        ICostManager forwardOnlyCostManager = new StandardSymmetricCostManager();
         forwardOnlyCostManager.setDoBackward(false);
         forwardOnlyCostManager.setDoPermutations(false);
         scenario.setCostManager(forwardOnlyCostManager);
         scenario.setPartialOrder(new DEPartialOrder());
         scenario.getConfiguration().setDeProxyMode(true);
         scenario.getConfiguration().setRemoveDuplicates(false);
-        ChaseMCScenario mcChaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario mcChaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep chaseStep = mcChaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("----MC result: " + chaseStep);
         if (chaseStep.getNumberOfLeaves() > 1) {

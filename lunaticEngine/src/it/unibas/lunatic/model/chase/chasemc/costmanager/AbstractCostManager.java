@@ -11,9 +11,9 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
-import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
+import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
@@ -70,7 +70,7 @@ public abstract class AbstractCostManager implements ICostManager {
         return OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario);
     }
 
-    protected boolean isSuspicious(CellGroup cellGroup, BackwardAttribute backwardAttribute, EquivalenceClassForEGD equivalenceClass) {
+    protected boolean isSuspicious(CellGroup cellGroup, BackwardAttribute backwardAttribute, EquivalenceClassForSymmetricEGD equivalenceClass) {
         Dependency egd = equivalenceClass.getEGD();
         FormulaVariable variable = backwardAttribute.getVariable();
         if (logger.isDebugEnabled()) logger.debug("Checking if cell group is suspicious:\n" + cellGroup + "\nEGD: " + egd + "\nVariable: " + variable + "\nVariable occurrence " + variable.getPremiseRelationalOccurrences());
@@ -120,28 +120,28 @@ public abstract class AbstractCostManager implements ICostManager {
         }
         return isBelow;
     }
-    
-    protected Repair generateForwardRepair(List<EGDEquivalenceClassCells> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
+
+    protected Repair generateSymmetricForwardRepair(List<EGDEquivalenceClassCells> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
         Repair repair = new Repair();
-        ViolationContext forwardChanges = generateViolationContextForForwardRepair(tupleGroups, scenario, deltaDB, stepId);
+        ChangeDescription forwardChanges = generateChangeDescriptionForForwardRepair(tupleGroups, scenario, deltaDB, stepId);
         if (logger.isDebugEnabled()) logger.debug("Forward changes: " + forwardChanges);
         repair.addViolationContext(forwardChanges);
         return repair;
     }
 
-    protected ViolationContext generateViolationContextForForwardRepair(List<EGDEquivalenceClassCells> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
+    protected ChangeDescription generateChangeDescriptionForForwardRepair(List<EGDEquivalenceClassCells> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
         List<CellGroup> cellGroups = extractForwardCellGroups(tupleGroups);
         // give preference to the script partial order, that may have additional rules to solve the violation
         CellGroup lub = getLUB(cellGroups, scenario);
-        ViolationContext changeSet = new ViolationContext(lub, LunaticConstants.CHASE_FORWARD, buildWitnessCells(tupleGroups));
+        ChangeDescription changeSet = new ChangeDescription(lub, LunaticConstants.CHASE_FORWARD, buildWitnessCells(tupleGroups));
         return changeSet;
     }
 
-    protected Repair generateRepairWithBackwards(EquivalenceClassForEGD equivalenceClass, List<EGDEquivalenceClassCells> forwardTupleGroups, List<EGDEquivalenceClassCells> backwardTupleGroups, BackwardAttribute backwardAttribute,
+    protected Repair generateRepairWithBackwards(EquivalenceClassForSymmetricEGD equivalenceClass, List<EGDEquivalenceClassCells> forwardTupleGroups, List<EGDEquivalenceClassCells> backwardTupleGroups, BackwardAttribute backwardAttribute,
             Scenario scenario, IDatabase deltaDB, String stepId) {
         Repair repair = new Repair();
         if (forwardTupleGroups.size() > 1) {
-            ViolationContext forwardChanges = generateViolationContextForForwardRepair(forwardTupleGroups, scenario, deltaDB, stepId);
+            ChangeDescription forwardChanges = generateChangeDescriptionForForwardRepair(forwardTupleGroups, scenario, deltaDB, stepId);
             repair.addViolationContext(forwardChanges);
         }
         for (EGDEquivalenceClassCells backwardTupleGroup : backwardTupleGroups) {
@@ -150,7 +150,7 @@ public abstract class AbstractCostManager implements ICostManager {
                 LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
                 backwardCellGroup.setValue(llunValue);
                 backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
-                ViolationContext backwardChangesForGroup = new ViolationContext(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCells(backwardTupleGroups));
+                ChangeDescription backwardChangesForGroup = new ChangeDescription(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, buildWitnessCells(backwardTupleGroups));
                 repair.addViolationContext(backwardChangesForGroup);
                 if (scenario.getConfiguration().isRemoveSuspiciousSolutions() && isSuspicious(backwardCellGroup, backwardAttribute, equivalenceClass)) {
                     backwardTupleGroup.setSuspicious(true);
@@ -159,8 +159,8 @@ public abstract class AbstractCostManager implements ICostManager {
             }
         }
         return repair;
-    }    
-    
+    }
+
     protected List<CellGroup> extractForwardCellGroups(List<EGDEquivalenceClassCells> tupleGroups) {
         List<CellGroup> cellGroups = new ArrayList<CellGroup>();
         for (EGDEquivalenceClassCells tupleGroup : tupleGroups) {
@@ -227,6 +227,10 @@ public abstract class AbstractCostManager implements ICostManager {
     }
 
     protected boolean backwardIsAllowed(CellGroup cellGroup) {
+        if (cellGroup.getOccurrences().isEmpty()) {
+            if (logger.isDebugEnabled()) logger.debug("Backward with empty occurrences (" + cellGroup + ") is not allowed");
+            return false;
+        }
         // never change LLUNs backward L(L(x)) = L(x)            
         if (cellGroup.getValue() instanceof LLUNValue || cellGroup.hasInvalidCell()) {
             if (logger.isDebugEnabled()) logger.debug("Backward on LLUN (" + cellGroup.getValue() + ") is not allowed");
@@ -247,6 +251,22 @@ public abstract class AbstractCostManager implements ICostManager {
         }
         if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " is allowed");
         return true;
+    }
+
+    protected List<Integer> createIndexes(int size) {
+        List<Integer> result = new ArrayList<Integer>();
+        for (int i = 0; i < size; i++) {
+            result.add(i);
+        }
+        return result;
+    }
+
+    protected List<EGDEquivalenceClassCells> extractSubset(List<Integer> subsetIndex, List<EGDEquivalenceClassCells> tupleGroups) {
+        List<EGDEquivalenceClassCells> result = new ArrayList<EGDEquivalenceClassCells>();
+        for (Integer index : subsetIndex) {
+            result.add(tupleGroups.get(index));
+        }
+        return result;
     }
 
     public boolean isDoBackward() {

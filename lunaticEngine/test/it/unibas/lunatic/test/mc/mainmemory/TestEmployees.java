@@ -19,7 +19,7 @@ public class TestEmployees extends CheckTest {
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setUseSymmetricOptimization(false);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());
         Assert.assertTrue(scenario.getDependency("e1").hasSymmetricChase());

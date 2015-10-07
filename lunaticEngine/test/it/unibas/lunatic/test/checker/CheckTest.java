@@ -7,6 +7,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfCellGroup;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.test.GenerateModifiedCells;
 import it.unibas.lunatic.test.comparator.repairs.RepairsComparator;
@@ -23,11 +24,12 @@ import speedy.persistence.relational.QueryStatManager;
 public class CheckTest extends TestCase {
 
     private static Logger logger = LoggerFactory.getLogger(CheckTest.class);
-    
+
     protected ChaseTreeSize resultSizer = new ChaseTreeSize();
     protected RepairsComparator comparator = new RepairsComparator();
     protected ChaseStats chaseStats = ChaseStats.getInstance();
     protected QueryStatManager queryStats = QueryStatManager.getInstance();
+    protected CheckConsistencyOfCellGroup validSolutionChecker = new CheckConsistencyOfCellGroup();
 
     protected GenerateModifiedCells getModifiedCellGenerator(Scenario scenario) {
         return new GenerateModifiedCells(OperatorFactory.getInstance().getQueryRunner(scenario));
@@ -62,6 +64,7 @@ public class CheckTest extends TestCase {
         Assert.assertTrue("No solution...", resultSizer.getSolutions(result) > 0);
         Assert.assertTrue("No solution...", resultSizer.getAllNodes(result) > 0);
         Assert.assertEquals("Expected solutions", resultSizer.getPotentialSolutions(result), resultSizer.getSolutions(result));
+        validSolutionChecker.checkSolutions(result);
     }
 
     protected String getTestName(String scenarioName, Scenario scenario) {
@@ -72,7 +75,7 @@ public class CheckTest extends TestCase {
         if (scenario.getPartialOrder() instanceof FrequencyPartialOrder) {
             name.append("-FR");
         }
-        ICostManager costManager = scenario.getCostManager();
+        ICostManager costManager = scenario.getSymmetricCostManager();
         if (costManager.getDependencyLimit() == 1) {
             name.append("-SP");
         } else {

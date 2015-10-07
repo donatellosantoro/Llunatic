@@ -19,9 +19,9 @@ public class TestSyntheticTGD07 extends CheckExpectedSolutionsTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T07);
         setConfigurationForTest(scenario);
-//        scenario.getCostManager().setDoBackward(false);
+//        scenario.getSymmetricCostManager().setDoBackward(false);
 //        scenario.getConfiguration().setRemoveDuplicates(false);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());

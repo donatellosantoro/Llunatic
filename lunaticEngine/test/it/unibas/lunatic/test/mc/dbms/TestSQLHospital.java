@@ -19,7 +19,7 @@ public class TestSQLHospital extends CheckTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital_0_2p_dbms, true);
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         QueryStatManager.getInstance().printStatistics();
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("hospital", scenario));

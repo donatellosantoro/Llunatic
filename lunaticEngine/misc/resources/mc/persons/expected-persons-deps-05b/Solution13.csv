@@ -1,0 +1,10 @@
+#person
+ssn,surname,name,boss
+123,Bruce,Wayne,Boss1
+231,Bruce,_L57,Boss4
+321,_L56,Wayne,Boss3
+
+#cars
+plate,model,owner
+BM321XS,BatMobile,123
+

@@ -141,7 +141,8 @@ public class ChaseTreeToString {
             List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsForDebugging(deltaDB, step.getId(), step.getScenario());
             result.append("--------------- CELL GROUPS -----------------\n");
             for (CellGroup cellGroup : cellGroups) {
-                result.append(cellGroup.toLongString()).append("\n");
+//                result.append(cellGroup.toLongString()).append("\n");
+                result.append(cellGroup.toStringWithAdditionalCells()).append("\n");
             }
             result.append("\n");
         }

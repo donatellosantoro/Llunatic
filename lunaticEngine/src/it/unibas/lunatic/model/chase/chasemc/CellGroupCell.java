@@ -18,7 +18,7 @@ public class CellGroupCell extends Cell {
 
     public CellGroupCell(TupleOID tupleOid, AttributeRef attributeRef, IValue value, IValue originalValue, String type, Boolean toSave) {
         super(tupleOid, attributeRef, value);
-        if(type.equals(LunaticConstants.TYPE_JUSTIFICATION) && value.getType().equals(PartialOrderConstants.LLUN)){
+        if (type.equals(LunaticConstants.TYPE_JUSTIFICATION) && value.getType().equals(PartialOrderConstants.LLUN)) {
             throw new IllegalArgumentException();
         }
         this.originalValue = originalValue;
@@ -28,7 +28,7 @@ public class CellGroupCell extends Cell {
 
     public CellGroupCell(CellRef cellRef, IValue value, IValue originalValue, String type, Boolean toSave) {
         super(cellRef, value);
-        if(type.equals(LunaticConstants.TYPE_JUSTIFICATION) && value.getType().equals(PartialOrderConstants.LLUN)){
+        if (type.equals(LunaticConstants.TYPE_JUSTIFICATION) && value.getType().equals(PartialOrderConstants.LLUN)) {
             throw new IllegalArgumentException();
         }
         this.originalValue = originalValue;
@@ -41,6 +41,10 @@ public class CellGroupCell extends Cell {
         this.originalValue = originalValue;
         this.type = type;
         this.toSave = toSave;
+    }
+
+    public void setValue(IValue value) {
+        this.value = value;
     }
 
     public IValue getOriginalValue() {

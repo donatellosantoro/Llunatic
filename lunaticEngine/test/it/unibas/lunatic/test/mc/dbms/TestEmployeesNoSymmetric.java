@@ -17,7 +17,7 @@ public class TestEmployeesNoSymmetric extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_comparisons_nosymmetric_dbms, true);
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setUseSymmetricOptimization(false);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toStringLeavesOnlyWithSort());
         checkExpectedSolutions("expectedEmployeesNoSymmetric", result);

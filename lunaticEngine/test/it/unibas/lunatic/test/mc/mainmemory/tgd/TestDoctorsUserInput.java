@@ -25,10 +25,10 @@ public class TestDoctorsUserInput extends CheckTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.doctors_usermanager);
 //        Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_usermanager);
         userNodeCreator = OperatorFactory.getInstance().getUserNodeCreator(scenario);
-        scenario.getCostManager().setDoBackward(false);
-        scenario.getCostManager().setDoPermutations(false);
+        scenario.getSymmetricCostManager().setDoBackward(false);
+        scenario.getSymmetricCostManager().setDoPermutations(false);
 //        scenario.setUserManager(new StandardUserManager());
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result #1:\n" + result.toStringWithSort());
         addUserNode(result, scenario);

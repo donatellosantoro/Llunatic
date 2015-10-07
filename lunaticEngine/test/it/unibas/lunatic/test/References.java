@@ -63,6 +63,20 @@ public class References {
 
     
     public static final String persons = "mc/persons/person-mcscenario.xml";
+    public static final String persons_deps = "mc/persons/person-deps-mcscenario.xml";
+    public static final String persons_deps_01 = "mc/persons/person-deps-01-mcscenario.xml";
+    public static final String persons_deps_01b = "mc/persons/person-deps-01b-mcscenario.xml";
+    public static final String persons_deps_02 = "mc/persons/person-deps-02-mcscenario.xml";
+    public static final String persons_deps_03 = "mc/persons/person-deps-03-mcscenario.xml";
+    public static final String persons_deps_03b = "mc/persons/person-deps-03b-mcscenario.xml";
+    public static final String persons_deps_04 = "mc/persons/person-deps-04-mcscenario.xml";
+    public static final String persons_deps_05 = "mc/persons/person-deps-05-mcscenario.xml";
+    public static final String persons_deps_05b = "mc/persons/person-deps-05b-mcscenario.xml";
+    public static final String persons_deps_05c = "mc/persons/person-deps-05c-mcscenario.xml";
+    public static final String persons_deps_06 = "mc/persons/person-deps-06-mcscenario.xml";
+    public static final String persons_deps_07 = "mc/persons/person-deps-07-mcscenario.xml";
+    public static final String persons_deps_08 = "mc/persons/person-deps-08-mcscenario.xml";
+    public static final String persons_deps_dbms = "mc/persons/person-deps-mcscenario-dbms.xml";
     public static final String persons_fr_sp = "mc/persons/person-fr-sp-mcscenario.xml";
     public static final String persons_dbms = "mc/persons/person-mcscenario-dbms.xml";
     

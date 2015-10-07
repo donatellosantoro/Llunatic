@@ -18,9 +18,9 @@ public class TestSQLPersons extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_dbms, true);
         setConfigurationForTest(scenario);
 //        setCheckEGDsAfterEachStep(scenario);
-//        scenario.getCostManager().setDoBackward(false);
-//        scenario.getCostManager().setDoPermutations(false);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+//        scenario.getSymmetricCostManager().setDoBackward(false);
+//        scenario.getSymmetricCostManager().setDoPermutations(false);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
@@ -35,9 +35,9 @@ public class TestSQLPersons extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_dbms, true);
         setConfigurationForTest(scenario);
 //        setCheckEGDsAfterEachStep(scenario);
-        scenario.getCostManager().setDoBackward(false);
-        scenario.getCostManager().setDoPermutations(false);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        scenario.getSymmetricCostManager().setDoBackward(false);
+        scenario.getSymmetricCostManager().setDoPermutations(false);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());

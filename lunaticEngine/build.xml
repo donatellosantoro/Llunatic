@@ -390,5 +390,32 @@
             Esecuzione dell'operazione fallita a causa del fallimento dei test
         </fail>
     </target>
+    
+    
+    
+    <target name="test-mc-basicscenarios" depends="-prepare-test, build" description="esegue i test">
+        <junit haltonfailure="false"
+               errorProperty="test.failed"
+               failureProperty="test.failed"
+               fork="true"
+               showoutput="true"
+               maxmemory="${junit.maxmemory}">
+            <jvmarg value="-Djava.util.logging.config.class=it.unibas.lunatic.utility.JavaUtilLoggingConfig"/>
+            <assertions>
+                <enable/>
+            </assertions>
+            <classpath refid="test.classpath" />
+            <batchtest todir="${test.report.dir}">
+                <fileset dir="${test.build.dir}">
+                    <include name="**/mc/mainmemory/**/basicscenarios/**/Test*.class" />
+                </fileset>
+            </batchtest>
+            <formatter type="brief" usefile="false" />
+            <formatter type="xml" />
+        </junit>
+        <fail if="test.failed">
+            Esecuzione dell'operazione fallita a causa del fallimento dei test
+        </fail>
+    </target>
 
 </project>

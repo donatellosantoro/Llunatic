@@ -2,6 +2,7 @@ package it.unibas.lunatic;
 
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardSymmetricCostManager;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.OrderingAttribute;
@@ -36,7 +37,10 @@ public class Scenario {
     private IPartialOrder partialOrder;
     private ScriptPartialOrder scriptPartialOrder;
     private List<OrderingAttribute> orderingAttributes = new ArrayList<OrderingAttribute>();
+    /// TODO++ Fix symmetric cost manager
+    private ICostManager symmetricCostManager = new StandardSymmetricCostManager();
     private ICostManager costManager = new StandardCostManager();
+    ///
     private IUserManager userManager = new StandardUserManager();
     private LunaticConfiguration configuration = new LunaticConfiguration();
     private DependencyStratification stratification;
@@ -216,6 +220,14 @@ public class Scenario {
         this.userManager = userManager;
     }
 
+    public ICostManager getSymmetricCostManager() {
+        return symmetricCostManager;
+    }
+
+    public void setSymmetricCostManager(ICostManager symmetricCostManager) {
+        this.symmetricCostManager = symmetricCostManager;
+    }
+
     public ICostManager getCostManager() {
         return costManager;
     }
@@ -278,9 +290,9 @@ public class Scenario {
     public String toString() {
         StringBuilder result = new StringBuilder("=============================== SCENARIO ================================\n");
         if (!isDEScenario()) {
-            if (costManager != null) {
+            if (symmetricCostManager != null) {
                 result.append("Config: \n").append(configuration).append("\n");
-                result.append("Cost manager: \n\t").append(this.costManager.toLongString()).append("\n");
+                result.append("Cost manager: \n\t").append(this.symmetricCostManager.toLongString()).append("\n");
             }
             result.append("User manager: \n\t").append(this.userManager).append("\n");
             if (partialOrder != null) result.append("Partial order:\n\t").append(this.partialOrder).append("\n");

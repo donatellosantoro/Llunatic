@@ -1,9 +1,13 @@
 package it.unibas.lunatic.model.chase.chasemc;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import speedy.model.algebra.operators.StringComparator;
 import speedy.model.database.Cell;
 import speedy.model.database.IValue;
 
@@ -13,9 +17,9 @@ public class EGDEquivalenceClassCells {
     // all target cells with equal value to change for a forward repair. Initially incomplete
     private CellGroup cellGroupForForwardRepair;
     // all witness cells from the originating tuples (to be changed for backward repairs)
-    private Map<BackwardAttribute, Set<Cell>> witnessCells = new HashMap<BackwardAttribute, Set<Cell>>(); 
+    private Map<BackwardAttribute, Set<Cell>> witnessCells = new HashMap<BackwardAttribute, Set<Cell>>();
     // witness cells generate sets of cell groups
-    private Map<BackwardAttribute, Set<CellGroup>> cellGroupsForBackwardRepair = new HashMap<BackwardAttribute, Set<CellGroup>>(); 
+    private Map<BackwardAttribute, Set<CellGroup>> cellGroupsForBackwardRepair = new HashMap<BackwardAttribute, Set<CellGroup>>();
     private boolean suspicious;
 
     public EGDEquivalenceClassCells(IValue value) {
@@ -80,13 +84,18 @@ public class EGDEquivalenceClassCells {
 
     @Override
     public String toString() {
+        return this.toString("");
+    }
+
+    public String toString(String indent) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Cell group for forward repair:\n\t").append(cellGroupForForwardRepair).append("\n");
-        sb.append("Cells for backward repairs:\n");
-        for (BackwardAttribute backwardAttribute : witnessCells.keySet()) {
-            sb.append(backwardAttribute).append("\t").append(witnessCells.get(backwardAttribute)).append("\n");
+        sb.append(indent).append("Cell group for fwd repair: ").append(cellGroupForForwardRepair).append("\n");
+        sb.append(indent).append("Cells for bkw repairs:").append((suspicious ? " (Suspicious) " : "")).append("\n");
+        List<BackwardAttribute> keys = new ArrayList<BackwardAttribute>(witnessCells.keySet());
+        Collections.sort(keys, new StringComparator<BackwardAttribute>());
+        for (BackwardAttribute backwardAttribute : keys) {
+            sb.append(indent).append(backwardAttribute).append("\t").append(witnessCells.get(backwardAttribute)).append("\n");
         }
-        sb.append((suspicious ? "Suspicious" : ""));
         return sb.toString();
     }
 

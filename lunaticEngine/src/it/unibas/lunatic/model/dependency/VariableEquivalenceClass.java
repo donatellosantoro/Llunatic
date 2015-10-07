@@ -30,7 +30,7 @@ public class VariableEquivalenceClass {
         }
         return result;
     }
-    
+
     public List<FormulaVariableOccurrence> getConclusionRelationalOccurrences() {
         List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
         for (FormulaVariable variable : variables) {
@@ -38,7 +38,7 @@ public class VariableEquivalenceClass {
         }
         return result;
     }
-    
+
     public List<IFormulaAtom> getNonRelationalOccurrences() {
         List<IFormulaAtom> result = new ArrayList<IFormulaAtom>();
         for (FormulaVariable variable : variables) {
@@ -46,10 +46,10 @@ public class VariableEquivalenceClass {
         }
         return result;
     }
-    
+
     @Override
     public String toString() {
-        return "VariableEquivalenceClass:" + variables;
+        return variables.toString();
     }
 
 }

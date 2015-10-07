@@ -19,7 +19,7 @@ public class TestSQLTreatments extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_sp_dbms, true);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringWithSort());
@@ -37,7 +37,7 @@ public class TestSQLTreatments extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_s5_dbms, true);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());
@@ -54,7 +54,7 @@ public class TestSQLTreatments extends CheckExpectedSolutionsTest {
     public void testScenarioPOS50() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_dbms, true);
         setConfigurationForTest(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         QueryStatManager.getInstance().printStatistics();
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
@@ -71,7 +71,7 @@ public class TestSQLTreatments extends CheckExpectedSolutionsTest {
     public void testScenarioFRSPScript() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_sp_script_dbms, true);
         setConfigurationForTest(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         QueryStatManager.getInstance().printStatistics();
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
