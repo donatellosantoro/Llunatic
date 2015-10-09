@@ -1,8 +1,8 @@
 package it.unibas.lunatic;
 
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardSymmetricCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.StandardCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.OrderingAttribute;

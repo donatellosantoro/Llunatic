@@ -47,6 +47,7 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
         return result;
     }
 
+    @Override
     public String toString() {
         return "Frequency partial order";
     }

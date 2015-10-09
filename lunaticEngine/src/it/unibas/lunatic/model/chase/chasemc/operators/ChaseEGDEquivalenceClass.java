@@ -8,10 +8,8 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.DependencyVariables;
-import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
@@ -54,21 +52,19 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
 
     private IRunQuery queryRunner;
     private OccurrenceHandlerMC occurrenceHandler;
-    private IBuildDatabaseForChaseStep databaseBuilder;
     private ChangeCell cellChanger;
     private Tuple lastTuple;
     private boolean lastTupleHandled;
 
-    public ChaseEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, IBuildDatabaseForChaseStep databaseBuilder, ChangeCell cellChanger) {
+    public ChaseEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, ChangeCell cellChanger) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
-        this.databaseBuilder = databaseBuilder;
         this.cellChanger = cellChanger;
     }
 
     @Override
     public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
-        if (logger.isDebugEnabled()) logger.debug("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
+        if (logger.isInfoEnabled()) logger.info("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
         if (logger.isDebugEnabled()) logger.debug(databaseForStep.printInstances());
         this.lastTuple = null;
         this.lastTupleHandled = false;

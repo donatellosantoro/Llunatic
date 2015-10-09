@@ -62,7 +62,7 @@ public class EquivalenceClassForEGD {
         cells.add(cell);
     }
 
-    public Set<CellGroup> getCellsForValue(IValue value) {
+    public Set<CellGroup> getCellGroupsForValue(IValue value) {
         return cellGroupsForValue.get(value);
     }
 
@@ -72,6 +72,10 @@ public class EquivalenceClassForEGD {
             result.addAll(value);
         }
         return result;
+    }
+
+    public Set<IValue> getAllConclusionValues() {
+        return this.cellGroupsForValue.keySet();
     }
 
     public boolean isEmpty() {

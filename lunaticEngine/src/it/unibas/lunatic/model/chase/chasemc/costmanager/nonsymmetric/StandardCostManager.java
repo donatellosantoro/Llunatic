@@ -1,20 +1,17 @@
-package it.unibas.lunatic.model.chase.chasemc.costmanager;
+package it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
-import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.AbstractCostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
-import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -30,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.operators.StringComparator;
 import speedy.model.database.Cell;
-import speedy.model.database.LLUNValue;
 
 public class StandardCostManager extends AbstractCostManager {
 
@@ -41,15 +37,15 @@ public class StandardCostManager extends AbstractCostManager {
             List<Repair> repairsForDependency, Scenario scenario, String stepId,
             OccurrenceHandlerMC occurrenceHandler) {
         EquivalenceClassForEGD equivalenceClass = (EquivalenceClassForEGD) equivalenceClassProxy.getEquivalenceClass();
-        if (logger.isDebugEnabled()) logger.debug("########Current node: " + chaseTreeRoot.toStringWithSort());
-        if (logger.isDebugEnabled()) logger.debug("########Choosing repair strategy for equivalence class: " + equivalenceClass);
+        if (logger.isDebugEnabled()) logger.debug("######## Current node: " + chaseTreeRoot.toStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug("######## Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<CellGroup> conclusionCellGroups = equivalenceClass.getAllConclusionCellGroups();
         if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && satisfactionChecker.isSatisfiedAfterUpgrades(conclusionCellGroups)) {
             return Collections.EMPTY_LIST;
         }
         List<Repair> result = new ArrayList<Repair>();
         List<ViolationContext> allContexts = equivalenceClass.getViolationContexts();
-        Repair forwardRepair = generateStandardForwardRepair(allContexts, scenario);
+        Repair forwardRepair = CostManagerUtility.generateStandardForwardRepair(allContexts, scenario);
         result.add(forwardRepair);
         if (canDoBackward(chaseTreeRoot)) {
             List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass, scenario, chaseTreeRoot.getDeltaDB(), stepId);
@@ -60,45 +56,6 @@ public class StandardCostManager extends AbstractCostManager {
                 }
                 LunaticUtility.addIfNotContained(result, repair);
             }
-        }
-        return result;
-    }
-
-    private Repair generateStandardForwardRepair(List<ViolationContext> forwardContexts, Scenario scenario) {
-        Repair repair = new Repair();
-        List<CellGroup> forwardCellGroups = extractConclusionCellGroupsFromContexts(forwardContexts);
-        Set<Cell> contextCells = extractContextCellsFromContexts(forwardContexts);
-        CellGroup lub = getLUB(forwardCellGroups, scenario);
-        ChangeDescription forwardChanges = new ChangeDescription(lub, LunaticConstants.CHASE_FORWARD, contextCells);
-        if (logger.isDebugEnabled()) logger.debug("Forward changes: " + forwardChanges);
-        repair.addViolationContext(forwardChanges);
-        return repair;
-    }
-
-    private List<CellGroup> extractConclusionCellGroupsFromContexts(List<ViolationContext> contexts) {
-        Set<CellGroup> result = new HashSet<CellGroup>();
-        for (ViolationContext context : contexts) {
-            result.addAll(context.getAllConclusionGroups());
-        }
-        return new ArrayList<CellGroup>(result);
-    }
-
-    private Set<Cell> extractContextCellsFromContexts(List<ViolationContext> contexts) {
-        Set<Cell> result = new HashSet<Cell>();
-        for (ViolationContext context : contexts) {
-            Set<Cell> cellsForContext = extractAllCellsFromContext(context);
-            result.addAll(cellsForContext);
-        }
-        return result;
-    }
-
-    private Set<Cell> extractAllCellsFromContext(ViolationContext context) {
-        Set<Cell> result = new HashSet<Cell>();
-        for (CellGroup conclusionGroup : context.getAllConclusionGroups()) {
-            result.addAll(conclusionGroup.getOccurrences());
-        }
-        for (CellGroup witnessCellGroup : context.getAllWitnessCellGroups()) {
-            result.addAll(witnessCellGroup.getOccurrences());
         }
         return result;
     }
@@ -142,10 +99,6 @@ public class StandardCostManager extends AbstractCostManager {
             for (List<CellGroup> backwardCombination : backwardCombinations) {
                 if (logger.isDebugEnabled()) logger.debug("Generating repairs for backward combination " + backwardCombination);
                 List<ViolationContext> forwardContext = extractForwardContext(backwardContexts, equivalenceClass);
-//                if (!canDoBackwardOnAllGroups(backwardCombination, backwardContexts)) {
-//                    if (logger.isTraceEnabled()) logger.debug("Cannot do backward for this combination. Discarding " + backwardCombination);
-//                    continue;
-//                }
                 if (!checkConsistencyOfBackwardChanges(backwardCombination, backwardContexts, forwardContext, equivalenceClass)) {
                     if (logger.isTraceEnabled()) logger.debug("Cell group combination for backward is not consistent. Discarding " + backwardCombination);
                     continue;
@@ -160,7 +113,7 @@ public class StandardCostManager extends AbstractCostManager {
                     continue;
                 }
                 repairFingerprints.add(repairFingerprint);
-                Repair repair = generateRepairWithBackwards(forwardContext, backwardCombination, backwardContexts, equivalenceClass, scenario);
+                Repair repair = CostManagerUtility.generateRepairWithBackwards(forwardContext, backwardCombination, backwardContexts, scenario);
                 if (logger.isDebugEnabled()) logger.debug("Generating repair for: \nForward contexts: " + forwardContext + "\nBackward groups: " + backwardCombination + "\n" + repair);
                 result.add(repair);
             }
@@ -190,45 +143,6 @@ public class StandardCostManager extends AbstractCostManager {
         return sortedCombination.toString();
     }
 
-//    private boolean canDoBackwardOnAllGroups(List<CellGroup> backwardCombination, List<ViolationContext> backwardContexts) {
-//        for (int i = 0; i < backwardContexts.size(); i++) {
-//            ViolationContext violationContext = backwardContexts.get(i);
-//            CellGroup backwardCellGroup = backwardCombination.get(i);
-//            if (!canDoBackwardOnGroup(backwardCellGroup, violationContext)) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-    private boolean canDoBackwardOnGroup(CellGroup cellGroupToChange, ViolationContext backwardContext) {
-        if (!backwardIsAllowed(cellGroupToChange)) {
-            if (logger.isDebugEnabled()) logger.debug("Backward is not allowed on group " + cellGroupToChange);
-            return false;
-        }
-//        return true;
-//        //Checking that the backward change actually disrupts a join. (Was suspicious in previous versions)
-        VariableEquivalenceClass variableEQC = findVariableEquivalenceClassForCellGroup(cellGroupToChange, backwardContext);
-        Set<CellGroup> cellGroups = backwardContext.getWitnessCellsForVariable(variableEQC);
-        for (CellGroup cellGroup : cellGroups) {
-            if (cellGroup.equals(cellGroupToChange)) {
-                continue;
-            }
-            return true;
-        }
-        if (logger.isDebugEnabled()) logger.debug("Backward change doesn't disrupt a join " + cellGroupToChange);
-        return false;
-    }
-
-    private VariableEquivalenceClass findVariableEquivalenceClassForCellGroup(CellGroup witnessCellGroup, ViolationContext backwardContext) {
-        for (VariableEquivalenceClass witnessVariable : backwardContext.getWitnessVariables()) {
-            Set<CellGroup> cellGroups = backwardContext.getWitnessCellsForVariable(witnessVariable);
-            if (cellGroups.contains(witnessCellGroup)) {
-                return witnessVariable;
-            }
-        }
-        throw new IllegalArgumentException("Unable to find variable equivalence class for cell group " + witnessCellGroup + "\n\t in context " + backwardContext);
-    }
-
     private boolean checkConsistencyOfForwardChanges(List<ViolationContext> forwardContexts, List<ViolationContext> backwardContexts, EquivalenceClassForEGD equivalenceClass) {
         //After a context has been forward chased, the conflict of those values has been removed.
         for (ViolationContext forwardContext : forwardContexts) {
@@ -250,7 +164,7 @@ public class StandardCostManager extends AbstractCostManager {
 
     private Set<Cell> extractForwardCells(List<ViolationContext> forwardContexts) {
         Set<Cell> result = new HashSet<Cell>();
-        List<CellGroup> forwardCellGroups = extractConclusionCellGroupsFromContexts(forwardContexts);
+        List<CellGroup> forwardCellGroups = CostManagerUtility.extractConclusionCellGroupsFromContexts(forwardContexts);
         for (CellGroup forwardCellGroup : forwardCellGroups) {
             result.addAll(forwardCellGroup.getOccurrences());
         }
@@ -312,7 +226,7 @@ public class StandardCostManager extends AbstractCostManager {
         for (ViolationContext backwardContext : backwardContexts) {
             List<CellGroup> cellGroupsForContext = new ArrayList<CellGroup>();
             for (CellGroup witnessCellGroup : backwardContext.getAllWitnessCellGroups()) {
-                if (!canDoBackwardOnGroup(witnessCellGroup, backwardContext)) {
+                if (!CostManagerUtility.canDoBackwardOnGroup(witnessCellGroup, backwardContext)) {
                     if (logger.isDebugEnabled()) logger.debug("Cannot do backward on cell group " + witnessCellGroup + " with context " + backwardContext);
                     continue;
                 }
@@ -335,40 +249,6 @@ public class StandardCostManager extends AbstractCostManager {
             }
         }
         return true;
-    }
-
-    private Repair generateRepairWithBackwards(List<ViolationContext> forwardContexts, List<CellGroup> backwardCombination, List<ViolationContext> backwardContexts, EquivalenceClassForEGD equivalenceClass, Scenario scenario) {
-        if (logger.isDebugEnabled()) logger.debug("Generating repair with forward contexts: " + LunaticUtility.printViolationContextIDs(forwardContexts)
-                    + "\n\tbackward contexts: " + LunaticUtility.printViolationContextIDs(backwardContexts)
-                    + "\n\tbackward combination: " + backwardCombination);
-        Repair repair;
-        if (!forwardContexts.isEmpty()) {
-            repair = generateStandardForwardRepair(forwardContexts, scenario);
-        } else {
-            repair = new Repair();
-        }
-        for (CellGroup backwardGroup : backwardCombination) {
-            if (hasBeenChanged(backwardGroup, repair)) {
-                continue;
-            }
-            CellGroup backwardCellGroup = backwardGroup.clone();
-            LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
-            backwardCellGroup.setValue(llunValue);
-            backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
-            Set<Cell> contextCells = extractContextCellsFromContexts(backwardContexts);
-            ChangeDescription backwardChangesForGroup = new ChangeDescription(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, contextCells);
-            repair.addViolationContext(backwardChangesForGroup);
-        }
-        return repair;
-    }
-
-    private boolean hasBeenChanged(CellGroup backwardGroup, Repair repair) {
-        for (ChangeDescription changeDescription : repair.getChangeDescriptions()) {
-            if (changeDescription.getCellGroup().getOccurrences().containsAll(backwardGroup.getOccurrences())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

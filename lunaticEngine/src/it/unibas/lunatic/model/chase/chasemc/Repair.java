@@ -7,6 +7,7 @@ import java.util.List;
 public class Repair {
 
     private List<ChangeDescription> changeDescriptions = new ArrayList<ChangeDescription>();
+    private boolean suspicious = false;
 
     public List<ChangeDescription> getChangeDescriptions() {
         return changeDescriptions;
@@ -20,12 +21,13 @@ public class Repair {
     }
 
     public boolean isSuspicious() {
-        throw new IllegalArgumentException();
+        return this.suspicious;
+//        throw new IllegalArgumentException();
     }
 
     public void setSuspicious(boolean suspicious) {
-//        this.suspicious = suspicious;
-        throw new IllegalArgumentException();
+        this.suspicious = suspicious;
+//        throw new IllegalArgumentException();
     }
 
     public String getChaseModes() {

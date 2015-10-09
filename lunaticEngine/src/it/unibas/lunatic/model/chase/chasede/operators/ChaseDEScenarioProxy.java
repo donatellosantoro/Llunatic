@@ -10,7 +10,7 @@ import it.unibas.lunatic.model.chase.chasede.IDEChaser;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardSymmetricCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.DEPartialOrder;
 import speedy.model.database.IDatabase;

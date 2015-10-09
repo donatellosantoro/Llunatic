@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
+  <source>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+md(ssn, surname, name)
+INSTANCE:
+md(ssn: "123", surname: "Smith", name: "John")
+md(ssn: "123", surname: "Smith", name: "Frank")
+]]>
+    </generate>
+  </source>
   <target>    
     <type>GENERATE</type>
     <generate>
@@ -9,17 +21,17 @@ person(ssn, surname, name, boss)
 INSTANCE:
 person(ssn: "123", surname: "Smith", name: "Walter", boss: "Boss1")
 person(ssn: "123", surname: "Smith", name: "Walter", boss: "Boss2")
+person(ssn: "123", surname: "Smith", name: "Walter", boss: "Boss3")
 person(ssn: "123", surname: "Smith", name: "Walzer", boss: "Boss4")
-person(ssn: "123", surname: "Smith", name: "Joxn", boss: "Boss5")
+person(ssn: "123", surname: "Smith", name: "Joxn", boss: "Boss4")
 ]]>
     </generate>
   </target>
   <dependencies>
 <![CDATA[
 ExtEGDs:
-// Person[ssn] -> Person[name]
-fd0: person(ssn: $ssn, surname: $surname1, name: $name1, boss: $boss1),
-person(ssn: $ssn, surname: $surname2, name: $name2, boss: $boss2)
+er0: person(ssn: $ssn, surname: $surname, name: $name1, boss: $boss1), 
+ md(ssn: $ssn, surname: $surname, name: $name2)
  -> $name1 == $name2.
 ]]>
   </dependencies>

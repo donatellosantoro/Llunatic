@@ -1,4 +1,4 @@
-package it.unibas.lunatic.model.chase.chasemc.costmanager;
+package it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
@@ -11,6 +11,9 @@ import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.AbstractCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.TupleGroupComparator;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.CostManagerUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
@@ -29,11 +32,10 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.LLUNValue;
-import speedy.model.database.NullValue;
 
-public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
+public class SimilarityToMostFrequentSymmetricCostManager extends AbstractCostManager {
 
-    private static Logger logger = LoggerFactory.getLogger(SimilarityToMostFrequentCostManager.class);
+    private static Logger logger = LoggerFactory.getLogger(SimilarityToMostFrequentSymmetricCostManager.class);
 
     private double similarityThreshold = 0.8;
 //    private String similarityStrategy = SimilarityFactory.SIMPLE_EDITS;
@@ -50,6 +52,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             throw new ChaseException("SimilarityToMostFrequentCostManager requires FrequencyPartialOrder");
         }
         EquivalenceClassForSymmetricEGD equivalenceClass = (EquivalenceClassForSymmetricEGD) equivalenceClassProxy.getEquivalenceClass();
+        if (logger.isInfoEnabled()) logger.info("######## Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<EGDEquivalenceClassCells> tupleGroups = equivalenceClass.getTupleGroups();
         Collections.sort(tupleGroups, new TupleGroupComparator());
         Collections.reverse(tupleGroups);
@@ -82,6 +85,7 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
             if (logger.isDebugEnabled()) logger.debug("Returning repair " + repair);
             result.add(repair);
         }
+        if (logger.isInfoEnabled()) logger.info("Returning repair " + repair);
         return result;
     }
 
@@ -150,26 +154,13 @@ public class SimilarityToMostFrequentCostManager extends AbstractCostManager {
     private boolean areSimilar(EGDEquivalenceClassCells t1, EGDEquivalenceClassCells t2) {
         IValue v1 = t1.getCellGroupForForwardRepair().getValue();
         IValue v2 = t2.getCellGroupForForwardRepair().getValue();
-        if (v1 instanceof NullValue || v2 instanceof NullValue) {
-            return true;
-        }
-        double similarity = SimilarityFactory.getInstance().getStrategy(similarityStrategy).computeSimilarity(v1, v2);
-        //TODO: Handling numerical values
-        try {
-            double d1 = Double.parseDouble(v1.toString());
-            double d2 = Double.parseDouble(v2.toString());
-            similarity = 0.9;
-        } catch (NumberFormatException nfe) {
-        }
-        //
-        if (logger.isDebugEnabled()) logger.debug("Checking similarity between " + v1 + " and " + v2 + ". Result: " + similarity);
-        return similarity > similarityThreshold;
+        return CostManagerUtility.areSimilar(v1, v2, similarityStrategy, similarityThreshold);
     }
 
     private BackwardAttribute canDoBackward(EGDEquivalenceClassCells tupleGroup) {
         for (BackwardAttribute backwardAttribute : tupleGroup.getWitnessCells().keySet()) {
             Set<CellGroup> backwardCellGroups = tupleGroup.getCellGroupsForBackwardRepair().get(backwardAttribute);
-            if (backwardIsAllowed(backwardCellGroups)) {
+            if (CostManagerUtility.backwardIsAllowed(backwardCellGroups)) {
                 return backwardAttribute;
             }
         }

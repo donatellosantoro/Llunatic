@@ -14,6 +14,7 @@ import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.CostManagerUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
@@ -170,15 +171,7 @@ public abstract class AbstractCostManager implements ICostManager {
     }
 
     protected CellGroup getLUB(List<CellGroup> cellGroups, Scenario scenario) {
-        CellGroup lub = null;
-        IPartialOrder scriptPo = scenario.getScriptPartialOrder();
-        if (scriptPo != null) {
-            lub = scriptPo.findLUB(cellGroups, scenario);
-        }
-        if (lub == null) {
-            lub = scenario.getPartialOrder().findLUB(cellGroups, scenario);
-        }
-        return lub;
+        return CostManagerUtility.getLUB(cellGroups, scenario);
     }
 
     protected Set<Cell> buildWitnessCells(List<EGDEquivalenceClassCells> equivalenceClassCellList) {
@@ -215,42 +208,6 @@ public abstract class AbstractCostManager implements ICostManager {
         }
         if (logger.isDebugEnabled()) logger.debug("To chase: " + LunaticUtility.printDependencyIds(result));
         return result;
-    }
-
-    protected boolean backwardIsAllowed(Set<CellGroup> cellGroups) {
-        for (CellGroup cellGroup : cellGroups) {
-            if (!backwardIsAllowed(cellGroup)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    protected boolean backwardIsAllowed(CellGroup cellGroup) {
-        if (cellGroup.getOccurrences().isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("Backward with empty occurrences (" + cellGroup + ") is not allowed");
-            return false;
-        }
-        // never change LLUNs backward L(L(x)) = L(x)            
-        if (cellGroup.getValue() instanceof LLUNValue || cellGroup.hasInvalidCell()) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on LLUN (" + cellGroup.getValue() + ") is not allowed");
-            return false;
-        }
-        // never change equal null values          
-        if (cellGroup.getValue() instanceof NullValue) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on Null (" + cellGroup.getValue() + ") is not allowed");
-            return false;
-        }
-        if (!cellGroup.getAuthoritativeJustifications().isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with authoritative justification " + cellGroup.getAuthoritativeJustifications() + " is not allowed");
-            return false;
-        }
-        if (!cellGroup.getUserCells().isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " with user cell " + cellGroup.getUserCells() + " is not allowed");
-            return false;
-        }
-        if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " is allowed");
-        return true;
     }
 
     protected List<Integer> createIndexes(int size) {

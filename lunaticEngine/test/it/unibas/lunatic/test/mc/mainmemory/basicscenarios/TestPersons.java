@@ -1,4 +1,4 @@
-package it.unibas.lunatic.test.mc.mainmemory;
+package it.unibas.lunatic.test.mc.mainmemory.basicscenarios;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
@@ -20,8 +20,8 @@ public class TestPersons extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setUseSymmetricOptimization(false); //TODO++ Remove
 //        setCheckEGDsAfterEachStep(scenario);
-        scenario.getSymmetricCostManager().setDoBackward(false);
-        scenario.getSymmetricCostManager().setDoPermutations(false);
+        scenario.getCostManager().setDoBackward(false);
+        scenario.getCostManager().setDoPermutations(false);
         ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));

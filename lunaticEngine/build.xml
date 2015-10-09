@@ -36,6 +36,7 @@
             <pathelement location="${lib.dir}/jcs-1.3.jar" />  
             <pathelement location="${lib.dir}/concurrent.jar" />  
             <pathelement location="${lib.dir}/commons-logging-${commons-logging.ver}.jar" />
+            <pathelement location="${lib.dir}/commons-csv-${commons-csv.ver}.jar" />
         </path>
         <path id="test.classpath">
             <path refid="compile.classpath" />

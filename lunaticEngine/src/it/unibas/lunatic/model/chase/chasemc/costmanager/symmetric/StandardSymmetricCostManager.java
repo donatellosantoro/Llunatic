@@ -1,4 +1,4 @@
-package it.unibas.lunatic.model.chase.chasemc.costmanager;
+package it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
@@ -11,6 +11,8 @@ import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.AbstractCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.CostManagerUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import speedy.model.database.IDatabase;
@@ -107,7 +109,7 @@ public class StandardSymmetricCostManager extends AbstractCostManager {
                     BackwardAttribute backwardAttribute = backwardAttributeCombination.get(i);
                     EGDEquivalenceClassCells tupleGroup = subset.get(i);
                     Set<CellGroup> backwardCellGroups = tupleGroup.getCellGroupsForBackwardRepair().get(backwardAttribute);
-                    if (!backwardIsAllowed(backwardCellGroups)) {
+                    if (!CostManagerUtility.backwardIsAllowed(backwardCellGroups)) {
                         if (logger.isDebugEnabled()) logger.debug("Backward is not allowed. Discarding cell group " + backwardCellGroups);
                         continue;
                     }

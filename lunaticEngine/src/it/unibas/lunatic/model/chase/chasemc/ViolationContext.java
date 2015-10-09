@@ -10,44 +10,44 @@ import java.util.Set;
 public class ViolationContext {
 
     private int id;
-    private Map<VariableEquivalenceClass, Set<CellGroup>> witnessCells = new HashMap<VariableEquivalenceClass, Set<CellGroup>>();
-    private Map<VariableEquivalenceClass, CellGroup> conclusionCells = new HashMap<VariableEquivalenceClass, CellGroup>();
+    private Map<VariableEquivalenceClass, Set<CellGroup>> witnessCellGroups = new HashMap<VariableEquivalenceClass, Set<CellGroup>>();
+    private Map<VariableEquivalenceClass, CellGroup> conclusionCellGroups = new HashMap<VariableEquivalenceClass, CellGroup>();
 
     public ViolationContext(int id) {
         this.id = id;
     }
 
-    public Set<CellGroup> getWitnessCellsForVariable(VariableEquivalenceClass variable) {
-        return this.witnessCells.get(variable);
+    public Set<CellGroup> getWitnessCellGroupsForVariable(VariableEquivalenceClass variable) {
+        return this.witnessCellGroups.get(variable);
     }
 
     public Set<VariableEquivalenceClass> getWitnessVariables() {
-        return witnessCells.keySet();
+        return witnessCellGroups.keySet();
     }
 
     public CellGroup getCellGroupForConclusionVariable(VariableEquivalenceClass variable) {
-        return this.conclusionCells.get(variable);
+        return this.conclusionCellGroups.get(variable);
     }
 
     public Set<VariableEquivalenceClass> getConclusionVariables() {
-        return conclusionCells.keySet();
+        return conclusionCellGroups.keySet();
     }
 
     public void setCellGroupsForWitnessVariable(VariableEquivalenceClass variable, Set<CellGroup> cells) {
-        this.witnessCells.put(variable, cells);
+        this.witnessCellGroups.put(variable, cells);
     }
 
     public void setCellGroupForConclusionVariable(VariableEquivalenceClass variable, CellGroup cellGroup) {
-        this.conclusionCells.put(variable, cellGroup);
+        this.conclusionCellGroups.put(variable, cellGroup);
     }
 
     public Collection<CellGroup> getAllConclusionGroups() {
-        return this.conclusionCells.values();
+        return this.conclusionCellGroups.values();
     }
 
     public Set<CellGroup> getAllWitnessCellGroups() {
         Set<CellGroup> result = new HashSet<CellGroup>();
-        for (Set<CellGroup> cellGroups : witnessCells.values()) {
+        for (Set<CellGroup> cellGroups : witnessCellGroups.values()) {
             result.addAll(cellGroups);
         }
         return result;
@@ -72,8 +72,8 @@ public class ViolationContext {
     @Override
     public String toString() {
         return "ViolationContext: " + id
-                + "\n\tWitness Cells: " + witnessCells
-                + "\n\tConclusion Cells: " + conclusionCells;
+                + "\n\tWitness Cells: " + witnessCellGroups
+                + "\n\tConclusion Cells: " + conclusionCellGroups;
     }
 
     public String toShortString() {

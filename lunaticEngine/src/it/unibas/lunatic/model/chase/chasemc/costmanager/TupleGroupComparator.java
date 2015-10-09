@@ -4,7 +4,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import java.util.Comparator;
 
-class TupleGroupComparator implements Comparator<EGDEquivalenceClassCells> {
+public class TupleGroupComparator implements Comparator<EGDEquivalenceClassCells> {
 
     //V0
 //    public int compare(TupleGroup t1, TupleGroup t2) {

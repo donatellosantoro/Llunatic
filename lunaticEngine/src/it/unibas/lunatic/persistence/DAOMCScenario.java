@@ -5,8 +5,8 @@ import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityToMostFrequentCostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardSymmetricCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.SimilarityToMostFrequentSymmetricCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.parser.operators.ParseDependencies;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
@@ -112,8 +112,8 @@ public class DAOMCScenario {
             scenario.setScriptPartialOrder(scriptPartialORder);
             //COST-MANAGER
             Element costManagerElement = rootElement.getChild("costManager");
-            ICostManager costManager = loadCostManager(costManagerElement);
-            scenario.setSymmetricCostManager(costManager);
+            ICostManager symmetricCostManager = loadCostManager(costManagerElement);
+            scenario.setSymmetricCostManager(symmetricCostManager);
             //USER-MANAGER
             Element userManagerElement = rootElement.getChild("userManager");
             IUserManager userManager = loadUserManager(userManagerElement, scenario);
@@ -195,7 +195,16 @@ public class DAOMCScenario {
                     if (type.equalsIgnoreCase(SpeedyConstants.XML)) {
                         fileToImport = new XMLFile(fileName);
                     } else if (type.equalsIgnoreCase(SpeedyConstants.CSV)) {
-                        fileToImport = new CSVFile(fileName);
+                        CSVFile csvFile = new CSVFile(fileName);
+                        if (inputFileElement.getAttribute("separator") != null) {
+                            String separator = inputFileElement.getAttribute("separator").getValue();
+                            csvFile.setSeparator(separator.charAt(0));
+                        }
+                        if (inputFileElement.getAttribute("quoteCharacter") != null) {
+                            String quoteCharacter = inputFileElement.getAttribute("quoteCharacter").getValue();
+                            csvFile.setQuoteCharacter(quoteCharacter.charAt(0));
+                        }
+                        fileToImport = csvFile;
                     } else {
                         throw new DAOException("Type " + type + " is not supported");
                     }
@@ -322,14 +331,14 @@ public class DAOMCScenario {
             costManager = new StandardSymmetricCostManager();
         }
         if (COST_MANAGER_SIMILARITY.equals(costManagerType)) {
-            costManager = new SimilarityToMostFrequentCostManager();
+            costManager = new SimilarityToMostFrequentSymmetricCostManager();
             Element similarityStrategyElement = costManagerElement.getChild("similarityStrategy");
             if (similarityStrategyElement != null) {
-                ((SimilarityToMostFrequentCostManager) costManager).setSimilarityStrategy(similarityStrategyElement.getValue());
+                ((SimilarityToMostFrequentSymmetricCostManager) costManager).setSimilarityStrategy(similarityStrategyElement.getValue());
             }
             Element similarityThresholdElement = costManagerElement.getChild("similarityThreshold");
             if (similarityThresholdElement != null) {
-                ((SimilarityToMostFrequentCostManager) costManager).setSimilarityThreshold(Double.parseDouble(similarityThresholdElement.getValue()));
+                ((SimilarityToMostFrequentSymmetricCostManager) costManager).setSimilarityThreshold(Double.parseDouble(similarityThresholdElement.getValue()));
             }
         }
         if (costManager == null) {
