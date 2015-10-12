@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.ITupleIterator;
-import speedy.model.algebra.operators.StringComparator;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
 import speedy.model.database.CellRef;
@@ -47,6 +46,7 @@ import speedy.model.database.TableAlias;
 import speedy.model.database.Tuple;
 import speedy.model.database.TupleOID;
 import speedy.model.database.operators.IRunQuery;
+import speedy.utility.comparator.StringComparator;
 
 public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
 
@@ -175,7 +175,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
         for (String tableName : sortedTableAlias) {
             sb.append(tableName).append(LunaticConstants.FINGERPRINT_SEPARATOR);
             List<TupleOID> sortedTupleOIDs = new ArrayList<TupleOID>(tupleOidsMap.get(tableName));
-            Collections.sort(sortedTupleOIDs, new StringComparator<TupleOID>());
+            Collections.sort(sortedTupleOIDs, new StringComparator());
             for (TupleOID tupleOID : sortedTupleOIDs) {
                 sb.append(tupleOID.toString()).append(LunaticConstants.FINGERPRINT_SEPARATOR);
             }

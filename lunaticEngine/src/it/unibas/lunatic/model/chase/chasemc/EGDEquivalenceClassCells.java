@@ -7,9 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import speedy.model.algebra.operators.StringComparator;
 import speedy.model.database.Cell;
 import speedy.model.database.IValue;
+import speedy.utility.comparator.StringComparator;
 
 // a group of target cells with equal values for conclusion variables that need to be changed to solve a conflict
 public class EGDEquivalenceClassCells {
@@ -92,7 +92,7 @@ public class EGDEquivalenceClassCells {
         sb.append(indent).append("Cell group for fwd repair: ").append(cellGroupForForwardRepair).append("\n");
         sb.append(indent).append("Cells for bkw repairs:").append((suspicious ? " (Suspicious) " : "")).append("\n");
         List<BackwardAttribute> keys = new ArrayList<BackwardAttribute>(witnessCells.keySet());
-        Collections.sort(keys, new StringComparator<BackwardAttribute>());
+        Collections.sort(keys, new StringComparator());
         for (BackwardAttribute backwardAttribute : keys) {
             sb.append(indent).append(backwardAttribute).append("\t").append(witnessCells.get(backwardAttribute)).append("\n");
         }

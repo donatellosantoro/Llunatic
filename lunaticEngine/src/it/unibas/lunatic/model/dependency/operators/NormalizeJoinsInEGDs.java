@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import speedy.model.algebra.operators.StringComparator;
+import speedy.utility.comparator.StringComparator;
 
 public class NormalizeJoinsInEGDs {
 

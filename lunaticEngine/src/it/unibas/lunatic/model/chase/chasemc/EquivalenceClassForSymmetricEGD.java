@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import speedy.model.algebra.operators.StringComparator;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.IValue;
+import speedy.utility.comparator.StringComparator;
 
 public class EquivalenceClassForSymmetricEGD {
 
@@ -58,7 +58,7 @@ public class EquivalenceClassForSymmetricEGD {
         }
         sb.append("Tuple Groups With Same Conclusion Value: \n");
         List<IValue> keys = new ArrayList<IValue>(tupleGroupsWithSameConclusionValue.keySet());
-        Collections.sort(keys, new StringComparator<IValue>());
+        Collections.sort(keys, new StringComparator());
         for (IValue key : keys) {
             sb.append("\tValue: ").append(key).append("\n");
             sb.append(tupleGroupsWithSameConclusionValue.get(key).toString("\t\t"));

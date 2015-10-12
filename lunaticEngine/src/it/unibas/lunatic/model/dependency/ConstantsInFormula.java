@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import speedy.model.algebra.operators.StringComparator;
+import speedy.utility.comparator.StringComparator;
 
 public class ConstantsInFormula {
     

@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import speedy.model.algebra.operators.StringComparator;
 import speedy.model.database.Cell;
+import speedy.utility.comparator.StringComparator;
 
 public class StandardCostManager implements ICostManager {
 
@@ -144,7 +144,7 @@ public class StandardCostManager implements ICostManager {
     private String generateRepairFingerprint(List<CellGroup> backwardCombination) {
         Set<CellGroup> cellGroupSet = new HashSet<CellGroup>(backwardCombination);
         List<CellGroup> sortedCombination = new ArrayList<CellGroup>(cellGroupSet);
-        Collections.sort(sortedCombination, new StringComparator<CellGroup>());
+        Collections.sort(sortedCombination, new StringComparator());
         return sortedCombination.toString();
     }
 
