@@ -15,18 +15,4 @@ public interface ICostManager {
             EquivalenceClassForEGDProxy equivalenceClass, DeltaChaseStep chaseTreeRoot,
             List<Repair> repairsForDependency,
             Scenario scenario, String stepId, OccurrenceHandlerMC occurrenceHandler);
-    
-    public ChaseMCScenario getChaser(Scenario scenario);
-    public List<Dependency> selectDependenciesToChase(List<Dependency> unsatisfiedDependencies, DeltaChaseStep chaseRoot);
-    public boolean isDoBackward();
-    public boolean isDoPermutations();
-    public void setDoBackward(boolean doBackward);
-    public void setDoPermutations(boolean doPermutations);
-    public int getDependencyLimit() ;
-    public void setDependencyLimit(int dependencyLimit);
-    public int getChaseBranchingThreshold();
-    public void setChaseBranchingThreshold(int chaseBranchingThreshold);
-    public int getPotentialSolutionsThreshold();
-    public void setPotentialSolutionsThreshold(int PotentialSolutionsThreshold);
-    public String toLongString();
 }

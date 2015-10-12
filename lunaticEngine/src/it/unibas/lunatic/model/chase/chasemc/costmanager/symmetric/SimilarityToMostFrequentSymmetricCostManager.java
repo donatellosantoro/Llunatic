@@ -11,9 +11,9 @@ import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.AbstractCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.TupleGroupComparator;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.CostManagerUtility;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
@@ -21,7 +21,6 @@ import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
 import speedy.model.database.ConstantValue;
 import speedy.model.database.IDatabase;
 import speedy.model.database.IValue;
-import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,13 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.LLUNValue;
 
-public class SimilarityToMostFrequentSymmetricCostManager extends AbstractCostManager {
+public class SimilarityToMostFrequentSymmetricCostManager extends AbstractSymmetricCostManager {
 
     private static Logger logger = LoggerFactory.getLogger(SimilarityToMostFrequentSymmetricCostManager.class);
-
-    private double similarityThreshold = 0.8;
-//    private String similarityStrategy = SimilarityFactory.SIMPLE_EDITS;
-    private String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;
 
     @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot,
@@ -52,6 +47,7 @@ public class SimilarityToMostFrequentSymmetricCostManager extends AbstractCostMa
             throw new ChaseException("SimilarityToMostFrequentCostManager requires FrequencyPartialOrder");
         }
         EquivalenceClassForSymmetricEGD equivalenceClass = (EquivalenceClassForSymmetricEGD) equivalenceClassProxy.getEquivalenceClass();
+        if (logger.isDebugEnabled()) logger.debug("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName());
         if (logger.isInfoEnabled()) logger.info("######## Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<EGDEquivalenceClassCells> tupleGroups = equivalenceClass.getTupleGroups();
         Collections.sort(tupleGroups, new TupleGroupComparator());
@@ -73,7 +69,7 @@ public class SimilarityToMostFrequentSymmetricCostManager extends AbstractCostMa
         List<EGDEquivalenceClassCells> forwardGroups = new ArrayList<EGDEquivalenceClassCells>();
         List<EGDEquivalenceClassCells> backwardGroups = new ArrayList<EGDEquivalenceClassCells>();
         //TODO++ check: we need a single backward attribute per group of cells
-        Map<EGDEquivalenceClassCells, BackwardAttribute> backwardAttributes = partitionGroups(tupleGroups, forwardGroups, backwardGroups, chaseTreeRoot, stepId, scenario);
+        Map<EGDEquivalenceClassCells, BackwardAttribute> backwardAttributes = partitionGroups(tupleGroups, forwardGroups, backwardGroups, scenario);
         if (logger.isDebugEnabled()) logger.debug("Forward groups: " + forwardGroups);
         if (logger.isDebugEnabled()) logger.debug("Backward groups: " + backwardGroups);
         Repair repair = generateRepairWithBackwards(equivalenceClass, forwardGroups, backwardGroups, backwardAttributes, scenario, chaseTreeRoot.getDeltaDB(), stepId);
@@ -102,13 +98,13 @@ public class SimilarityToMostFrequentSymmetricCostManager extends AbstractCostMa
         return repair;
     }
 
-    private Map<EGDEquivalenceClassCells, BackwardAttribute> partitionGroups(List<EGDEquivalenceClassCells> tupleGroups, List<EGDEquivalenceClassCells> forwardGroups, List<EGDEquivalenceClassCells> backwardGroups, DeltaChaseStep chaseTreeRoot, String stepId, Scenario scenario) {
+    private Map<EGDEquivalenceClassCells, BackwardAttribute> partitionGroups(List<EGDEquivalenceClassCells> tupleGroups, List<EGDEquivalenceClassCells> forwardGroups, List<EGDEquivalenceClassCells> backwardGroups, Scenario scenario) {
         Map<EGDEquivalenceClassCells, BackwardAttribute> result = new HashMap<EGDEquivalenceClassCells, BackwardAttribute>();
         EGDEquivalenceClassCells tupleGroup0 = tupleGroups.get(0);
         forwardGroups.add(tupleGroup0);
         for (int j = 1; j < tupleGroups.size(); j++) {
             EGDEquivalenceClassCells tupleGroupj = tupleGroups.get(j);
-            if (tupleGroupj.getOccurrenceSize() == 0 || areSimilar(tupleGroup0, tupleGroupj)) {
+            if (tupleGroupj.getOccurrenceSize() == 0 || areSimilar(tupleGroup0, tupleGroupj, scenario.getCostManagerConfiguration())) {
                 forwardGroups.add(tupleGroupj);
                 continue;
             }
@@ -151,10 +147,10 @@ public class SimilarityToMostFrequentSymmetricCostManager extends AbstractCostMa
         return repair;
     }
 
-    private boolean areSimilar(EGDEquivalenceClassCells t1, EGDEquivalenceClassCells t2) {
+    private boolean areSimilar(EGDEquivalenceClassCells t1, EGDEquivalenceClassCells t2, CostManagerConfiguration costManagerConfiguration) {
         IValue v1 = t1.getCellGroupForForwardRepair().getValue();
         IValue v2 = t2.getCellGroupForForwardRepair().getValue();
-        return CostManagerUtility.areSimilar(v1, v2, similarityStrategy, similarityThreshold);
+        return CostManagerUtility.areSimilar(v1, v2, costManagerConfiguration.getSimilarityStrategy(), costManagerConfiguration.getSimilarityThreshold());
     }
 
     private BackwardAttribute canDoBackward(EGDEquivalenceClassCells tupleGroup) {
@@ -180,40 +176,7 @@ public class SimilarityToMostFrequentSymmetricCostManager extends AbstractCostMa
     }
 
     @Override
-    public void setDoBackward(boolean doBackward) {
-        if (doBackward == false) {
-            throw new IllegalArgumentException("SimilarityCostManager requires backward chase");
-        }
-        super.setDoBackward(doBackward);
-    }
-
-    public double getSimilarityThreshold() {
-        return similarityThreshold;
-    }
-
-    public void setSimilarityThreshold(double similarityThreshold) {
-        this.similarityThreshold = similarityThreshold;
-    }
-
-    public String getSimilarityStrategy() {
-        return similarityStrategy;
-    }
-
-    public void setSimilarityStrategy(String similarityStrategy) {
-        this.similarityStrategy = similarityStrategy;
-    }
-
-    @Override
     public String toString() {
         return "Similarity To Most Frequent";
-    }
-
-    @Override
-    public String toLongString() {
-        return toString()
-                + "\n\tSimilarity strategy: " + similarityStrategy
-                + "\n\tSimilarity threashold: " + similarityThreshold
-                + "\n"
-                + super.toString();
     }
 }

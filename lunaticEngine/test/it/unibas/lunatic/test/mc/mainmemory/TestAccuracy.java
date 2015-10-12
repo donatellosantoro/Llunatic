@@ -3,6 +3,7 @@ package it.unibas.lunatic.test.mc.mainmemory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
@@ -16,7 +17,7 @@ public class TestAccuracy extends CheckTest {
 //    public void testScenarioPO() throws Exception {
 //        Scenario scenario = UtilityTest.loadScenarioFromResources(References.accuracy);
 //        setConfigurationForTest(scenario);
-//        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
+//        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
 //        DeltaChaseStep result = chaser.doChase(scenario);
 //        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("accuracy", scenario));
 //        if (logger.isDebugEnabled()) logger.debug(result.toShortStringWithSortWithoutDuplicates());
@@ -29,7 +30,7 @@ public class TestAccuracy extends CheckTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.accuracy_poset);
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setRemoveDuplicates(true);
-        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("accuracy", scenario));
 //        if (logger.isDebugEnabled()) logger.debug(result.toShortStringWithSortWithoutDuplicates());

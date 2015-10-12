@@ -1,20 +1,19 @@
-package it.unibas.lunatic.model.chase.chasemc.costmanager;
+package it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.OperatorFactory;
-import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.CostManagerUtility;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
@@ -23,7 +22,6 @@ import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseSte
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
 import speedy.model.database.IDatabase;
@@ -39,33 +37,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.operators.IInsertTuple;
 import speedy.model.database.LLUNValue;
-import speedy.model.database.NullValue;
 import speedy.model.database.operators.IRunQuery;
 
-public abstract class AbstractCostManager implements ICostManager {
+public abstract class AbstractSymmetricCostManager implements ICostManager {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractCostManager.class);
-
-    private boolean doBackward = true;
-    private boolean doPermutations = true;
-    private int chaseBranchingThreshold = 50;
-    private int potentialSolutionsThreshold = 50;
-    private int dependencyLimit = -1;
+    private static Logger logger = LoggerFactory.getLogger(AbstractSymmetricCostManager.class);
 
     protected CheckSatisfactionAfterUpgradesEGD satisfactionChecker = new CheckSatisfactionAfterUpgradesEGD();
-
-    public ChaseMCScenario getChaser(Scenario scenario) {
-        IChaseSTTGDs stChaser = OperatorFactory.getInstance().getSTChaser(scenario);
-        IBuildDeltaDB deltaBuilder = OperatorFactory.getInstance().getDeltaDBBuilder(scenario);
-        IBuildDatabaseForChaseStep stepBuilder = OperatorFactory.getInstance().getDatabaseBuilder(scenario);
-        IRunQuery queryRunner = OperatorFactory.getInstance().getQueryRunner(scenario);
-        IInsertTuple insertOperatorForEgds = OperatorFactory.getInstance().getInsertTuple(scenario);
-        OccurrenceHandlerMC occurrenceHandler = OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario);
-        IChaseDeltaExtTGDs extTgdChaser = OperatorFactory.getInstance().getExtTgdChaser(scenario);
-        CheckSolution solutionChecker = OperatorFactory.getInstance().getSolutionChecker(scenario);
-        ChaseDeltaExtEGDs egdChaser = OperatorFactory.getInstance().getEGDChaser(scenario);
-        return new ChaseMCScenario(stChaser, extTgdChaser, deltaBuilder, stepBuilder, queryRunner, insertOperatorForEgds, occurrenceHandler, egdChaser, solutionChecker);
-    }
 
     protected OccurrenceHandlerMC getOccurrenceHandler(Scenario scenario) {
         return OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario);
@@ -106,20 +84,6 @@ public abstract class AbstractCostManager implements ICostManager {
             }
         }
         return false;
-    }
-
-//    protected boolean isTreeSizeBelowThreshold(int chaseTreeSize, int potentialSolutions, int repairsForDependenciesSize) {
-//        return Math.max(chaseTreeSize, repairsForDependenciesSize) < getChaseTreeSizeThreshold();
-//}
-    protected boolean isTreeSizeBelowThreshold(int chaseTreeSize, int potentialSolutions) {
-        boolean isBelow = (chaseTreeSize < this.chaseBranchingThreshold && potentialSolutions < this.potentialSolutionsThreshold);
-        if (!isBelow && logger.isDebugEnabled()) {
-            logger.debug("chaseTreeSize: " + chaseTreeSize + "\nchaseTreeSizeThreshold: "
-                    + chaseBranchingThreshold + "\npotentialSolutions: "
-                    + potentialSolutions + "\npotentialSolutionsThreshold: "
-                    + potentialSolutionsThreshold);
-        }
-        return isBelow;
     }
 
     protected Repair generateSymmetricForwardRepair(List<EGDEquivalenceClassCells> tupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
@@ -184,39 +148,6 @@ public abstract class AbstractCostManager implements ICostManager {
         return witnessCells;
     }
 
-    public List<Dependency> selectDependenciesToChase(List<Dependency> unsatisfiedDependencies, DeltaChaseStep chaseRoot) {
-        if (logger.isDebugEnabled()) logger.debug("Selecting dependencies to chase - Unsatisfied " + LunaticUtility.printDependencyIds(unsatisfiedDependencies));
-        if (unsatisfiedDependencies.isEmpty()) {
-            return unsatisfiedDependencies;
-        }
-        List<Dependency> result = new ArrayList<Dependency>();
-//        int chaseTreeSize = chaseRoot.getPotentialSolutions();
-        int numberOfLeaves = chaseRoot.getNumberOfLeaves();
-        int potentialSolutions = chaseRoot.getPotentialSolutions();
-        if (dependencyLimit == 1 || !isTreeSizeBelowThreshold(numberOfLeaves, potentialSolutions)) {
-            result.add(unsatisfiedDependencies.get(0));
-            if (logger.isDebugEnabled()) logger.debug("To chase: " + LunaticUtility.printDependencyIds(result));
-            return result;
-        }
-        if (dependencyLimit == -1) {
-            if (logger.isDebugEnabled()) logger.debug("Returning all...");
-            return unsatisfiedDependencies;
-        }
-        int dependencies = Math.min(unsatisfiedDependencies.size(), dependencyLimit);
-        for (int i = 0; i < dependencies; i++) {
-            result.add(unsatisfiedDependencies.get(i));
-        }
-        if (logger.isDebugEnabled()) logger.debug("To chase: " + LunaticUtility.printDependencyIds(result));
-        return result;
-    }
-
-    protected List<Integer> createIndexes(int size) {
-        List<Integer> result = new ArrayList<Integer>();
-        for (int i = 0; i < size; i++) {
-            result.add(i);
-        }
-        return result;
-    }
 
     protected List<EGDEquivalenceClassCells> extractSubset(List<Integer> subsetIndex, List<EGDEquivalenceClassCells> tupleGroups) {
         List<EGDEquivalenceClassCells> result = new ArrayList<EGDEquivalenceClassCells>();
@@ -224,57 +155,5 @@ public abstract class AbstractCostManager implements ICostManager {
             result.add(tupleGroups.get(index));
         }
         return result;
-    }
-
-    public boolean isDoBackward() {
-        return doBackward;
-    }
-
-    public void setDoBackward(boolean doBackward) {
-        this.doBackward = doBackward;
-    }
-
-    public boolean isDoPermutations() {
-        return doPermutations;
-    }
-
-    public void setDoPermutations(boolean doPermutations) {
-        this.doPermutations = doPermutations;
-        if (doPermutations == false) {
-            this.dependencyLimit = 1;
-        }
-    }
-
-    public int getDependencyLimit() {
-        return dependencyLimit;
-    }
-
-    public void setDependencyLimit(int dependencyLimit) {
-        this.dependencyLimit = dependencyLimit;
-    }
-
-    public int getChaseBranchingThreshold() {
-        return chaseBranchingThreshold;
-    }
-
-    public void setChaseBranchingThreshold(int chaseTreeThreshold) {
-        this.chaseBranchingThreshold = chaseTreeThreshold;
-    }
-
-    public int getPotentialSolutionsThreshold() {
-        return potentialSolutionsThreshold;
-    }
-
-    public void setPotentialSolutionsThreshold(int potentialSolutionsThreshold) {
-        this.potentialSolutionsThreshold = potentialSolutionsThreshold;
-    }
-
-    @Override
-    public String toLongString() {
-        return toString() + "\n\tdoBackward=" + doBackward
-                + "\n\tdoPermutations=" + doPermutations
-                + "\n\tchaseTreeSizeThreshold=" + chaseBranchingThreshold
-                + "\n\tpotentialSolutionsThreshold=" + potentialSolutionsThreshold
-                + "\n\tdependencyLimit=" + dependencyLimit;
     }
 }

@@ -300,13 +300,6 @@ public class LunaticUtility {
         return result.toString();
     }
 
-    public static boolean canDoBackward(Scenario scenario) {
-        if (!scenario.getSymmetricCostManager().isDoBackward()) {
-            return false;
-        }
-        return true;
-    }
-
     public static List<AttributeRef> extractAttributesInCellGroups(List<CellGroup> cellGroups) {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
         for (CellGroup cellGroup : cellGroups) {

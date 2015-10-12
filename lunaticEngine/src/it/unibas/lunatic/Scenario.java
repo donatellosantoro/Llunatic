@@ -1,5 +1,6 @@
 package it.unibas.lunatic;
 
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.StandardCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager;
@@ -37,9 +38,10 @@ public class Scenario {
     private IPartialOrder partialOrder;
     private ScriptPartialOrder scriptPartialOrder;
     private List<OrderingAttribute> orderingAttributes = new ArrayList<OrderingAttribute>();
+    private CostManagerConfiguration costManagerConfiguration = new CostManagerConfiguration();
     /// TODO++ Fix symmetric cost manager
-    private ICostManager symmetricCostManager = new StandardSymmetricCostManager();
-    private ICostManager costManager = new StandardCostManager();
+//    private ICostManager symmetricCostManager = new StandardSymmetricCostManager();
+//    private ICostManager costManager = new StandardCostManager();
     ///
     private IUserManager userManager = new StandardUserManager();
     private LunaticConfiguration configuration = new LunaticConfiguration();
@@ -220,20 +222,12 @@ public class Scenario {
         this.userManager = userManager;
     }
 
-    public ICostManager getSymmetricCostManager() {
-        return symmetricCostManager;
+    public CostManagerConfiguration getCostManagerConfiguration() {
+        return costManagerConfiguration;
     }
 
-    public void setSymmetricCostManager(ICostManager symmetricCostManager) {
-        this.symmetricCostManager = symmetricCostManager;
-    }
-
-    public ICostManager getCostManager() {
-        return costManager;
-    }
-
-    public void setCostManager(ICostManager costManager) {
-        this.costManager = costManager;
+    public void setCostManagerConfiguration(CostManagerConfiguration costManagerConfiguration) {
+        this.costManagerConfiguration = costManagerConfiguration;
     }
 
     public boolean isMainMemory() {
@@ -290,10 +284,7 @@ public class Scenario {
     public String toString() {
         StringBuilder result = new StringBuilder("=============================== SCENARIO ================================\n");
         if (!isDEScenario()) {
-            if (symmetricCostManager != null) {
-                result.append("Config: \n").append(configuration).append("\n");
-                result.append("Cost manager: \n\t").append(this.symmetricCostManager.toLongString()).append("\n");
-            }
+            result.append(this.costManagerConfiguration).append("\n");
             result.append("User manager: \n\t").append(this.userManager).append("\n");
             if (partialOrder != null) result.append("Partial order:\n\t").append(this.partialOrder).append("\n");
             if (!orderingAttributes.isEmpty()) result.append("Ordering attributes:\n").append(LunaticUtility.printCollection(orderingAttributes)).append("\n");

@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric;
 
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
@@ -8,14 +9,15 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.AbstractCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
+import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
 import speedy.model.database.ConstantValue;
 import speedy.model.database.IValue;
-import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,13 +35,10 @@ import speedy.model.database.NullValue;
 import speedy.model.database.TupleOID;
 import speedy.utility.SpeedyUtility;
 
-public class SimilarityToPreferredValueCostManager extends AbstractCostManager {
+public class SimilarityToPreferredValueCostManager implements ICostManager {
 
     private static Logger logger = LoggerFactory.getLogger(SimilarityToPreferredValueCostManager.class);
-
-    private double similarityThreshold = 0.8;
-//    private String similarityStrategy = SimilarityFactory.SIMPLE_EDITS;
-    private String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;
+    private CheckSatisfactionAfterUpgradesEGD satisfactionChecker = new CheckSatisfactionAfterUpgradesEGD();
 
     @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot,
@@ -49,6 +48,7 @@ public class SimilarityToPreferredValueCostManager extends AbstractCostManager {
             logger.warn("#### SimilarityToPreferredValueCostManager is usually used with a FrequencyPartialOrder ####");
         }
         EquivalenceClassForEGD equivalenceClass = (EquivalenceClassForEGD) equivalenceClassProxy.getEquivalenceClass();
+        if (logger.isInfoEnabled()) logger.info("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName());
         if (logger.isTraceEnabled()) logger.trace("######## Current node: " + chaseTreeRoot.toStringWithSort());
         if (logger.isInfoEnabled()) logger.info("######## Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<CellGroup> conclusionCellGroups = equivalenceClass.getAllConclusionCellGroups();
@@ -86,7 +86,7 @@ public class SimilarityToPreferredValueCostManager extends AbstractCostManager {
             return (LLUNValue) standardLubValue;
         }
         // To handle specific partial order (i.e. frequency)
-        CellGroup lub = getLUB(validForwardCellGroups, scenario);
+        CellGroup lub = CostManagerUtility.getLUB(validForwardCellGroups, scenario);
         IValue lubValue = lub.getValue();
         if (logger.isDebugEnabled()) logger.debug("Lub value: " + lubValue);
         return lubValue;
@@ -109,7 +109,7 @@ public class SimilarityToPreferredValueCostManager extends AbstractCostManager {
 
     private boolean isDebug(EquivalenceClassForEGD equivalenceClass) {
 //        for (IValue conclusionValue : equivalenceClass.getAllConclusionValues()) {
-//            if (conclusionValue.toString().equals("36502-*")) {
+//            if (conclusionValue.toString().equals("FORDYCE-*")) {
 //                return true;
 //            }
 //        }
@@ -117,17 +117,17 @@ public class SimilarityToPreferredValueCostManager extends AbstractCostManager {
     }
 
     private Repair generateRepairForConstantPreferredValue(IValue preferredValue, EquivalenceClassForEGD equivalenceClass, Scenario scenario) {
-        Set<IValue> forwardValues = findForwardValues(preferredValue, equivalenceClass);
+        Set<IValue> forwardValues = findForwardValues(preferredValue, equivalenceClass, scenario.getCostManagerConfiguration());
         Set<TupleOID> forwardTupleOIDs = extractTupleOIDs(forwardValues, equivalenceClass);
         boolean debug = isDebug(equivalenceClass);
-        if (debug) logger.error("Forward values: " + forwardValues);
+        if (debug) logger.info("Forward values: " + forwardValues);
         if (logger.isDebugEnabled()) logger.debug("Forward values: " + forwardValues);
         if (logger.isDebugEnabled()) logger.debug("Forward tuple oids: " + forwardTupleOIDs);
         Map<CellGroup, Set<ViolationContext>> backwardCellGroupsMap = new HashMap<CellGroup, Set<ViolationContext>>();
         for (ViolationContext violationContext : equivalenceClass.getViolationContexts()) {
             handleViolationContext(violationContext, forwardValues, forwardTupleOIDs, backwardCellGroupsMap, equivalenceClass);
         }
-        if (debug) logger.error("Backward groups map: " + SpeedyUtility.printMap(backwardCellGroupsMap));
+        if (debug) logger.info("Backward groups map: " + SpeedyUtility.printMap(backwardCellGroupsMap));
         Set<ViolationContext> backwardContextsToHandle = addAllContexts(backwardCellGroupsMap);
         List<ViolationContext> forwardContexts = extractForwardContext(backwardContextsToHandle, equivalenceClass);
         List<CellGroup> backwardCellGroups = findBackwardCellGroupsToChange(backwardContextsToHandle, backwardCellGroupsMap);
@@ -155,7 +155,9 @@ public class SimilarityToPreferredValueCostManager extends AbstractCostManager {
         return backwardCellGroups;
     }
 
-    private Set<IValue> findForwardValues(IValue preferredValue, EquivalenceClassForEGD equivalenceClass) {
+    private Set<IValue> findForwardValues(IValue preferredValue, EquivalenceClassForEGD equivalenceClass, CostManagerConfiguration costManagerConfiguration) {
+        String similarityStrategy = costManagerConfiguration.getSimilarityStrategy();
+        double similarityThreshold = costManagerConfiguration.getSimilarityThreshold();
         Set<IValue> forwardValues = new HashSet<IValue>();
         for (IValue conclusionValue : equivalenceClass.getAllConclusionValues()) {
             if (CostManagerUtility.areSimilar(preferredValue, conclusionValue, similarityStrategy, similarityThreshold)) {
@@ -249,41 +251,8 @@ public class SimilarityToPreferredValueCostManager extends AbstractCostManager {
     }
 
     @Override
-    public void setDoBackward(boolean doBackward) {
-        if (doBackward == false) {
-            throw new IllegalArgumentException("SimilarityCostManager requires backward chase");
-        }
-        super.setDoBackward(doBackward);
-    }
-
-    public double getSimilarityThreshold() {
-        return similarityThreshold;
-    }
-
-    public void setSimilarityThreshold(double similarityThreshold) {
-        this.similarityThreshold = similarityThreshold;
-    }
-
-    public String getSimilarityStrategy() {
-        return similarityStrategy;
-    }
-
-    public void setSimilarityStrategy(String similarityStrategy) {
-        this.similarityStrategy = similarityStrategy;
-    }
-
-    @Override
     public String toString() {
         return "Similarity To Most Frequent";
-    }
-
-    @Override
-    public String toLongString() {
-        return toString()
-                + "\n\tSimilarity strategy: " + similarityStrategy
-                + "\n\tSimilarity threashold: " + similarityThreshold
-                + "\n"
-                + super.toString();
     }
 
 }

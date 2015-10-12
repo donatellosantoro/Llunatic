@@ -1,8 +1,9 @@
 package it.unibas.lunatic.test.mc.mainmemory;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.SimilarityToPreferredValueCostManager;
+import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -20,10 +21,10 @@ public class TestPersonsDeps07 extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
         scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
-        scenario.setCostManager(new SimilarityToPreferredValueCostManager());//TODO++ Remove
-        scenario.getCostManager().setDoPermutations(false);
+        scenario.getCostManagerConfiguration().setType(LunaticConstants.COST_MANAGER_SIMILARITY);
+        scenario.getCostManagerConfiguration().setDoPermutations(false);
         scenario.getConfiguration().setRemoveDuplicates(false);
-        DeltaChaseStep result = scenario.getSymmetricCostManager().getChaser(scenario).doChase(scenario);
+        DeltaChaseStep result = ChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + scenarioName);
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));

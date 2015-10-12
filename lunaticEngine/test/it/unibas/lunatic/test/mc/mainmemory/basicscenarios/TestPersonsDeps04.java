@@ -2,6 +2,7 @@ package it.unibas.lunatic.test.mc.mainmemory.basicscenarios;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -21,7 +22,7 @@ public class TestPersonsDeps04 extends CheckExpectedSolutionsTest {
         scenario.getConfiguration().setRemoveDuplicates(false);
         scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
         scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
-        DeltaChaseStep result = scenario.getSymmetricCostManager().getChaser(scenario).doChase(scenario);
+        DeltaChaseStep result = ChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + scenarioName);
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));

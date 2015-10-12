@@ -17,6 +17,8 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerFactory;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedDependency;
@@ -79,7 +81,8 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
                 if (equivalenceClass == null) {
                     break;
                 }
-                List<Repair> repairsForEquivalenceClass = scenario.getSymmetricCostManager().chooseRepairStrategy(new EquivalenceClassForEGDProxy(equivalenceClass), currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
+                ICostManager costManager = CostManagerFactory.getCostManager(egd, scenario);
+                List<Repair> repairsForEquivalenceClass = costManager.chooseRepairStrategy(new EquivalenceClassForEGDProxy(equivalenceClass), currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
                 if (logger.isDebugEnabled()) logger.debug("Repairs for equivalence class: " + LunaticUtility.printCollection(repairsForEquivalenceClass));
                 repairsForDependency = accumulateRepairs(repairsForDependency, repairsForEquivalenceClass, equivalenceClass);
                 if (noMoreTuples(it)) {

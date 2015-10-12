@@ -3,6 +3,7 @@ package it.unibas.lunatic.test.mc.mainmemory.basicscenarios;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -20,9 +21,9 @@ public class TestPersons extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setUseSymmetricOptimization(false); //TODO++ Remove
 //        setCheckEGDsAfterEachStep(scenario);
-        scenario.getCostManager().setDoBackward(false);
-        scenario.getCostManager().setDoPermutations(false);
-        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
+        scenario.getCostManagerConfiguration().setDoBackward(false);
+        scenario.getCostManagerConfiguration().setDoPermutations(false);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
@@ -39,9 +40,9 @@ public class TestPersons extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
 //        setCheckEGDsAfterEachStep(scenario);
-//        scenario.getSymmetricCostManager().setDoBackward(false);
-//        scenario.getSymmetricCostManager().setDoPermutations(false);
-        ChaseMCScenario chaser = scenario.getSymmetricCostManager().getChaser(scenario);
+//        ChaserFactory.setDoBackward(false);
+//        ChaserFactory.setDoPermutations(false);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
 //        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());

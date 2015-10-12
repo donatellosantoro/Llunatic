@@ -13,6 +13,8 @@ import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerFactory;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
@@ -85,7 +87,8 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
                 if (equivalenceClass == null) {
                     break;
                 }
-                List<Repair> repairsForEquivalenceClass = scenario.getCostManager().chooseRepairStrategy(new EquivalenceClassForEGDProxy(equivalenceClass), currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
+                ICostManager costManager = CostManagerFactory.getCostManager(egd, scenario);
+                List<Repair> repairsForEquivalenceClass = costManager.chooseRepairStrategy(new EquivalenceClassForEGDProxy(equivalenceClass), currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
                 if (logger.isDebugEnabled()) logger.debug("Repairs for equivalence class: " + LunaticUtility.printCollection(repairsForEquivalenceClass));
                 repairsForDependency = accumulateRepairs(repairsForDependency, repairsForEquivalenceClass, equivalenceClass);
                 if (noMoreTuples(it)) {
@@ -202,7 +205,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
             indexContext(enrichedCellGroup, violationContext, equivalenceClass);
             indexConclusionValues(enrichedCellGroup, equivalenceClass);
         }
-        if (scenario.getCostManager().isDoBackward()) {
+        if (scenario.getCostManagerConfiguration().isDoBackward()) {
             //Then adds cell groups for backward repairs - one for each occurrence
             for (VariableEquivalenceClass witnessVEQ : equivalenceClass.getDependencyVariables().getWitnessVariables()) {
                 Set<CellGroup> cellGroupsForWitnessVariable = new HashSet<CellGroup>();

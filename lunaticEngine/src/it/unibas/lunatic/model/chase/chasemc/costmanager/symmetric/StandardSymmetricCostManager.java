@@ -11,9 +11,10 @@ import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.AbstractCostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.CostManagerUtility;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
+import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.utility.DependencyUtility;
@@ -28,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.LLUNValue;
 
-public class StandardSymmetricCostManager extends AbstractCostManager {
+public class StandardSymmetricCostManager extends AbstractSymmetricCostManager {
 
     private static Logger logger = LoggerFactory.getLogger(StandardSymmetricCostManager.class);
 
@@ -37,6 +38,7 @@ public class StandardSymmetricCostManager extends AbstractCostManager {
             List<Repair> repairsForDependency, Scenario scenario, String stepId,
             OccurrenceHandlerMC occurrenceHandler) {
         EquivalenceClassForSymmetricEGD equivalenceClass = (EquivalenceClassForSymmetricEGD) equivalenceClassProxy.getEquivalenceClass();
+        if (logger.isInfoEnabled()) logger.info("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName());
         if (logger.isDebugEnabled()) logger.debug("########Current node: " + chaseTreeRoot.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("########Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<EGDEquivalenceClassCells> tupleGroupsWithSameConclusionValue = equivalenceClass.getTupleGroups();
@@ -46,7 +48,7 @@ public class StandardSymmetricCostManager extends AbstractCostManager {
         List<Repair> result = new ArrayList<Repair>();
         Repair forwardRepair = generateSymmetricForwardRepair(equivalenceClass.getTupleGroups(), scenario, chaseTreeRoot.getDeltaDB(), stepId);
         result.add(forwardRepair);
-        if (canDoBackward(chaseTreeRoot)) {
+        if (canDoBackward(chaseTreeRoot, scenario.getCostManagerConfiguration())) {
             List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass.getTupleGroups(), scenario, chaseTreeRoot.getDeltaDB(), stepId, equivalenceClass);
             for (Repair repair : backwardRepairs) {
                 //TODO++ check: backward repairs are generated twice
@@ -67,12 +69,12 @@ public class StandardSymmetricCostManager extends AbstractCostManager {
 //        if (logger.isDebugEnabled()) logger.debug("########Forward repair: " + forwardRepair);
 //        return forwardRepair;
 //    }
-    private boolean canDoBackward(DeltaChaseStep chaseTreeRoot) {
-        if (isDoBackward()) {
+    private boolean canDoBackward(DeltaChaseStep chaseTreeRoot, CostManagerConfiguration costManagerConfiguration) {
+        if (costManagerConfiguration.isDoBackward()) {
             // check if repairs with backward chasing are possible
             int chaseBranching = chaseTreeRoot.getNumberOfLeaves();
             int potentialSolutions = chaseTreeRoot.getPotentialSolutions();
-            if (isTreeSizeBelowThreshold(chaseBranching, potentialSolutions)) {
+            if (CostManagerUtility.isTreeSizeBelowThreshold(chaseBranching, potentialSolutions, costManagerConfiguration)) {
                 return true;
             }
         }
@@ -86,7 +88,7 @@ public class StandardSymmetricCostManager extends AbstractCostManager {
         List<Repair> result = new ArrayList<Repair>();
         if (logger.isDebugEnabled()) logger.debug("Generating backward repairs for groups:\n" + LunaticUtility.printCollection(tupleGroups));
         GenericPowersetGenerator<Integer> powersetGenerator = new GenericPowersetGenerator<Integer>();
-        List<List<Integer>> powerset = powersetGenerator.generatePowerSet(createIndexes(tupleGroups.size()));
+        List<List<Integer>> powerset = powersetGenerator.generatePowerSet(CostManagerUtility.createIndexes(tupleGroups.size()));
         for (List<Integer> subsetIndex : powerset) {
             if (subsetIndex.isEmpty() || subsetIndex.size() == tupleGroups.size()) {
                 continue;

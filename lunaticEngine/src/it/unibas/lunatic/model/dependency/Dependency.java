@@ -128,8 +128,10 @@ public class Dependency implements Cloneable {
     }
 
     public boolean hasSymmetricChase() {
+        // Symmetric chase is used only for FDs
+        return this.symmetricAtoms.getSize() == 1 && !hasNegations() && !isOverlapBetweenAffectedAndQueried();
         // in case there are overlaps, conclusion variables become part of the witness, and therefore generate different equivalence classes
-        return !this.symmetricAtoms.isEmpty() && !hasNegations() && !isOverlapBetweenAffectedAndQueried();
+//        return !this.symmetricAtoms.isEmpty() && !hasNegations() && !isOverlapBetweenAffectedAndQueried();
     }
 
     public SymmetricAtoms getSymmetricAtoms() {

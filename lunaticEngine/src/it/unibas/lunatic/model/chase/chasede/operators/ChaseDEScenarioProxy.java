@@ -9,10 +9,10 @@ import it.unibas.lunatic.model.chase.commons.control.ImmutableChaseState;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;
 import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.DEPartialOrder;
+import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.ArrayList;
@@ -31,14 +31,14 @@ public class ChaseDEScenarioProxy implements IDEChaser {
         }
         scenario.setEGDs(new ArrayList<Dependency>());
         scenario.setExtEGDs(egds);
-        ICostManager forwardOnlyCostManager = new StandardSymmetricCostManager();
-        forwardOnlyCostManager.setDoBackward(false);
-        forwardOnlyCostManager.setDoPermutations(false);
-        scenario.setCostManager(forwardOnlyCostManager);
+        CostManagerConfiguration costManagerConfiguration = new CostManagerConfiguration();
+        costManagerConfiguration.setDoBackward(false);
+        costManagerConfiguration.setDoPermutations(false);
+        scenario.setCostManagerConfiguration(costManagerConfiguration);
         scenario.setPartialOrder(new DEPartialOrder());
         scenario.getConfiguration().setDeProxyMode(true);
         scenario.getConfiguration().setRemoveDuplicates(false);
-        ChaseMCScenario mcChaser = scenario.getSymmetricCostManager().getChaser(scenario);
+        ChaseMCScenario mcChaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep chaseStep = mcChaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("----MC result: " + chaseStep);
         if (chaseStep.getNumberOfLeaves() > 1) {

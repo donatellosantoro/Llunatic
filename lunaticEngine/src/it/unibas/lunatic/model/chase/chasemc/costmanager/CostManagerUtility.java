@@ -1,13 +1,16 @@
-package it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric;
+package it.unibas.lunatic.model.chase.chasemc.costmanager;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
+import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -26,12 +29,40 @@ public class CostManagerUtility {
 
     private static Logger logger = LoggerFactory.getLogger(CostManagerUtility.class);
 
-    public static List<CellGroup> extractConclusionCellGroupsFromContexts(List<ViolationContext> contexts) {
-        Set<CellGroup> result = new HashSet<CellGroup>();
-        for (ViolationContext context : contexts) {
-            result.addAll(context.getAllConclusionGroups());
+    public static List<Dependency> selectDependenciesToChase(List<Dependency> unsatisfiedDependencies, DeltaChaseStep chaseRoot, CostManagerConfiguration costManagerConfiguration) {
+        if (logger.isDebugEnabled()) logger.debug("Selecting dependencies to chase - Unsatisfied " + LunaticUtility.printDependencyIds(unsatisfiedDependencies));
+        if (unsatisfiedDependencies.isEmpty()) {
+            return unsatisfiedDependencies;
         }
-        return new ArrayList<CellGroup>(result);
+        List<Dependency> result = new ArrayList<Dependency>();
+//        int chaseTreeSize = chaseRoot.getPotentialSolutions();
+        int numberOfLeaves = chaseRoot.getNumberOfLeaves();
+        int potentialSolutions = chaseRoot.getPotentialSolutions();
+        if (costManagerConfiguration.getDependencyLimit() == 1
+                || !CostManagerUtility.isTreeSizeBelowThreshold(numberOfLeaves, potentialSolutions, costManagerConfiguration)) {
+            result.add(unsatisfiedDependencies.get(0));
+            if (logger.isDebugEnabled()) logger.debug("To chase: " + LunaticUtility.printDependencyIds(result));
+            return result;
+        }
+        if (costManagerConfiguration.getDependencyLimit() == -1) {
+            if (logger.isDebugEnabled()) logger.debug("Returning all...");
+            return unsatisfiedDependencies;
+        }
+        int dependencies = Math.min(unsatisfiedDependencies.size(), costManagerConfiguration.getDependencyLimit());
+        for (int i = 0; i < dependencies; i++) {
+            result.add(unsatisfiedDependencies.get(i));
+        }
+        if (logger.isDebugEnabled()) logger.debug("To chase: " + LunaticUtility.printDependencyIds(result));
+        return result;
+    }
+
+    public static boolean isTreeSizeBelowThreshold(int chaseTreeSize, int potentialSolutions, CostManagerConfiguration costManagerConfiguration) {
+        boolean isBelow = (chaseTreeSize < costManagerConfiguration.getChaseBranchingThreshold()
+                && potentialSolutions < costManagerConfiguration.getPotentialSolutionsThreshold());
+        if (!isBelow && logger.isDebugEnabled()) {
+            logger.debug(costManagerConfiguration.toString());
+        }
+        return isBelow;
     }
 
     public static boolean backwardIsAllowed(Set<CellGroup> cellGroups) {
@@ -114,6 +145,9 @@ public class CostManagerUtility {
         if (v1 instanceof NullValue || v2 instanceof NullValue) {
             return true;
         }
+        if (v1.toString().equalsIgnoreCase(v2.toString())) {
+            return true;
+        }
         double similarity = SimilarityFactory.getInstance().getStrategy(similarityStrategy).computeSimilarity(v1, v2);
         //TODO: Handling numerical values
         try {
@@ -136,6 +170,14 @@ public class CostManagerUtility {
         if (logger.isDebugEnabled()) logger.debug("Forward changes: " + forwardChanges);
         repair.addViolationContext(forwardChanges);
         return repair;
+    }
+
+    public static List<CellGroup> extractConclusionCellGroupsFromContexts(List<ViolationContext> contexts) {
+        Set<CellGroup> result = new HashSet<CellGroup>();
+        for (ViolationContext context : contexts) {
+            result.addAll(context.getAllConclusionGroups());
+        }
+        return new ArrayList<CellGroup>(result);
     }
 
     public static Repair generateRepairWithBackwards(List<ViolationContext> forwardContexts, List<CellGroup> backwardCellGroups, List<ViolationContext> backwardContexts, Scenario scenario) {
@@ -188,6 +230,14 @@ public class CostManagerUtility {
         }
         for (CellGroup witnessCellGroup : context.getAllWitnessCellGroups()) {
             result.addAll(witnessCellGroup.getOccurrences());
+        }
+        return result;
+    }
+
+    public static List<Integer> createIndexes(int size) {
+        List<Integer> result = new ArrayList<Integer>();
+        for (int i = 0; i < size; i++) {
+            result.add(i);
         }
         return result;
     }

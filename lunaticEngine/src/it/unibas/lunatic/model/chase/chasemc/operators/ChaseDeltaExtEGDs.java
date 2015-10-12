@@ -10,6 +10,7 @@ import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.DependencyStratum;
@@ -108,7 +109,7 @@ public class ChaseDeltaExtEGDs {
         if (logger.isDebugEnabled()) logger.debug("----Chase iteration starting...");
         List<DeltaChaseStep> newSteps = new ArrayList<DeltaChaseStep>();
         List<Dependency> unsatisfiedDependencies = unsatisfiedDependenciesChecker.findUnsatisfiedEGDsNoQuery(currentNode, egds);
-        List<Dependency> egdsToChase = scenario.getCostManager().selectDependenciesToChase(unsatisfiedDependencies, currentNode.getRoot());
+        List<Dependency> egdsToChase = CostManagerUtility.selectDependenciesToChase(unsatisfiedDependencies, currentNode.getRoot(), scenario.getCostManagerConfiguration());
         if (logger.isDebugEnabled()) logger.debug("----Unsatisfied Dependencies: " + LunaticUtility.printDependencyIds(unsatisfiedDependencies));
         if (logger.isDebugEnabled()) logger.debug("----Dependencies to chase: " + LunaticUtility.printDependencyIds(egdsToChase));
         boolean userInteractionRequired = false;

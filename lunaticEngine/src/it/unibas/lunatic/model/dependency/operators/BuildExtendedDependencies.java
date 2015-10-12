@@ -32,7 +32,6 @@ public class BuildExtendedDependencies {
     private static Logger logger = LoggerFactory.getLogger(BuildExtendedDependencies.class);
 
 //    private FindSubsumedAtoms subsumptionFinder = new FindSubsumedAtoms();
-
     public List<ExtendedDependency> buildExtendedEGDs(List<Dependency> dependencies, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Original dependencies: \n" + LunaticUtility.printCollection(dependencies));
         List<ExtendedDependency> result = new ArrayList<ExtendedDependency>();
@@ -44,10 +43,10 @@ public class BuildExtendedDependencies {
             List<ExtendedDependency> extendedDependencies = new ArrayList<ExtendedDependency>();
             if (logger.isDebugEnabled()) logger.debug("Building forward egd...");
             extendedDependencies.add(buildForwardEGD(dependency));
-            if (LunaticUtility.canDoBackward(scenario)) {
+            if (scenario.getCostManagerConfiguration().isDoBackward()) {
                 if (logger.isDebugEnabled()) logger.debug("Building backward egds...");
                 extendedDependencies.addAll(buildBackwardEGDs(dependency));
-            } 
+            }
             findQueriedAndLocalAffectedAttributes(dependency, extendedDependencies);
             result.addAll(extendedDependencies);
             dependency.setExtendedDependencies(extendedDependencies);

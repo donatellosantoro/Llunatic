@@ -7,6 +7,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfCellGroup;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.test.GenerateModifiedCells;
@@ -75,7 +76,7 @@ public class CheckTest extends TestCase {
         if (scenario.getPartialOrder() instanceof FrequencyPartialOrder) {
             name.append("-FR");
         }
-        ICostManager costManager = scenario.getSymmetricCostManager();
+        CostManagerConfiguration costManager = scenario.getCostManagerConfiguration();
         if (costManager.getDependencyLimit() == 1) {
             name.append("-SP");
         } else {
