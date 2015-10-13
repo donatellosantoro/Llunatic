@@ -154,7 +154,7 @@ public class SimilarityToMostFrequentSymmetricCostManager extends AbstractSymmet
     }
 
     private BackwardAttribute canDoBackward(EGDEquivalenceClassCells tupleGroup) {
-        for (BackwardAttribute backwardAttribute : tupleGroup.getWitnessCells().keySet()) {
+        for (BackwardAttribute backwardAttribute : tupleGroup.getWitnessCellGroups()) {
             Set<CellGroup> backwardCellGroups = tupleGroup.getCellGroupsForBackwardRepair().get(backwardAttribute);
             if (CostManagerUtility.backwardIsAllowed(backwardCellGroups)) {
                 return backwardAttribute;

@@ -47,6 +47,12 @@ public class EGDEquivalenceClassCells {
         return witnessCells;
     }
 
+    public List<BackwardAttribute> getWitnessCellGroups() {
+        List<BackwardAttribute> keys = new ArrayList<BackwardAttribute>(witnessCells.keySet());
+        Collections.sort(keys, new StringComparator());
+        return keys;
+    }
+
     public void setCellGroupForForwardRepair(CellGroup cellGroupForForwardRepair) {
         this.cellGroupForForwardRepair = cellGroupForForwardRepair;
     }

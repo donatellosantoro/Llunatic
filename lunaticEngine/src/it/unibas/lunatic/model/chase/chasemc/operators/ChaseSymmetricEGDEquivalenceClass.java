@@ -202,7 +202,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         for (EGDEquivalenceClassCells tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
             CellGroup forwardCellGroup = this.occurrenceHandler.enrichCellGroups(tupleGroup.getCellGroupForForwardRepair(), deltaDB, stepId, scenario);
             tupleGroup.setCellGroupForForwardRepair(forwardCellGroup);
-            for (BackwardAttribute backwardAttribute : tupleGroup.getWitnessCells().keySet()) {
+            for (BackwardAttribute backwardAttribute : tupleGroup.getWitnessCellGroups()) {
                 Set<CellGroup> cellGroupsForAttribute = generateBackwardCellGroups(tupleGroup.getWitnessCells().get(backwardAttribute), scenario, deltaDB, stepId);
                 tupleGroup.addCellGroupsForBackwardRepair(backwardAttribute, cellGroupsForAttribute);
             }
