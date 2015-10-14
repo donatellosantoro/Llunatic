@@ -3,12 +3,13 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
 import speedy.model.database.CellRef;
@@ -49,7 +50,7 @@ public class CellGroupUtility {
     }
 
     public static void mergeCells(CellGroup source, CellGroup dest) {
-        if(source == dest){
+        if (source == dest) {
             throw new IllegalArgumentException("Unable to merge cell group with itself");
         }
         dest.getOccurrences().addAll(source.getOccurrences());
@@ -61,15 +62,15 @@ public class CellGroupUtility {
         dest.addAllAdditionalCells(source.getAdditionalCells());
     }
 
-    public static List<CellGroup> extractCellGroups(List<EGDEquivalenceClassCells> tupleGroups) {
-        List<CellGroup> cellGroups = new ArrayList<CellGroup>();
-        for (EGDEquivalenceClassCells tupleGroup : tupleGroups) {
-            cellGroups.add(tupleGroup.getCellGroupForForwardRepair().clone());
-        }
-        return cellGroups;
-    }
-    
-    public static  Set<IValue> findDifferentValuesInCellGroupsWithOccurrences(List<CellGroup> cellGroups) {
+//    public static List<CellGroup> extractCellGroups(List<EGDEquivalenceClassTupleCellsOLD> tupleGroups) {
+//        List<CellGroup> cellGroups = new ArrayList<CellGroup>();
+//        for (EGDEquivalenceClassTupleCellsOLD tupleGroup : tupleGroups) {
+//            cellGroups.add(tupleGroup.getCellGroupForForwardRepair().clone());
+//        }
+//        return cellGroups;
+//    }
+
+    public static Set<IValue> findDifferentValuesInCellGroupsWithOccurrences(List<CellGroup> cellGroups) {
         Set<IValue> result = new HashSet<IValue>();
         for (CellGroup cellGroup : cellGroups) {
             if (cellGroup.getOccurrences().isEmpty()) {
@@ -78,9 +79,9 @@ public class CellGroupUtility {
             result.add(cellGroup.getValue());
         }
         return result;
-    }    
+    }
 
-    public static  boolean checkContainment(List<CellGroup> cellGroups) {
+    public static boolean checkContainment(List<CellGroup> cellGroups) {
         Set<CellRef> allCellRefs = new HashSet<CellRef>();
         for (CellGroup cellGroup : cellGroups) {
             allCellRefs.addAll(extractAllCellRefs(cellGroup));
@@ -94,7 +95,7 @@ public class CellGroupUtility {
         return false;
     }
 
-    public static  Set<CellRef> extractAllCellRefs(CellGroup cellGroup) {
+    public static Set<CellRef> extractAllCellRefs(CellGroup cellGroup) {
         Set<CellRef> result = new HashSet<CellRef>();
         for (CellGroupCell cell : cellGroup.getAllCells()) {
             result.add(new CellRef(cell));
@@ -102,7 +103,7 @@ public class CellGroupUtility {
         return result;
     }
 
-    public static  Set<CellRef> extractAllCellRefs(Set<Cell> cells) {
+    public static Set<CellRef> extractAllCellRefs(Set<Cell> cells) {
         Set<CellRef> result = new HashSet<CellRef>();
         for (Cell cell : cells) {
             result.add(new CellRef(cell));

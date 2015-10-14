@@ -18,8 +18,6 @@ public class TestFlipFlop extends CheckExpectedSolutionsTest {
     public void testScenarioFlipFlop() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.flipflop);
         setConfigurationForTest(scenario);
-        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
-        scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
         if (logger.isDebugEnabled()) logger.debug("Scenario " + scenario);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);

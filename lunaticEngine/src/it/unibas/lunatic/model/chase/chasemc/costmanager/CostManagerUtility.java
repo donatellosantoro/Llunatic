@@ -2,12 +2,15 @@ package it.unibas.lunatic.model.chase.chasemc.costmanager;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassTupleCells;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -21,6 +24,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.Cell;
+import speedy.model.database.IDatabase;
 import speedy.model.database.IValue;
 import speedy.model.database.LLUNValue;
 import speedy.model.database.NullValue;
@@ -102,7 +106,7 @@ public class CostManagerUtility {
         throw new IllegalArgumentException("Unable to find variable equivalence class for cell group " + witnessCellGroup + "\n\t in context " + backwardContext);
     }
 
-    private static boolean backwardIsAllowed(CellGroup cellGroup) {
+    public static boolean backwardIsAllowed(CellGroup cellGroup) {
         if (cellGroup.getOccurrences().isEmpty()) {
             if (logger.isDebugEnabled()) logger.debug("Backward with empty occurrences (" + cellGroup + ") is not allowed");
             return false;
@@ -127,6 +131,34 @@ public class CostManagerUtility {
         }
         if (logger.isDebugEnabled()) logger.debug("Backward on " + cellGroup.getValue() + " is allowed");
         return true;
+    }
+
+    //Was isSuspicious
+    public static boolean joinsAreNotDisrupted(EquivalenceClassForSymmetricEGD equivalenceClass, List<EGDEquivalenceClassTupleCells> forwardTuples, List<EGDEquivalenceClassTupleCells> backwardTupleGroups, List<BackwardAttribute> backwardAttributes) {
+        for (int i = 0; i < backwardTupleGroups.size(); i++) {
+            EGDEquivalenceClassTupleCells backwardTuple = backwardTupleGroups.get(i);
+            BackwardAttribute backwardAttribute = backwardAttributes.get(i);
+            CellGroup backwardCellGroup = backwardTuple.getCellGroupForBackwardAttribute(backwardAttribute);
+            for (CellGroupCell backwardCell : backwardCellGroup.getOccurrences()) {
+                for (EGDEquivalenceClassTupleCells tupleForCell : equivalenceClass.getTupleCellsForCell(backwardCell)) {
+                    if (forwardTuples.contains(tupleForCell)) {
+                        if (logger.isDebugEnabled()) logger.debug("Backward cellgroup " + backwardCellGroup + " do not disrupt a join. Tuples for cell group occurrences: " + tupleForCell);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static Set<Cell> buildWitnessCells(List<EGDEquivalenceClassTupleCells> equivalenceClassTuples) {
+        Set<Cell> witnessCells = new HashSet<Cell>();
+        for (EGDEquivalenceClassTupleCells tuple : equivalenceClassTuples) {
+            for (CellGroup witnessCellsInTuple : tuple.getBackwardCellGroups()) {
+                witnessCells.addAll(witnessCellsInTuple.getAllCells());
+            }
+        }
+        return witnessCells;
     }
 
     public static CellGroup getLUB(List<CellGroup> cellGroups, Scenario scenario) {
@@ -159,6 +191,30 @@ public class CostManagerUtility {
         //
         if (logger.isDebugEnabled()) logger.debug("Checking similarity between " + v1 + " and " + v2 + ". Result: " + similarity);
         return similarity > similarityThreshold;
+    }
+
+    public static Repair generateSymmetricForwardRepair(EquivalenceClassForSymmetricEGD equivalenceClass, Scenario scenario, IDatabase deltaDB, String stepId) {
+        Repair repair = new Repair();
+        ChangeDescription forwardChanges = generateChangeDescriptionForSymmetricForwardRepair(equivalenceClass.getAllTupleCells(), scenario, deltaDB, stepId);
+        if (logger.isDebugEnabled()) logger.debug("Forward changes: " + forwardChanges);
+        repair.addViolationContext(forwardChanges);
+        return repair;
+    }
+
+    public static ChangeDescription generateChangeDescriptionForSymmetricForwardRepair(List<EGDEquivalenceClassTupleCells> forwardTupleGroups, Scenario scenario, IDatabase deltaDB, String stepId) {
+        List<CellGroup> cellGroups = extractForwardCellGroups(forwardTupleGroups);
+        // give preference to the script partial order, that may have additional rules to solve the violation
+        CellGroup lub = getLUB(cellGroups, scenario);
+        ChangeDescription changeSet = new ChangeDescription(lub, LunaticConstants.CHASE_FORWARD, buildWitnessCells(forwardTupleGroups));
+        return changeSet;
+    }
+
+    public static List<CellGroup> extractForwardCellGroups(List<EGDEquivalenceClassTupleCells> allTupleCells) {
+        List<CellGroup> cellGroups = new ArrayList<CellGroup>();
+        for (EGDEquivalenceClassTupleCells tupleCells : allTupleCells) {
+            cellGroups.add(tupleCells.getConclusionGroup().clone());
+        }
+        return cellGroups;
     }
 
     public static Repair generateStandardForwardRepair(List<ViolationContext> forwardContexts, Scenario scenario) {

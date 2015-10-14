@@ -12,7 +12,6 @@ public class LunaticConfiguration {
     private boolean checkSolutions = false;
     private boolean checkSolutionsQuery = false;
     private boolean removeDuplicates = true;
-    private boolean removeSuspiciousSolutions = true;
     private boolean checkAllNodesForEGDSatisfaction = false;
     private boolean forceMCChaserInTests = false;
     private boolean useSymmetricOptimization = true;
@@ -85,14 +84,6 @@ public class LunaticConfiguration {
         this.checkGroundSolutions = checkGroundSolutions;
     }
 
-    public boolean isRemoveSuspiciousSolutions() {
-        return removeSuspiciousSolutions;
-    }
-
-    public void setRemoveSuspiciousSolutions(boolean removeSuspiciousSolutions) {
-        this.removeSuspiciousSolutions = removeSuspiciousSolutions;
-    }
-
     public boolean isCheckAllNodesForEGDSatisfaction() {
         return checkAllNodesForEGDSatisfaction;
     }
@@ -136,7 +127,6 @@ public class LunaticConfiguration {
     public void changeParametersForScalabilityTests() {
         this.checkGroundSolutions = false;
         this.removeDuplicates = false;
-        this.removeSuspiciousSolutions = false;
     }
 
     public String getDeChaser() {
@@ -197,11 +187,10 @@ public class LunaticConfiguration {
                 + "\n\t CheckSolutionsQuery: " + checkSolutionsQuery
                 + "\n\t CheckGroundSolutions: " + checkGroundSolutions
                 + "\n\t RemoveDuplicates: " + removeDuplicates
-                + "\n\t RemoveSuspiciousSolutions: " + removeSuspiciousSolutions
                 + "\n\t CheckAllNodesForEGDSatisfaction: " + checkAllNodesForEGDSatisfaction
                 + "\n\t UseSymmetricOptimization: " + useSymmetricOptimization
                 + "\n\t DiscardDuplicateTuples: " + discardDuplicateTuples
                 + "\n\t Cache type: " + cacheType
                 + "\n\t DeChaser: " + deChaser;
-    } 
+    }
 }

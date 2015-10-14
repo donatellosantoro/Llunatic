@@ -3,7 +3,6 @@ package it.unibas.lunatic.test.mc.mainmemory.basicscenarios;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.SimilarityToPreferredValueCostManager;
 import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;

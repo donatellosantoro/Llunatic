@@ -19,8 +19,25 @@ public class TestPersonsDeps02 extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_02);
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setRemoveDuplicates(true);
-        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
-        scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
+        DeltaChaseStep result = ChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug("Scenario " + scenarioName);
+        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
+        if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
+        Assert.assertEquals(11, resultSizer.getPotentialSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
+        checkSolutions(result);
+//        exportResults("/Temp/expected-" + scenarioName, result);
+        checkExpectedSolutions("expected-" + scenarioName, result);
+    }
+
+    public void test02NonSymmetric() throws Exception { //FD Multi column
+        String scenarioName = "persons-deps-02";
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_02);
+        setConfigurationForTest(scenario);
+        scenario.getConfiguration().setRemoveDuplicates(true);
+        scenario.getConfiguration().setUseSymmetricOptimization(false);
+        scenario.getConfiguration().setDiscardDuplicateTuples(true);
         DeltaChaseStep result = ChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + scenarioName);
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());

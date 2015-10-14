@@ -20,8 +20,6 @@ public class TestPersonsDeps04 extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setRemoveDuplicates(false);
-        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
-        scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
         DeltaChaseStep result = ChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + scenarioName);
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
@@ -30,6 +28,25 @@ public class TestPersonsDeps04 extends CheckExpectedSolutionsTest {
         Assert.assertEquals(3, resultSizer.getPotentialSolutions(result));
         checkSolutions(result);
 //        exportResults("/Temp/expected-" + scenarioName, result);
-//        checkExpectedSolutions("expected-" + scenarioName, result);
+        checkExpectedSolutions("expected-" + scenarioName, result);
+    }
+
+    public void test04NonSymmetric() throws Exception { //Multiple FDs
+        String scenarioName = "persons-deps-04";
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_04);
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
+        setConfigurationForTest(scenario);
+        scenario.getConfiguration().setRemoveDuplicates(false);
+        scenario.getConfiguration().setUseSymmetricOptimization(false);
+        scenario.getConfiguration().setDiscardDuplicateTuples(true);
+        DeltaChaseStep result = ChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug("Scenario " + scenarioName);
+        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
+        if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
+        Assert.assertEquals(3, resultSizer.getPotentialSolutions(result));
+        checkSolutions(result);
+//        exportResults("/Temp/expected-" + scenarioName, result);
+        checkExpectedSolutions("expected-" + scenarioName, result);
     }
 }

@@ -14,16 +14,16 @@ import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassTupleCells;
 import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
-import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerFactory;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedDependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
-import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -40,6 +40,7 @@ import speedy.model.database.CellRef;
 import speedy.model.database.IDatabase;
 import speedy.model.database.IValue;
 import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
 import speedy.model.database.operators.IRunQuery;
 
 public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
@@ -103,16 +104,6 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         return newSteps;
     }
 
-    private boolean dependencyIsSatisfied(DeltaChaseStep currentNode, IAlgebraOperator queryOperator, Dependency dependency, Scenario scenario) {
-        IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency);
-        if (logger.isDebugEnabled()) logger.debug("Checking dependency satisfaction for suspicious egd: " + dependency.getId() + "\nDatabase for step: " + databaseForStep);
-        ITupleIterator it = queryRunner.run(queryOperator, scenario.getSource(), databaseForStep);
-        boolean isEmpty = !it.hasNext();
-        it.close();
-        if (logger.isDebugEnabled()) logger.debug("Returning: " + isEmpty);
-        return isEmpty;
-    }
-
     private boolean noMoreTuples(ITupleIterator it) {
         return (!it.hasNext() && lastTupleHandled);
     }
@@ -124,7 +115,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         EquivalenceClassForSymmetricEGD equivalenceClass = createEquivalenceClass(egd);
         if (lastTuple != null && !this.lastTupleHandled) {
             if (logger.isDebugEnabled()) logger.debug("Reading tuple : " + this.lastTuple.toStringWithOIDAndAlias());
-            EquivalenceClassUtility.addTuple(this.lastTuple, equivalenceClass);
+            addTuple(this.lastTuple, equivalenceClass, scenario.getCostManagerConfiguration(), deltaDB, stepId, scenario);
             this.lastTupleHandled = true;
         }
         if (logger.isDebugEnabled()) logger.debug("Reading next equivalence class...");
@@ -133,7 +124,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             Tuple tuple = it.next();
             if (logger.isDebugEnabled()) logger.debug("Reading tuple : " + tuple.toStringWithOIDAndAlias());
             if (lastTuple == null || equivalenceClass.isEmpty() || EquivalenceClassUtility.sameEquivalenceClass(tuple, this.lastTuple, egd)) {
-                EquivalenceClassUtility.addTuple(tuple, equivalenceClass);
+                addTuple(tuple, equivalenceClass, scenario.getCostManagerConfiguration(), deltaDB, stepId, scenario);
                 this.lastTuple = tuple;
                 this.lastTupleHandled = true;
             } else {
@@ -147,38 +138,16 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             }
         }
         if (logger.isDebugEnabled()) logger.debug("Equivalence class loaded");
-        enrichCellGroups(equivalenceClass, deltaDB, stepId, scenario);
         if (logger.isDebugEnabled()) logger.debug("-------- Equivalence class:\n" + equivalenceClass + "\n---------------");
         return equivalenceClass;
     }
 
     private EquivalenceClassForSymmetricEGD createEquivalenceClass(Dependency egd) {
-        List<AttributeRef> occurrenceAttributesForConclusionVariable = new ArrayList<AttributeRef>();
         FormulaVariable v1 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(0);
-        FormulaVariable v2 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(1);
-        //TODO++ refactor to extract positive occurrences only
-        for (FormulaVariableOccurrence occurrence : v1.getPremiseRelationalOccurrences()) {
-            if (!ChaseUtility.containsAlias(egd.getPremise().getPositiveFormula(), occurrence.getTableAlias())) {
-                continue;
-            }
-            AttributeRef occurrenceAttribute = EquivalenceClassUtility.correctAttributeForSymmetricEGDs(occurrence.getAttributeRef(), egd);
-            if (occurrenceAttributesForConclusionVariable.contains(occurrenceAttribute)) {
-                continue;
-            }
-            occurrenceAttributesForConclusionVariable.add(occurrenceAttribute);
-        }
-        for (FormulaVariableOccurrence occurrence : v2.getPremiseRelationalOccurrences()) {
-            if (!ChaseUtility.containsAlias(egd.getPremise().getPositiveFormula(), occurrence.getTableAlias())) {
-                continue;
-            }
-            AttributeRef occurrenceAttribute = EquivalenceClassUtility.correctAttributeForSymmetricEGDs(occurrence.getAttributeRef(), egd);
-            if (occurrenceAttributesForConclusionVariable.contains(occurrenceAttribute)) {
-                continue;
-            }
-            occurrenceAttributesForConclusionVariable.add(occurrenceAttribute);
-        }
+        AttributeRef variableOccurrence = v1.getPremiseRelationalOccurrences().get(0).getAttributeRef();
+        AttributeRef conclusionAttribute = EquivalenceClassUtility.correctAttributeForSymmetricEGDs(variableOccurrence, egd);
         List<BackwardAttribute> attributesForBackwardChasing = findAttributesForBackwardChasing(egd);
-        return new EquivalenceClassForSymmetricEGD(egd, occurrenceAttributesForConclusionVariable, attributesForBackwardChasing);
+        return new EquivalenceClassForSymmetricEGD(egd, conclusionAttribute, attributesForBackwardChasing);
     }
 
     private List<BackwardAttribute> findAttributesForBackwardChasing(Dependency egd) {
@@ -198,27 +167,61 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         return attributesForBackwardChasing;
     }
 
-    private void enrichCellGroups(EquivalenceClassForSymmetricEGD equivalenceClass, IDatabase deltaDB, String stepId, Scenario scenario) {
-        for (EGDEquivalenceClassCells tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
-            CellGroup forwardCellGroup = this.occurrenceHandler.enrichCellGroups(tupleGroup.getCellGroupForForwardRepair(), deltaDB, stepId, scenario);
-            tupleGroup.setCellGroupForForwardRepair(forwardCellGroup);
-            for (BackwardAttribute backwardAttribute : tupleGroup.getWitnessCellGroups()) {
-                Set<CellGroup> cellGroupsForAttribute = generateBackwardCellGroups(tupleGroup.getWitnessCells().get(backwardAttribute), scenario, deltaDB, stepId);
-                tupleGroup.addCellGroupsForBackwardRepair(backwardAttribute, cellGroupsForAttribute);
+    private void addTuple(Tuple tuple, EquivalenceClassForSymmetricEGD equivalenceClass, CostManagerConfiguration costManagerConfiguration, IDatabase deltaDB, String stepId, Scenario scenario) {
+        if (logger.isDebugEnabled()) logger.trace("Adding tuple " + tuple + " to equivalence class: " + equivalenceClass);
+        AttributeRef conclusionAttribute = equivalenceClass.getConclusionAttribute();
+        Cell cellToChangeForForwardChasing = tuple.getCell(conclusionAttribute);
+        if (logger.isDebugEnabled()) logger.trace("Attribute: " + conclusionAttribute + " - Cell: " + cellToChangeForForwardChasing);
+        IValue conclusionValue = cellToChangeForForwardChasing.getValue();
+        EGDEquivalenceClassTupleCells tupleCells = new EGDEquivalenceClassTupleCells();
+        TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, conclusionAttribute));
+        CellRef cellRef = new CellRef(originalOid, ChaseUtility.unAlias(conclusionAttribute));
+        CellGroupCell targetCell = new CellGroupCell(cellRef, conclusionValue, null, LunaticConstants.TYPE_OCCURRENCE, null);
+        CellGroup forwardCellGroup = new CellGroup(conclusionValue, true);
+        forwardCellGroup.addOccurrenceCell(targetCell);
+        addAdditionalAttributes(forwardCellGroup, originalOid, tuple, equivalenceClass.getEGD());
+        CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(forwardCellGroup, deltaDB, stepId, scenario);
+        tupleCells.setConclusionGroup(enrichedCellGroup);
+        if (costManagerConfiguration.isDoBackward()) {
+            for (BackwardAttribute backwardAttribute : equivalenceClass.getAttributesToChangeForBackwardChasing()) {
+                AttributeRef attributeForBackwardChasing = backwardAttribute.getAttributeRef();
+                Cell cellForBackward = tuple.getCell(attributeForBackwardChasing);
+                TupleOID tupleOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, attributeForBackwardChasing));
+                Cell backwardCell = new Cell(tupleOid, ChaseUtility.unAlias(attributeForBackwardChasing), cellForBackward.getValue());
+                IValue value = backwardCell.getValue();
+                CellGroup backwardCellGroup = new CellGroup(value, true);
+                backwardCellGroup.addOccurrenceCell(new CellGroupCell(backwardCell, null, LunaticConstants.TYPE_OCCURRENCE, null));
+                CellGroup enrichedBackwardCellGroup = this.occurrenceHandler.enrichCellGroups(backwardCellGroup, deltaDB, stepId, scenario);
+                tupleCells.setCellGroupForBackwardAttribute(backwardAttribute, enrichedBackwardCellGroup);
             }
+        }
+        equivalenceClass.addTupleCells(tupleCells);
+        equivalenceClass.addTupleCellsForValue(conclusionValue, tupleCells);
+        indexCells(tupleCells, equivalenceClass);
+        if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
+    }
+
+    private void indexCells(EGDEquivalenceClassTupleCells tupleCells, EquivalenceClassForSymmetricEGD equivalenceClass) {
+        for (Cell cell : tupleCells.getAllCells()) {
+            equivalenceClass.indexTupleCellsForCell(cell, tupleCells);
         }
     }
 
-    private Set<CellGroup> generateBackwardCellGroups(Set<Cell> witnessCells, Scenario scenario, IDatabase deltaDB, String stepId) {
-        Set<CellGroup> result = new HashSet<CellGroup>();
-        for (Cell witnessCell : witnessCells) {
-            IValue value = witnessCell.getValue();
-            CellGroup backwardCellGroup = new CellGroup(value, true);
-            backwardCellGroup.addOccurrenceCell(new CellGroupCell(witnessCell, null, LunaticConstants.TYPE_OCCURRENCE, null));
-            CellGroup newBackwardCellGroup = this.occurrenceHandler.enrichCellGroups(backwardCellGroup, deltaDB, stepId, scenario);
-            result.add(newBackwardCellGroup);
+    private void addAdditionalAttributes(CellGroup cellGroup, TupleOID originalOIDForConclusionValue, Tuple tuple, Dependency egd) {
+        for (AttributeRef additionalAttribute : egd.getAdditionalAttributes()) {
+            for (Cell additionalCell : tuple.getCells()) {
+                AttributeRef unaliasedAttribute = ChaseUtility.unAlias(additionalCell.getAttributeRef());
+                if (!unaliasedAttribute.equals(additionalAttribute)) {
+                    continue;
+                }
+                TupleOID originalOIDForCell = new TupleOID(ChaseUtility.getOriginalOid(tuple, additionalCell.getAttributeRef()));
+                if (!originalOIDForCell.equals(originalOIDForConclusionValue)) {
+                    continue;
+                }
+                CellGroupCell additionalCellGroupCell = new CellGroupCell(originalOIDForCell, unaliasedAttribute, additionalCell.getValue(), null, LunaticConstants.TYPE_ADDITIONAL, null);
+                cellGroup.addAdditionalCell(additionalAttribute, additionalCellGroupCell);
+            }
         }
-        return result;
     }
 
     private List<Repair> accumulateRepairs(List<Repair> repairsForDependency, List<Repair> repairsForEquivalenceClass, EquivalenceClassForSymmetricEGD equivalenceClass) {
@@ -238,7 +241,6 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
                 Repair newRepair = new Repair();
                 newRepair.getChangeDescriptions().addAll(repairForDependency.getChangeDescriptions());
                 newRepair.getChangeDescriptions().addAll(repairForEquivalenceClass.getChangeDescriptions());
-                newRepair.setSuspicious(repairForDependency.isSuspicious() || repairForEquivalenceClass.isSuspicious());
                 result.add(newRepair);
             }
         }
@@ -258,13 +260,6 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             for (ChangeDescription changeSet : repair.getChangeDescriptions()) {
                 this.cellChanger.changeCells(changeSet.getCellGroup(), newStep.getDeltaDB(), newStep.getId(), scenario);
             }
-            if (repair.isSuspicious() && !dependencyIsSatisfied(newStep, premiseQuery, egd, scenario)) {
-                if (logger.isDebugEnabled()) logger.debug("Generated step is not a solution \n" + newStep);
-                for (ChangeDescription changeSet : repair.getChangeDescriptions()) {
-                    this.cellChanger.deleteCells(changeSet, newStep.getDeltaDB(), newStep.getId());
-                }
-                continue;
-            }
             if (isEGDSatisfied(egd, consistentRepair, scenario)) {
                 if (logger.isDebugEnabled()) logger.debug("EGD " + egd.getId() + " is satisfied in this step...");
                 newStep.addSatisfiedEGD(egd);
@@ -278,6 +273,16 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             newChaseSteps.setNoRepairsNeeded(true);
         }
         return newChaseSteps;
+    }
+
+    private boolean dependencyIsSatisfied(DeltaChaseStep currentNode, IAlgebraOperator queryOperator, Dependency dependency, Scenario scenario) {
+        IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency);
+        if (logger.isDebugEnabled()) logger.debug("Checking dependency satisfaction for suspicious egd: " + dependency.getId() + "\nDatabase for step: " + databaseForStep);
+        ITupleIterator it = queryRunner.run(queryOperator, scenario.getSource(), databaseForStep);
+        boolean isEmpty = !it.hasNext();
+        it.close();
+        if (logger.isDebugEnabled()) logger.debug("Returning: " + isEmpty);
+        return isEmpty;
     }
 
     private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Scenario scenario) {
@@ -345,4 +350,5 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         }
         return affectedAttributes;
     }
+
 }

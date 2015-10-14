@@ -18,8 +18,23 @@ public class TestSynthetic08 extends CheckExpectedSolutionsTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_08);
         setConfigurationForTest(scenario);
-        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
-        scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
+        scenario.getCostManagerConfiguration().setDoBackward(false);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        DeltaChaseStep result = chaser.doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
+        if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
+        if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
+        Assert.assertEquals(1, resultSizer.getSolutions(result));
+        checkSolutions(result);
+        checkExpectedSolutions("expected08", result);
+    }
+
+    public void testScenarioNonSymmetric() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_08);
+        setConfigurationForTest(scenario);
+        scenario.getConfiguration().setUseSymmetricOptimization(false);
+        scenario.getConfiguration().setDiscardDuplicateTuples(true);
         scenario.getCostManagerConfiguration().setDoBackward(false);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);

@@ -3,11 +3,9 @@ package it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
-import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
-import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
@@ -244,16 +242,6 @@ public class StandardCostManager implements ICostManager {
             result.add(cellGroupsForContext);
         }
         return result;
-    }
-
-    protected boolean allGroupsCanBeBackwardChasedForAttribute(List<EGDEquivalenceClassCells> subset, List<BackwardAttribute> backwardAttributes) {
-        for (int i = 0; i < subset.size(); i++) {
-            EGDEquivalenceClassCells tupleGroup = subset.get(i);
-            if (tupleGroup.getWitnessCells().get(backwardAttributes.get(i)) == null) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override

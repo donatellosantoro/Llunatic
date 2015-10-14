@@ -6,9 +6,6 @@ import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.SimilarityToMostFrequentSymmetricCostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.parser.operators.ParseDependencies;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
@@ -413,10 +410,6 @@ public class DAOMCScenario {
         Element checkGroundSolutionsElement = configurationElement.getChild("checkGroundSolutions");
         if (checkGroundSolutionsElement != null) {
             configuration.setCheckGroundSolutions(Boolean.parseBoolean(checkGroundSolutionsElement.getValue()));
-        }
-        Element removeSuspiciousSolutionsElement = configurationElement.getChild("removeSuspiciousSolutions");
-        if (removeSuspiciousSolutionsElement != null) {
-            configuration.setRemoveSuspiciousSolutions(Boolean.parseBoolean(removeSuspiciousSolutionsElement.getValue()));
         }
         return configuration;
     }

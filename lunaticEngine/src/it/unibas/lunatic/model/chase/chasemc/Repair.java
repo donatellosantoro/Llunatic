@@ -7,7 +7,6 @@ import java.util.List;
 public class Repair {
 
     private List<ChangeDescription> changeDescriptions = new ArrayList<ChangeDescription>();
-    private boolean suspicious = false;
 
     public List<ChangeDescription> getChangeDescriptions() {
         return changeDescriptions;
@@ -18,16 +17,6 @@ public class Repair {
             throw new IllegalArgumentException("Unable to add null changeSet");
         }
         this.changeDescriptions.add(changeSet);
-    }
-
-    public boolean isSuspicious() {
-        return this.suspicious;
-//        throw new IllegalArgumentException();
-    }
-
-    public void setSuspicious(boolean suspicious) {
-        this.suspicious = suspicious;
-//        throw new IllegalArgumentException();
     }
 
     public String getChaseModes() {
