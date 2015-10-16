@@ -74,6 +74,7 @@ public class References {
     public static final String persons_deps_05b = "mc/persons/person-deps-05b-mcscenario.xml";
     public static final String persons_deps_05c = "mc/persons/person-deps-05c-mcscenario.xml";
     public static final String persons_deps_06 = "mc/persons/person-deps-06-mcscenario.xml";
+    public static final String persons_deps_06b = "mc/persons/person-deps-06b-mcscenario.xml";
     public static final String persons_deps_07 = "mc/persons/person-deps-07-mcscenario.xml";
     public static final String persons_deps_08 = "mc/persons/person-deps-08-mcscenario.xml";
     public static final String persons_deps_dbms = "mc/persons/person-deps-mcscenario-dbms.xml";

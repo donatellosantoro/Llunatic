@@ -1,13 +1,9 @@
 package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasemc.operators.EquivalenceClassUtility;
-import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedDependency;
-import it.unibas.lunatic.model.dependency.FormulaVariable;
-import it.unibas.lunatic.model.dependency.operators.AssignAdditionalAttributes;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.DependencyStratum;
 import it.unibas.lunatic.utility.DependencyUtility;
@@ -42,6 +38,8 @@ public class AnalyzeDependencies {
         findAllQueriedAttributesForEGDs(scenario.getExtEGDs());
         findAllQueriedAttributesForTGDs(scenario.getExtTGDs());
         DependencyStratification stratification = generateStratification(scenario);
+        findDependenciesForAttributes(stratification, scenario.getExtEGDs());
+        findDependenciesForAttributes(stratification, scenario.getExtTGDs());
         symmetryFinder.findSymmetricAtoms(scenario.getExtEGDs(), scenario);
         findAllAffectedAttributes(scenario.getExtEGDs());
         assignAdditionalAttributes(scenario.getExtEGDs(), scenario);
@@ -140,6 +138,17 @@ public class AnalyzeDependencies {
     private void assignAdditionalAttributes(List<Dependency> extEGDs, Scenario scenario) {
         for (Dependency egd : extEGDs) {
             additionalAttributesAssigner.assignAttributes(egd, scenario);
+        }
+    }
+
+    private void findDependenciesForAttributes(DependencyStratification stratification, List<Dependency> dependencies) {
+        for (Dependency dependency : dependencies) {
+            for (AttributeRef attribute : dependency.getQueriedAttributes()) {
+                stratification.addDependencyForAttribute(attribute, dependency);
+            }
+            for (AttributeRef attribute : dependency.getAffectedAttributes()) {
+                stratification.addDependencyForAttribute(attribute, dependency);
+            }
         }
     }
 }

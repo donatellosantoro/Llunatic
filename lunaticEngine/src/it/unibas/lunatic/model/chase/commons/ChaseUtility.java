@@ -311,23 +311,7 @@ public class ChaseUtility {
         return entryList.get(0).getKey();
     }
     
-    public static IValue findMostFrequentValueIfAny(Map<IValue, Integer> occurrenceHistogram) {
-        List<Entry<IValue, Integer>> entryList = sortEntriesWithValues(occurrenceHistogram);
-        IValue firstMaxValue = entryList.get(0).getKey();
-        return firstMaxValue;
-        //TODO++ Check MostFrequent
-//        Integer firstMax = entryList.get(0).getValue();
-//        Integer secondMax = null;
-//        if (entryList.size() > 1) {
-//            secondMax = entryList.get(1).getValue();
-//        }
-//        if (secondMax == null || firstMax > secondMax) { 
-//            return firstMaxValue;
-//        }
-//        return null;
-    }
-    
-    private static List<Entry<IValue, Integer>> sortEntriesWithValues(Map<IValue, Integer> occurrenceHistogram) {
+    public static List<Entry<IValue, Integer>> sortEntriesWithValues(Map<IValue, Integer> occurrenceHistogram) {
         List<Entry<IValue, Integer>> entryList = new ArrayList<Entry<IValue, Integer>>(occurrenceHistogram.entrySet());
         Collections.sort(entryList, new Comparator<Entry<IValue, Integer>>() {
             public int compare(Entry<IValue, Integer> entry1, Entry<IValue, Integer> entry2) {

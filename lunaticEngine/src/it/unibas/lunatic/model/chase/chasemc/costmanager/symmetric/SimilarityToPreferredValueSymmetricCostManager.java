@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
@@ -9,17 +8,16 @@ import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassTuple;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
-import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CellGroupScore;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
+import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.database.IValue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -82,19 +80,19 @@ public class SimilarityToPreferredValueSymmetricCostManager implements ICostMana
         }
         if (debug) logger.info("Backward groups map: " + SpeedyUtility.printMap(backwardCellGroupsMap));
         Set<EGDEquivalenceClassTuple> backwardTuplesToHandle = addAllTuples(backwardCellGroupsMap);
-        List<CellGroup> backwardCellGroups = findBackwardCellGroupsToChange(backwardTuplesToHandle, backwardCellGroupsMap);
+        List<CellGroup> backwardCellGroups = findBackwardCellGroupsToChange(backwardTuplesToHandle, backwardCellGroupsMap, scenario);
         Repair repair = CostManagerUtility.generateSymmetricRepairWithBackwards(forwardTuples, backwardTuplesToHandle, backwardCellGroups, scenario);
         return repair;
     }
 
     @SuppressWarnings("unchecked")
-    private List<CellGroup> findBackwardCellGroupsToChange(Set<EGDEquivalenceClassTuple> backwardTuplesToHandle, Map<CellGroup, Set<EGDEquivalenceClassTuple>> backwardCellGroupsMap) {
+    private List<CellGroup> findBackwardCellGroupsToChange(Set<EGDEquivalenceClassTuple> backwardTuplesToHandle, Map<CellGroup, Set<EGDEquivalenceClassTuple>> backwardCellGroupsMap, Scenario scenario) {
         Set<EGDEquivalenceClassTuple> handledTuples = new HashSet<EGDEquivalenceClassTuple>();
         List<CellGroup> backwardCellGroups = new ArrayList<CellGroup>();
         if (logger.isDebugEnabled()) logger.debug("Finding backward cell groups to change " + backwardTuplesToHandle.size() + " backward contexts");
         int iterations = 0;
         while (handledTuples.size() < backwardTuplesToHandle.size()) {
-            List<CellGroupScore> cellGroupScores = buildCellGroupScores(backwardCellGroupsMap, handledTuples);
+            List<CellGroupScore> cellGroupScores = buildCellGroupScores(backwardCellGroupsMap, handledTuples, scenario);
             Collections.sort(cellGroupScores);
             CellGroupScore maxScore = cellGroupScores.get(0);
             handledTuples.addAll(maxScore.getViolationContexts());
@@ -108,12 +106,13 @@ public class SimilarityToPreferredValueSymmetricCostManager implements ICostMana
         return backwardCellGroups;
     }
 
-    private List<CellGroupScore> buildCellGroupScores(Map<CellGroup, Set<EGDEquivalenceClassTuple>> backwardCellGroupsMap, Set<EGDEquivalenceClassTuple> handledTuples) {
+    private List<CellGroupScore> buildCellGroupScores(Map<CellGroup, Set<EGDEquivalenceClassTuple>> backwardCellGroupsMap, Set<EGDEquivalenceClassTuple> handledTuples, Scenario scenario) {
         List<CellGroupScore> result = new ArrayList<CellGroupScore>();
         for (CellGroup cellGroup : backwardCellGroupsMap.keySet()) {
             Set<EGDEquivalenceClassTuple> contexts = backwardCellGroupsMap.get(cellGroup);
             contexts.removeAll(handledTuples);
-            result.add(new CellGroupScore(cellGroup, contexts));
+            Set<Dependency> affectedDependencies = CostManagerUtility.findAffectedDependencies(cellGroup, scenario);
+            result.add(new CellGroupScore(cellGroup, contexts, affectedDependencies));
         }
         return result;
     }

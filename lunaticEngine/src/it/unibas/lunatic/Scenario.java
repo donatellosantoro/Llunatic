@@ -1,9 +1,6 @@
 package it.unibas.lunatic;
 
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.StandardCostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.OrderingAttribute;
@@ -39,10 +36,6 @@ public class Scenario {
     private ScriptPartialOrder scriptPartialOrder;
     private List<OrderingAttribute> orderingAttributes = new ArrayList<OrderingAttribute>();
     private CostManagerConfiguration costManagerConfiguration = new CostManagerConfiguration();
-    /// TODO++ Fix symmetric cost manager
-//    private ICostManager symmetricCostManager = new StandardSymmetricCostManager();
-//    private ICostManager costManager = new StandardCostManager();
-    ///
     private IUserManager userManager = new StandardUserManager();
     private LunaticConfiguration configuration = new LunaticConfiguration();
     private DependencyStratification stratification;

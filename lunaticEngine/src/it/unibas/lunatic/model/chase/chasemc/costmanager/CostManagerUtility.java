@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
 import speedy.model.database.ConstantValue;
 import speedy.model.database.IValue;
@@ -386,5 +387,14 @@ public class CostManagerUtility {
             }
         }
         return false;
+    }
+
+    public static Set<Dependency> findAffectedDependencies(CellGroup cellGroup, Scenario scenario) {
+        Set<Dependency> result = new HashSet<Dependency>();
+        for (CellGroupCell occurrence : cellGroup.getOccurrences()) {
+            AttributeRef attributeRef = occurrence.getAttributeRef();
+            result.addAll(scenario.getStratification().getDependenciesForAttribute(attributeRef));
+        }
+        return result;
     }
 }

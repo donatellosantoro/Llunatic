@@ -14,6 +14,7 @@ import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
+import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.database.IValue;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
@@ -89,18 +90,19 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
         if (debug) logger.info("Backward groups map: " + SpeedyUtility.printMap(backwardCellGroupsMap));
         Set<ViolationContext> backwardContextsToHandle = addAllContexts(backwardCellGroupsMap);
         List<ViolationContext> forwardContexts = extractForwardContext(backwardContextsToHandle, equivalenceClass);
-        List<CellGroup> backwardCellGroups = findBackwardCellGroupsToChange(backwardContextsToHandle, backwardCellGroupsMap);
+        List<CellGroup> backwardCellGroups = findBackwardCellGroupsToChange(backwardContextsToHandle, backwardCellGroupsMap, scenario);
         Repair repair = CostManagerUtility.generateRepairWithBackwards(forwardContexts, backwardCellGroups, new ArrayList<ViolationContext>(backwardContextsToHandle), scenario);
         return repair;
     }
 
-    private List<CellGroup> findBackwardCellGroupsToChange(Set<ViolationContext> backwardContextsToHandle, Map<CellGroup, Set<ViolationContext>> backwardCellGroupsMap) {
+    @SuppressWarnings("unchecked")
+    private List<CellGroup> findBackwardCellGroupsToChange(Set<ViolationContext> backwardContextsToHandle, Map<CellGroup, Set<ViolationContext>> backwardCellGroupsMap, Scenario scenario) {
         Set<ViolationContext> handledContexts = new HashSet<ViolationContext>();
         List<CellGroup> backwardCellGroups = new ArrayList<CellGroup>();
         if (logger.isDebugEnabled()) logger.debug("Finding backward cell groups to change " + backwardContextsToHandle.size() + " backward contexts");
 //        int iterations = 0;
         while (handledContexts.size() < backwardContextsToHandle.size()) {
-            List<CellGroupScore> cellGroupScores = buildCellGroupScores(backwardCellGroupsMap, handledContexts);
+            List<CellGroupScore> cellGroupScores = buildCellGroupScores(backwardCellGroupsMap, handledContexts, scenario);
             Collections.sort(cellGroupScores);
             CellGroupScore maxScore = cellGroupScores.get(0);
             handledContexts.addAll(maxScore.getViolationContexts());
@@ -178,12 +180,13 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
         return result;
     }
 
-    private List<CellGroupScore> buildCellGroupScores(Map<CellGroup, Set<ViolationContext>> backwardCellGroupsMap, Set<ViolationContext> handledContexts) {
+    private List<CellGroupScore> buildCellGroupScores(Map<CellGroup, Set<ViolationContext>> backwardCellGroupsMap, Set<ViolationContext> handledContexts, Scenario scenario) {
         List<CellGroupScore> result = new ArrayList<CellGroupScore>();
         for (CellGroup cellGroup : backwardCellGroupsMap.keySet()) {
             Set<ViolationContext> contexts = backwardCellGroupsMap.get(cellGroup);
             contexts.removeAll(handledContexts);
-            result.add(new CellGroupScore(cellGroup, contexts));
+            Set<Dependency> affectedDependencies = CostManagerUtility.findAffectedDependencies(cellGroup, scenario);
+            result.add(new CellGroupScore(cellGroup, contexts, affectedDependencies));
         }
         return result;
     }
