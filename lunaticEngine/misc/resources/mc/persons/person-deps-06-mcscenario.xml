@@ -23,9 +23,6 @@ person(ssn: $ssn, surname: $surname2, name: $name2, boss: $boss2)
  -> $name1 == $name2.
 ]]>
   </dependencies>
-  <authoritativeSources>
-    <source>md</source>
-  </authoritativeSources>
   <partialOrder>
     <type>Frequency</type>
   </partialOrder>

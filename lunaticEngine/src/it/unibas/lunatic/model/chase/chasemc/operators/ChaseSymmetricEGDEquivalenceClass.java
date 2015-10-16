@@ -14,7 +14,7 @@ import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassTupleCells;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassTuple;
 import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
@@ -173,7 +173,6 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         Cell cellToChangeForForwardChasing = tuple.getCell(conclusionAttribute);
         if (logger.isDebugEnabled()) logger.trace("Attribute: " + conclusionAttribute + " - Cell: " + cellToChangeForForwardChasing);
         IValue conclusionValue = cellToChangeForForwardChasing.getValue();
-        EGDEquivalenceClassTupleCells tupleCells = new EGDEquivalenceClassTupleCells();
         TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, conclusionAttribute));
         CellRef cellRef = new CellRef(originalOid, ChaseUtility.unAlias(conclusionAttribute));
         CellGroupCell targetCell = new CellGroupCell(cellRef, conclusionValue, null, LunaticConstants.TYPE_OCCURRENCE, null);
@@ -181,7 +180,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         forwardCellGroup.addOccurrenceCell(targetCell);
         addAdditionalAttributes(forwardCellGroup, originalOid, tuple, equivalenceClass.getEGD());
         CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(forwardCellGroup, deltaDB, stepId, scenario);
-        tupleCells.setConclusionGroup(enrichedCellGroup);
+        EGDEquivalenceClassTuple tupleCells = new EGDEquivalenceClassTuple(enrichedCellGroup);
         if (costManagerConfiguration.isDoBackward()) {
             for (BackwardAttribute backwardAttribute : equivalenceClass.getAttributesToChangeForBackwardChasing()) {
                 AttributeRef attributeForBackwardChasing = backwardAttribute.getAttributeRef();
@@ -201,7 +200,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
     }
 
-    private void indexCells(EGDEquivalenceClassTupleCells tupleCells, EquivalenceClassForSymmetricEGD equivalenceClass) {
+    private void indexCells(EGDEquivalenceClassTuple tupleCells, EquivalenceClassForSymmetricEGD equivalenceClass) {
         for (Cell cell : tupleCells.getAllCells()) {
             equivalenceClass.indexTupleCellsForCell(cell, tupleCells);
         }

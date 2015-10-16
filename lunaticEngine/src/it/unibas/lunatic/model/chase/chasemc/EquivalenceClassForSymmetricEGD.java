@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
 import speedy.model.database.IValue;
@@ -17,9 +18,9 @@ public class EquivalenceClassForSymmetricEGD {
     private Dependency egd;
     private AttributeRef conclusionAttribute;
     private List<BackwardAttribute> attributesToChangeForBackwardChasing;
-    private List<EGDEquivalenceClassTupleCells> allTupleCells = new ArrayList<EGDEquivalenceClassTupleCells>();
-    private Map<IValue, List<EGDEquivalenceClassTupleCells>> tupleCellsWithSameConclusionValue = new HashMap<IValue, List<EGDEquivalenceClassTupleCells>>();
-    private Map<Cell, List<EGDEquivalenceClassTupleCells>> tupleCellsForCell = new HashMap<Cell, List<EGDEquivalenceClassTupleCells>>();
+    private List<EGDEquivalenceClassTuple> allTupleCells = new ArrayList<EGDEquivalenceClassTuple>();
+    private Map<IValue, List<EGDEquivalenceClassTuple>> tupleCellsWithSameConclusionValue = new HashMap<IValue, List<EGDEquivalenceClassTuple>>();
+    private Map<Cell, List<EGDEquivalenceClassTuple>> tupleCellsForCell = new HashMap<Cell, List<EGDEquivalenceClassTuple>>();
     
     public EquivalenceClassForSymmetricEGD(Dependency egd, AttributeRef conclusionAttribute,
             List<BackwardAttribute> attributesForBackwardChasing) {
@@ -40,42 +41,46 @@ public class EquivalenceClassForSymmetricEGD {
         return attributesToChangeForBackwardChasing;
     }
     
-    public Map<IValue, List<EGDEquivalenceClassTupleCells>> getTupleGroupsWithSameConclusionValue() {
+    public Map<IValue, List<EGDEquivalenceClassTuple>> getTupleGroupsWithSameConclusionValue() {
         return tupleCellsWithSameConclusionValue;
     }
     
-    public List<EGDEquivalenceClassTupleCells> getAllTupleCells() {
+    public List<EGDEquivalenceClassTuple> getAllTupleCells() {
         return allTupleCells;
     }
     
-    public void addTupleCells(EGDEquivalenceClassTupleCells tupleCells) {
+    public void addTupleCells(EGDEquivalenceClassTuple tupleCells) {
         this.allTupleCells.add(tupleCells);
     }
     
-    public List<EGDEquivalenceClassTupleCells> getTuplesWithConclusionValue(IValue conclusionValue) {
+    public List<EGDEquivalenceClassTuple> getTuplesWithConclusionValue(IValue conclusionValue) {
         return this.tupleCellsWithSameConclusionValue.get(conclusionValue);
     }
     
-    public void addTupleCellsForValue(IValue value, EGDEquivalenceClassTupleCells tupleGroup) {
-        List<EGDEquivalenceClassTupleCells> listTupleCellsForValue = tupleCellsWithSameConclusionValue.get(value);
+    public void addTupleCellsForValue(IValue value, EGDEquivalenceClassTuple tupleGroup) {
+        List<EGDEquivalenceClassTuple> listTupleCellsForValue = tupleCellsWithSameConclusionValue.get(value);
         if (listTupleCellsForValue == null) {
-            listTupleCellsForValue = new ArrayList<EGDEquivalenceClassTupleCells>();
+            listTupleCellsForValue = new ArrayList<EGDEquivalenceClassTuple>();
             tupleCellsWithSameConclusionValue.put(value, listTupleCellsForValue);
         }
         listTupleCellsForValue.add(tupleGroup);
     }
     
-    public void indexTupleCellsForCell(Cell cell, EGDEquivalenceClassTupleCells tupleGroup) {
-        List<EGDEquivalenceClassTupleCells> listTupleCellsForCell = tupleCellsForCell.get(cell);
+    public void indexTupleCellsForCell(Cell cell, EGDEquivalenceClassTuple tupleGroup) {
+        List<EGDEquivalenceClassTuple> listTupleCellsForCell = tupleCellsForCell.get(cell);
         if (listTupleCellsForCell == null) {
-            listTupleCellsForCell = new ArrayList<EGDEquivalenceClassTupleCells>();
+            listTupleCellsForCell = new ArrayList<EGDEquivalenceClassTuple>();
             tupleCellsForCell.put(cell, listTupleCellsForCell);
         }
         listTupleCellsForCell.add(tupleGroup);
     }
     
-    public List<EGDEquivalenceClassTupleCells> getTupleCellsForCell(Cell cell) {
+    public List<EGDEquivalenceClassTuple> getTupleCellsForCell(Cell cell) {
         return this.tupleCellsForCell.get(cell);
+    }
+    
+    public Set<IValue> getAllConclusionValues(){
+        return this.tupleCellsWithSameConclusionValue.keySet();
     }
     
     public boolean isEmpty() {

@@ -9,14 +9,11 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CellGroupScore;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
-import speedy.model.database.ConstantValue;
 import speedy.model.database.IValue;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
@@ -55,7 +52,8 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
         if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && satisfactionChecker.isSatisfiedAfterUpgrades(conclusionCellGroups)) {
             return Collections.EMPTY_LIST;
         }
-        IValue preferredValue = findPreferredValue(equivalenceClass, scenario);
+        List<CellGroup> forwardCellGroups = equivalenceClass.getAllConclusionCellGroups();
+        IValue preferredValue = CostManagerUtility.findPreferredValue(forwardCellGroups, scenario);
         if (isDebug(equivalenceClass)) logger.info("Preferred values: " + preferredValue);
         Repair repair;
         if (preferredValue instanceof LLUNValue || preferredValue instanceof NullValue) {
@@ -68,45 +66,6 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
         return new ArrayList<Repair>(Arrays.asList(new Repair[]{repair}));
     }
 
-    private IValue findPreferredValue(EquivalenceClassForEGD equivalenceClass, Scenario scenario) {
-        List<CellGroup> forwardCellGroups = equivalenceClass.getAllConclusionCellGroups();
-        List<CellGroup> validForwardCellGroups = filterValidCellGroups(forwardCellGroups);
-        if (isDebug(equivalenceClass)) logger.info("Valid forward cell groups: " + validForwardCellGroups);
-        if (validForwardCellGroups.isEmpty()) {
-            return CellGroupIDGenerator.getNextLLUNID();
-        }
-        // To handle User, Auth, and PI
-        CellGroup standardLub = new StandardPartialOrder().findLUB(validForwardCellGroups, scenario);
-        IValue standardLubValue = standardLub.getValue();
-        if (logger.isDebugEnabled()) logger.debug("Standard lub value: " + standardLubValue);
-        if ((standardLubValue instanceof ConstantValue)) {
-            return standardLubValue;
-        }
-        if (hasUserOrAuthoritativeValues(standardLub)) {
-            return (LLUNValue) standardLubValue;
-        }
-        // To handle specific partial order (i.e. frequency)
-        CellGroup lub = CostManagerUtility.getLUB(validForwardCellGroups, scenario);
-        IValue lubValue = lub.getValue();
-        if (logger.isDebugEnabled()) logger.debug("Lub value: " + lubValue);
-        return lubValue;
-    }
-
-    private List<CellGroup> filterValidCellGroups(List<CellGroup> forwardCellGroups) {
-        List<CellGroup> result = new ArrayList<CellGroup>();
-        for (CellGroup forwardCellGroup : forwardCellGroups) {
-            if (forwardCellGroup.hasInvalidCell()) {
-                continue;
-            }
-            result.add(forwardCellGroup);
-        }
-        return result;
-    }
-
-    private boolean hasUserOrAuthoritativeValues(CellGroup lub) {
-        return !lub.getUserCells().isEmpty() || !lub.getAuthoritativeJustifications().isEmpty();
-    }
-
     private boolean isDebug(EquivalenceClassForEGD equivalenceClass) {
 //        for (IValue conclusionValue : equivalenceClass.getAllConclusionValues()) {
 //            if (conclusionValue.toString().equals("FORDYCE-*")) {
@@ -117,7 +76,7 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
     }
 
     private Repair generateRepairForConstantPreferredValue(IValue preferredValue, EquivalenceClassForEGD equivalenceClass, Scenario scenario) {
-        Set<IValue> forwardValues = findForwardValues(preferredValue, equivalenceClass, scenario.getCostManagerConfiguration());
+        Set<IValue> forwardValues = CostManagerUtility.findForwardValues(preferredValue, equivalenceClass.getAllConclusionValues(), scenario.getCostManagerConfiguration());
         Set<TupleOID> forwardTupleOIDs = extractTupleOIDs(forwardValues, equivalenceClass);
         boolean debug = isDebug(equivalenceClass);
         if (debug) logger.info("Forward values: " + forwardValues);
@@ -139,32 +98,20 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
         Set<ViolationContext> handledContexts = new HashSet<ViolationContext>();
         List<CellGroup> backwardCellGroups = new ArrayList<CellGroup>();
         if (logger.isDebugEnabled()) logger.debug("Finding backward cell groups to change " + backwardContextsToHandle.size() + " backward contexts");
-        int iterations = 0;
+//        int iterations = 0;
         while (handledContexts.size() < backwardContextsToHandle.size()) {
             List<CellGroupScore> cellGroupScores = buildCellGroupScores(backwardCellGroupsMap, handledContexts);
             Collections.sort(cellGroupScores);
             CellGroupScore maxScore = cellGroupScores.get(0);
             handledContexts.addAll(maxScore.getViolationContexts());
             backwardCellGroups.add(maxScore.getCellGroup());
-            iterations++;
-            if (iterations > backwardContextsToHandle.size()) {
-                throw new IllegalArgumentException("Unable to find backward cellgroups to change for backward contexts \n" + SpeedyUtility.printCollection(backwardContextsToHandle, "\t") + "\n Handled contexts: \n" + SpeedyUtility.printCollection(handledContexts, "\t") + "\n CellGroupScores: " + SpeedyUtility.printCollection(cellGroupScores, "\t"));
-            }
+//            iterations++;
+//            if (iterations > backwardContextsToHandle.size()) {
+//                throw new IllegalArgumentException("Unable to find backward cellgroups to change for backward contexts \n" + SpeedyUtility.printCollection(backwardContextsToHandle, "\t") + "\n Handled contexts: \n" + SpeedyUtility.printCollection(handledContexts, "\t") + "\n CellGroupScores: " + SpeedyUtility.printCollection(cellGroupScores, "\t"));
+//            }
             if (logger.isDebugEnabled()) logger.debug("So far handled " + handledContexts.size() + " backward contexts");
         }
         return backwardCellGroups;
-    }
-
-    private Set<IValue> findForwardValues(IValue preferredValue, EquivalenceClassForEGD equivalenceClass, CostManagerConfiguration costManagerConfiguration) {
-        String similarityStrategy = costManagerConfiguration.getSimilarityStrategy();
-        double similarityThreshold = costManagerConfiguration.getSimilarityThreshold();
-        Set<IValue> forwardValues = new HashSet<IValue>();
-        for (IValue conclusionValue : equivalenceClass.getAllConclusionValues()) {
-            if (CostManagerUtility.areSimilar(preferredValue, conclusionValue, similarityStrategy, similarityThreshold)) {
-                forwardValues.add(conclusionValue);
-            }
-        }
-        return forwardValues;
     }
 
     private List<ViolationContext> extractForwardContext(Collection<ViolationContext> backwardContexts, EquivalenceClassForEGD equivalenceClass) {
@@ -211,7 +158,7 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
         boolean debug = isDebug(equivalenceClass);
         List<CellGroup> result = new ArrayList<CellGroup>();
         for (CellGroup witnessCellGroup : violationContext.getAllWitnessCellGroups()) {
-            if (hasOccurrencesInTupleOIDs(witnessCellGroup, forwardTupleOIDs)) {
+            if (CostManagerUtility.hasOccurrencesInTupleOIDs(witnessCellGroup, forwardTupleOIDs)) {
                 continue;
             }
             if (!CostManagerUtility.canDoBackwardOnGroup(witnessCellGroup, violationContext)) {
@@ -221,15 +168,6 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
             result.add(witnessCellGroup);
         }
         return result;
-    }
-
-    private boolean hasOccurrencesInTupleOIDs(CellGroup witnessCellGroup, Set<TupleOID> forwardTupleOIDs) {
-        for (CellGroupCell occurrence : witnessCellGroup.getOccurrences()) {
-            if (forwardTupleOIDs.contains(occurrence.getTupleOID())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private Set<ViolationContext> addAllContexts(Map<CellGroup, Set<ViolationContext>> backwardCellGroupsMap) {
@@ -253,48 +191,6 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
     @Override
     public String toString() {
         return "Similarity To Most Frequent";
-    }
-
-}
-
-class CellGroupScore implements Comparable<CellGroupScore> {
-
-    private CellGroup cellGroup;
-    private Set<ViolationContext> violationContexts;
-
-    public CellGroupScore(CellGroup cellGroup, Set<ViolationContext> violationContexts) {
-        assert (cellGroup.getOccurrences().size() > 0) : "Occurrences cannot be null";
-        this.cellGroup = cellGroup;
-        this.violationContexts = violationContexts;
-    }
-
-    public CellGroup getCellGroup() {
-        return cellGroup;
-    }
-
-    public Set<ViolationContext> getViolationContexts() {
-        return violationContexts;
-    }
-
-    public double getScore() {
-        int violationSize = violationContexts.size();
-        int occurrenceSize = cellGroup.getOccurrences().size();
-        return violationSize / (double) occurrenceSize;
-    }
-
-    public int compareTo(CellGroupScore other) {
-        if (this.getScore() < other.getScore()) {
-            return 1;
-        } else if (this.getScore() > other.getScore()) {
-            return -1;
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "CellGroupScore: " + cellGroup + "Contexts: \n" + violationContexts + '}';
     }
 
 }

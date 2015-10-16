@@ -18,6 +18,8 @@ public class TestCustomers extends CheckTest {
     public void testScenarioDelta() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.customers_cfd);
         setConfigurationForTest(scenario);
+//        scenario.getConfiguration().setUseSymmetricOptimization(false);
+//        scenario.getConfiguration().setDiscardDuplicateTuples(true);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);

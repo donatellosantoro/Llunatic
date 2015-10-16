@@ -42,9 +42,9 @@ import speedy.model.database.TupleOID;
 import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 
 public class ChaseUtility {
-
+    
     private static Logger logger = LoggerFactory.getLogger(ChaseUtility.class);
-
+    
     public static List<Cell> findCellsForVariable(FormulaVariable variable, Tuple premiseTuple) {
         if (logger.isTraceEnabled()) logger.debug("Finding cells for variable " + variable);
         if (logger.isTraceEnabled()) logger.debug("Premise tuple: " + premiseTuple);
@@ -78,7 +78,7 @@ public class ChaseUtility {
         }
         throw new IllegalArgumentException("Unable to find occurrence for attribute " + attributeOfFirstOccurrence + " in tuple " + premiseTuple);
     }
-
+    
     public static IAlgebraOperator buildQuery(String deltaTableName, TupleOID tid, String stepId) {
         Scan scan = new Scan(new TableAlias(deltaTableName));
         List<Expression> expressions = new ArrayList<Expression>();
@@ -92,7 +92,7 @@ public class ChaseUtility {
         select.addChild(scan);
         return select;
     }
-
+    
     public static Tuple buildTuple(TupleOID tid, String stepId, IValue newValue, IValue originalValue, IValue groupID, String deltaTableName, String attributeName) {
         TupleOID oid = new TupleOID(IntegerOIDGenerator.getNextOID());
         Tuple tuple = new Tuple(oid);
@@ -103,7 +103,7 @@ public class ChaseUtility {
         tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, LunaticConstants.CELL_ORIGINAL_VALUE), originalValue));
         return tuple;
     }
-
+    
     public static boolean isSatisfied(Dependency egd, Tuple premiseTuple) {
         for (IFormulaAtom atom : egd.getConclusion().getAtoms()) {
             if (!(atom instanceof ComparisonAtom)) {
@@ -144,7 +144,7 @@ public class ChaseUtility {
         }
         return result;
     }
-
+    
     public static List<FormulaVariableOccurrence> findPositivePremiseOccurrences(Dependency dependency, FormulaVariable variable) {
         List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
         for (FormulaVariableOccurrence formulaVariableOccurrence : variable.getPremiseRelationalOccurrences()) {
@@ -154,7 +154,7 @@ public class ChaseUtility {
         }
         return result;
     }
-
+    
     public static List<FormulaVariableOccurrence> findPositivePremiseOccurrences(Dependency dependency, VariableEquivalenceClass eqv) {
         List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
         for (FormulaVariable variable : eqv.getVariables()) {
@@ -162,7 +162,7 @@ public class ChaseUtility {
         }
         return result;
     }
-
+    
     public static List<FormulaVariableOccurrence> findPositiveOccurrences(PositiveFormula positiveFormula, List<FormulaVariableOccurrence> premiseRelationalOccurrences) {
         List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
         for (FormulaVariableOccurrence formulaVariableOccurrence : premiseRelationalOccurrences) {
@@ -172,7 +172,7 @@ public class ChaseUtility {
         }
         return result;
     }
-
+    
     public static List<AttributeRef> filterConclusionOccurrences(List<AttributeRef> attributes, Dependency dependency) {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
         ComparisonAtom comparisonAtom = (ComparisonAtom) dependency.getConclusion().getAtoms().get(0);
@@ -185,7 +185,7 @@ public class ChaseUtility {
         }
         return result;
     }
-
+    
     public static boolean containsOccurrences(AttributeRef attributeRef, FormulaVariable v) {
         for (FormulaVariableOccurrence formulaVariableOccurrence : v.getPremiseRelationalOccurrences()) {
             if (formulaVariableOccurrence.getAttributeRef().equals(attributeRef)) {
@@ -194,12 +194,12 @@ public class ChaseUtility {
         }
         return false;
     }
-
+    
     public static AttributeRef unAlias(AttributeRef attribute) {
         TableAlias unaliasedTable = new TableAlias(attribute.getTableName(), attribute.getTableAlias().isSource(), attribute.isAuthoritative());
         return new AttributeRef(unaliasedTable, attribute.getName());
     }
-
+    
     public static TableAlias unAlias(TableAlias alias) {
         TableAlias unaliasedTable = new TableAlias(alias.getTableName(), alias.isSource(), alias.isAuthoritative());
         return unaliasedTable;
@@ -225,18 +225,18 @@ public class ChaseUtility {
         }
         return root;
     }
-
+    
     public static String getDeltaRelationName(String tableName, String attributeName) {
         return tableName + LunaticConstants.DELTA_TABLE_SEPARATOR + attributeName;
     }
-
+    
     public static String getChaseNodeId(DeltaChaseStep father, String localId) {
         if (father == null) {
             return localId;
         }
         return father.getId() + "." + localId;
     }
-
+    
     public static List<VariableEquivalenceClass> findJoinVariablesInTarget(Dependency egd) {
         List<VariableEquivalenceClass> result = new ArrayList<VariableEquivalenceClass>();
         for (VariableEquivalenceClass variableEquivalenceClass : egd.getPremise().getLocalVariableEquivalenceClasses()) {
@@ -248,7 +248,7 @@ public class ChaseUtility {
         }
         return result;
     }
-
+    
     public static boolean containsAlias(PositiveFormula positiveFormula, TableAlias tableAlias) {
         for (IFormulaAtom formulaAtom : positiveFormula.getAtoms()) {
             if (formulaAtom instanceof RelationalAtom) {
@@ -260,7 +260,7 @@ public class ChaseUtility {
         }
         return false;
     }
-
+    
     public static boolean containsUnaliasTable(String table, Set<TableAlias> symmetricAtoms) {
         for (TableAlias tableAlias : symmetricAtoms) {
             if (tableAlias.getTableName().equals(table)) {
@@ -269,26 +269,26 @@ public class ChaseUtility {
         }
         return false;
     }
-
+    
     public static IValue getOriginalOid(Tuple tuple, AttributeRef attributeRef) {
         Cell oidCell = tuple.getCell(new AttributeRef(attributeRef.getTableAlias(), SpeedyConstants.OID));
         return oidCell.getValue();
     }
-
+    
     public static void stopChase(IChaseState chaseState) {
         chaseState.notifyChaseInterruption();
         throw new ChaseException("Chase interrupted by user");
     }
-
+    
     public static String generateChaseStepIdForEGDs(String egdId, int i, Repair repair) {
         return egdId + "_" + i + "_" + repair.getChaseModes() + "#";
     }
-
+    
     public static String generateChaseStepIdForTGDs(Dependency eTgd) {
 //        return "t" + eTgd.getId();
         return eTgd.getId();
     }
-
+    
     public static String getTmpTableForTGDViolations(Dependency tgd, String table, boolean appendSchema) {
 //        String tableName = tgd.getId() + "_" + table;
         String tableName = "violation_" + tgd.getId();
@@ -297,7 +297,7 @@ public class ChaseUtility {
         }
         return tableName;
     }
-
+    
     public static Set<CellRef> createCellRefsFromCells(Collection<CellGroupCell> cells) {
         Set<CellRef> result = new HashSet<CellRef>();
         for (Cell cell : cells) {
@@ -305,41 +305,46 @@ public class ChaseUtility {
         }
         return result;
     }
-
+    
     public static IValue findFirstOrderedValue(Map<IValue, Integer> occurrenceHistogram) {
         List<Entry<IValue, Integer>> entryList = sortEntriesWithValues(occurrenceHistogram);
         return entryList.get(0).getKey();
     }
-
+    
     public static IValue findMostFrequentValueIfAny(Map<IValue, Integer> occurrenceHistogram) {
         List<Entry<IValue, Integer>> entryList = sortEntriesWithValues(occurrenceHistogram);
         IValue firstMaxValue = entryList.get(0).getKey();
-        Integer firstMax = entryList.get(0).getValue();
-        Integer secondMax = null;
-        if (entryList.size() > 1) {
-            secondMax = entryList.get(1).getValue();
-        }
-        if (secondMax == null || firstMax > secondMax) {
-            return firstMaxValue;
-        }
-        return null;
+        return firstMaxValue;
+        //TODO++ Check MostFrequent
+//        Integer firstMax = entryList.get(0).getValue();
+//        Integer secondMax = null;
+//        if (entryList.size() > 1) {
+//            secondMax = entryList.get(1).getValue();
+//        }
+//        if (secondMax == null || firstMax > secondMax) { 
+//            return firstMaxValue;
+//        }
+//        return null;
     }
-
+    
     private static List<Entry<IValue, Integer>> sortEntriesWithValues(Map<IValue, Integer> occurrenceHistogram) {
         List<Entry<IValue, Integer>> entryList = new ArrayList<Entry<IValue, Integer>>(occurrenceHistogram.entrySet());
         Collections.sort(entryList, new Comparator<Entry<IValue, Integer>>() {
-            public int compare(Entry<IValue, Integer> o1, Entry<IValue, Integer> o2) {
-                return -1 * o1.getValue().compareTo(o2.getValue());
+            public int compare(Entry<IValue, Integer> entry1, Entry<IValue, Integer> entry2) {
+                if (entry1.getValue().equals(entry2.getValue())) {
+                    return entry1.getKey().toString().compareTo(entry2.getKey().toString());
+                }
+                return -1 * entry1.getValue().compareTo(entry2.getValue());
             }
         });
         return entryList;
     }
-
+    
     public static AttributeRef extractAttributeRef(String key) {
         String attributeRefString = key.substring(LunaticConstants.TYPE_ADDITIONAL.length() + 1);
         String tableName = attributeRefString.substring(0, attributeRefString.indexOf("."));
         String attributeName = attributeRefString.substring(attributeRefString.indexOf(".") + 1);
         return new AttributeRef(tableName, attributeName);
     }
-
+    
 }

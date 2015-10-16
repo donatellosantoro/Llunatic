@@ -7,7 +7,7 @@ import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassTupleCells;
+import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassTuple;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
@@ -41,7 +41,7 @@ public class StandardSymmetricCostManager implements ICostManager {
         if (logger.isDebugEnabled()) logger.debug("########Current node: " + chaseTreeRoot.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("########Choosing repair strategy for equivalence class: " + equivalenceClass.toLongString());
         List<Repair> result = new ArrayList<Repair>();
-        Repair forwardRepair = CostManagerUtility.generateSymmetricForwardRepair(equivalenceClass, scenario, chaseTreeRoot.getDeltaDB(), stepId);
+        Repair forwardRepair = CostManagerUtility.generateSymmetricForwardRepair(equivalenceClass.getAllTupleCells(), scenario);
         result.add(forwardRepair);
         if (canDoBackward(chaseTreeRoot, scenario.getCostManagerConfiguration())) {
             List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass, scenario, chaseTreeRoot.getDeltaDB(), stepId);
@@ -70,8 +70,8 @@ public class StandardSymmetricCostManager implements ICostManager {
     }
 
     private List<Repair> generateBackwardRepairs(EquivalenceClassForSymmetricEGD equivalenceClass, Scenario scenario, IDatabase deltaDB, String stepId) {
-        List<EGDEquivalenceClassTupleCells> allTupleCells = equivalenceClass.getAllTupleCells();
-        if (allTupleCells.size() > 5) {
+        List<EGDEquivalenceClassTuple> allTupleCells = equivalenceClass.getAllTupleCells();
+        if (allTupleCells.size() > 10) {
             throw new ChaseException("Tuple cells of excessive size, it is not possible to chase this scenario: " + equivalenceClass);
         }
         List<Repair> result = new ArrayList<Repair>();
@@ -83,7 +83,7 @@ public class StandardSymmetricCostManager implements ICostManager {
                 continue;
             }
             Collections.reverse(subsetIndex);
-            List<EGDEquivalenceClassTupleCells> subset = extractSubset(subsetIndex, allTupleCells);
+            List<EGDEquivalenceClassTuple> subset = extractSubset(subsetIndex, allTupleCells);
             if (logger.isDebugEnabled()) logger.debug("Generating backward repairs for subset indexes: " + subsetIndex);
             if (logger.isDebugEnabled()) logger.debug("Attributes to change for backward chasing: " + equivalenceClass.getAttributesToChangeForBackwardChasing());
             List<BackwardAttribute> backwardAttributes = equivalenceClass.getAttributesToChangeForBackwardChasing();
@@ -91,11 +91,11 @@ public class StandardSymmetricCostManager implements ICostManager {
             List<List<BackwardAttribute>> combinations = combinationGenerator.generate(backwardAttributes, subset.size());
             for (List<BackwardAttribute> backwardAttributeCombination : combinations) {
                 if (logger.isDebugEnabled()) logger.debug("BackwardAttributeCombination: " + backwardAttributeCombination);
-                List<EGDEquivalenceClassTupleCells> forwardTuples = new ArrayList<EGDEquivalenceClassTupleCells>(allTupleCells);
-                List<EGDEquivalenceClassTupleCells> backwardTuples = new ArrayList<EGDEquivalenceClassTupleCells>();
+                List<EGDEquivalenceClassTuple> forwardTuples = new ArrayList<EGDEquivalenceClassTuple>(allTupleCells);
+                List<EGDEquivalenceClassTuple> backwardTuples = new ArrayList<EGDEquivalenceClassTuple>();
                 for (int i = 0; i < subset.size(); i++) {
                     BackwardAttribute backwardAttribute = backwardAttributeCombination.get(i);
-                    EGDEquivalenceClassTupleCells tupleCells = subset.get(i);
+                    EGDEquivalenceClassTuple tupleCells = subset.get(i);
                     CellGroup backwardCellGroup = tupleCells.getCellGroupForBackwardAttribute(backwardAttribute);
                     if (!CostManagerUtility.backwardIsAllowed(backwardCellGroup)) {
                         if (logger.isDebugEnabled()) logger.debug("Backward is not allowed. Discarding cell group " + backwardCellGroup);
@@ -112,7 +112,8 @@ public class StandardSymmetricCostManager implements ICostManager {
                     if (logger.isDebugEnabled()) logger.debug("Forward or Backward do not disrupt all join . Discarding cell group.\nForward: " + forwardTuples + "\nBackward groups: " + backwardTuples + "\nBackward Attributes " + backwardAttributeCombination);
                     continue;
                 }
-                Repair repair = generateRepairWithBackwards(forwardTuples, backwardTuples, backwardAttributeCombination, scenario, deltaDB, stepId);
+                List<CellGroup> backwardCellGroups = extractBackwardCellGroups(backwardTuples, backwardAttributeCombination);
+                Repair repair = CostManagerUtility.generateSymmetricRepairWithBackwards(forwardTuples, backwardTuples, backwardCellGroups, scenario);
                 if (!checkRepairMinimality(repair, forwardTuples, backwardTuples, equivalenceClass)) {
                     if (logger.isDebugEnabled()) logger.debug("Repair is not consistent. Discarding " + repair);
                     continue;
@@ -125,56 +126,33 @@ public class StandardSymmetricCostManager implements ICostManager {
         return result;
     }
 
-    private List<EGDEquivalenceClassTupleCells> extractSubset(List<Integer> subsetIndex, List<EGDEquivalenceClassTupleCells> tupleGroups) {
-        List<EGDEquivalenceClassTupleCells> result = new ArrayList<EGDEquivalenceClassTupleCells>();
+    private List<CellGroup> extractBackwardCellGroups(List<EGDEquivalenceClassTuple> backwardTuples, List<BackwardAttribute> backwardAttributeCombination) {
+        List<CellGroup> result = new ArrayList<CellGroup>();
+        for (int i = 0; i < backwardTuples.size(); i++) {
+            EGDEquivalenceClassTuple tuple = backwardTuples.get(i);
+            BackwardAttribute attribute = backwardAttributeCombination.get(i);
+            result.add(tuple.getCellGroupForBackwardAttribute(attribute));
+        }
+        return result;
+    }
+
+    private List<EGDEquivalenceClassTuple> extractSubset(List<Integer> subsetIndex, List<EGDEquivalenceClassTuple> tupleGroups) {
+        List<EGDEquivalenceClassTuple> result = new ArrayList<EGDEquivalenceClassTuple>();
         for (Integer index : subsetIndex) {
             result.add(tupleGroups.get(index));
         }
         return result;
     }
 
-    private Repair generateRepairWithBackwards(List<EGDEquivalenceClassTupleCells> forwardTupleGroups, List<EGDEquivalenceClassTupleCells> backwardTupleGroups, List<BackwardAttribute> backwardAttributes,
-            Scenario scenario, IDatabase deltaDB, String stepId) {
-        Repair repair = new Repair();
-        if (forwardTupleGroups.size() > 1 && haveDifferentConclusionValues(forwardTupleGroups)) {
-//        if (forwardTupleGroups.size() > 1) {
-            ChangeDescription forwardChanges = CostManagerUtility.generateChangeDescriptionForSymmetricForwardRepair(forwardTupleGroups, scenario, deltaDB, stepId);
-            repair.addViolationContext(forwardChanges);
-        }
-        for (int i = 0; i < backwardTupleGroups.size(); i++) {
-            EGDEquivalenceClassTupleCells backwardTupleCells = backwardTupleGroups.get(i);
-            BackwardAttribute backwardAttribute = backwardAttributes.get(i);
-            CellGroup backwardCellGroups = backwardTupleCells.getCellGroupForBackwardAttribute(backwardAttribute);
-            CellGroup backwardCellGroup = backwardCellGroups.clone();
-            LLUNValue llunValue = CellGroupIDGenerator.getNextLLUNID();
-            backwardCellGroup.setValue(llunValue);
-            backwardCellGroup.setInvalidCell(CellGroupIDGenerator.getNextInvalidCell());
-            ChangeDescription backwardChangesForGroup = new ChangeDescription(backwardCellGroup, LunaticConstants.CHASE_BACKWARD, CostManagerUtility.buildWitnessCells(backwardTupleGroups));
-            repair.addViolationContext(backwardChangesForGroup);
-        }
-        return repair;
-    }
-
-    private boolean haveDifferentConclusionValues(List<EGDEquivalenceClassTupleCells> forwardTupleGroups) {
-        IValue firstValue = forwardTupleGroups.get(0).getConclusionGroup().getValue();
-        for (EGDEquivalenceClassTupleCells forwardTupleGroup : forwardTupleGroups) {
-            IValue otherValue = forwardTupleGroup.getConclusionGroup().getValue();
-            if (!firstValue.equals(otherValue)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean checkRepairMinimality(Repair repair, List<EGDEquivalenceClassTupleCells> forwardTuples, List<EGDEquivalenceClassTupleCells> backwardTuples, EquivalenceClassForSymmetricEGD equivalenceClass) {
+    private boolean checkRepairMinimality(Repair repair, List<EGDEquivalenceClassTuple> forwardTuples, List<EGDEquivalenceClassTuple> backwardTuples, EquivalenceClassForSymmetricEGD equivalenceClass) {
         IValue forwardValue = findForwardValue(repair);
         if (forwardValue != null && (forwardValue instanceof LLUNValue)) {
             //Forward repair generates a llun. Backward repairs are needed
             return true;
         }
-        for (EGDEquivalenceClassTupleCells backwardTuple : backwardTuples) {
+        for (EGDEquivalenceClassTuple backwardTuple : backwardTuples) {
             IValue groupValue = backwardTuple.getConclusionGroup().getValue();
-            List<EGDEquivalenceClassTupleCells> tuplesInGroup = equivalenceClass.getTuplesWithConclusionValue(groupValue);
+            List<EGDEquivalenceClassTuple> tuplesInGroup = equivalenceClass.getTuplesWithConclusionValue(groupValue);
             if (!forwardTuplesInGroup(tuplesInGroup, forwardTuples)) {
                 continue;
             }
@@ -194,8 +172,8 @@ public class StandardSymmetricCostManager implements ICostManager {
         return firstChangeDescription.getCellGroup().getValue();
     }
 
-    private boolean forwardTuplesInGroup(List<EGDEquivalenceClassTupleCells> tuplesInGroup, List<EGDEquivalenceClassTupleCells> forwardTuples) {
-        for (EGDEquivalenceClassTupleCells tupleInGroup : tuplesInGroup) {
+    private boolean forwardTuplesInGroup(List<EGDEquivalenceClassTuple> tuplesInGroup, List<EGDEquivalenceClassTuple> forwardTuples) {
+        for (EGDEquivalenceClassTuple tupleInGroup : tuplesInGroup) {
             if (forwardTuples.contains(tupleInGroup)) {
                 return true;
             }

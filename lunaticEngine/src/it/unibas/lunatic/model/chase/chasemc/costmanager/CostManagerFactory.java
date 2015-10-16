@@ -4,7 +4,7 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.SimilarityToPreferredValueCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.StandardCostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.SimilarityToMostFrequentSymmetricCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.SimilarityToPreferredValueSymmetricCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager;
 import it.unibas.lunatic.model.dependency.Dependency;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class CostManagerFactory {
             return new StandardSymmetricCostManager();
         }
         if (costManagerConfiguration.getType().equals(LunaticConstants.COST_MANAGER_SIMILARITY)) {
-            return new SimilarityToMostFrequentSymmetricCostManager();
+            return new SimilarityToPreferredValueSymmetricCostManager();
         }
         throw new IllegalArgumentException("Unknown costmanager type " + costManagerConfiguration.getType());
     }
