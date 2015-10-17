@@ -11,6 +11,7 @@ public class LunaticConfiguration {
     private boolean checkGroundSolutions = false;
     private boolean checkSolutions = false;
     private boolean checkSolutionsQuery = false;
+    private boolean checkConsistencyOfDBs = false;
     private boolean removeDuplicates = true;
     private boolean checkAllNodesForEGDSatisfaction = false;
     private boolean forceMCChaserInTests = false;
@@ -161,6 +162,14 @@ public class LunaticConfiguration {
         this.checkDCDuringChase = checkDCDuringChase;
     }
 
+    public boolean isCheckConsistencyOfDBs() {
+        return checkConsistencyOfDBs;
+    }
+
+    public void setCheckConsistencyOfDBs(boolean checkConsistencyOfDBs) {
+        this.checkConsistencyOfDBs = checkConsistencyOfDBs;
+    }
+
     public boolean isChaseDEDGreedyRandomScenarios() {
         return chaseDEDGreedyRandomScenarios;
     }
@@ -186,6 +195,7 @@ public class LunaticConfiguration {
                 + "\n\t CheckSolutions: " + checkSolutions
                 + "\n\t CheckSolutionsQuery: " + checkSolutionsQuery
                 + "\n\t CheckGroundSolutions: " + checkGroundSolutions
+                + "\n\t CheckConsistencyOfDBs: " + checkConsistencyOfDBs
                 + "\n\t RemoveDuplicates: " + removeDuplicates
                 + "\n\t CheckAllNodesForEGDSatisfaction: " + checkAllNodesForEGDSatisfaction
                 + "\n\t UseSymmetricOptimization: " + useSymmetricOptimization

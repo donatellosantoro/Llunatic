@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.dbms;
 
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfDBOIDs;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
@@ -46,9 +47,14 @@ import speedy.utility.SpeedyUtility;
 public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
 
     private static Logger logger = LoggerFactory.getLogger(BuildSQLDBForChaseStep.class);
-
     private AlgebraTreeToSQL sqlGenerator = new AlgebraTreeToSQL();
+    private CheckConsistencyOfDBOIDs oidChecker = new CheckConsistencyOfDBOIDs();
     private boolean useHash = true;
+    private boolean checkOIDsInTables;
+
+    public BuildSQLDBForChaseStep(boolean checkOIDsInTables) {
+        this.checkOIDsInTables = checkOIDsInTables;
+    }
 
     @Override
     public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB) {
@@ -85,6 +91,9 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         DBMSVirtualDB virtualDB = new DBMSVirtualDB((DBMSDB) originalDB, ((DBMSDB) deltaDB), "__" + cleanStepId, accessConfiguration);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_STEP_BUILDER, end - start);
+        if (checkOIDsInTables) {
+            oidChecker.checkDatabase(virtualDB);
+        }
         return virtualDB;
     }
 
@@ -122,38 +131,10 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         DBMSVirtualDB virtualDB = new DBMSVirtualDB((DBMSDB) originalDB, ((DBMSDB) deltaDB), "_" + dependency.getId() + "_" + cleanStepId, accessConfiguration);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_STEP_BUILDER, end - start);
-        return virtualDB;
-    }
-
-    @Deprecated
-    public IDatabase extractDatabaseWithViews(String stepId, IDatabase deltaDB, IDatabase originalDB) {
-        logger.warn("Building entire database for step. Slow call..");
-        //Create param-view
-        Map<String, List<AttributeRef>> attributeMap = new HashMap<String, List<AttributeRef>>();
-        for (String tableName : originalDB.getTableNames()) {
-            attributeMap.put(tableName, buildAttributeRefs(originalDB.getTable(tableName)));
+        if (checkOIDsInTables) {
+            oidChecker.checkDatabase(virtualDB);
         }
-        StringBuilder script = new StringBuilder();
-        Map<String, String> tableViews = extractDatabase("$1", "", deltaDB, originalDB, attributeMap, false, false);
-        for (String tableName : tableViews.keySet()) {
-            String viewScript = tableViews.get(tableName);
-            String viewFunctionScript = generateFunctionForView(((DBMSDB) originalDB).getAccessConfiguration().getSchemaName(), ((DBMSDB) deltaDB).getAccessConfiguration().getSchemaName(), tableName, viewScript);
-            script.append(viewFunctionScript).append("\n");
-        }
-        if (logger.isDebugEnabled()) logger.debug("View paramized script:\n" + script);
-        QueryManager.executeScript(script.toString(), ((DBMSDB) originalDB).getAccessConfiguration(), true, true, true, false);
-        AccessConfiguration accessConfiguration = ((DBMSDB) deltaDB).getAccessConfiguration();
-        DBMSVirtualDB virtualDB = new DBMSVirtualDB((DBMSDB) originalDB, ((DBMSDB) deltaDB), "('" + stepId + "')", accessConfiguration);
         return virtualDB;
-    }
-
-    private String generateFunctionForView(String originalSchemaName, String deltaDBSchemaName, String tableName, String viewScript) {
-        StringBuilder functionScript = new StringBuilder();
-        functionScript.append("CREATE OR REPLACE FUNCTION ").append(deltaDBSchemaName).append(".").append(tableName).append("(step varchar)").append("\n");
-        functionScript.append(SpeedyConstants.INDENT).append("returns setof ").append(originalSchemaName).append(".").append(tableName).append(" as $$").append("\n");
-        functionScript.append(viewScript).append(";").append("\n");
-        functionScript.append("$$ language sql immutable;").append("\n");
-        return functionScript.toString();
     }
 
     private Map<String, String> extractDatabase(String stepId, String dependencyId, IDatabase deltaDB, IDatabase originalDB, Map<String, List<AttributeRef>> tablesAndAttributesToExtract, boolean materialize, boolean distinct) {

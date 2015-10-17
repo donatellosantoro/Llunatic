@@ -90,7 +90,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
                 ICostManager costManager = CostManagerFactory.getCostManager(egd, scenario);
                 List<Repair> repairsForEquivalenceClass = costManager.chooseRepairStrategy(new EquivalenceClassForEGDProxy(equivalenceClass), currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
                 if (logger.isDebugEnabled()) logger.debug("Repairs for equivalence class: " + LunaticUtility.printCollection(repairsForEquivalenceClass));
-                repairsForDependency = accumulateRepairs(repairsForDependency, repairsForEquivalenceClass, equivalenceClass);
+                repairsForDependency = accumulateRepairs(repairsForDependency, repairsForEquivalenceClass);
                 if (noMoreTuples(it)) {
                     break;
                 }
@@ -298,7 +298,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
         throw new IllegalArgumentException("Unable to find variable equivalence class for variable " + v + "\n\t Premise: " + egd.getPremise());
     }
 
-    private List<Repair> accumulateRepairs(List<Repair> repairsForDependency, List<Repair> repairsForEquivalenceClass, EquivalenceClassForEGD equivalenceClass) {
+    private List<Repair> accumulateRepairs(List<Repair> repairsForDependency, List<Repair> repairsForEquivalenceClass) {
         if (logger.isDebugEnabled()) logger.debug("Accumulating new repairs. Repairs for dependency so far:\n" + LunaticUtility.printCollection(repairsForDependency) + "\nRepairs for equivalence class:\n" + LunaticUtility.printCollection(repairsForEquivalenceClass));
         // needed to handle the various ways to repair each equivalence class as returned by the cost manager
         if (repairsForEquivalenceClass.isEmpty()) {

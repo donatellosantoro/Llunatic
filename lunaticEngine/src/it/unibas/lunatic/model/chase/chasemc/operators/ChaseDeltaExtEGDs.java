@@ -106,7 +106,7 @@ public class ChaseDeltaExtEGDs {
             return chaseNode(newStep, scenario, chaseState, egds, premiseTreeMap);
         }
         if (LunaticConfiguration.sout) System.out.println("******Chasing node for egds: " + currentNode.getId());
-        if (logger.isDebugEnabled()) logger.debug("----Chase iteration starting...");
+        if (logger.isDebugEnabled()) logger.debug("----Chase iteration starting on step " + currentNode.getId() + " ...");
         List<DeltaChaseStep> newSteps = new ArrayList<DeltaChaseStep>();
         List<Dependency> unsatisfiedDependencies = unsatisfiedDependenciesChecker.findUnsatisfiedEGDsNoQuery(currentNode, egds);
         List<Dependency> egdsToChase = CostManagerUtility.selectDependenciesToChase(unsatisfiedDependencies, currentNode.getRoot(), scenario.getCostManagerConfiguration());
@@ -116,7 +116,7 @@ public class ChaseDeltaExtEGDs {
         for (Dependency egd : egdsToChase) {
             if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
             long startEgd = new Date().getTime();
-            if (logger.isDebugEnabled()) logger.info("* Chasing dependency " + egd);
+            if (logger.isDebugEnabled()) logger.info("* Chasing dependency " + egd.getId() + " on step " + currentNode.getId());
             if (logger.isDebugEnabled()) logger.info("* Algebra operator " + premiseTreeMap.get(egd));
             if (logger.isDebugEnabled()) logger.debug("Building database for step id: " + currentNode.getId() + "\nDelta db:\n" + currentNode.getDeltaDB().printInstances());
             IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), egd);
