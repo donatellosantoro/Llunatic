@@ -14,32 +14,32 @@ import org.slf4j.LoggerFactory;
 import speedy.model.database.CellRef;
 import speedy.model.database.IDatabase;
 
-public class CheckConsistencyOfCellGroup {
+public class CheckConsistencyOfCellGroups {
 
-    private static Logger logger = LoggerFactory.getLogger(CheckConsistencyOfCellGroup.class);
+    private static Logger logger = LoggerFactory.getLogger(CheckConsistencyOfCellGroups.class);
     private OccurrenceHandlerMC occurrenceHandler;
 
-    public void checkCellGroupConsistency(DeltaChaseStep chaseStep) {
+    public void checkConsistencyOfCellGroupsInStep(DeltaChaseStep chaseStep) {
         Scenario scenario = chaseStep.getScenario();
         initializeOperators(scenario);
         for (DeltaChaseStep child : chaseStep.getChildren()) {
             if (child.isLeaf()) {
-                checkInvalidCellGroup(child);
+                IDatabase deltaDB = child.getDeltaDB();
+                List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsInStepForDebugging(deltaDB, child.getId(), child.getScenario());
+                checkConsistencyOfCellGroups(cellGroups);
             } else {
-                checkCellGroupConsistency(child);
+                checkConsistencyOfCellGroupsInStep(child);
             }
         }
     }
 
-    private void checkInvalidCellGroup(DeltaChaseStep step) {
-        IDatabase deltaDB = step.getDeltaDB();
-        List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsInStepForDebugging(deltaDB, step.getId(), step.getScenario());
+    public void checkConsistencyOfCellGroups(List<CellGroup> cellGroups) throws ChaseException {
         Map<CellRef, CellGroup> cellGroupMap = new HashMap<CellRef, CellGroup>();
         for (CellGroup cellGroup : cellGroups) {
             for (CellGroupCell occurrence : cellGroup.getOccurrences()) {
                 CellRef occurrenceCellRef = new CellRef(occurrence);
                 if (cellGroupMap.containsKey(occurrenceCellRef)) {
-                    throw new ChaseException("Cell " + occurrenceCellRef + " appears in multiple cell groups: \n\t" + cellGroupMap.get(occurrenceCellRef) + "\n\t" + cellGroup);
+                    throw new ChaseException("Cell " + occurrenceCellRef + " appears multiple times in cell groups: \n\t" + cellGroupMap.get(occurrenceCellRef) + "\n\t" + cellGroup);
                 }
                 cellGroupMap.put(occurrenceCellRef, cellGroup);
             }

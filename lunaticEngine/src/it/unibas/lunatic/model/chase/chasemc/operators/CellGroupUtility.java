@@ -1,8 +1,11 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
+import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
+import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,6 +19,9 @@ import speedy.model.database.CellRef;
 import speedy.model.database.IValue;
 
 public class CellGroupUtility {
+
+    private static final Logger logger = LoggerFactory.getLogger(CellGroupUtility.class.getName());
+    private static final CheckConsistencyOfCellGroups cellGroupChecker = new CheckConsistencyOfCellGroups();
 
     public static List<AttributeRef> extractAttributeRefs(List<FormulaVariableOccurrence> occurrences) {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
@@ -69,7 +75,6 @@ public class CellGroupUtility {
 //        }
 //        return cellGroups;
 //    }
-
     public static Set<IValue> findDifferentValuesInCellGroupsWithOccurrences(List<CellGroup> cellGroups) {
         Set<IValue> result = new HashSet<IValue>();
         for (CellGroup cellGroup : cellGroups) {
@@ -111,4 +116,15 @@ public class CellGroupUtility {
         return result;
     }
 
+    public static void checkCellGroupConsistency(Repair repair) {
+        List<CellGroup> cellGroupsToCheck = new ArrayList<CellGroup>();
+        for (ChangeDescription changeDescription : repair.getChangeDescriptions()) {
+            cellGroupsToCheck.add(changeDescription.getCellGroup());
+        }
+        try {
+            cellGroupChecker.checkConsistencyOfCellGroups(cellGroupsToCheck);
+        } catch (ChaseException ex) {
+            logger.error("Incorrect repair:\n" + repair + "\n" + ex.getLocalizedMessage());
+        }
+    }
 }

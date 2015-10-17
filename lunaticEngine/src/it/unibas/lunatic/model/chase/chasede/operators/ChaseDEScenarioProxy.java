@@ -7,7 +7,7 @@ import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.commons.control.ImmutableChaseState;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;
-import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
+import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;

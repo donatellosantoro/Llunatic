@@ -2,13 +2,12 @@ package it.unibas.lunatic.test.checker;
 
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
-import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfCellGroup;
+import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfCellGroups;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.test.GenerateModifiedCells;
 import it.unibas.lunatic.test.comparator.repairs.RepairsComparator;
@@ -30,7 +29,7 @@ public class CheckTest extends TestCase {
     protected RepairsComparator comparator = new RepairsComparator();
     protected ChaseStats chaseStats = ChaseStats.getInstance();
     protected QueryStatManager queryStats = QueryStatManager.getInstance();
-    protected CheckConsistencyOfCellGroup validSolutionChecker = new CheckConsistencyOfCellGroup();
+    protected CheckConsistencyOfCellGroups validSolutionChecker = new CheckConsistencyOfCellGroups();
 
     protected GenerateModifiedCells getModifiedCellGenerator(Scenario scenario) {
         return new GenerateModifiedCells(OperatorFactory.getInstance().getQueryRunner(scenario));
@@ -63,7 +62,7 @@ public class CheckTest extends TestCase {
 
     protected void checkSolutions(DeltaChaseStep result) {
         if (logger.isDebugEnabled()) logger.debug("Checking that leaves are solutions...");
-        validSolutionChecker.checkCellGroupConsistency(result);
+        validSolutionChecker.checkConsistencyOfCellGroupsInStep(result);
         Assert.assertTrue("No solution...", resultSizer.getSolutions(result) > 0);
         Assert.assertTrue("No solution...", resultSizer.getAllNodes(result) > 0);
         Assert.assertEquals("Expected solutions", resultSizer.getPotentialSolutions(result), resultSizer.getSolutions(result));

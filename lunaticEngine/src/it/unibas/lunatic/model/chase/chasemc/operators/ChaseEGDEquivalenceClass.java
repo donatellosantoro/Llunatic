@@ -50,11 +50,11 @@ import speedy.utility.comparator.StringComparator;
 
 public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
 
-    private static Logger logger = LoggerFactory.getLogger(ChaseEGDEquivalenceClass.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChaseEGDEquivalenceClass.class);
 
-    private IRunQuery queryRunner;
-    private OccurrenceHandlerMC occurrenceHandler;
-    private ChangeCell cellChanger;
+    private final IRunQuery queryRunner;
+    private final OccurrenceHandlerMC occurrenceHandler;
+    private final ChangeCell cellChanger;
     private Tuple lastTuple;
     private boolean lastTupleHandled;
 
@@ -90,7 +90,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
                 ICostManager costManager = CostManagerFactory.getCostManager(egd, scenario);
                 List<Repair> repairsForEquivalenceClass = costManager.chooseRepairStrategy(new EquivalenceClassForEGDProxy(equivalenceClass), currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
                 if (logger.isDebugEnabled()) logger.debug("Repairs for equivalence class: " + LunaticUtility.printCollection(repairsForEquivalenceClass));
-                repairsForDependency = accumulateRepairs(repairsForDependency, repairsForEquivalenceClass);
+                repairsForDependency = ChaseUtility.accumulateRepairs(repairsForDependency, repairsForEquivalenceClass);
                 if (noMoreTuples(it)) {
                     break;
                 }
@@ -296,30 +296,6 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
             }
         }
         throw new IllegalArgumentException("Unable to find variable equivalence class for variable " + v + "\n\t Premise: " + egd.getPremise());
-    }
-
-    private List<Repair> accumulateRepairs(List<Repair> repairsForDependency, List<Repair> repairsForEquivalenceClass) {
-        if (logger.isDebugEnabled()) logger.debug("Accumulating new repairs. Repairs for dependency so far:\n" + LunaticUtility.printCollection(repairsForDependency) + "\nRepairs for equivalence class:\n" + LunaticUtility.printCollection(repairsForEquivalenceClass));
-        // needed to handle the various ways to repair each equivalence class as returned by the cost manager
-        if (repairsForEquivalenceClass.isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("No repairs to add...");
-            return repairsForDependency;
-        }
-        if (repairsForDependency.isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("These are the first repairs, returning repairs for equivalence class...");
-            return new ArrayList<Repair>(repairsForEquivalenceClass);
-        }
-        List<Repair> result = new ArrayList<Repair>();
-        for (Repair repairForDependency : repairsForDependency) {
-            for (Repair repairForEquivalenceClass : repairsForEquivalenceClass) {
-                Repair newRepair = new Repair();
-                newRepair.getChangeDescriptions().addAll(repairForDependency.getChangeDescriptions());
-                newRepair.getChangeDescriptions().addAll(repairForEquivalenceClass.getChangeDescriptions());
-                result.add(newRepair);
-            }
-        }
-        if (logger.isDebugEnabled()) logger.debug("Result: " + LunaticUtility.printCollection(result));
-        return result;
     }
 
     private NewChaseSteps applyRepairs(DeltaChaseStep currentNode, List<Repair> repairs, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario) {

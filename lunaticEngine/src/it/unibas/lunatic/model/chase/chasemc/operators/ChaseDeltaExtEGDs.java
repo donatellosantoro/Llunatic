@@ -28,14 +28,14 @@ import speedy.model.database.operators.IRunQuery;
 
 public class ChaseDeltaExtEGDs {
 
-    private static Logger logger = LoggerFactory.getLogger(ChaseDeltaExtEGDs.class);
-    private CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker;
-    private IBuildDatabaseForChaseStep databaseBuilder;
-    private ChangeCell cellChanger;
-    private CheckDuplicates duplicateChecker;
-    private IChaseEGDEquivalenceClass symmetricEGDChaser;
-    private IChaseEGDEquivalenceClass egdChaser;
-    private OccurrenceHandlerMC occurrenceHandler;
+    private static final Logger logger = LoggerFactory.getLogger(ChaseDeltaExtEGDs.class);
+    private final CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker;
+    private final IBuildDatabaseForChaseStep databaseBuilder;
+    private final ChangeCell cellChanger;
+    private final CheckDuplicates duplicateChecker;
+    private final IChaseEGDEquivalenceClass symmetricEGDChaser;
+    private final IChaseEGDEquivalenceClass egdChaser;
+    private final OccurrenceHandlerMC occurrenceHandler;
 
     public ChaseDeltaExtEGDs(IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
             IInsertTuple insertOperator, IDelete deleteOperator, OccurrenceHandlerMC occurrenceHandler, CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker) {
@@ -57,10 +57,6 @@ public class ChaseDeltaExtEGDs {
             if (LunaticConfiguration.sout) System.out.println("---- Chasing egd stratum: " + stratum.getId());
             if (logger.isDebugEnabled()) logger.debug("------------------Chasing stratum: ----\n" + stratum);
             userInteractionRequired = userInteractionRequired || chaseTree(root, scenario, chaseState, stratum.getDependencies(), premiseTreeMap);
-//            userInteractionRequired = chaseTree(root, scenario, chaseState, stratum.getDependencies(), premiseTreeMap);
-//            if (userInteractionRequired) {
-//                break;
-//            }
         }
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.EGD_TIME, end - start);

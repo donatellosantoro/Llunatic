@@ -15,6 +15,7 @@ import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
+import it.unibas.lunatic.utility.LunaticUtility;
 import speedy.model.expressions.Expression;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -331,4 +332,27 @@ public class ChaseUtility {
         return new AttributeRef(tableName, attributeName);
     }
     
+    public static List<Repair> accumulateRepairs(List<Repair> repairsForDependency, List<Repair> repairsForEquivalenceClass) {
+        if (logger.isDebugEnabled()) logger.debug("Accumulating new repairs. Repairs for dependency so far:\n" + LunaticUtility.printCollection(repairsForDependency) + "\nRepairs for equivalence class:\n" + LunaticUtility.printCollection(repairsForEquivalenceClass));
+        // needed to handle the various ways to repair each equivalence class as returned by the cost manager
+        if (repairsForEquivalenceClass.isEmpty()) {
+            if (logger.isDebugEnabled()) logger.debug("No repairs to add...");
+            return repairsForDependency;
+        }
+        if (repairsForDependency.isEmpty()) {
+            if (logger.isDebugEnabled()) logger.debug("These are the first repairs, returning repairs for equivalence class...");
+            return new ArrayList<Repair>(repairsForEquivalenceClass);
+        }
+        List<Repair> result = new ArrayList<Repair>();
+        for (Repair repairForDependency : repairsForDependency) {
+            for (Repair repairForEquivalenceClass : repairsForEquivalenceClass) {
+                Repair newRepair = new Repair();
+                newRepair.getChangeDescriptions().addAll(repairForDependency.getChangeDescriptions());
+                newRepair.getChangeDescriptions().addAll(repairForEquivalenceClass.getChangeDescriptions());
+                result.add(newRepair);
+            }
+        }
+        if (logger.isDebugEnabled()) logger.debug("Result: " + LunaticUtility.printCollection(result));
+        return result;
+    }
 }

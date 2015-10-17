@@ -45,12 +45,12 @@ import speedy.model.database.operators.IRunQuery;
 
 public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
 
-    private static Logger logger = LoggerFactory.getLogger(ChaseSymmetricEGDEquivalenceClass.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChaseSymmetricEGDEquivalenceClass.class);
 
-    private IRunQuery queryRunner;
-    private OccurrenceHandlerMC occurrenceHandler;
-    private IBuildDatabaseForChaseStep databaseBuilder;
-    private ChangeCell cellChanger;
+    private final IRunQuery queryRunner;
+    private final OccurrenceHandlerMC occurrenceHandler;
+    private final IBuildDatabaseForChaseStep databaseBuilder;
+    private final ChangeCell cellChanger;
     private Tuple lastTuple;
     private boolean lastTupleHandled;
 
@@ -85,7 +85,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
                 ICostManager costManager = CostManagerFactory.getCostManager(egd, scenario);
                 List<Repair> repairsForEquivalenceClass = costManager.chooseRepairStrategy(new EquivalenceClassForEGDProxy(equivalenceClass), currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
                 if (logger.isDebugEnabled()) logger.debug("Repairs for equivalence class: " + LunaticUtility.printCollection(repairsForEquivalenceClass));
-                repairsForDependency = accumulateRepairs(repairsForDependency, repairsForEquivalenceClass, equivalenceClass);
+                repairsForDependency = ChaseUtility.accumulateRepairs(repairsForDependency, repairsForEquivalenceClass);
                 if (noMoreTuples(it)) {
                     break;
                 }
@@ -223,36 +223,13 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         }
     }
 
-    private List<Repair> accumulateRepairs(List<Repair> repairsForDependency, List<Repair> repairsForEquivalenceClass, EquivalenceClassForSymmetricEGD equivalenceClass) {
-        if (logger.isDebugEnabled()) logger.debug("Accumulating new repairs. Repairs for dependency so far:\n" + LunaticUtility.printCollection(repairsForDependency) + "\nRepairs for equivalence class:\n" + LunaticUtility.printCollection(repairsForEquivalenceClass));
-        // needed to handle the various ways to repair each equivalence class as returned by the cost manager
-        if (repairsForEquivalenceClass.isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("No repairs to add...");
-            return repairsForDependency;
-        }
-        if (repairsForDependency.isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("These are the first repairs, returning repairs for equivalence class...");
-            return new ArrayList<Repair>(repairsForEquivalenceClass);
-        }
-        List<Repair> result = new ArrayList<Repair>();
-        for (Repair repairForDependency : repairsForDependency) {
-            for (Repair repairForEquivalenceClass : repairsForEquivalenceClass) {
-                Repair newRepair = new Repair();
-                newRepair.getChangeDescriptions().addAll(repairForDependency.getChangeDescriptions());
-                newRepair.getChangeDescriptions().addAll(repairForEquivalenceClass.getChangeDescriptions());
-                result.add(newRepair);
-            }
-        }
-        if (logger.isDebugEnabled()) logger.debug("Result: " + LunaticUtility.printCollection(result));
-        return result;
-    }
-
     private NewChaseSteps applyRepairs(DeltaChaseStep currentNode, List<Repair> repairs, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("---Applying repairs...");
         NewChaseSteps newChaseSteps = new NewChaseSteps(egd);
         for (int i = 0; i < repairs.size(); i++) {
             Repair repair = repairs.get(i);
-            boolean consistentRepair = purgeOverlappingContexts(egd, repair, scenario);
+            CellGroupUtility.checkCellGroupConsistency(repair); //???
+            boolean consistentRepair = purgeOverlappingContexts(egd, repair, scenario); //????
             String egdId = egd.getId();
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, currentNode, localId, egd, repair, repair.getChaseModes());
@@ -274,15 +251,15 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         return newChaseSteps;
     }
 
-    private boolean dependencyIsSatisfied(DeltaChaseStep currentNode, IAlgebraOperator queryOperator, Dependency dependency, Scenario scenario) {
-        IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency);
-        if (logger.isDebugEnabled()) logger.debug("Checking dependency satisfaction for suspicious egd: " + dependency.getId() + "\nDatabase for step: " + databaseForStep);
-        ITupleIterator it = queryRunner.run(queryOperator, scenario.getSource(), databaseForStep);
-        boolean isEmpty = !it.hasNext();
-        it.close();
-        if (logger.isDebugEnabled()) logger.debug("Returning: " + isEmpty);
-        return isEmpty;
-    }
+//    private boolean dependencyIsSatisfied(DeltaChaseStep currentNode, IAlgebraOperator queryOperator, Dependency dependency, Scenario scenario) {
+//        IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency);
+//        if (logger.isDebugEnabled()) logger.debug("Checking dependency satisfaction for suspicious egd: " + dependency.getId() + "\nDatabase for step: " + databaseForStep);
+//        ITupleIterator it = queryRunner.run(queryOperator, scenario.getSource(), databaseForStep);
+//        boolean isEmpty = !it.hasNext();
+//        it.close();
+//        if (logger.isDebugEnabled()) logger.debug("Returning: " + isEmpty);
+//        return isEmpty;
+//    }
 
     private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Scenario scenario) {
         if (egd.hasSymmetricChase() || scenario.getConfiguration().isUseLimit1ForEGDs()) {
