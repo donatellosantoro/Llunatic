@@ -53,6 +53,7 @@ public class CheckTest extends TestCase {
     protected void setConfigurationForTest(Scenario scenario) {
         scenario.getConfiguration().setCheckSolutions(true);
         scenario.getConfiguration().setCheckSolutionsQuery(true);
+        scenario.getConfiguration().setCheckConsistencyOfDBs(true);
         if (scenario.isMainMemory()) scenario.getConfiguration().setDebugMode(true);
     }
 
@@ -62,10 +63,10 @@ public class CheckTest extends TestCase {
 
     protected void checkSolutions(DeltaChaseStep result) {
         if (logger.isDebugEnabled()) logger.debug("Checking that leaves are solutions...");
+        validSolutionChecker.checkCellGroupConsistency(result);
         Assert.assertTrue("No solution...", resultSizer.getSolutions(result) > 0);
         Assert.assertTrue("No solution...", resultSizer.getAllNodes(result) > 0);
         Assert.assertEquals("Expected solutions", resultSizer.getPotentialSolutions(result), resultSizer.getSolutions(result));
-        validSolutionChecker.checkSolutions(result);
     }
 
     protected String getTestName(String scenarioName, Scenario scenario) {

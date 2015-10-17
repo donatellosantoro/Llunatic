@@ -30,6 +30,7 @@ public class TestPersonsFRSP extends CheckExpectedSolutionsTest {
         Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
+//        exportResults("/Temp/expected-frsp", result);
         checkExpectedSolutions("expected-frsp", result);
     }
 
@@ -49,6 +50,7 @@ public class TestPersonsFRSP extends CheckExpectedSolutionsTest {
         Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
+//        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedSynthetic04", result);
         checkExpectedSolutions("expected-frsp", result);
     }
 }

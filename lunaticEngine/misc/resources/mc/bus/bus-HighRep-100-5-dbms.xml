@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+<!ENTITY SIZE "100">
+<!ENTITY dependencies SYSTEM "./dependencies.xml">
+<!ENTITY configuration SYSTEM "configuration.xml">
+]>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:bart_bus_&SIZE;</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+  </source>
+  <target> 
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:bart_bus_&SIZE;</uri>
+      <schema>target_dirty_high</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <import>
+      <input type="xml" table="bus">dirty_bus_100.xml</input>
+    </import>
+  </target>
+  &dependencies;
+  &configuration;
+</scenario>

@@ -131,6 +131,9 @@ public class References {
     public static final String hospital = "mc/hospital/hospital-mcscenario.xml";
     public static final String hospital_0_2p_dbms =    "mc/hospital/hospital-0-2p-mcscenario-dbms.xml";    
 
+    public static final String bus_30_5p_dbms =    "mc/bus/bus-HighRep-30-5-dbms.xml";    
+    public static final String bus_55_5p_dbms =    "mc/bus/bus-HighRep-55-5-dbms.xml";    
+    public static final String bus_100_5p_dbms =    "mc/bus/bus-HighRep-100-5-dbms.xml";    
     
     public static final String accuracy = "mc/accuracy/accuracy-mcscenario.xml";
     public static final String accuracy_poset = "mc/accuracy/accuracy-poset-mcscenario.xml";
