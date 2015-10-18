@@ -3,10 +3,13 @@ package it.unibas.lunatic.model.chase.commons;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.exceptions.ChaseException;
+import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
+import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
+import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupUtility;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
@@ -355,4 +358,48 @@ public class ChaseUtility {
         if (logger.isDebugEnabled()) logger.debug("Result: " + LunaticUtility.printCollection(result));
         return result;
     }
+    
+    
+    public static boolean occurrencesOverlap(ChangeDescription violationContext, Set<CellGroupCell> cellsToChange) {
+        CellGroup cellGroup = violationContext.getCellGroup();
+        boolean inconsistent = containsCellRefs(CellGroupUtility.extractAllCellRefs(cellGroup), cellsToChange);
+        if (inconsistent && logger.isDebugEnabled()) logger.debug("Occurrences Overlap:\n" + violationContext);
+        return inconsistent;
+    }
+
+    public static boolean witnessOverlaps(ChangeDescription changeSet, Set<CellGroupCell> cellsToChange) {
+        if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
+            return false;
+        }
+        Set<CellRef> witnessCells = CellGroupUtility.extractAllCellRefs(changeSet.getWitnessCells());
+        if (containsCellRefs(witnessCells, cellsToChange)) {
+            if (logger.isDebugEnabled()) logger.debug("Witness Overlaps:\n" + witnessCells);
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean containsCellRefs(Set<CellRef> witnessCells, Set<CellGroupCell> cellsToChange) {
+        Set<CellRef> cellRefsToChange = ChaseUtility.createCellRefsFromCells(cellsToChange);
+        for (CellRef cell : witnessCells) {
+            if (cellRefsToChange.contains(cell)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static List<AttributeRef> extractAffectedAttributes(Repair repair) {
+        List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
+        for (ChangeDescription changeSet : repair.getChangeDescriptions()) {
+            CellGroup cellGroupToChange = changeSet.getCellGroup();
+            for (Cell occurrenceCell : cellGroupToChange.getOccurrences()) {
+                if (!affectedAttributes.contains(occurrenceCell.getAttributeRef())) {
+                    affectedAttributes.add(occurrenceCell.getAttributeRef());
+                }
+            }
+        }
+        return affectedAttributes;
+    }
+
 }

@@ -49,15 +49,13 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
 
     private final IRunQuery queryRunner;
     private final OccurrenceHandlerMC occurrenceHandler;
-    private final IBuildDatabaseForChaseStep databaseBuilder;
     private final ChangeCell cellChanger;
     private Tuple lastTuple;
     private boolean lastTupleHandled;
 
-    public ChaseSymmetricEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, IBuildDatabaseForChaseStep databaseBuilder, ChangeCell cellChanger) {
+    public ChaseSymmetricEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, ChangeCell cellChanger) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
-        this.databaseBuilder = databaseBuilder;
         this.cellChanger = cellChanger;
     }
 
@@ -99,7 +97,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         }
         if (logger.isDebugEnabled()) logger.debug("Total repairs for dependency: " + LunaticUtility.printCollection(repairsForDependency));
         long repairStart = new Date().getTime();
-        NewChaseSteps newSteps = applyRepairs(currentNode, repairsForDependency, egd, premiseQuery, scenario);
+        NewChaseSteps newSteps = applyRepairs(currentNode, repairsForDependency, egd, scenario);
         long repairEnd = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.EGD_REPAIR_TIME, repairEnd - repairStart);
         return newSteps;
@@ -224,7 +222,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         }
     }
 
-    private NewChaseSteps applyRepairs(DeltaChaseStep currentNode, List<Repair> repairs, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario) {
+    private NewChaseSteps applyRepairs(DeltaChaseStep currentNode, List<Repair> repairs, Dependency egd, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("---Applying repairs...");
         NewChaseSteps newChaseSteps = new NewChaseSteps(egd);
         for (int i = 0; i < repairs.size(); i++) {
@@ -237,11 +235,12 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             for (ChangeDescription changeSet : repair.getChangeDescriptions()) {
                 this.cellChanger.changeCells(changeSet.getCellGroup(), newStep.getDeltaDB(), newStep.getId(), scenario);
             }
-            if (isEGDSatisfied(egd, consistentRepair, scenario)) {
+//            if (isEGDSatisfied(egd, consistentRepair, scenario)) {
+            if (consistentRepair) { //TODO??? check
                 if (logger.isDebugEnabled()) logger.debug("EGD " + egd.getId() + " is satisfied in this step...");
                 newStep.addSatisfiedEGD(egd);
             }
-            List<AttributeRef> affectedAttributes = extractAffectedAttributes(repair);
+            List<AttributeRef> affectedAttributes = ChaseUtility.extractAffectedAttributes(repair);
             newStep.setAffectedAttributes(affectedAttributes);
             if (logger.isDebugEnabled()) logger.debug("Generated step " + newStep.getId() + " for repair: " + repair);
             newChaseSteps.addChaseStep(newStep);
@@ -264,15 +263,12 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
 //    }
 
     private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Scenario scenario) {
-        if (scenario.getConfiguration().isUseLimit1ForEGDs()) {
-            return true;
-        }
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);
         boolean consistent = true;
         Set<CellGroupCell> cellsToChange = new HashSet<CellGroupCell>();
         for (Iterator<ChangeDescription> it = repair.getChangeDescriptions().iterator(); it.hasNext();) {
             ChangeDescription violationContexts = it.next();
-            if (occurrencesOverlap(violationContexts, cellsToChange) || witnessOverlaps(violationContexts, cellsToChange)) {
+            if (ChaseUtility.occurrencesOverlap(violationContexts, cellsToChange) || ChaseUtility.witnessOverlaps(violationContexts, cellsToChange)) {
                 if (logger.isDebugEnabled()) logger.debug("Violation context has overlaps: " + violationContexts);
                 it.remove();
                 consistent = false;
@@ -281,52 +277,6 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             }
         }
         return consistent;
-    }
-
-    private boolean occurrencesOverlap(ChangeDescription violationContext, Set<CellGroupCell> cellsToChange) {
-        CellGroup cellGroup = violationContext.getCellGroup();
-        boolean inconsistent = containsCellRefs(CellGroupUtility.extractAllCellRefs(cellGroup), cellsToChange);
-        if (inconsistent && logger.isDebugEnabled()) logger.debug("Occurrences Overlap:\n" + violationContext);
-        return inconsistent;
-    }
-
-    private boolean witnessOverlaps(ChangeDescription changeSet, Set<CellGroupCell> cellsToChange) {
-        if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
-            return false;
-        }
-        Set<CellRef> witnessCells = CellGroupUtility.extractAllCellRefs(changeSet.getWitnessCells());
-        if (containsCellRefs(witnessCells, cellsToChange)) {
-            if (logger.isDebugEnabled()) logger.debug("Witness Overlaps:\n" + witnessCells);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean containsCellRefs(Set<CellRef> witnessCells, Set<CellGroupCell> cellsToChange) {
-        Set<CellRef> cellRefsToChange = ChaseUtility.createCellRefsFromCells(cellsToChange);
-        for (CellRef cell : witnessCells) {
-            if (cellRefsToChange.contains(cell)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isEGDSatisfied(Dependency egd, boolean consistentRepair, Scenario scenario) {
-        return egd.hasSymmetricChase() && consistentRepair && !scenario.getConfiguration().isUseLimit1ForEGDs() && !egd.isOverlapBetweenAffectedAndQueried();
-    }
-
-    private List<AttributeRef> extractAffectedAttributes(Repair repair) {
-        List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
-        for (ChangeDescription changeSet : repair.getChangeDescriptions()) {
-            CellGroup cellGroupToChange = changeSet.getCellGroup();
-            for (Cell occurrenceCell : cellGroupToChange.getOccurrences()) {
-                if (!affectedAttributes.contains(occurrenceCell.getAttributeRef())) {
-                    affectedAttributes.add(occurrenceCell.getAttributeRef());
-                }
-            }
-        }
-        return affectedAttributes;
     }
 
 }

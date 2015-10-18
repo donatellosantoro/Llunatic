@@ -42,7 +42,7 @@ public class ChaseDeltaExtEGDs {
         this.databaseBuilder = stepBuilder;
         this.cellChanger = new ChangeCell(insertOperator, deleteOperator, occurrenceHandler);
         this.duplicateChecker = new CheckDuplicates();
-        this.symmetricEGDChaser = new ChaseSymmetricEGDEquivalenceClass(queryRunner, occurrenceHandler, databaseBuilder, cellChanger);
+        this.symmetricEGDChaser = new ChaseSymmetricEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
         this.egdChaser = new ChaseEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
         this.unsatisfiedDependenciesChecker = new CheckUnsatisfiedDependencies(databaseBuilder, occurrenceHandler, queryRunner);
         this.occurrenceHandler = occurrenceHandler;

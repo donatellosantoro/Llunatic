@@ -90,9 +90,11 @@ public class CheckUnsatisfiedDependencies {
             boolean satisfied = isEGDSatisfiedQuery(egd, currentNode, databaseForStep, scenario);
             if (!satisfied) {
                 if (scenario.isDBMS()) {
-                    throw new ChaseException("Dependency " + egd + "\nis not satisfied in node " + currentNode.toShortStringWithSort());
+                    logger.error("Dependency " + egd + "\nis not satisfied in node " + currentNode.toShortStringWithSort());
+//                    throw new ChaseException("Dependency " + egd + "\nis not satisfied in node " + currentNode.toShortStringWithSort());
                 } else {
-                    throw new ChaseException("Dependency " + egd + "\nis not satisfied in node " + currentNode.toStringWithSort() + "\nDelta db: " + currentNode.getDeltaDB());
+                    logger.error("Dependency " + egd + "\nis not satisfied in node " + currentNode.toShortStringWithSort());
+//                    throw new ChaseException("Dependency " + egd + "\nis not satisfied in node " + currentNode.toStringWithSort() + "\nDelta db: " + currentNode.getDeltaDB());
                 }
             }
         }
