@@ -38,13 +38,13 @@ public class StandardSymmetricCostManager implements ICostManager {
             OccurrenceHandlerMC occurrenceHandler) {
         EquivalenceClassForSymmetricEGD equivalenceClass = (EquivalenceClassForSymmetricEGD) equivalenceClassProxy.getEquivalenceClass();
         if (logger.isInfoEnabled()) logger.info("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName());
-        if (logger.isDebugEnabled()) logger.debug("########Current node: " + chaseTreeRoot.toStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug("########Current node: " + stepId);
         if (logger.isDebugEnabled()) logger.debug("########Choosing repair strategy for equivalence class: " + equivalenceClass.toLongString());
         List<Repair> result = new ArrayList<Repair>();
         Repair forwardRepair = CostManagerUtility.generateSymmetricForwardRepair(equivalenceClass.getAllTupleCells(), scenario);
         result.add(forwardRepair);
         if (canDoBackward(chaseTreeRoot, scenario.getCostManagerConfiguration())) {
-            List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass, scenario, chaseTreeRoot.getDeltaDB(), stepId);
+            List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass, scenario);
             for (Repair repair : backwardRepairs) {
                 //TODO++ check: backward repairs are generated twice
                 if (result.contains(repair)) {
@@ -69,7 +69,7 @@ public class StandardSymmetricCostManager implements ICostManager {
         return false;
     }
 
-    private List<Repair> generateBackwardRepairs(EquivalenceClassForSymmetricEGD equivalenceClass, Scenario scenario, IDatabase deltaDB, String stepId) {
+    private List<Repair> generateBackwardRepairs(EquivalenceClassForSymmetricEGD equivalenceClass, Scenario scenario) {
         List<EGDEquivalenceClassTuple> allTupleCells = equivalenceClass.getAllTupleCells();
         if (allTupleCells.size() > 10) {
             throw new ChaseException("Tuple cells of excessive size, it is not possible to chase this scenario: " + equivalenceClass);

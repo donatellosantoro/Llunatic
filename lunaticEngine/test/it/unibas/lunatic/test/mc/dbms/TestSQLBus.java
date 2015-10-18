@@ -27,8 +27,8 @@ public class TestSQLBus extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicates: " + resultSizer.getDuplicates(result));
-//        Assert.assertEquals(5, resultSizer.getSolutions(result));
-        Assert.assertEquals(0, resultSizer.getDuplicates(result));
+        Assert.assertEquals(1, resultSizer.getSolutions(result));
+        Assert.assertEquals(1, resultSizer.getDuplicates(result));
         checkSolutions(result);
     }
 }

@@ -64,6 +64,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
     @Override
     public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
         if (logger.isDebugEnabled()) logger.debug("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
+        if (logger.isDebugEnabled()) logger.debug(databaseForStep.printInstances());
         this.lastTuple = null;
         this.lastTupleHandled = false;
         if (logger.isDebugEnabled()) logger.debug("Executing premise query: " + premiseQuery);
@@ -263,7 +264,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
 //    }
 
     private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Scenario scenario) {
-        if (egd.hasSymmetricChase() || scenario.getConfiguration().isUseLimit1ForEGDs()) {
+        if (scenario.getConfiguration().isUseLimit1ForEGDs()) {
             return true;
         }
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);

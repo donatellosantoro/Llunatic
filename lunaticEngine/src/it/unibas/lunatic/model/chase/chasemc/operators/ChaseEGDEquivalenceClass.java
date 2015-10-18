@@ -66,7 +66,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
 
     @Override
     public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
-        if (logger.isInfoEnabled()) logger.info("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
+        if (logger.isDebugEnabled()) logger.info("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
         if (logger.isDebugEnabled()) logger.debug(databaseForStep.printInstances());
         this.lastTuple = null;
         this.lastTupleHandled = false;
