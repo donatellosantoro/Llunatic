@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.dependency.operators;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -61,14 +62,15 @@ public class AnalyzeDependencies {
     }
 
     private DependencyStratification generateStratification(Scenario scenario) {
-        List<ExtendedDependency> dependencies = dependencyBuilder.buildExtendedEGDs(scenario.getExtEGDs(), scenario);
-        DirectedGraph<ExtendedDependency, DefaultEdge> dependencyGraph = initDependencyGraph(dependencies);
+        List<ExtendedDependency> extendedDependencies = dependencyBuilder.buildExtendedEGDs(scenario.getExtEGDs(), scenario);
+        List<ExtendedDependency> extendedDependenciesToProcess = extractDependenciesToProcess(extendedDependencies, scenario);
+        DirectedGraph<ExtendedDependency, DefaultEdge> dependencyGraph = initDependencyGraph(extendedDependenciesToProcess);
         StrongConnectivityInspector<ExtendedDependency, DefaultEdge> strongConnectivityInspector = new StrongConnectivityInspector<ExtendedDependency, DefaultEdge>(dependencyGraph);
         List<Set<ExtendedDependency>> stronglyConnectedComponents = strongConnectivityInspector.stronglyConnectedSets();
         DependencyStratification stratification = new DependencyStratification();
         for (Set<ExtendedDependency> extendedDependencySet : stronglyConnectedComponents) {
             Set<Dependency> dependencySet = buildDependencySet(extendedDependencySet);
-            DependencyStratum stratum = new DependencyStratum(dependencySet);
+            DependencyStratum stratum = new DependencyStratum(dependencySet, extendedDependencySet);
             Collections.sort(stratum.getDependencies(), new DependencyComparator());
             stratification.addStratum(stratum);
         }
@@ -79,6 +81,20 @@ public class AnalyzeDependencies {
         }
         if (logger.isDebugEnabled()) logger.debug("Stratification: " + stratification);
         return stratification;
+    }
+
+    private List<ExtendedDependency> extractDependenciesToProcess(List<ExtendedDependency> extendedDependencies, Scenario scenario) {
+        if (scenario.getCostManagerConfiguration().isDoBackward()) {
+            return extendedDependencies;
+        }
+        List<ExtendedDependency> forwardDependencies = new ArrayList<ExtendedDependency>();
+        for (ExtendedDependency dependency : extendedDependencies) {
+            if (dependency.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
+                continue;
+            }
+            forwardDependencies.add(dependency);
+        }
+        return forwardDependencies;
     }
 
     private DirectedGraph<ExtendedDependency, DefaultEdge> initDependencyGraph(List<ExtendedDependency> dependencies) {
@@ -151,6 +167,7 @@ public class AnalyzeDependencies {
             }
         }
     }
+
 }
 
 class StratumComparator implements Comparator<DependencyStratum> {

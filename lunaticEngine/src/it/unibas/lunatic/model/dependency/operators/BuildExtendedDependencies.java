@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public class BuildExtendedDependencies {
 
-    private static Logger logger = LoggerFactory.getLogger(BuildExtendedDependencies.class);
+    private static final Logger logger = LoggerFactory.getLogger(BuildExtendedDependencies.class);
 
 //    private FindSubsumedAtoms subsumptionFinder = new FindSubsumedAtoms();
     public List<ExtendedDependency> buildExtendedEGDs(List<Dependency> dependencies, Scenario scenario) {
