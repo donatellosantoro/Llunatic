@@ -84,7 +84,7 @@ public class CheckTest extends TestCase {
 //            name.append("-").append(costManager.getChaseTreeSizeThreshold());
             name.append("-").append(costManager.getPotentialSolutionsThreshold());
         }
-        if (!costManager.isDoBackward()) {
+        if (!scenario.getCostManagerConfiguration().isDoBackwardForAllDependencies()) {
             name.append("-FO");
         }
         return name.toString();

@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.dependency.operators;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -27,10 +26,10 @@ import org.slf4j.LoggerFactory;
 
 public class AnalyzeDependencies {
 
-    private static Logger logger = LoggerFactory.getLogger(AnalyzeDependencies.class);
-    private BuildExtendedDependencies dependencyBuilder = new BuildExtendedDependencies();
-    private FindSymmetricAtoms symmetryFinder = new FindSymmetricAtoms();
-    private AssignAdditionalAttributes additionalAttributesAssigner = new AssignAdditionalAttributes();
+    private static final Logger logger = LoggerFactory.getLogger(AnalyzeDependencies.class);
+    private final BuildExtendedDependencies dependencyBuilder = new BuildExtendedDependencies();
+    private final FindSymmetricAtoms symmetryFinder = new FindSymmetricAtoms();
+    private final AssignAdditionalAttributes additionalAttributesAssigner = new AssignAdditionalAttributes();
 
     public void prepareDependenciesAndGenerateStratification(Scenario scenario) {
         if (scenario.getStratification() != null) {
@@ -63,8 +62,7 @@ public class AnalyzeDependencies {
 
     private DependencyStratification generateStratification(Scenario scenario) {
         List<ExtendedDependency> extendedDependencies = dependencyBuilder.buildExtendedEGDs(scenario.getExtEGDs(), scenario);
-        List<ExtendedDependency> extendedDependenciesToProcess = extractDependenciesToProcess(extendedDependencies, scenario);
-        DirectedGraph<ExtendedDependency, DefaultEdge> dependencyGraph = initDependencyGraph(extendedDependenciesToProcess);
+        DirectedGraph<ExtendedDependency, DefaultEdge> dependencyGraph = initDependencyGraph(extendedDependencies);
         StrongConnectivityInspector<ExtendedDependency, DefaultEdge> strongConnectivityInspector = new StrongConnectivityInspector<ExtendedDependency, DefaultEdge>(dependencyGraph);
         List<Set<ExtendedDependency>> stronglyConnectedComponents = strongConnectivityInspector.stronglyConnectedSets();
         DependencyStratification stratification = new DependencyStratification();
@@ -81,20 +79,6 @@ public class AnalyzeDependencies {
         }
         if (logger.isDebugEnabled()) logger.debug("Stratification: " + stratification);
         return stratification;
-    }
-
-    private List<ExtendedDependency> extractDependenciesToProcess(List<ExtendedDependency> extendedDependencies, Scenario scenario) {
-        if (scenario.getCostManagerConfiguration().isDoBackward()) {
-            return extendedDependencies;
-        }
-        List<ExtendedDependency> forwardDependencies = new ArrayList<ExtendedDependency>();
-        for (ExtendedDependency dependency : extendedDependencies) {
-            if (dependency.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
-                continue;
-            }
-            forwardDependencies.add(dependency);
-        }
-        return forwardDependencies;
     }
 
     private DirectedGraph<ExtendedDependency, DefaultEdge> initDependencyGraph(List<ExtendedDependency> dependencies) {

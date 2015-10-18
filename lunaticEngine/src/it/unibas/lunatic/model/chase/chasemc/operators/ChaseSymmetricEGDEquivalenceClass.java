@@ -24,6 +24,7 @@ import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedDependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
+import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -151,12 +152,9 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
 
     private List<BackwardAttribute> findAttributesForBackwardChasing(Dependency egd) {
         List<BackwardAttribute> attributesForBackwardChasing = new ArrayList<BackwardAttribute>();
-        for (ExtendedDependency extendedDependency : egd.getExtendedDependencies()) {
-            if (extendedDependency.isForward()) {
-                continue;
-            }
-            AttributeRef occurrenceAttribute = EquivalenceClassUtility.correctAttributeForSymmetricEGDs(extendedDependency.getOccurrence().getAttributeRef(), egd);
-            FormulaVariable variable = LunaticUtility.findPremiseVariableInDepedency(extendedDependency.getOccurrence(), egd);
+        for (FormulaVariableOccurrence backwardAttributeOccurrence : egd.getBackwardAttributes()) {
+            AttributeRef occurrenceAttribute = EquivalenceClassUtility.correctAttributeForSymmetricEGDs(backwardAttributeOccurrence.getAttributeRef(), egd);
+            FormulaVariable variable = LunaticUtility.findPremiseVariableInDepedency(backwardAttributeOccurrence, egd);
             BackwardAttribute backwardAttribute = new BackwardAttribute(occurrenceAttribute, variable);
             if (attributesForBackwardChasing.contains(backwardAttribute)) {
                 continue;

@@ -7,9 +7,9 @@ import java.util.List;
 
 public class DependencyVariables {
 
-    private Dependency egd;
+    private final Dependency egd;
     private List<VariableEquivalenceClass> witnessVariables = new ArrayList<VariableEquivalenceClass>();
-    private List<VariableEquivalenceClass> conclusionVariables = new ArrayList<VariableEquivalenceClass>();
+    private final List<VariableEquivalenceClass> conclusionVariables = new ArrayList<VariableEquivalenceClass>();
 
     public DependencyVariables(Dependency egd) {
         this.egd = egd;

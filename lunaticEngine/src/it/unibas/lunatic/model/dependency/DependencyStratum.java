@@ -15,7 +15,6 @@ public class DependencyStratum {
         this.extendedDependencies = new ArrayList<ExtendedDependency>(extendedDependencies);
     }
 
-
     public List<Dependency> getDependencies() {
         return dependencies;
     }

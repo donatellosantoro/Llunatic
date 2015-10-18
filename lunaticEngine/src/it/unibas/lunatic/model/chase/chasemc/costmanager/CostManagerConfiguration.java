@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.costmanager;
 
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
 
 public class CostManagerConfiguration {
@@ -16,10 +17,14 @@ public class CostManagerConfiguration {
 //    private String similarityStrategy = SimilarityFactory.SIMPLE_EDITS;
     private String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;
 
-    public boolean isDoBackward() {
-        return doBackward;
+    public boolean isDoBackwardOnDependency(Dependency dependency) {
+        return this.doBackward && dependency.isDoBackward();
     }
 
+    public boolean isDoBackwardForAllDependencies() {
+        return this.doBackward;
+    }
+    
     public void setDoBackward(boolean doBackward) {
         this.doBackward = doBackward;
     }

@@ -35,8 +35,8 @@ import speedy.utility.SpeedyUtility;
 
 public class SimilarityToPreferredValueCostManager implements ICostManager {
 
-    private static Logger logger = LoggerFactory.getLogger(SimilarityToPreferredValueCostManager.class);
-    private CheckSatisfactionAfterUpgradesEGD satisfactionChecker = new CheckSatisfactionAfterUpgradesEGD();
+    private static final Logger logger = LoggerFactory.getLogger(SimilarityToPreferredValueCostManager.class);
+    private final CheckSatisfactionAfterUpgradesEGD satisfactionChecker = new CheckSatisfactionAfterUpgradesEGD();
 
     @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot,
@@ -54,6 +54,11 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
             return Collections.EMPTY_LIST;
         }
         List<CellGroup> forwardCellGroups = equivalenceClass.getAllConclusionCellGroups();
+        if (!scenario.getCostManagerConfiguration().isDoBackwardOnDependency(equivalenceClass.getEGD())) {
+            List<ViolationContext> forwardContexts = equivalenceClass.getViolationContexts();
+            Repair forwardRepair = CostManagerUtility.generateStandardForwardRepair(forwardContexts, scenario);
+            return new ArrayList<Repair>(Arrays.asList(new Repair[]{forwardRepair}));
+        }
         IValue preferredValue = CostManagerUtility.findPreferredValue(forwardCellGroups, scenario);
         if (isDebug(equivalenceClass)) logger.info("Preferred values: " + preferredValue);
         Repair repair;

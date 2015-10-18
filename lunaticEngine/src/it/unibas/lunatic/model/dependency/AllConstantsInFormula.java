@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 import speedy.utility.comparator.StringComparator;
 
-public class ConstantsInFormula {
+public class AllConstantsInFormula {
     
     private Dependency dependency;
     private Map<String, ConstantInFormula> constantMap = new HashMap<String, ConstantInFormula>();
 
-    public ConstantsInFormula(Dependency dependency) {
+    public AllConstantsInFormula(Dependency dependency) {
         this.dependency = dependency;
     }
 

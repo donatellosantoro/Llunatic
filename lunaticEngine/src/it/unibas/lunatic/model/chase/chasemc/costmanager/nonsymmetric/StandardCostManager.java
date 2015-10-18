@@ -13,6 +13,7 @@ import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguratio
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
+import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -50,7 +51,7 @@ public class StandardCostManager implements ICostManager {
         List<ViolationContext> allContexts = equivalenceClass.getViolationContexts();
         Repair forwardRepair = CostManagerUtility.generateStandardForwardRepair(allContexts, scenario);
         result.add(forwardRepair);
-        if (canDoBackward(chaseTreeRoot, scenario.getCostManagerConfiguration())) {
+        if (canDoBackward(chaseTreeRoot, equivalenceClass.getEGD(), scenario.getCostManagerConfiguration())) {
             List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass, scenario, chaseTreeRoot.getDeltaDB(), stepId);
             for (Repair repair : backwardRepairs) {
                 if (result.contains(repair)) {
@@ -63,8 +64,8 @@ public class StandardCostManager implements ICostManager {
         return result;
     }
 
-    private boolean canDoBackward(DeltaChaseStep chaseTreeRoot, CostManagerConfiguration costManagerConfiguration) {
-        if (costManagerConfiguration.isDoBackward()) {
+    private boolean canDoBackward(DeltaChaseStep chaseTreeRoot, Dependency egd, CostManagerConfiguration costManagerConfiguration) {
+        if (costManagerConfiguration.isDoBackwardOnDependency(egd)) {
             // check if repairs with backward chasing are possible
             int chaseBranching = chaseTreeRoot.getNumberOfLeaves();
             int potentialSolutions = chaseTreeRoot.getPotentialSolutions();

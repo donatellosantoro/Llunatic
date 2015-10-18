@@ -44,6 +44,10 @@ public class SimilarityToPreferredValueSymmetricCostManager implements ICostMana
         if (logger.isDebugEnabled()) logger.debug("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName());
         if (logger.isInfoEnabled()) logger.info("######## Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<EGDEquivalenceClassTuple> tuples = equivalenceClass.getAllTupleCells();
+        if (!scenario.getCostManagerConfiguration().isDoBackwardOnDependency(equivalenceClass.getEGD())) {
+            Repair forwardRepair = CostManagerUtility.generateSymmetricForwardRepair(tuples, scenario);
+            return new ArrayList<Repair>(Arrays.asList(new Repair[]{forwardRepair}));
+        }
         List<CellGroup> forwardCellGroups = CostManagerUtility.extractForwardCellGroups(tuples);
         IValue preferredValue = CostManagerUtility.findPreferredValue(forwardCellGroups, scenario);
         if (isDebug(equivalenceClass)) logger.info("Preferred values: " + preferredValue);

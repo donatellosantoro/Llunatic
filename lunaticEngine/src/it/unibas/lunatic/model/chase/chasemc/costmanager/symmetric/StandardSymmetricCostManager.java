@@ -14,9 +14,8 @@ import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
-import speedy.model.database.IDatabase;
+import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.utility.combinatorial.GenericMultiCombinationsGenerator;
 import it.unibas.lunatic.utility.combinatorial.GenericPowersetGenerator;
@@ -43,7 +42,7 @@ public class StandardSymmetricCostManager implements ICostManager {
         List<Repair> result = new ArrayList<Repair>();
         Repair forwardRepair = CostManagerUtility.generateSymmetricForwardRepair(equivalenceClass.getAllTupleCells(), scenario);
         result.add(forwardRepair);
-        if (canDoBackward(chaseTreeRoot, scenario.getCostManagerConfiguration())) {
+        if (canDoBackward(chaseTreeRoot, equivalenceClass.getEGD(), scenario.getCostManagerConfiguration())) {
             List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass, scenario);
             for (Repair repair : backwardRepairs) {
                 //TODO++ check: backward repairs are generated twice
@@ -56,8 +55,8 @@ public class StandardSymmetricCostManager implements ICostManager {
         return result;
     }
 
-    private boolean canDoBackward(DeltaChaseStep chaseTreeRoot, CostManagerConfiguration costManagerConfiguration) {
-        if (costManagerConfiguration.isDoBackward()) {
+    private boolean canDoBackward(DeltaChaseStep chaseTreeRoot, Dependency egd, CostManagerConfiguration costManagerConfiguration) {
+        if (costManagerConfiguration.isDoBackwardOnDependency(egd)) {
             // check if repairs with backward chasing are possible
             int chaseBranching = chaseTreeRoot.getNumberOfLeaves();
             int potentialSolutions = chaseTreeRoot.getPotentialSolutions();

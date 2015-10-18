@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.dependency;
 
+import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.dependency.operators.CloneDependency;
 import it.unibas.lunatic.model.dependency.operators.DependencyToString;
 import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;
@@ -21,9 +22,11 @@ public class Dependency implements Cloneable {
     private Map<AttributeRef, IValueGenerator> targetGenerators = new HashMap<AttributeRef, IValueGenerator>();
     private List<AttributeRef> queriedAttributes = new ArrayList<AttributeRef>();
     private List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
+    private List<FormulaVariableOccurrence> backwardAttributes = new ArrayList<FormulaVariableOccurrence>();
     private SymmetricAtoms symmetricAtoms = new SymmetricAtoms();
     private boolean joinGraphIsCyclic; // R(v1, v1)
     private boolean overlapBetweenAffectedAndQueried;
+    private boolean doBackward = true;
 
     public Dependency() {
     }
@@ -127,6 +130,14 @@ public class Dependency implements Cloneable {
         this.affectedAttributes = affectedAttributes;
     }
 
+    public List<FormulaVariableOccurrence> getBackwardAttributes() {
+        return backwardAttributes;
+    }
+
+    public void setBackwardAttributes(List<FormulaVariableOccurrence> backwardAttributes) {
+        this.backwardAttributes = backwardAttributes;
+    }
+
     public boolean hasSymmetricChase() {
         // Symmetric chase is used only for FDs
         return this.symmetricAtoms.getSize() == 1 && !hasNegations() && !isOverlapBetweenAffectedAndQueried();
@@ -152,6 +163,14 @@ public class Dependency implements Cloneable {
 
     public boolean hasNegations() {
         return !this.premise.getNegatedSubFormulas().isEmpty();
+    }
+
+    public boolean isDoBackward() {
+        return doBackward;
+    }
+
+    public void setDoBackward(boolean doBackward) {
+        this.doBackward = doBackward;
     }
 
     @Override

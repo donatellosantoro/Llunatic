@@ -15,10 +15,10 @@ import speedy.utility.comparator.StringComparator;
 
 public class EquivalenceClassForEGD {
 
-    private DependencyVariables dependencyVariables;
-    private List<ViolationContext> violationContexts = new ArrayList<ViolationContext>();
-    private Map<Cell, List<ViolationContext>> violationContextsForCell = new HashMap<Cell, List<ViolationContext>>();
-    private Map<IValue, Set<CellGroup>> cellGroupsForValue = new HashMap<IValue, Set<CellGroup>>();
+    private final DependencyVariables dependencyVariables;
+    private final List<ViolationContext> violationContexts = new ArrayList<ViolationContext>();
+    private final Map<Cell, List<ViolationContext>> violationContextsForCell = new HashMap<Cell, List<ViolationContext>>();
+    private final Map<IValue, Set<CellGroup>> cellGroupsForValue = new HashMap<IValue, Set<CellGroup>>();
 
     public EquivalenceClassForEGD(DependencyVariables dependencyVariables) {
         this.dependencyVariables = dependencyVariables;

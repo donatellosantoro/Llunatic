@@ -31,7 +31,6 @@ public class BuildExtendedDependencies {
 
     private static final Logger logger = LoggerFactory.getLogger(BuildExtendedDependencies.class);
 
-//    private FindSubsumedAtoms subsumptionFinder = new FindSubsumedAtoms();
     public List<ExtendedDependency> buildExtendedEGDs(List<Dependency> dependencies, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Original dependencies: \n" + LunaticUtility.printCollection(dependencies));
         List<ExtendedDependency> result = new ArrayList<ExtendedDependency>();
@@ -43,10 +42,11 @@ public class BuildExtendedDependencies {
             List<ExtendedDependency> extendedDependencies = new ArrayList<ExtendedDependency>();
             if (logger.isDebugEnabled()) logger.debug("Building forward egd...");
             extendedDependencies.add(buildForwardEGD(dependency));
-//            if (scenario.getCostManagerConfiguration().isDoBackward()) {
+            findBackwardAttributes(dependency);
+            if (scenario.getCostManagerConfiguration().isDoBackwardOnDependency(dependency)) {
                 if (logger.isDebugEnabled()) logger.debug("Building backward egds...");
                 extendedDependencies.addAll(buildBackwardEGDs(dependency));
-//            }
+            }
             findQueriedAndLocalAffectedAttributes(dependency, extendedDependencies);
             result.addAll(extendedDependencies);
             dependency.setExtendedDependencies(extendedDependencies);
@@ -68,22 +68,32 @@ public class BuildExtendedDependencies {
         return forward;
     }
 
-    private List<ExtendedDependency> buildBackwardEGDs(Dependency dependency) {
-        if (logger.isDebugEnabled()) logger.debug("Building backward dependencies for egd: " + dependency);
+    private void findBackwardAttributes(Dependency dependency) {
+        if (logger.isDebugEnabled()) logger.debug("Building backward attributes for egd: " + dependency);
         // backward chasing is only for joins (which includes equalities and selections, via const tables)
         // backward chasing is not doable on other comparisons eg: a != 3 and built-ins
-        List<ExtendedDependency> result = new ArrayList<ExtendedDependency>();
+        List<FormulaVariableOccurrence> result = new ArrayList<FormulaVariableOccurrence>();
         List<VariableEquivalenceClass> relevantVariableClasses = ChaseUtility.findJoinVariablesInTarget(dependency);
         if (logger.isDebugEnabled()) logger.debug("Join variables in target: " + relevantVariableClasses);
-        int i = 0;
         for (VariableEquivalenceClass variableClass : relevantVariableClasses) {
             List<FormulaVariableOccurrence> targetOccurrencesForEqvClass = ChaseUtility.findTargetOccurrences(variableClass);
             List<FormulaVariableOccurrence> positiveTargetOccurrencesForEqvClass = ChaseUtility.findPositiveOccurrences(dependency.getPremise().getPositiveFormula(), targetOccurrencesForEqvClass);
             for (FormulaVariableOccurrence occurrence : positiveTargetOccurrencesForEqvClass) {
-                String id = dependency.getId() + LunaticConstants.CHASE_BACKWARD + i++;
-                ExtendedDependency backward = new ExtendedDependency(id, dependency, LunaticConstants.CHASE_BACKWARD, occurrence);
-                result.add(backward);
+                result.add(occurrence);
             }
+        }
+        if (logger.isDebugEnabled()) logger.debug("Result: " + result);
+        dependency.setBackwardAttributes(result);
+    }
+
+    private List<ExtendedDependency> buildBackwardEGDs(Dependency dependency) {
+        List<ExtendedDependency> result = new ArrayList<ExtendedDependency>();
+        if (logger.isDebugEnabled()) logger.debug("Building backward dependencies for egd: " + dependency);
+        int i = 0;
+        for (FormulaVariableOccurrence backwardAttribute : dependency.getBackwardAttributes()) {
+            String id = dependency.getId() + LunaticConstants.CHASE_BACKWARD + i++;
+            ExtendedDependency backward = new ExtendedDependency(id, dependency, LunaticConstants.CHASE_BACKWARD, backwardAttribute);
+            result.add(backward);
         }
         if (logger.isDebugEnabled()) logger.debug("Result: " + result);
         return result;
@@ -95,8 +105,6 @@ public class BuildExtendedDependencies {
     ///////
     //////////////////////////////////////////////////////////////////////////////////
     private void findQueriedAndLocalAffectedAttributes(Dependency dependency, List<ExtendedDependency> extendedDependencies) {
-//        List<AttributeRef> queriedAttributes = DependencyUtility.findQueriedAttributes(dependency);
-//        dependency.setQueriedAttributes(queriedAttributes);
         List<AttributeRef> forwardAffectedAttributes = findAffectedAttributesForForwardDependency(dependency);
         for (ExtendedDependency extendedDependency : extendedDependencies) {
             if (extendedDependency.isBackward()) {
