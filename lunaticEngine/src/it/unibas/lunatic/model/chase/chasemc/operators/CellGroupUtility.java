@@ -116,7 +116,7 @@ public class CellGroupUtility {
         return result;
     }
 
-    public static void checkCellGroupConsistency(Repair repair) {
+    public static void checkCellGroupConsistency(Repair repair) throws ChaseException {
         List<CellGroup> cellGroupsToCheck = new ArrayList<CellGroup>();
         for (ChangeDescription changeDescription : repair.getChangeDescriptions()) {
             cellGroupsToCheck.add(changeDescription.getCellGroup());
@@ -124,7 +124,8 @@ public class CellGroupUtility {
         try {
             cellGroupChecker.checkConsistencyOfCellGroups(cellGroupsToCheck);
         } catch (ChaseException ex) {
-            logger.error("Incorrect repair:\n" + repair + "\n" + ex.getLocalizedMessage());
+            logger.error("Incorrect repair:\n" + repair);
+            throw ex;
         }
     }
 }

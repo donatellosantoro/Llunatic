@@ -19,7 +19,6 @@ public class TestSQLBus extends CheckTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bus_30_5p_dbms, true);
         setConfigurationForTest(scenario);
-//        scenario.getConfiguration().setCheckAllNodesForEGDSatisfaction(true);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);

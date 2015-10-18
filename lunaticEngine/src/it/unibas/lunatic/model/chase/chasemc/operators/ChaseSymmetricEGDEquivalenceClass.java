@@ -181,7 +181,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         addAdditionalAttributes(forwardCellGroup, originalOid, tuple, equivalenceClass.getEGD());
         CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(forwardCellGroup, deltaDB, stepId, scenario);
         EGDEquivalenceClassTuple tupleCells = new EGDEquivalenceClassTuple(enrichedCellGroup);
-        if (costManagerConfiguration.isDoBackward()) {
+//        if (costManagerConfiguration.isDoBackward()) {
             for (BackwardAttribute backwardAttribute : equivalenceClass.getAttributesToChangeForBackwardChasing()) {
                 AttributeRef attributeForBackwardChasing = backwardAttribute.getAttributeRef();
                 Cell cellForBackward = tuple.getCell(attributeForBackwardChasing);
@@ -193,7 +193,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
                 CellGroup enrichedBackwardCellGroup = this.occurrenceHandler.enrichCellGroups(backwardCellGroup, deltaDB, stepId, scenario);
                 tupleCells.setCellGroupForBackwardAttribute(backwardAttribute, enrichedBackwardCellGroup);
             }
-        }
+//        }
         equivalenceClass.addTupleCells(tupleCells);
         equivalenceClass.addTupleCellsForValue(conclusionValue, tupleCells);
         indexCells(tupleCells, equivalenceClass);
@@ -228,8 +228,8 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         NewChaseSteps newChaseSteps = new NewChaseSteps(egd);
         for (int i = 0; i < repairs.size(); i++) {
             Repair repair = repairs.get(i);
-            CellGroupUtility.checkCellGroupConsistency(repair); //???
-            boolean consistentRepair = purgeOverlappingContexts(egd, repair, scenario); //????
+            boolean consistentRepair = purgeOverlappingContexts(egd, repair, scenario); //TODO needed or not for FDs????
+            CellGroupUtility.checkCellGroupConsistency(repair); //TODO keep???
             String egdId = egd.getId();
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, currentNode, localId, egd, repair, repair.getChaseModes());
@@ -251,6 +251,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         return newChaseSteps;
     }
 
+    // TODO needed for FDs????
 //    private boolean dependencyIsSatisfied(DeltaChaseStep currentNode, IAlgebraOperator queryOperator, Dependency dependency, Scenario scenario) {
 //        IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency);
 //        if (logger.isDebugEnabled()) logger.debug("Checking dependency satisfaction for suspicious egd: " + dependency.getId() + "\nDatabase for step: " + databaseForStep);

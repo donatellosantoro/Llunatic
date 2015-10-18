@@ -20,8 +20,6 @@ public class TestSynthetic05 extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setUseLimit1(true);
         scenario.getCostManagerConfiguration().setDoBackward(false);
-        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
-        scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
@@ -34,4 +32,5 @@ public class TestSynthetic05 extends CheckExpectedSolutionsTest {
 //        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedSynthetic05", result);
         checkExpectedSolutions("expectedSynthetic05", result);
     }
+
 }

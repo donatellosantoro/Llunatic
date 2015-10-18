@@ -205,7 +205,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
             indexContext(enrichedCellGroup, violationContext, equivalenceClass);
             indexConclusionValues(enrichedCellGroup, equivalenceClass);
         }
-        if (scenario.getCostManagerConfiguration().isDoBackward()) {
+//        if (scenario.getCostManagerConfiguration().isDoBackward()) {
             //Then adds cell groups for backward repairs - one for each occurrence
             for (VariableEquivalenceClass witnessVEQ : equivalenceClass.getDependencyVariables().getWitnessVariables()) {
                 Set<CellGroup> cellGroupsForWitnessVariable = new HashSet<CellGroup>();
@@ -221,7 +221,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
                 }
                 violationContext.setCellGroupsForWitnessVariable(witnessVEQ, cellGroupsForWitnessVariable);
             }
-        }
+//        }
         equivalenceClass.addViolationContext(violationContext);
         if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
     }
@@ -304,6 +304,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
         for (int i = 0; i < repairs.size(); i++) {
             Repair repair = repairs.get(i);
             boolean consistentRepair = purgeOverlappingContexts(egd, repair, scenario);
+            CellGroupUtility.checkCellGroupConsistency(repair); //TODO keep???
             String egdId = egd.getId();
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, currentNode, localId, egd, repair, repair.getChaseModes());
@@ -328,7 +329,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
     }
 
     private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Scenario scenario) {
-        if (egd.hasSymmetricChase() || scenario.getConfiguration().isUseLimit1ForEGDs()) {
+        if (scenario.getConfiguration().isUseLimit1ForEGDs()) {
             return true;
         }
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);

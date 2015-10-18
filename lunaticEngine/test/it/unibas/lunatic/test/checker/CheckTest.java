@@ -52,6 +52,7 @@ public class CheckTest extends TestCase {
     protected void setConfigurationForTest(Scenario scenario) {
         scenario.getConfiguration().setCheckSolutions(true);
         scenario.getConfiguration().setCheckSolutionsQuery(true);
+        scenario.getConfiguration().setCheckAllNodesForEGDSatisfaction(true);
         scenario.getConfiguration().setCheckConsistencyOfDBs(true);
         if (scenario.isMainMemory()) scenario.getConfiguration().setDebugMode(true);
     }
