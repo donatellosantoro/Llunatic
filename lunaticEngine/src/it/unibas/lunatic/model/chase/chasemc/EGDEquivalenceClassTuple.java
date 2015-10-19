@@ -46,19 +46,34 @@ public class EGDEquivalenceClassTuple {
         return this.backwardCellGroups.values();
     }
 
-    public List<TupleOID> getConclusionTupleOIDs() {
+    public Collection<TupleOID> getConclusionTupleOIDs() {
         Set<TupleOID> tupleOIDs = new HashSet<TupleOID>();
         for (CellGroupCell occurrence : conclusionGroup.getOccurrences()) {
             tupleOIDs.add(occurrence.getTupleOID());
         }
-        List<TupleOID> sortedTupleOIDs = new ArrayList<TupleOID>(tupleOIDs);
-        Collections.sort(sortedTupleOIDs, new StringComparator());
-        return sortedTupleOIDs;
+        return tupleOIDs;
+//        List<TupleOID> sortedTupleOIDs = new ArrayList<TupleOID>(tupleOIDs);
+//        Collections.sort(sortedTupleOIDs, new StringComparator());
+//        return sortedTupleOIDs;
     }
-    
+
+    private Collection<TupleOID> getBackwardTupleOIDs() {
+        Set<TupleOID> tupleOIDs = new HashSet<TupleOID>();
+        for (CellGroup cellGroup : backwardCellGroups.values()) {
+            for (CellGroupCell occurrence : cellGroup.getOccurrences()) {
+                tupleOIDs.add(occurrence.getTupleOID());
+            }
+        }
+        return tupleOIDs;
+//        List<TupleOID> sortedTupleOIDs = new ArrayList<TupleOID>(tupleOIDs);
+//        Collections.sort(sortedTupleOIDs, new StringComparator());
+//        return sortedTupleOIDs;
+    }
+
     @Override
     public int hashCode() {
-        return toString().hashCode();
+        return 13 * getConclusionGroup().hashCode() + 7 * getBackwardTupleOIDs().hashCode();
+//        return toString().hashCode();
     }
 
     @Override
@@ -66,7 +81,14 @@ public class EGDEquivalenceClassTuple {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         final EGDEquivalenceClassTuple other = (EGDEquivalenceClassTuple) obj;
-        return this.toString().equals(other.toString());
+        if (!this.getConclusionTupleOIDs().equals(other.getConclusionTupleOIDs())) {
+            return false;
+        }
+        if (!this.getBackwardTupleOIDs().equals(other.getBackwardTupleOIDs())) {
+            return false;
+        }
+        return true;
+        //        return this.toString().equals(other.toString());
     }
 
     @Override
