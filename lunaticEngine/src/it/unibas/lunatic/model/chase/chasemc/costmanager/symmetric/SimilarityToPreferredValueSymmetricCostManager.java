@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.LLUNValue;
 import speedy.model.database.NullValue;
+import speedy.model.database.TupleOID;
 import speedy.utility.SpeedyUtility;
 
 public class SimilarityToPreferredValueSymmetricCostManager implements ICostManager {
@@ -168,13 +169,18 @@ public class SimilarityToPreferredValueSymmetricCostManager implements ICostMana
 
     //Changing backward this cell group will also change a forward tuple, and therefore a conflict remains (was suspicious)
     private boolean hasOccurrencesInForwardTuples(CellGroup witnessCellGroup, List<EGDEquivalenceClassTuple> forwardTuples) {
+        if (logger.isDebugEnabled()) logger.debug("Checking if cell group " + witnessCellGroup + " has occurrences in forward tuples\n\t" + SpeedyUtility.printCollection(forwardTuples, "\t"));
         for (CellGroupCell occurrence : witnessCellGroup.getOccurrences()) {
             for (EGDEquivalenceClassTuple tuple : forwardTuples) {
-                if (occurrence.getTupleOID().equals(tuple.getTupleOID())) {
-                    return true;
+                for (TupleOID conclusionTupleOID : tuple.getConclusionTupleOIDs()) {
+                    if (occurrence.getTupleOID().equals(conclusionTupleOID)) {
+                        if (logger.isDebugEnabled()) logger.debug("Cell group has occurrences in forward tuples");
+                        return true;
+                    }
                 }
             }
         }
+        if (logger.isDebugEnabled()) logger.debug("Cell group doesn't have occurrences in forward tuples");
         return false;
     }
 

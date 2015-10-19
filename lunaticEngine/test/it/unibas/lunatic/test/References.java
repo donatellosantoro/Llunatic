@@ -130,6 +130,8 @@ public class References {
     
     public static final String hospital = "mc/hospital/hospital-mcscenario.xml";
     public static final String hospital_0_2p_dbms =    "mc/hospital/hospital-0-2p-mcscenario-dbms.xml";    
+    public static final String hospital_small_a_dbms =    "mc/hospital/hospital-HighRep-small-a-dbms.xml";    
+    public static final String hospital_small_b_dbms =    "mc/hospital/hospital-HighRep-small-b-dbms.xml";    
 
     public static final String bus_30_5p_dbms =    "mc/bus/bus-HighRep-30-5-dbms.xml";    
     public static final String bus_55_5p_dbms =    "mc/bus/bus-HighRep-55-5-dbms.xml";    

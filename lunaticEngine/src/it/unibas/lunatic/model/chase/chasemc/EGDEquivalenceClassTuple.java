@@ -13,26 +13,26 @@ import speedy.model.database.TupleOID;
 import speedy.utility.comparator.StringComparator;
 
 public class EGDEquivalenceClassTuple {
-    
+
     private CellGroup conclusionGroup;
     private Map<BackwardAttribute, CellGroup> backwardCellGroups = new HashMap<BackwardAttribute, CellGroup>();
-    
+
     public EGDEquivalenceClassTuple(CellGroup conclusionGroup) {
         this.conclusionGroup = conclusionGroup;
     }
-    
+
     public CellGroup getConclusionGroup() {
         return conclusionGroup;
     }
-    
+
     public void setCellGroupForBackwardAttribute(BackwardAttribute attribute, CellGroup cellGroup) {
         this.backwardCellGroups.put(attribute, cellGroup);
     }
-    
+
     public CellGroup getCellGroupForBackwardAttribute(BackwardAttribute attribute) {
         return this.backwardCellGroups.get(attribute);
     }
-    
+
     public Set<Cell> getAllCells() {
         Set<Cell> result = new HashSet<Cell>();
         result.addAll(conclusionGroup.getAllCells());
@@ -41,28 +41,34 @@ public class EGDEquivalenceClassTuple {
         }
         return result;
     }
-    
+
     public Collection<CellGroup> getBackwardCellGroups() {
         return this.backwardCellGroups.values();
     }
-    
-    public TupleOID getTupleOID() {
-        return this.conclusionGroup.getOccurrences().iterator().next().getTupleOID();
+
+    public List<TupleOID> getConclusionTupleOIDs() {
+        Set<TupleOID> tupleOIDs = new HashSet<TupleOID>();
+        for (CellGroupCell occurrence : conclusionGroup.getOccurrences()) {
+            tupleOIDs.add(occurrence.getTupleOID());
+        }
+        List<TupleOID> sortedTupleOIDs = new ArrayList<TupleOID>(tupleOIDs);
+        Collections.sort(sortedTupleOIDs, new StringComparator());
+        return sortedTupleOIDs;
     }
     
     @Override
     public int hashCode() {
-        return getTupleOID().hashCode();
+        return toString().hashCode();
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         final EGDEquivalenceClassTuple other = (EGDEquivalenceClassTuple) obj;
-        return this.getTupleOID().equals(other.getTupleOID());
+        return this.toString().equals(other.toString());
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -77,5 +83,5 @@ public class EGDEquivalenceClassTuple {
         }
         return sb.toString();
     }
-    
+
 }
