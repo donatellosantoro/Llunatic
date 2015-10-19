@@ -304,7 +304,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
         for (int i = 0; i < repairs.size(); i++) {
             Repair repair = repairs.get(i);
             boolean consistentRepair = purgeOverlappingContexts(egd, repair, scenario);
-            CellGroupUtility.checkCellGroupConsistency(repair); //TODO keep???
+            CellGroupUtility.checkCellGroupConsistency(repair); 
             String egdId = egd.getId();
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, currentNode, localId, egd, repair, repair.getChaseModes());
