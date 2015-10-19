@@ -44,12 +44,12 @@ public class CellGroupScore implements Comparable<CellGroupScore> {
             return -1;
         }
         //Second number of affected dependencies
-        if (this.getNumberOfAffectedDependencies() > other.getNumberOfAffectedDependencies()) {
-            return 1;
-        }
-        if (this.getNumberOfAffectedDependencies() < other.getNumberOfAffectedDependencies()) {
-            return -1;
-        }
+//        if (this.getNumberOfAffectedDependencies() > other.getNumberOfAffectedDependencies()) {
+//            return 1;
+//        }
+//        if (this.getNumberOfAffectedDependencies() < other.getNumberOfAffectedDependencies()) {
+//            return -1;
+//        }
         //Finally toString to make this deterministic
         return other.getCellGroup().toString().compareTo(this.getCellGroup().toString());
     }
