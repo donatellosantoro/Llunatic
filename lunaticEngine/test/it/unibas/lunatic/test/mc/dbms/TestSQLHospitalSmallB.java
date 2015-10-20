@@ -22,7 +22,8 @@ public class TestSQLHospitalSmallB extends CheckTest {
         DeltaChaseStep result = chaser.doChase(scenario);
         QueryStatManager.getInstance().printStatistics();
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("hospital", scenario));
-        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug(result.toStats());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicates: " + resultSizer.getDuplicates(result));
 //        Assert.assertEquals(1, resultSizer.getSolutions(result));

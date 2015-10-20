@@ -349,7 +349,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
     }
 
     private boolean isEGDSatisfied(Dependency egd, boolean consistentRepair, Scenario scenario) {
-        return egd.hasSymmetricChase() && consistentRepair && !scenario.getConfiguration().isUseLimit1ForEGDs() && !egd.isOverlapBetweenAffectedAndQueried();
+        return consistentRepair && !scenario.getConfiguration().isUseLimit1ForEGDs() && !egd.isOverlapBetweenAffectedAndQueried();
     }
 
     private DependencyVariables buildDependencyVariables(Dependency egd) {

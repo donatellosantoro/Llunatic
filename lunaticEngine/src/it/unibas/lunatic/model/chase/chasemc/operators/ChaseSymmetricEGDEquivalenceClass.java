@@ -179,17 +179,17 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(forwardCellGroup, deltaDB, stepId, scenario);
         EGDEquivalenceClassTuple tupleCells = new EGDEquivalenceClassTuple(enrichedCellGroup);
 //        if (costManagerConfiguration.isDoBackward()) {
-            for (BackwardAttribute backwardAttribute : equivalenceClass.getAttributesToChangeForBackwardChasing()) {
-                AttributeRef attributeForBackwardChasing = backwardAttribute.getAttributeRef();
-                Cell cellForBackward = tuple.getCell(attributeForBackwardChasing);
-                TupleOID tupleOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, attributeForBackwardChasing));
-                Cell backwardCell = new Cell(tupleOid, ChaseUtility.unAlias(attributeForBackwardChasing), cellForBackward.getValue());
-                IValue value = backwardCell.getValue();
-                CellGroup backwardCellGroup = new CellGroup(value, true);
-                backwardCellGroup.addOccurrenceCell(new CellGroupCell(backwardCell, null, LunaticConstants.TYPE_OCCURRENCE, null));
-                CellGroup enrichedBackwardCellGroup = this.occurrenceHandler.enrichCellGroups(backwardCellGroup, deltaDB, stepId, scenario);
-                tupleCells.setCellGroupForBackwardAttribute(backwardAttribute, enrichedBackwardCellGroup);
-            }
+        for (BackwardAttribute backwardAttribute : equivalenceClass.getAttributesToChangeForBackwardChasing()) {
+            AttributeRef attributeForBackwardChasing = backwardAttribute.getAttributeRef();
+            Cell cellForBackward = tuple.getCell(attributeForBackwardChasing);
+            TupleOID tupleOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, attributeForBackwardChasing));
+            Cell backwardCell = new Cell(tupleOid, ChaseUtility.unAlias(attributeForBackwardChasing), cellForBackward.getValue());
+            IValue value = backwardCell.getValue();
+            CellGroup backwardCellGroup = new CellGroup(value, true);
+            backwardCellGroup.addOccurrenceCell(new CellGroupCell(backwardCell, null, LunaticConstants.TYPE_OCCURRENCE, null));
+            CellGroup enrichedBackwardCellGroup = this.occurrenceHandler.enrichCellGroups(backwardCellGroup, deltaDB, stepId, scenario);
+            tupleCells.setCellGroupForBackwardAttribute(backwardAttribute, enrichedBackwardCellGroup);
+        }
 //        }
         equivalenceClass.addTupleCells(tupleCells);
         equivalenceClass.addTupleCellsForValue(conclusionValue, tupleCells);
@@ -225,7 +225,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         NewChaseSteps newChaseSteps = new NewChaseSteps(egd);
         for (int i = 0; i < repairs.size(); i++) {
             Repair repair = repairs.get(i);
-            boolean consistentRepair = purgeOverlappingContexts(egd, repair, scenario); //TODO needed or not for FDs????
+            boolean consistentRepair = purgeOverlappingContexts(egd, repair);
             CellGroupUtility.checkCellGroupConsistency(repair);
             String egdId = egd.getId();
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
@@ -233,8 +233,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             for (ChangeDescription changeSet : repair.getChangeDescriptions()) {
                 this.cellChanger.changeCells(changeSet.getCellGroup(), newStep.getDeltaDB(), newStep.getId(), scenario);
             }
-//            if (isEGDSatisfied(egd, consistentRepair, scenario)) {
-            if (consistentRepair) { //TODO??? check
+            if (consistentRepair) {
                 if (logger.isDebugEnabled()) logger.debug("EGD " + egd.getId() + " is satisfied in this step...");
                 newStep.addSatisfiedEGD(egd);
             }
@@ -249,18 +248,8 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         return newChaseSteps;
     }
 
-    // TODO needed for FDs????
-//    private boolean dependencyIsSatisfied(DeltaChaseStep currentNode, IAlgebraOperator queryOperator, Dependency dependency, Scenario scenario) {
-//        IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency);
-//        if (logger.isDebugEnabled()) logger.debug("Checking dependency satisfaction for suspicious egd: " + dependency.getId() + "\nDatabase for step: " + databaseForStep);
-//        ITupleIterator it = queryRunner.run(queryOperator, scenario.getSource(), databaseForStep);
-//        boolean isEmpty = !it.hasNext();
-//        it.close();
-//        if (logger.isDebugEnabled()) logger.debug("Returning: " + isEmpty);
-//        return isEmpty;
-//    }
-
-    private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Scenario scenario) {
+    private boolean purgeOverlappingContexts(Dependency egd, Repair repair) {
+        //Needed also for FDs due to the presence of cellgroups that can span different eq. classes
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);
         boolean consistent = true;
         Set<CellGroupCell> cellsToChange = new HashSet<CellGroupCell>();

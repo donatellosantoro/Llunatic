@@ -26,7 +26,7 @@ public class CheckTest extends TestCase {
     private static Logger logger = LoggerFactory.getLogger(CheckTest.class);
 
     protected ChaseTreeSize resultSizer = new ChaseTreeSize();
-    protected RepairsComparator comparator = new RepairsComparator();
+//    protected RepairsComparator comparator = new RepairsComparator();
     protected ChaseStats chaseStats = ChaseStats.getInstance();
     protected QueryStatManager queryStats = QueryStatManager.getInstance();
     protected CheckConsistencyOfCellGroups validSolutionChecker = new CheckConsistencyOfCellGroups();

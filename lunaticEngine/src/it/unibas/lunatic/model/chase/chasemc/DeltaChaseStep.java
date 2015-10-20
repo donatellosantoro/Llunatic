@@ -260,6 +260,10 @@ public class DeltaChaseStep {
         return OperatorFactory.getInstance().getChaseTreeToString(scenario).toStringLeavesOnlyWithSort(this);
     }
 
+    public String toLongStringLeavesOnlyWithSort() {
+        return OperatorFactory.getInstance().getChaseTreeToString(scenario).toLongStringLeavesOnlyWithSort(this);
+    }
+
     public String toLongString() {
         return OperatorFactory.getInstance().getChaseTreeToString(scenario).toLongString(this);
     }
@@ -282,5 +286,9 @@ public class DeltaChaseStep {
 
     public String toShortStringWithSortWithoutDuplicates() {
         return OperatorFactory.getInstance().getChaseTreeToString(scenario).toShortStringWithSortWithoutDuplicates(this);
+    }
+
+    public String toStats() {
+        return OperatorFactory.getInstance().getChaseTreeToString(scenario).toStatString(this);
     }
 }

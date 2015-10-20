@@ -45,11 +45,14 @@ public class StandardSymmetricCostManager implements ICostManager {
         if (canDoBackward(chaseTreeRoot, equivalenceClass.getEGD(), scenario.getCostManagerConfiguration())) {
             List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass, scenario);
             for (Repair repair : backwardRepairs) {
-                //TODO++ check: backward repairs are generated twice
                 if (result.contains(repair)) {
-                    logger.info("Result already contains repair " + repair + "\nResult: " + result);
+                    throw new ChaseException("Result already contains repair " + repair + "\nResult: " + result);
                 }
-                LunaticUtility.addIfNotContained(result, repair);
+                result.add(repair);
+//                if (result.contains(repair)) {
+//                    logger.info("Result already contains repair " + repair + "\nResult: " + result);
+//                }
+//                LunaticUtility.addIfNotContained(result, repair);
             }
         }
         return result;
