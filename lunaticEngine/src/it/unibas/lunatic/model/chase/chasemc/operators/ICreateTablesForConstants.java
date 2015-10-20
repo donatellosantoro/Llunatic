@@ -5,6 +5,6 @@ import it.unibas.lunatic.model.dependency.ConstantsInFormula;
 
 public interface ICreateTablesForConstants {
 
-    public void createTable(ConstantsInFormula constantsInFormula, Scenario scenario);
+    public void createTable(ConstantsInFormula constantsInFormula, Scenario scenario, boolean autoritative);
 
 }

@@ -20,7 +20,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
 
     private static Logger logger = LoggerFactory.getLogger(SQLCreateTablesForConstants.class);
 
-    public void createTable(ConstantsInFormula constantsInFormula, Scenario scenario) {
+    public void createTable(ConstantsInFormula constantsInFormula, Scenario scenario, boolean autoritative) {
         if (scenario.getSource() instanceof EmptyDB) {
             DBMSDB newSource = createEmptySourceDatabase(scenario);
             scenario.setSource(newSource);
@@ -31,7 +31,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
             return;
         }
         executeCreateStatement(constantsInFormula, dbmsSourceDB);
-        scenario.getAuthoritativeSources().add(tableName);
+        if (autoritative) scenario.getAuthoritativeSources().add(tableName);
     }
 
     private DBMSDB createEmptySourceDatabase(Scenario scenario) {
