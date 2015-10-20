@@ -18,7 +18,6 @@ public class TestChaseSTTgds extends CheckTest {
 
     public void testPublisher() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
@@ -26,7 +25,6 @@ public class TestChaseSTTgds extends CheckTest {
 
     public void testEmployees() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_rew);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
@@ -34,9 +32,7 @@ public class TestChaseSTTgds extends CheckTest {
 
     public void testCompanies() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.companies_rew);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }

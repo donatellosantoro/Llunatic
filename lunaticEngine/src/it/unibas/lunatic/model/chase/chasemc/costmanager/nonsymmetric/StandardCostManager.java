@@ -76,21 +76,27 @@ public class StandardCostManager implements ICostManager {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     private List<Repair> generateBackwardRepairs(EquivalenceClassForEGD equivalenceClass, Scenario scenario, IDatabase deltaDB, String stepId) {
-        if (equivalenceClass.getSize() > 10) {
-            throw new ChaseException("Equivalence class is too big. It is not possible to chase this scenario with standard cost manager: " + equivalenceClass);
+        List<ViolationContext> violationContextsForBackward = extractViolationContextWithWitnessCells(equivalenceClass);
+        if (violationContextsForBackward.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+        if (violationContextsForBackward.size() > 10) {
+            throw new ChaseException("Equivalence class is too big (" + violationContextsForBackward.size() + "). It is not possible to chase this scenario with standard cost manager: " + equivalenceClass);
         }
         List<Repair> result = new ArrayList<Repair>();
         Set<String> repairFingerprints = new HashSet<String>();
         if (logger.isDebugEnabled()) logger.debug("Generating backward repairs for equivalence class :" + equivalenceClass);
         GenericPowersetGenerator<Integer> powersetGenerator = new GenericPowersetGenerator<Integer>();
-        List<List<Integer>> powerset = powersetGenerator.generatePowerSet(CostManagerUtility.createIndexes(equivalenceClass.getSize()));
+//        List<List<Integer>> powerset = powersetGenerator.generatePowerSet(CostManagerUtility.createIndexes(equivalenceClass.getSize()));
+        List<List<Integer>> powerset = powersetGenerator.generatePowerSet(CostManagerUtility.createIndexes(violationContextsForBackward.size()));
         for (List<Integer> subsetIndex : powerset) {
             if (subsetIndex.isEmpty()) {
                 continue;
             }
             Collections.reverse(subsetIndex);
-            List<ViolationContext> backwardContexts = extractBackwardContexts(subsetIndex, equivalenceClass);
+            List<ViolationContext> backwardContexts = extractBackwardContexts(subsetIndex, violationContextsForBackward);
             if (logger.isDebugEnabled()) logger.debug("Generating backward repairs for subset indexes: " + subsetIndex);
             List<List<CellGroup>> backwardCellGroups = extractBackwardCellGroups(backwardContexts);
             if (backwardCellGroups == null) {
@@ -126,10 +132,20 @@ public class StandardCostManager implements ICostManager {
         return result;
     }
 
-    private List<ViolationContext> extractBackwardContexts(List<Integer> subsetIndex, EquivalenceClassForEGD equivalenceClass) {
+    private List<ViolationContext> extractViolationContextWithWitnessCells(EquivalenceClassForEGD equivalenceClass) {
+        List<ViolationContext> result = new ArrayList<ViolationContext>();
+        for (ViolationContext violationContext : equivalenceClass.getViolationContexts()) {
+            if (violationContext.hasWitnessCells()) {
+                result.add(violationContext);
+            }
+        }
+        return result;
+    }
+
+    private List<ViolationContext> extractBackwardContexts(List<Integer> subsetIndex, List<ViolationContext> violationContextsForBackward) {
         List<ViolationContext> result = new ArrayList<ViolationContext>();
         for (Integer index : subsetIndex) {
-            result.add(equivalenceClass.getViolationContexts().get(index));
+            result.add(violationContextsForBackward.get(index));
         }
         return result;
     }

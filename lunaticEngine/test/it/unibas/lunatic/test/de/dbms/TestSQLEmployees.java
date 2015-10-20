@@ -17,7 +17,6 @@ public class TestSQLEmployees extends CheckTest {
 
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_rew_dbms);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
@@ -32,7 +31,6 @@ public class TestSQLEmployees extends CheckTest {
 
     public void testScenarioDenial() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_dtgd_dbms);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         try {
             DEChaserFactory.getChaser(scenario).doChase(scenario);
             fail();

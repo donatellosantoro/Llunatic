@@ -69,6 +69,7 @@ public class ExportChaseStepResultsCSV {
             counter++;
             String resultFile = folder + "Solution" + (counter < 10 ? "0" + counter : counter) + ".csv";
             IDatabase database = databaseBuilder.extractDatabaseWithDistinct(step.getId(), step.getDeltaDB(), step.getOriginalDB());
+//            IDatabase database = databaseBuilder.extractDatabase(step.getId(), step.getDeltaDB(), step.getOriginalDB());
             if (materializeFKJoins) {
                 materializeFKJoins(database, step);
             }
@@ -83,6 +84,7 @@ public class ExportChaseStepResultsCSV {
 
     public void exportDatabase(DeltaChaseStep step, String stepId, String file) throws DAOException {
         IDatabase database = databaseBuilder.extractDatabaseWithDistinct(stepId, step.getDeltaDB(), step.getOriginalDB());
+//        IDatabase database = databaseBuilder.extractDatabase(stepId, step.getDeltaDB(), step.getOriginalDB());
         exportDatabase(database, file);
     }
 

@@ -21,6 +21,7 @@ public class TestEmployeesNoSymmetric extends CheckExpectedSolutionsTest {
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toStringLeavesOnlyWithSort());
+//        exportResults("/Temp/expectedEmployeesNoSymmetric", result);
         checkExpectedSolutions("expectedEmployeesNoSymmetric", result);
     }
 }

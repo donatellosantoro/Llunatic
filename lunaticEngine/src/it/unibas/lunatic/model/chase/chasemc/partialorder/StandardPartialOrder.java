@@ -26,11 +26,11 @@ import speedy.model.database.IValue;
 import speedy.model.database.NullValue;
 
 public class StandardPartialOrder implements IPartialOrder {
-    
+
     private static Logger logger = LoggerFactory.getLogger(StandardPartialOrder.class);
-    
+
     private CorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
-    
+
     public CellGroup findLUB(List<CellGroup> cellGroups, Scenario scenario) throws PartialOrderException {
         if (logger.isDebugEnabled()) logger.debug("Finding lub of cell groups\n" + LunaticUtility.printCollection(cellGroups));
         CellGroup lubCellGroup = new CellGroup(LunaticConstants.NULL_IVALUE, true);
@@ -42,7 +42,7 @@ public class StandardPartialOrder implements IPartialOrder {
         if (logger.isDebugEnabled()) logger.debug("LubCellGroup after setting value: \n" + lubCellGroup.toStringWithAdditionalCells());
         return lubCellGroup;
     }
-    
+
     public void setCellGroupValue(CellGroup lubCellGroup, Scenario scenario) {
         IValue lubValue = findLubValue(lubCellGroup, scenario);
         if (logger.isDebugEnabled()) logger.debug("LubValue: " + lubValue);
@@ -53,11 +53,11 @@ public class StandardPartialOrder implements IPartialOrder {
             occurrence.setValue(finalCellGroupValue);
         }
     }
-    
+
     public String toString() {
         return "Standard";
     }
-    
+
     private IValue findLubValue(CellGroup lubCellGroup, Scenario scenario) {
         //User Cells
         Set<CellGroupCell> userCells = lubCellGroup.getUserCells();
@@ -89,7 +89,7 @@ public class StandardPartialOrder implements IPartialOrder {
         // Null Value
         return new NullValue(SpeedyConstants.NULL_VALUE);
     }
-    
+
     private Set<CellGroupCell> extractNonAuthoritativeConstantCells(CellGroup cellGroup) {
         Set<CellGroupCell> result = new HashSet<CellGroupCell>();
         for (CellGroupCell occurrence : cellGroup.getOccurrences()) {
@@ -104,7 +104,7 @@ public class StandardPartialOrder implements IPartialOrder {
         }
         return result;
     }
-    
+
     public IValue generalizeNonAuthoritativeConstantCells(Set<CellGroupCell> nonAuthoritativeCells, CellGroup cellGroup, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Generalizing non authoritative constant cells: " + nonAuthoritativeCells);
         Set<OrderingAttribute> orderingAttributes = findAllOrderingAttributes(nonAuthoritativeCells, scenario);
@@ -123,7 +123,7 @@ public class StandardPartialOrder implements IPartialOrder {
         Collections.sort(cellList, new CellComparatorUsingAdditionalValue(valueComparator));
         return cellList.get(cellList.size() - 1).getOriginalValue();
     }
-    
+
     private boolean haveAllEqualOriginalValues(Set<CellGroupCell> cells) {
         IValue firstValue = cells.iterator().next().getOriginalValue();
         for (CellGroupCell cell : cells) {
@@ -133,7 +133,7 @@ public class StandardPartialOrder implements IPartialOrder {
         }
         return true;
     }
-    
+
     private IValueComparator extractValueComparator(Set<OrderingAttribute> orderingAttributes) {
         IValueComparator valueComparator = orderingAttributes.iterator().next().getValueComparator();
         for (OrderingAttribute orderingAttribute : orderingAttributes) {
@@ -145,7 +145,7 @@ public class StandardPartialOrder implements IPartialOrder {
         }
         return valueComparator;
     }
-    
+
     private Set<OrderingAttribute> findAllOrderingAttributes(Set<CellGroupCell> nonAuthoritativeCells, Scenario scenario) {
         Set<OrderingAttribute> result = new HashSet<OrderingAttribute>();
         for (CellGroupCell cellGroupCell : nonAuthoritativeCells) {
@@ -156,7 +156,7 @@ public class StandardPartialOrder implements IPartialOrder {
         }
         return result;
     }
-    
+
     private OrderingAttribute getOrderingAttributeForAttributeRef(AttributeRef attributeRef, Scenario scenario) {
         for (OrderingAttribute orderingAttribute : scenario.getOrderingAttributes()) {
             if (orderingAttribute.getAttribute().equals(attributeRef)) {
@@ -165,7 +165,7 @@ public class StandardPartialOrder implements IPartialOrder {
         }
         return null;
     }
-    
+
     private void setAdditionalValues(Set<CellGroupCell> nonAuthoritativeCells, CellGroup cellGroup, Scenario scenario) {
         for (CellGroupCell cell : nonAuthoritativeCells) {
 //            List<IValue> additionalValues = findAdditionalValues(cell, cellGroup, scenario);
@@ -174,9 +174,12 @@ public class StandardPartialOrder implements IPartialOrder {
             cell.setAdditionalValue(maxValue);
         }
     }
-    
+
     private IValue findAdditionalValue(CellGroupCell cell, CellGroup cellGroup, Scenario scenario) {
         OrderingAttribute orderingAttribute = getOrderingAttributeForAttributeRef(cell.getAttributeRef(), scenario);
+        if (orderingAttribute == null) {
+            throw new IllegalArgumentException("Unable to find additional attribute for attribute " + cell.getAttributeRef());
+        }
         if (orderingAttribute.getAssociatedAttribute().equals(cell.getAttributeRef())) {
             return cell.getOriginalValue();
         }
@@ -188,5 +191,5 @@ public class StandardPartialOrder implements IPartialOrder {
         }
         throw new ChaseException("Unable to extract additional cell for cell " + cell + " in cell group \n\t" + cellGroup);
     }
-    
+
 }

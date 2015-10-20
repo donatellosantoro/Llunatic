@@ -126,6 +126,7 @@ public class References {
     public static final String doctors_pipeline_tgd = "mc/doctors/doctors-pipeline-tgd-mcscenario.xml";
     public static final String doctors_pipeline_egd = "mc/doctors/doctors-pipeline-egd-mcscenario.xml";
     public static final String doctors_dbms = "mc/doctors/doctors-mcscenario-dbms.xml";
+    public static final String doctors_additional_dbms = "mc/doctors/doctors-additional-mcscenario-dbms.xml";
     public static final String doctors_usermanager = "mc/doctors/doctors-usermanager-mcscenario.xml";
     
     public static final String hospital = "mc/hospital/hospital-mcscenario.xml";

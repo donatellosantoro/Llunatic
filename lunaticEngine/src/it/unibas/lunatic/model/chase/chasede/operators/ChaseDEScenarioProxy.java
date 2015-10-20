@@ -26,9 +26,6 @@ public class ChaseDEScenarioProxy implements IDEChaser {
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
         List<Dependency> egds = scenario.getEGDs();
-        if(egds.isEmpty()){
-            logger.warn("ChaseDEScenarioProxy without EGDs is slow. Please use the classic DEChaser.");
-        }
         scenario.setEGDs(new ArrayList<Dependency>());
         scenario.setExtEGDs(egds);
         CostManagerConfiguration costManagerConfiguration = new CostManagerConfiguration();

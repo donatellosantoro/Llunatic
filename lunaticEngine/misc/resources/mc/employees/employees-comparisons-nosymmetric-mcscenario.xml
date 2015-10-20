@@ -26,7 +26,7 @@ emp(name: "Frank", dept: "Sales", salary: "2000", manager: "Carl")
 emp(name: "John", dept: "Sales", salary: "2500", manager: "Carl")
 emp(name: "Carl", dept: "Marketing", salary: "2500", manager: "Carl")
 emp(name: "John", dept: "Staff", salary: "2500", manager: "Carl")
-emp(name: "Bob", dept: "Staff", salary: "2500", manager: "Carl")
+emp(name: "Bob", dept: "Staff", salary: "2550", manager: "Carl")
 emp(name: "Carl", dept: "Managment", salary: "5000", manager: "Carl")
 ]]>
         </generate>

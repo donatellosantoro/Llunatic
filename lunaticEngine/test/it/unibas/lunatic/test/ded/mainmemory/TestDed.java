@@ -17,7 +17,6 @@ public class TestDed extends CheckTest {
 
     public void testRS() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.deds_rs);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
@@ -25,7 +24,6 @@ public class TestDed extends CheckTest {
 
     public void testRSSTTGDs() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.deds_rs_sttgds);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

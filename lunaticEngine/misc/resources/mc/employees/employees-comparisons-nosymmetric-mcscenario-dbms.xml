@@ -1,30 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-  <source>
-    <type>DBMS</type>
-    <access-configuration>
-      <driver>org.postgresql.Driver</driver>
-      <uri>jdbc:postgresql:employees_compnosymmetric</uri>
-      <schema>source</schema>
-      <login>pguser</login>
-      <password>pguser</password>
-    </access-configuration>
-    <init-db>
-<![CDATA[
-create schema source;
-SET search_path = source, pg_catalog;
-
-create table md (
-  oid serial,
-  name varchar(50),
-  salary integer,
-  manager varchar(50)
-);
-
-insert into md(name, salary, manager) values ('Bob', 1000, 'John');
-]]>
-    </init-db>
-  </source>
   <target> 
     <type>DBMS</type>
     <access-configuration>
@@ -55,7 +30,7 @@ insert into emp(name, dept, salary, manager) values ('Frank', 'Sales', 2000, 'Ca
 insert into emp(name, dept, salary, manager) values ('John', 'Sales', 2500, 'Carl');
 insert into emp(name, dept, salary, manager) values ('Carl', 'Marketing', 2500, 'Carl');
 insert into emp(name, dept, salary, manager) values ('John', 'Staff', 2500, 'Carl');
-insert into emp(name, dept, salary, manager) values ('Bob', 'Staff', 2500, 'Carl');
+insert into emp(name, dept, salary, manager) values ('Bob', 'Staff', 2550, 'Carl');
 insert into emp(name, dept, salary, manager) values ('Carl', 'Managment', 5000, 'Carl');
 ]]>
     </init-db>
@@ -67,7 +42,4 @@ e1: emp(name: $n1, dept: $d1, salary: $s1, manager: $m1),
     emp(name: $n2, dept: $d2, salary: $s2, manager: $m2), $d1 != $d2 -> $n1 == $n2.
 ]]>
     </dependencies>
-    <authoritativeSources>
-        <source>md</source>
-    </authoritativeSources>
 </scenario>

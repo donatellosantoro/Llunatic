@@ -53,6 +53,10 @@ public class ViolationContext {
         return result;
     }
 
+    public boolean hasWitnessCells() {
+        return !witnessCellGroups.isEmpty();
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;

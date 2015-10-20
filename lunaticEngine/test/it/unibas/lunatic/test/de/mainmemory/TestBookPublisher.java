@@ -16,7 +16,6 @@ public class TestBookPublisher extends CheckTest {
 
     public void testScenarioST() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
@@ -24,7 +23,6 @@ public class TestBookPublisher extends CheckTest {
 
     public void testScenarioSTProxy() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.PROXY_MC_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
@@ -32,7 +30,6 @@ public class TestBookPublisher extends CheckTest {
 
     public void testScenarioEGDClassic() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_egd);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
@@ -40,7 +37,6 @@ public class TestBookPublisher extends CheckTest {
 
     public void testScenarioEGDProxy() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_egd);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.PROXY_MC_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

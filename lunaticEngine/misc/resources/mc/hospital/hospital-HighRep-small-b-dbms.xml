@@ -36,12 +36,12 @@ ExtEGDs:
 //     $s1 == $s2, $mc1 == $mc2  -> $avg1 == $avg2.
 
 //fd_3:phone number->city
-B:  hospital(providernumber: $pn1, hospitalname: $hn1, address1: $a11, city: $c1, state: $s1, zip: $z1, country: $co1, phone: $p1, hospitaltype: $ht1, hospitalowner: $ho1, emergencyservice: $es1, condition: $cn1, measurecode: $mc1, measurename: $mn1, score: $sc1, sample: $sa1, stateavg: $avg1),
+b:  hospital(providernumber: $pn1, hospitalname: $hn1, address1: $a11, city: $c1, state: $s1, zip: $z1, country: $co1, phone: $p1, hospitaltype: $ht1, hospitalowner: $ho1, emergencyservice: $es1, condition: $cn1, measurecode: $mc1, measurename: $mn1, score: $sc1, sample: $sa1, stateavg: $avg1),
      hospital(providernumber: $pn2, hospitalname: $hn2, address1: $a12, city: $c2, state: $s2, zip: $z2, country: $co2, phone: $p2, hospitaltype: $ht2, hospitalowner: $ho2, emergencyservice: $es2, condition: $cn2, measurecode: $mc2, measurename: $mn2, score: $sc2, sample: $sa2, stateavg: $avg2),
      $p1 == $p2 -> $c1 == $c2.
 
 //fd_0:zip code->city
-A:  hospital(providernumber: $pn1, hospitalname: $hn1, address1: $a11, city: $c1, state: $s1, zip: $z1, country: $co1, phone: $p1, hospitaltype: $ht1, hospitalowner: $ho1, emergencyservice: $es1, condition: $cn1, measurecode: $mc1, measurename: $mn1, score: $sc1, sample: $sa1, stateavg: $avg1),
+a:  hospital(providernumber: $pn1, hospitalname: $hn1, address1: $a11, city: $c1, state: $s1, zip: $z1, country: $co1, phone: $p1, hospitaltype: $ht1, hospitalowner: $ho1, emergencyservice: $es1, condition: $cn1, measurecode: $mc1, measurename: $mn1, score: $sc1, sample: $sa1, stateavg: $avg1),
      hospital(providernumber: $pn2, hospitalname: $hn2, address1: $a12, city: $c2, state: $s2, zip: $z2, country: $co2, phone: $p2, hospitaltype: $ht2, hospitalowner: $ho2, emergencyservice: $es2, condition: $cn2, measurecode: $mc2, measurename: $mn2, score: $sc2, sample: $sa2, stateavg: $avg2),
      $z1 == $z2 -> $c1 == $c2 .
 

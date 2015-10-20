@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:doctor_additional</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[create schema source;
+SET search_path = source, pg_catalog;
+
+create table treatment (
+  oid serial,
+  tid varchar(50),
+  tpatient varchar(50),
+  thospital varchar(50),
+  tnpi varchar(50),
+  tconf varchar(50)
+);
+
+create table physician (
+  oid serial,
+  pnpi varchar(50),
+  pname varchar(50),
+  pspec varchar(50),
+  pconf varchar(50)
+);
+
+create table medprescription (
+  oid serial,
+  mid varchar(50),
+  mpatient varchar(50),
+  mnpi varchar(50),
+  mdoctor varchar(50),
+  mspec varchar(50),
+  mconf varchar(50)
+);
+
+create table hospital (
+  oid serial,
+  hdoctor varchar(50),
+  hspec varchar(50),
+  hhospital varchar(50),
+  hnpi varchar(50),
+  hconf varchar(50)
+);
+
+insert into treatment(tid, tpatient, thospital, tnpi, tconf) values ('W. Smith', 'P2', 'PPTH', '5555');
+insert into physician(pnpi, pname, pspec, pconf) values ('5555', 'G. House', 'house@ppth.com');
+insert into medprescription(mid, mpatient, mnpi, mdoctor, mspec, mconf) values ('P1', 'J. Doe', '1222', 'C. Taub');
+insert into medprescription(mid, mpatient, mnpi, mdoctor, mspec, mconf) values ('P1', 'J. Doe', '1222', 'C. Taub');
+insert into hospital(name, npi, doctor, email) values ('PPTH', '5555', 'G. House', 'house@ppth.com');
+]]>
+    </init-db>
+  </source>
+  <target> 
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:doctor_additional</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table doctor (
+  oid serial,
+  dnpi varchar(200),
+  dname varchar(200),
+  dspec varchar(200),
+  dhospital varchar(200),
+  dconf varchar(200)
+);
+
+create table prescription (
+  oid serial,
+  rid varchar(200),
+  rpatient varchar(200),
+  rnpi varchar(200),
+  rconf varchar(200)
+);
+
+insert into prescription(rxid, patient, npiref) values ('P1', 'J. Doe', '1112');
+insert into doctor(npi, name, hospital, email) values ('1112', 'R. Chase', 'Sacred Hearth', 'chase@sh.com');
+]]>
+    </init-db>
+  </target>
+    <dependencies>
+<![CDATA[
+STTGDs:
+//mst1: treatment(tid: $id, tpatient: $patient, thospital: $hospital, tnpi: $npi, tconf: $conf1),
+//physician(pnpi: $npi, pname: $name, pspec: $spec, pconf: $conf2) ->
+    //prescription(rid: $id, rpatient: $patient, rnpi: $npi, rconf: $conf1),
+    //doctor(dnpi: $npi, dname: $name, dspec: $spec, dhospital: $hospital, dconf: $conf2).
+
+mst1a: treatment(tid: $id, tpatient: $patient, thospital: $hospital, tnpi: $npi, tconf: $conf1) ->
+    prescription(rid: $id, rpatient: $patient, rnpi: $npi, rconf: $conf1).
+
+mst1b: treatment(tid: $id, tpatient: $patient, thospital: $hospital, tnpi: $npi, tconf: $conf1),
+    physician(pnpi: $npi, pname: $name, pspec: $spec, pconf: $conf2) ->
+    doctor(dnpi: $npi, dname: $name, dspec: $spec, dhospital: $hospital, dconf: $conf2).
+
+mst2: medprescription(mid: $id, mpatient: $patient, mnpi: $npi, mdoctor: $doctor, mspec: $spec, mconf: $conf) ->
+    prescription(rid: $id, rpatient: $patient, rnpi: $npi, rconf: $conf),
+    doctor(dnpi: $npi, dname: $doctor, dspec: $spec, dhospital: $H, dconf: $conf).
+
+ExtTGDs:
+mt1: prescription(rid: $id, rpatient: $patient, rnpi: $npi, rconf: $conf) ->
+    doctor(dnpi: $npi, dname: $D, dspec: $S, dhospital: $H, dconf: $C).
+
+ExtEGDs:
+ep1a: prescription(rid: $id, rpatient: $patient1, rnpi: $npi1, rconf: $conf1),
+      prescription(rid: $id, rpatient: $patient2, rnpi: $npi2, rconf: $conf2) ->
+        $patient1 == $patient2.
+
+ep1b: prescription(rid: $id, rpatient: $patient1, rnpi: $npi1, rconf: $conf1),
+      prescription(rid: $id, rpatient: $patient2, rnpi: $npi2, rconf: $conf2) ->
+        $npi1 == $npi2.
+
+ep1c: prescription(rid: $id, rpatient: $patient1, rnpi: $npi1, rconf: $conf1),
+      prescription(rid: $id, rpatient: $patient2, rnpi: $npi2, rconf: $conf2) ->
+        $conf1 == $conf2.
+
+ed2a: doctor(dnpi: $npi, dname: $doctor1, dspec: $spec1, dhospital: $hospital1, dconf: $conf1),
+      doctor(dnpi: $npi, dname: $doctor2, dspec: $spec2, dhospital: $hospital2, dconf: $conf2) ->
+        $doctor1 == $doctor2.
+
+ed2b: doctor(dnpi: $npi, dname: $doctor1, dspec: $spec1, dhospital: $hospital1, dconf: $conf1),
+      doctor(dnpi: $npi, dname: $doctor2, dspec: $spec2, dhospital: $hospital2, dconf: $conf2) ->
+        $spec1 == $spec2.
+
+ed2c: doctor(dnpi: $npi, dname: $doctor1, dspec: $spec1, dhospital: $hospital1, dconf: $conf1),
+      doctor(dnpi: $npi, dname: $doctor2, dspec: $spec2, dhospital: $hospital2, dconf: $conf2) ->
+        $hospital1 == $hospital2.
+
+ed3a: doctor(dnpi: $npi1, dname: $doctor, dspec: $spec1, dhospital: $hospital1, dconf: $conf1),
+      doctor(dnpi: $npi2, dname: $doctor, dspec: $spec2, dhospital: $hospital2, dconf: $conf2) ->
+        $npi1 == $npi2.
+
+ed3b: doctor(dnpi: $npi1, dname: $doctor, dspec: $spec1, dhospital: $hospital1, dconf: $conf1),
+      doctor(dnpi: $npi2, dname: $doctor, dspec: $spec2, dhospital: $hospital2, dconf: $conf2) ->
+        $conf1 == $conf2.
+
+emd4a: hospital(hdoctor: $doctor, hspec: $spec, hhospital: $hospital1, hnpi: $npi1, hconf: $conf1),
+       doctor(dnpi: $npi2, dname: $doctor, dspec: $spec, dhospital: $hospital2, dconf: $conf2) ->
+        $hospital1 == $hospital2.
+
+emd4b: hospital(hdoctor: $doctor, hspec: $spec, hhospital: $hospital1, hnpi: $npi1, hconf: $conf1),
+       doctor(dnpi: $npi2, dname: $doctor, dspec: $spec, dhospital: $hospital2, dconf: $conf2) ->
+        $npi1 == $npi2.
+
+emd4c: hospital(hdoctor: $doctor, hspec: $spec, hhospital: $hospital1, hnpi: $npi1, hconf: $conf1),
+       doctor(dnpi: $npi2, dname: $doctor, dspec: $spec, dhospital: $hospital2, dconf: $conf2) ->
+        $conf1 == $conf2.
+]]>
+    </dependencies>
+    <authoritativeSources>
+        <source>hospital</source>
+    </authoritativeSources>
+<orderingAttributes>
+  <orderingAttribute>
+      <attribute>prescription.rconf</attribute>
+      <associatedAttribute>prescription.rconf</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+  </orderingAttribute> 
+  <orderingAttribute>
+      <attribute>prescription.rpatient</attribute>
+      <associatedAttribute>prescription.rconf</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+  </orderingAttribute> 
+  <orderingAttribute>
+      <attribute>prescription.rnpi</attribute>
+      <associatedAttribute>prescription.rconf</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+  </orderingAttribute> 
+  <orderingAttribute>
+      <attribute>doctor.dconf</attribute>
+      <associatedAttribute>doctor.dconf</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+  </orderingAttribute> 
+  <orderingAttribute>
+      <attribute>doctor.dname</attribute>
+      <associatedAttribute>doctor.dconf</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+  </orderingAttribute> 
+  <orderingAttribute>
+      <attribute>doctor.dspec</attribute>
+      <associatedAttribute>doctor.dconf</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+  </orderingAttribute> 
+  <orderingAttribute>
+      <attribute>doctor.dnpi</attribute>
+      <associatedAttribute>doctor.dconf</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+  </orderingAttribute> 
+  <orderingAttribute>
+      <attribute>doctor.dhospital</attribute>
+      <associatedAttribute>doctor.dconf</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+  </orderingAttribute> 
+</orderingAttributes>
+    <partialOrder>
+      <type>Frequency</type>
+    </partialOrder>
+    <costManager>
+      <type>Similarity</type>
+      <similarityStrategy>SmithWaterman</similarityStrategy>
+      <similarityThreshold>0.80</similarityThreshold>
+      <chaseBranchingThreshold>1</chaseBranchingThreshold>
+      <potentialSolutionsThreshold>1</potentialSolutionsThreshold>
+        <doPermutations>false</doPermutations>
+    </costManager>
+    <configuration>
+        <useCellGroupsForTGDs>true</useCellGroupsForTGDs>
+    </configuration>
+</scenario>

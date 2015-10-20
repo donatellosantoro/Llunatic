@@ -134,9 +134,9 @@ public class LunaticConfiguration {
         return deChaser;
     }
 
-    public void setDeChaser(String deChaser) {
-        this.deChaser = deChaser;
-    }
+//    public void setDeChaser(String deChaser) {
+//        this.deChaser = deChaser;
+//    }
 
     public boolean isUseSymmetricOptimization() {
         return useSymmetricOptimization;
