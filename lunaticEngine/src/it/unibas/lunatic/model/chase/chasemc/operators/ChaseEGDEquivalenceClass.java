@@ -1,30 +1,37 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseFailedException;
-import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
+import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
+import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.DependencyVariables;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
+import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
+import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
+import it.unibas.lunatic.model.chase.chasemc.Repair;
+import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerFactory;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
-import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
-import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
-import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
-import it.unibas.lunatic.model.chase.chasemc.Repair;
-import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
-import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassCells;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
+import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,31 +42,35 @@ import speedy.model.database.Cell;
 import speedy.model.database.CellRef;
 import speedy.model.database.IDatabase;
 import speedy.model.database.IValue;
+import speedy.model.database.TableAlias;
 import speedy.model.database.Tuple;
+import speedy.model.database.TupleOID;
 import speedy.model.database.operators.IRunQuery;
+import speedy.utility.comparator.StringComparator;
 
-public class ChaseEGDEquivalenceClass {
+public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
 
-    private static Logger logger = LoggerFactory.getLogger(ChaseEGDEquivalenceClass.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChaseEGDEquivalenceClass.class);
 
-    private IRunQuery queryRunner;
-    private OccurrenceHandlerMC occurrenceHandler;
-    private IBuildDatabaseForChaseStep databaseBuilder;
-    private ChangeCell cellChanger;
+    private final IRunQuery queryRunner;
+    private final OccurrenceHandlerMC occurrenceHandler;
+    private final ChangeCell cellChanger;
     private Tuple lastTuple;
     private boolean lastTupleHandled;
 
-    public ChaseEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, IBuildDatabaseForChaseStep databaseBuilder, ChangeCell cellChanger) {
+    public ChaseEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, ChangeCell cellChanger) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
-        this.databaseBuilder = databaseBuilder;
         this.cellChanger = cellChanger;
     }
 
+    @Override
     public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
-        if (logger.isDebugEnabled()) logger.debug("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
+        if (logger.isDebugEnabled()) logger.info("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
+        if (logger.isDebugEnabled()) logger.debug(databaseForStep.printInstances());
         this.lastTuple = null;
         this.lastTupleHandled = false;
+        DependencyVariables dv = buildDependencyVariables(egd);
         if (logger.isDebugEnabled()) logger.debug("Executing premise query: " + premiseQuery);
         if (logger.isTraceEnabled()) logger.debug("Result:\n" + LunaticUtility.printIterator(queryRunner.run(premiseQuery, scenario.getSource(), databaseForStep)));
         long violationQueryStart = new Date().getTime();
@@ -70,16 +81,16 @@ public class ChaseEGDEquivalenceClass {
         try {
             while (true) {
                 long equivalenceClassStart = new Date().getTime();
-                EquivalenceClassForEGD equivalenceClass = readNextEquivalenceClass(it, egd, currentNode.getDeltaDB(), currentNode.getId(), chaseState, scenario);
+                EquivalenceClassForEGD equivalenceClass = readNextEquivalenceClass(it, dv, currentNode.getDeltaDB(), currentNode.getId(), chaseState, scenario);
                 long equivalenceClasEnd = new Date().getTime();
                 ChaseStats.getInstance().addStat(ChaseStats.EGD_EQUIVALENCE_CLASS_TIME, equivalenceClasEnd - equivalenceClassStart);
                 if (equivalenceClass == null) {
                     break;
                 }
-                if (logger.isDebugEnabled()) logger.debug("Equivalence class: " + equivalenceClass);
-                List<Repair> repairsForEquivalenceClass = scenario.getCostManager().chooseRepairStrategy(equivalenceClass, currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
+                ICostManager costManager = CostManagerFactory.getCostManager(egd, scenario);
+                List<Repair> repairsForEquivalenceClass = costManager.chooseRepairStrategy(new EquivalenceClassForEGDProxy(equivalenceClass), currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
                 if (logger.isDebugEnabled()) logger.debug("Repairs for equivalence class: " + LunaticUtility.printCollection(repairsForEquivalenceClass));
-                repairsForDependency = accumulateRepairs(repairsForDependency, repairsForEquivalenceClass, equivalenceClass);
+                repairsForDependency = ChaseUtility.accumulateRepairs(repairsForDependency, repairsForEquivalenceClass);
                 if (noMoreTuples(it)) {
                     break;
                 }
@@ -92,48 +103,49 @@ public class ChaseEGDEquivalenceClass {
         }
         if (logger.isDebugEnabled()) logger.debug("Total repairs for dependency: " + LunaticUtility.printCollection(repairsForDependency));
         long repairStart = new Date().getTime();
-        NewChaseSteps newSteps = applyRepairs(currentNode, repairsForDependency, egd, premiseQuery, scenario);
+        NewChaseSteps newSteps = applyRepairs(currentNode, repairsForDependency, egd, scenario);
         long repairEnd = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.EGD_REPAIR_TIME, repairEnd - repairStart);
         return newSteps;
-    }
-
-    private boolean dependencyIsSatisfied(DeltaChaseStep currentNode, IAlgebraOperator queryOperator, Dependency dependency, Scenario scenario) {
-        IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency);
-        if (logger.isDebugEnabled()) logger.debug("Checking dependency satisfaction for suspicious egd: " + dependency.getId() + "\nDatabase for step: " + databaseForStep);
-        ITupleIterator it = queryRunner.run(queryOperator, scenario.getSource(), databaseForStep);
-        boolean isEmpty = !it.hasNext();
-        it.close();
-        if (logger.isDebugEnabled()) logger.debug("Returning: " + isEmpty);
-        return isEmpty;
     }
 
     private boolean noMoreTuples(ITupleIterator it) {
         return (!it.hasNext() && lastTupleHandled);
     }
 
-    private EquivalenceClassForEGD readNextEquivalenceClass(ITupleIterator it, Dependency egd, IDatabase deltaDB, String stepId, IChaseState chaseState, Scenario scenario) {
+    private EquivalenceClassForEGD readNextEquivalenceClass(ITupleIterator it, DependencyVariables dv, IDatabase deltaDB, String stepId, IChaseState chaseState, Scenario scenario) {
         if (!it.hasNext() && (this.lastTupleHandled || this.lastTuple == null)) {
             return null;
         }
-        EquivalenceClassForEGD equivalenceClass = createEquivalenceClass(egd);
+        int contextCounter = 0;
+        Dependency egd = dv.getEgd();
+        EquivalenceClassForEGD equivalenceClass = new EquivalenceClassForEGD(dv);
         if (lastTuple != null && !this.lastTupleHandled) {
             if (logger.isDebugEnabled()) logger.debug("Reading tuple : " + this.lastTuple.toStringWithOIDAndAlias());
-            EquivalenceClassUtility.addTuple(this.lastTuple, equivalenceClass);
+            addTuple(this.lastTuple, equivalenceClass, contextCounter++, deltaDB, stepId, scenario);
             this.lastTupleHandled = true;
         }
+        Set<String> analizedTupleFingerprints = new HashSet<String>();
         if (logger.isDebugEnabled()) logger.debug("Reading next equivalence class...");
         while (it.hasNext()) {
             if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
             Tuple tuple = it.next();
             if (logger.isDebugEnabled()) logger.debug("Reading tuple : " + tuple.toStringWithOIDAndAlias());
-            if (lastTuple == null || equivalenceClass.getTupleGroups().isEmpty() || EquivalenceClassUtility.sameEquivalenceClass(tuple, this.lastTuple, egd)) {
-                EquivalenceClassUtility.addTuple(tuple, equivalenceClass);
+            if (scenario.getConfiguration().isDiscardDuplicateTuples()) {
+                String fingerprint = generateFingerprintForTuple(tuple, dv);
+                if (analizedTupleFingerprints.contains(fingerprint)) {
+                    if (logger.isDebugEnabled()) logger.debug("Tuple " + tuple + " has been already analized");
+                    continue;
+                }
+                analizedTupleFingerprints.add(fingerprint);
+            }
+            if (lastTuple == null || equivalenceClass.isEmpty() || EquivalenceClassUtility.sameEquivalenceClass(tuple, this.lastTuple, egd)) {
+                addTuple(tuple, equivalenceClass, contextCounter++, deltaDB, stepId, scenario);
                 this.lastTuple = tuple;
                 this.lastTupleHandled = true;
             } else {
                 if (logger.isDebugEnabled()) logger.debug("Equivalence class is finished...");
-                if (equivalenceClass.getTupleGroups().isEmpty()) {
+                if (equivalenceClass.isEmpty()) {
                     throw new IllegalArgumentException("Unable to create equivalence class for egd:\n" + egd + "\nLast tuple: \n" + lastTuple + "\nCurrent tuple: \n" + tuple);
                 }
                 this.lastTuple = tuple;
@@ -142,113 +154,172 @@ public class ChaseEGDEquivalenceClass {
             }
         }
         if (logger.isDebugEnabled()) logger.debug("Equivalence class loaded");
-        enrichCellGroups(equivalenceClass, deltaDB, stepId, scenario);
         if (logger.isDebugEnabled()) logger.debug("-------- Equivalence class:\n" + equivalenceClass + "\n---------------");
         return equivalenceClass;
     }
 
-    private EquivalenceClassForEGD createEquivalenceClass(Dependency egd) {
-        List<AttributeRef> occurrenceAttributesForConclusionVariable = new ArrayList<AttributeRef>();
-        FormulaVariable v1 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(0);
-        FormulaVariable v2 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(1);
-        //TODO++ refactor to extract positive occurrences only
-        for (FormulaVariableOccurrence occurrence : v1.getPremiseRelationalOccurrences()) {
-            if (!ChaseUtility.containsAlias(egd.getPremise().getPositiveFormula(), occurrence.getTableAlias())) {
-                continue;
+    private String generateFingerprintForTuple(Tuple tuple, DependencyVariables dv) {
+        Map<String, Set<TupleOID>> tupleOidsMap = new HashMap<String, Set<TupleOID>>();
+        for (VariableEquivalenceClass witnessVariable : dv.getWitnessVariables()) {
+            List<FormulaVariableOccurrence> positiveRelationalOccurrences = ChaseUtility.findPositivePremiseOccurrences(dv.getEgd(), witnessVariable);
+            for (FormulaVariableOccurrence relationalOccurrence : positiveRelationalOccurrences) {
+                TableAlias tableAlias = relationalOccurrence.getTableAlias();
+                AttributeRef premiseAttribute = relationalOccurrence.getAttributeRef();
+                TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, premiseAttribute));
+                addTupleOid(tableAlias, originalOid, tupleOidsMap);
             }
-            AttributeRef occurrenceAttribute = EquivalenceClassUtility.correctAttributeForSymmetricEGDs(occurrence.getAttributeRef(), egd);
-            if (occurrenceAttributesForConclusionVariable.contains(occurrenceAttribute)) {
-                continue;
-            }
-            occurrenceAttributesForConclusionVariable.add(occurrenceAttribute);
         }
-        for (FormulaVariableOccurrence occurrence : v2.getPremiseRelationalOccurrences()) {
-            if (!ChaseUtility.containsAlias(egd.getPremise().getPositiveFormula(), occurrence.getTableAlias())) {
-                continue;
+        StringBuilder sb = new StringBuilder();
+        List<String> sortedTableAlias = new ArrayList<String>(tupleOidsMap.keySet());
+        Collections.sort(sortedTableAlias);
+        for (String tableName : sortedTableAlias) {
+            sb.append(tableName).append(LunaticConstants.FINGERPRINT_SEPARATOR);
+            List<TupleOID> sortedTupleOIDs = new ArrayList<TupleOID>(tupleOidsMap.get(tableName));
+            Collections.sort(sortedTupleOIDs, new StringComparator());
+            for (TupleOID tupleOID : sortedTupleOIDs) {
+                sb.append(tupleOID.toString()).append(LunaticConstants.FINGERPRINT_SEPARATOR);
             }
-            AttributeRef occurrenceAttribute = EquivalenceClassUtility.correctAttributeForSymmetricEGDs(occurrence.getAttributeRef(), egd);
-            if (occurrenceAttributesForConclusionVariable.contains(occurrenceAttribute)) {
-                continue;
-            }
-            occurrenceAttributesForConclusionVariable.add(occurrenceAttribute);
         }
-        return new EquivalenceClassForEGD(egd, occurrenceAttributesForConclusionVariable, egd.getAttributesForBackwardChasing());
+        String tupleFingerprint = sb.toString();
+        if (logger.isDebugEnabled()) logger.debug("Tuple fingerprint " + tupleFingerprint);
+        return tupleFingerprint;
     }
 
-    private void enrichCellGroups(EquivalenceClassForEGD equivalenceClass, IDatabase deltaDB, String stepId, Scenario scenario) {
-        for (EGDEquivalenceClassCells tupleGroup : equivalenceClass.getTupleGroupsWithSameConclusionValue().values()) {
-            CellGroup forwardCellGroup = this.occurrenceHandler.enrichCellGroups(tupleGroup.getCellGroupForForwardRepair(), deltaDB, stepId, scenario);
-            tupleGroup.setCellGroupForForwardRepair(forwardCellGroup);
-            for (BackwardAttribute backwardAttribute : tupleGroup.getWitnessCells().keySet()) {
-                Set<CellGroup> cellGroupsForAttribute = generateBackwardCellGroups(tupleGroup.getWitnessCells().get(backwardAttribute), scenario, deltaDB, stepId);
-                tupleGroup.addCellGroupsForBackwardRepair(backwardAttribute, cellGroupsForAttribute);                
-            }
-        }        
+    private void addTupleOid(TableAlias tableAlias, TupleOID tupleOID, Map<String, Set<TupleOID>> tupleOidsMap) {
+        Set<TupleOID> tupleOIDs = tupleOidsMap.get(tableAlias.getTableName());
+        if (tupleOIDs == null) {
+            tupleOIDs = new HashSet<TupleOID>();
+            tupleOidsMap.put(tableAlias.getTableName(), tupleOIDs);
+        }
+        tupleOIDs.add(tupleOID);
     }
-    
-    private Set<CellGroup> generateBackwardCellGroups(Set<Cell> witnessCells, Scenario scenario, IDatabase deltaDB, String stepId) {
-        Set<CellGroup> result = new HashSet<CellGroup>();
-        for (Cell witnessCell : witnessCells) {
-            IValue value = witnessCell.getValue();
-            CellGroup backwardCellGroup = new CellGroup(value, true);
-            backwardCellGroup.addOccurrenceCell(new CellGroupCell(witnessCell, null, LunaticConstants.TYPE_OCCURRENCE, null));
-            CellGroup newBackwardCellGroup = this.occurrenceHandler.enrichCellGroups(backwardCellGroup, deltaDB, stepId, scenario);
-            result.add(newBackwardCellGroup);
+
+    private void addTuple(Tuple tuple, EquivalenceClassForEGD equivalenceClass, int contextCounter, IDatabase deltaDB, String stepId, Scenario scenario) {
+        if (logger.isDebugEnabled()) logger.trace("Adding tuple " + tuple + " to equivalence class: " + equivalenceClass);
+        ViolationContext violationContext = new ViolationContext(contextCounter);
+        //First creates cell groups for conclusion variable - forward repairs
+        for (VariableEquivalenceClass conclusionClass : equivalenceClass.getDependencyVariables().getConclusionVariables()) {
+            CellGroup cellGroupForVariable = findCellsForConclusionVariables(equivalenceClass.getEGD(), conclusionClass, tuple);
+            CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(cellGroupForVariable, deltaDB, stepId, scenario);
+            violationContext.setCellGroupForConclusionVariable(conclusionClass, enrichedCellGroup);
+            indexContext(enrichedCellGroup, violationContext, equivalenceClass);
+            indexConclusionValues(enrichedCellGroup, equivalenceClass);
+        }
+//        if (scenario.getCostManagerConfiguration().isDoBackward()) {
+            //Then adds cell groups for backward repairs - one for each occurrence
+            for (VariableEquivalenceClass witnessVEQ : equivalenceClass.getDependencyVariables().getWitnessVariables()) {
+                Set<CellGroup> cellGroupsForWitnessVariable = new HashSet<CellGroup>();
+                List<FormulaVariableOccurrence> positiveRelationalOccurrences = ChaseUtility.findPositivePremiseOccurrences(equivalenceClass.getEGD(), witnessVEQ);
+                for (FormulaVariableOccurrence premiseRelationalOccurrence : positiveRelationalOccurrences) {
+                    AttributeRef attributeRef = premiseRelationalOccurrence.getAttributeRef();
+                    IValue value = tuple.getCell(attributeRef).getValue();
+                    CellGroup cellGroup = new CellGroup(value, true);
+                    addCellToCellGroup(premiseRelationalOccurrence, tuple, cellGroup);
+                    CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(cellGroup, deltaDB, stepId, scenario);
+                    cellGroupsForWitnessVariable.add(enrichedCellGroup);
+                    indexContext(enrichedCellGroup, violationContext, equivalenceClass);
+                }
+                violationContext.setCellGroupsForWitnessVariable(witnessVEQ, cellGroupsForWitnessVariable);
+            }
+//        }
+        equivalenceClass.addViolationContext(violationContext);
+        if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
+    }
+
+    private CellGroup findCellsForConclusionVariables(Dependency egd, VariableEquivalenceClass veq, Tuple tuple) {
+        IValue value = findValue(veq, tuple);
+        CellGroup result = new CellGroup(value, true);
+        for (FormulaVariable variable : veq.getVariables()) {
+            List<FormulaVariableOccurrence> positiveRelationalOccurrences = ChaseUtility.findPositivePremiseOccurrences(egd, variable);
+            for (FormulaVariableOccurrence premiseRelationalOccurrence : positiveRelationalOccurrences) {
+                addCellToCellGroup(premiseRelationalOccurrence, tuple, result);
+                addAdditionalAttributes(result, egd, tuple);
+            }
         }
         return result;
-    }    
-
-    private List<Repair> accumulateRepairs(List<Repair> repairsForDependency, List<Repair> repairsForEquivalenceClass, EquivalenceClassForEGD equivalenceClass) {
-        if (logger.isDebugEnabled()) logger.debug("Accumulating new repairs. Repairs for dependency so far:\n" + LunaticUtility.printCollection(repairsForDependency) + "\nRepairs for equivalence class:\n" + LunaticUtility.printCollection(repairsForEquivalenceClass));
-        // needed to handle the various ways to repair each equivalence class as returned by the cost manager
-        if (repairsForEquivalenceClass.isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("No repairs to add...");
-            return repairsForDependency;
-        }
-        if (repairsForDependency.isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("These are the first repairs, returning repairs for equivalence class...");
-            return new ArrayList<Repair>(repairsForEquivalenceClass);
-        }
-        List<Repair> result = new ArrayList<Repair>();
-        for (Repair repairForDependency : repairsForDependency) {
-            for (Repair repairForEquivalenceClass : repairsForEquivalenceClass) {
-                Repair newRepair = new Repair();
-                newRepair.getViolationContexts().addAll(repairForDependency.getViolationContexts());
-                newRepair.getViolationContexts().addAll(repairForEquivalenceClass.getViolationContexts());
-                newRepair.setSuspicious(repairForDependency.isSuspicious() || repairForEquivalenceClass.isSuspicious());
-                result.add(newRepair);
-            }
-        }
-        if (logger.isDebugEnabled()) logger.debug("Result: " + LunaticUtility.printCollection(result));
-        return result;
     }
 
-    private NewChaseSteps applyRepairs(DeltaChaseStep currentNode, List<Repair> repairs, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario) {
+    private void addAdditionalAttributes(CellGroup cellGroup, Dependency egd, Tuple tuple) {
+        for (AttributeRef additionalAttribute : egd.getAdditionalAttributes()) {
+//            TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, additionalAttribute));
+            for (Cell tupleCell : tuple.getCells()) {
+                AttributeRef unaliasedAttribute = ChaseUtility.unAlias(tupleCell.getAttributeRef());
+                if (!unaliasedAttribute.equals(additionalAttribute)) {
+                    continue;
+                }
+                TupleOID originalOIDForCell = new TupleOID(ChaseUtility.getOriginalOid(tuple, tupleCell.getAttributeRef()));
+//                if (!originalOIDForCell.equals(originalOid)) {
+//                    continue;
+//                }
+                CellGroupCell additionalCellGroupCell = new CellGroupCell(originalOIDForCell, unaliasedAttribute, tupleCell.getValue(), null, LunaticConstants.TYPE_ADDITIONAL, null);
+                cellGroup.addAdditionalCell(additionalAttribute, additionalCellGroupCell);
+            }
+        }
+    }
+
+    private void addCellToCellGroup(FormulaVariableOccurrence premiseRelationalOccurrence, Tuple tuple, CellGroup cellGroup) {
+        IValue value = cellGroup.getValue();
+        AttributeRef premiseAttribute = premiseRelationalOccurrence.getAttributeRef();
+        TupleOID originalOid = new TupleOID(ChaseUtility.getOriginalOid(tuple, premiseAttribute));
+        CellRef cellRef = new CellRef(originalOid, ChaseUtility.unAlias(premiseAttribute));
+        if (premiseAttribute.isSource()) {
+            CellGroupCell sourceCell = new CellGroupCell(cellRef, value, value, LunaticConstants.TYPE_JUSTIFICATION, null);
+            cellGroup.addJustificationCell(sourceCell);
+            return;
+        }
+        CellGroupCell targetCell = new CellGroupCell(cellRef, value, null, LunaticConstants.TYPE_OCCURRENCE, null);
+        cellGroup.addOccurrenceCell(targetCell);
+    }
+
+    private IValue findValue(VariableEquivalenceClass veq, Tuple tuple) {
+        AttributeRef firstOccurrence = veq.getPremiseRelationalOccurrences().get(0).getAttributeRef();
+        return tuple.getCell(firstOccurrence).getValue();
+    }
+
+    private void indexContext(CellGroup cellGroup, ViolationContext violationContext, EquivalenceClassForEGD equivalenceClass) {
+        for (Cell cell : cellGroup.getOccurrences()) {
+            equivalenceClass.addViolationContextForCell(cell, violationContext);
+        }
+    }
+
+    private void indexConclusionValues(CellGroup cellGroup, EquivalenceClassForEGD equivalenceClass) {
+        for (Cell cell : cellGroup.getAllCells()) {
+            IValue value = cell.getValue();
+            equivalenceClass.addCellGroupForValue(value, cellGroup);
+        }
+    }
+
+    private VariableEquivalenceClass findVariableEquivalenceClass(FormulaVariable v, Dependency egd) {
+        for (VariableEquivalenceClass veq : egd.getPremise().getPositiveFormula().getLocalVariableEquivalenceClasses()) {
+            if (veq.contains(v)) {
+                return veq;
+            }
+        }
+        throw new IllegalArgumentException("Unable to find variable equivalence class for variable " + v + "\n\t Premise: " + egd.getPremise());
+    }
+
+    private NewChaseSteps applyRepairs(DeltaChaseStep currentNode, List<Repair> repairs, Dependency egd, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("---Applying repairs...");
         NewChaseSteps newChaseSteps = new NewChaseSteps(egd);
         for (int i = 0; i < repairs.size(); i++) {
             Repair repair = repairs.get(i);
             boolean consistentRepair = purgeOverlappingContexts(egd, repair, scenario);
+            CellGroupUtility.checkCellGroupConsistency(repair); 
             String egdId = egd.getId();
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, currentNode, localId, egd, repair, repair.getChaseModes());
-            for (ViolationContext changeSet : repair.getViolationContexts()) {
+            for (ChangeDescription changeSet : repair.getChangeDescriptions()) {
+                if (logger.isDebugEnabled()) logger.debug("Applying change set " + changeSet);
                 this.cellChanger.changeCells(changeSet.getCellGroup(), newStep.getDeltaDB(), newStep.getId(), scenario);
-            }
-            if (repair.isSuspicious() && !dependencyIsSatisfied(newStep, premiseQuery, egd, scenario)) {
-                if (logger.isDebugEnabled()) logger.debug("Generated step is not a solution \n" + newStep);
-                for (ViolationContext changeSet : repair.getViolationContexts()) {
-                    this.cellChanger.deleteCells(changeSet, newStep.getDeltaDB(), newStep.getId());
-                }
-                continue;
             }
             if (isEGDSatisfied(egd, consistentRepair, scenario)) {
                 if (logger.isDebugEnabled()) logger.debug("EGD " + egd.getId() + " is satisfied in this step...");
                 newStep.addSatisfiedEGD(egd);
             }
-            List<AttributeRef> affectedAttributes = extractAffectedAttributes(repair);
+            List<AttributeRef> affectedAttributes = ChaseUtility.extractAffectedAttributes(repair);
             newStep.setAffectedAttributes(affectedAttributes);
             if (logger.isDebugEnabled()) logger.debug("Generated step " + newStep.getId() + " for repair: " + repair);
+            if (logger.isDebugEnabled()) logger.debug(newStep.getDeltaDB().printInstances());
             newChaseSteps.addChaseStep(newStep);
         }
         if (repairs.isEmpty()) {
@@ -258,15 +329,15 @@ public class ChaseEGDEquivalenceClass {
     }
 
     private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Scenario scenario) {
-        if (egd.hasSymmetricChase() || scenario.getConfiguration().isUseLimit1ForEGDs()) {
+        if (scenario.getConfiguration().isUseLimit1ForEGDs()) {
             return true;
         }
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);
         boolean consistent = true;
         Set<CellGroupCell> cellsToChange = new HashSet<CellGroupCell>();
-        for (Iterator<ViolationContext> it = repair.getViolationContexts().iterator(); it.hasNext();) {
-            ViolationContext violationContexts = it.next();
-            if (occurrencesOverlap(violationContexts, cellsToChange) || witnessOverlaps(violationContexts, cellsToChange)) {
+        for (Iterator<ChangeDescription> it = repair.getChangeDescriptions().iterator(); it.hasNext();) {
+            ChangeDescription violationContexts = it.next();
+            if (ChaseUtility.occurrencesOverlap(violationContexts, cellsToChange) || ChaseUtility.witnessOverlaps(violationContexts, cellsToChange)) {
                 if (logger.isDebugEnabled()) logger.debug("Violation context has overlaps: " + violationContexts);
                 it.remove();
                 consistent = false;
@@ -277,49 +348,21 @@ public class ChaseEGDEquivalenceClass {
         return consistent;
     }
 
-    private boolean occurrencesOverlap(ViolationContext violationContext, Set<CellGroupCell> cellsToChange) {
-        CellGroup cellGroup = violationContext.getCellGroup();
-        boolean inconsistent = containsCellRefs(CellGroupUtility.extractAllCellRefs(cellGroup), cellsToChange);
-        if (inconsistent && logger.isDebugEnabled()) logger.debug("Occurrences Overlap:\n" + violationContext);
-        return inconsistent;
-    }
-
-    private boolean witnessOverlaps(ViolationContext changeSet, Set<CellGroupCell> cellsToChange) {
-        if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
-            return false;
-        }
-        Set<CellRef> witnessCells = CellGroupUtility.extractAllCellRefs(changeSet.getWitnessCells());
-        if (containsCellRefs(witnessCells, cellsToChange)) {
-            if (logger.isDebugEnabled()) logger.debug("Witness Overlaps:\n" + witnessCells);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean containsCellRefs(Set<CellRef> witnessCells, Set<CellGroupCell> cellsToChange) {
-        Set<CellRef> cellRefsToChange = ChaseUtility.createCellRefsFromCells(cellsToChange);
-        for (CellRef cell : witnessCells) {
-            if (cellRefsToChange.contains(cell)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private boolean isEGDSatisfied(Dependency egd, boolean consistentRepair, Scenario scenario) {
-        return egd.hasSymmetricChase() && consistentRepair && !scenario.getConfiguration().isUseLimit1ForEGDs() && !egd.isOverlapBetweenAffectedAndQueried();
+        return consistentRepair && !scenario.getConfiguration().isUseLimit1ForEGDs() && !egd.isOverlapBetweenAffectedAndQueried();
     }
 
-    private List<AttributeRef> extractAffectedAttributes(Repair repair) {
-        List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
-        for (ViolationContext changeSet : repair.getViolationContexts()) {
-            CellGroup cellGroupToChange = changeSet.getCellGroup();
-            for (Cell occurrenceCell : cellGroupToChange.getOccurrences()) {
-                if (!affectedAttributes.contains(occurrenceCell.getAttributeRef())) {
-                    affectedAttributes.add(occurrenceCell.getAttributeRef());
-                }
-            }
-        }
-        return affectedAttributes;
+    private DependencyVariables buildDependencyVariables(Dependency egd) {
+        DependencyVariables dv = new DependencyVariables(egd);
+        FormulaVariable v1 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(0);
+        VariableEquivalenceClass vEq1 = findVariableEquivalenceClass(v1, egd);
+        dv.addConclusionVariable(vEq1);
+        FormulaVariable v2 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(1);
+        VariableEquivalenceClass vEq2 = findVariableEquivalenceClass(v2, egd);
+        dv.addConclusionVariable(vEq2);
+        List<VariableEquivalenceClass> witnessVariables = ChaseUtility.findJoinVariablesInTarget(egd);
+        dv.setWitnessVariables(witnessVariables);
+        return dv;
     }
+
 }

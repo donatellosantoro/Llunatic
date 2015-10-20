@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+<partialOrder>
+	<type>Frequency</type>
+</partialOrder>
+<costManager>
+	<type>Similarity</type>
+	<similarityStrategy>SmithWaterman</similarityStrategy>
+	<similarityThreshold>0.80</similarityThreshold>
+	<chaseBranchingThreshold>5</chaseBranchingThreshold>
+	<potentialSolutionsThreshold>5</potentialSolutionsThreshold>
+	<doPermutationsX>false</doPermutationsX>
+</costManager>
+-->
+<costManager>
+	<type>Standard</type>
+	<chaseBranchingThreshold>2</chaseBranchingThreshold>
+	<potentialSolutionsThreshold>2</potentialSolutionsThreshold>
+	<doBackward>false</doBackward>
+</costManager>

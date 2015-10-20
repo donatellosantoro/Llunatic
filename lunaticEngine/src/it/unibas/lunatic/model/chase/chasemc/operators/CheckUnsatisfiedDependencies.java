@@ -37,7 +37,7 @@ public class CheckUnsatisfiedDependencies {
     private BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
     private IBuildDatabaseForChaseStep databaseBuilder;
     private OccurrenceHandlerMC occurrenceHandler;
-    private IRunQuery queryRunner;
+    private final IRunQuery queryRunner;
 
     public CheckUnsatisfiedDependencies(IBuildDatabaseForChaseStep databaseBuilder, OccurrenceHandlerMC occurrenceHandler, IRunQuery queryRunner) {
         this.databaseBuilder = databaseBuilder;
@@ -90,8 +90,10 @@ public class CheckUnsatisfiedDependencies {
             boolean satisfied = isEGDSatisfiedQuery(egd, currentNode, databaseForStep, scenario);
             if (!satisfied) {
                 if (scenario.isDBMS()) {
+//                    logger.error("Dependency " + egd + "\nis not satisfied in node " + currentNode.toShortStringWithSort());
                     throw new ChaseException("Dependency " + egd + "\nis not satisfied in node " + currentNode.toShortStringWithSort());
                 } else {
+//                    logger.error("Dependency " + egd + "\nis not satisfied in node " + currentNode.toShortStringWithSort());
                     throw new ChaseException("Dependency " + egd + "\nis not satisfied in node " + currentNode.toStringWithSort() + "\nDelta db: " + currentNode.getDeltaDB());
                 }
             }

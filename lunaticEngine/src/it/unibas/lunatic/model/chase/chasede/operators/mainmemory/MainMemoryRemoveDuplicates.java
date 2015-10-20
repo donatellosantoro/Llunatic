@@ -5,9 +5,9 @@ import speedy.model.database.IDatabase;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import speedy.model.algebra.operators.StringComparator;
 import speedy.model.database.mainmemory.MainMemoryDB;
 import speedy.model.database.mainmemory.datasource.INode;
+import speedy.utility.comparator.StringComparator;
 
 @SuppressWarnings("unchecked")
 public class MainMemoryRemoveDuplicates implements IRemoveDuplicates {

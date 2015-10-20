@@ -1,8 +1,9 @@
 package it.unibas.lunatic.test.mc.mainmemory;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
+import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -18,7 +19,7 @@ public class TestTreatments extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_sp);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringWithSort());
@@ -36,7 +37,7 @@ public class TestTreatments extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_s5);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringWithSort());
@@ -53,7 +54,7 @@ public class TestTreatments extends CheckExpectedSolutionsTest {
     public void testScenarioPOS50() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments);
         setConfigurationForTest(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isTraceEnabled()) logger.debug("Result: " + result.toShortStringWithSort());
@@ -70,7 +71,7 @@ public class TestTreatments extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_fr_sp_script);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringWithSort());

@@ -1,13 +1,9 @@
 package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasemc.operators.EquivalenceClassUtility;
-import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedDependency;
-import it.unibas.lunatic.model.dependency.FormulaVariable;
-import it.unibas.lunatic.model.dependency.operators.AssignAdditionalAttributes;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.DependencyStratum;
 import it.unibas.lunatic.utility.DependencyUtility;
@@ -30,10 +26,10 @@ import org.slf4j.LoggerFactory;
 
 public class AnalyzeDependencies {
 
-    private static Logger logger = LoggerFactory.getLogger(AnalyzeDependencies.class);
-    private BuildExtendedDependencies dependencyBuilder = new BuildExtendedDependencies();
-    private FindSymmetricAtoms symmetryFinder = new FindSymmetricAtoms();
-    private AssignAdditionalAttributes additionalAttributesAssigner = new AssignAdditionalAttributes();
+    private static final Logger logger = LoggerFactory.getLogger(AnalyzeDependencies.class);
+    private final BuildExtendedDependencies dependencyBuilder = new BuildExtendedDependencies();
+    private final FindSymmetricAtoms symmetryFinder = new FindSymmetricAtoms();
+    private final AssignAdditionalAttributes additionalAttributesAssigner = new AssignAdditionalAttributes();
 
     public void prepareDependenciesAndGenerateStratification(Scenario scenario) {
         if (scenario.getStratification() != null) {
@@ -42,8 +38,9 @@ public class AnalyzeDependencies {
         findAllQueriedAttributesForEGDs(scenario.getExtEGDs());
         findAllQueriedAttributesForTGDs(scenario.getExtTGDs());
         DependencyStratification stratification = generateStratification(scenario);
+        findDependenciesForAttributes(stratification, scenario.getExtEGDs());
+        findDependenciesForAttributes(stratification, scenario.getExtTGDs());
         symmetryFinder.findSymmetricAtoms(scenario.getExtEGDs(), scenario);
-        findAttributesForBackwardChasing(scenario.getExtEGDs());
         findAllAffectedAttributes(scenario.getExtEGDs());
         assignAdditionalAttributes(scenario.getExtEGDs(), scenario);
         scenario.setStratification(stratification);
@@ -64,14 +61,14 @@ public class AnalyzeDependencies {
     }
 
     private DependencyStratification generateStratification(Scenario scenario) {
-        List<ExtendedDependency> dependencies = dependencyBuilder.buildExtendedEGDs(scenario.getExtEGDs(), scenario);
-        DirectedGraph<ExtendedDependency, DefaultEdge> dependencyGraph = initDependencyGraph(dependencies);
+        List<ExtendedDependency> extendedDependencies = dependencyBuilder.buildExtendedEGDs(scenario.getExtEGDs(), scenario);
+        DirectedGraph<ExtendedDependency, DefaultEdge> dependencyGraph = initDependencyGraph(extendedDependencies);
         StrongConnectivityInspector<ExtendedDependency, DefaultEdge> strongConnectivityInspector = new StrongConnectivityInspector<ExtendedDependency, DefaultEdge>(dependencyGraph);
         List<Set<ExtendedDependency>> stronglyConnectedComponents = strongConnectivityInspector.stronglyConnectedSets();
         DependencyStratification stratification = new DependencyStratification();
         for (Set<ExtendedDependency> extendedDependencySet : stronglyConnectedComponents) {
             Set<Dependency> dependencySet = buildDependencySet(extendedDependencySet);
-            DependencyStratum stratum = new DependencyStratum(dependencySet);
+            DependencyStratum stratum = new DependencyStratum(dependencySet, extendedDependencySet);
             Collections.sort(stratum.getDependencies(), new DependencyComparator());
             stratification.addStratum(stratum);
         }
@@ -127,25 +124,6 @@ public class AnalyzeDependencies {
         return result;
     }
 
-    private void findAttributesForBackwardChasing(List<Dependency> extEGDs) {
-        for (Dependency egd : extEGDs) {
-            List<BackwardAttribute> attributesForBackwardChasing = new ArrayList<BackwardAttribute>();
-            for (ExtendedDependency extendedDependency : egd.getExtendedDependencies()) {
-                if (extendedDependency.isForward()) {
-                    continue;
-                }
-                AttributeRef occurrenceAttribute = EquivalenceClassUtility.correctAttributeForSymmetricEGDs(extendedDependency.getOccurrence().getAttributeRef(), egd);
-                FormulaVariable variable = LunaticUtility.findPremiseVariableInDepedency(extendedDependency.getOccurrence(), egd);
-                BackwardAttribute backwardAttribute = new BackwardAttribute(occurrenceAttribute, variable);
-                if (attributesForBackwardChasing.contains(backwardAttribute)) {
-                    continue;
-                }
-                attributesForBackwardChasing.add(backwardAttribute);
-            }
-            egd.setAttributesForBackwardChasing(attributesForBackwardChasing);
-        }
-    }
-
     private void findAllAffectedAttributes(List<Dependency> extEGDs) {
         for (Dependency egd : extEGDs) {
             for (ExtendedDependency extendedDependency : egd.getExtendedDependencies()) {
@@ -162,6 +140,18 @@ public class AnalyzeDependencies {
             additionalAttributesAssigner.assignAttributes(egd, scenario);
         }
     }
+
+    private void findDependenciesForAttributes(DependencyStratification stratification, List<Dependency> dependencies) {
+        for (Dependency dependency : dependencies) {
+            for (AttributeRef attribute : dependency.getQueriedAttributes()) {
+                stratification.addDependencyForAttribute(attribute, dependency);
+            }
+            for (AttributeRef attribute : dependency.getAffectedAttributes()) {
+                stratification.addDependencyForAttribute(attribute, dependency);
+            }
+        }
+    }
+
 }
 
 class StratumComparator implements Comparator<DependencyStratum> {

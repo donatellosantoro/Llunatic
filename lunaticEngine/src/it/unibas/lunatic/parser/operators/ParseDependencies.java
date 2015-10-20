@@ -213,7 +213,7 @@ public class ParseDependencies {
         return result.substring(1, result.length() - 1);
     }
 
-    public List<Dependency> processDependencies(List<Dependency> dependencies) {
+    private List<Dependency> processDependencies(List<Dependency> dependencies) {
         List<Dependency> result = new ArrayList<Dependency>();
         for (Dependency dependency : dependencies) {
             processInitialDependency(dependency);

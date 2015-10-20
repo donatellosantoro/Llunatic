@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target>    
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+person(ssn, surname, name, boss)
+INSTANCE:
+person(ssn: "123", surname: "Smith", name: "John", boss: "Boss")
+person(ssn: "123", surname: "Smith", name: "Josh", boss: "Boss")
+person(ssn: "123", surname: "White", name: "Walter", boss: "Boss")
+person(ssn: "123", surname: "James", name: "Mc Gill", boss: "Boss")
+]]>
+    </generate>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+e0: person(ssn: $ssn, surname: $surname1, name: $name1, boss: $boss1), 
+ person(ssn: $ssn, surname: $surname2, name: $name2, boss: $boss2)
+ -> $surname1 == $surname2.
+]]>
+  </dependencies>
+</scenario>
+

@@ -24,7 +24,10 @@ T(a: "d", b: "e")
   <dependencies>
 <![CDATA[
 ExtEGDs:
-R(a: $x, b: $y1, c: $z1), R(a: $x, b: $y2, c: $z2), S(a: $z1, b: $v, c: $q), T(a: $z2, b: $w) -> $y1 == $y2.
+R(a: $x, b: $y1, c: $z1), 
+R(a: $x, b: $y2, c: $z2), 
+               S(a: $z1, b: $v, c: $q), 
+               T(a: $z2, b: $w) -> $y1 == $y2.
 ]]>
   </dependencies>
   <partialOrder/>

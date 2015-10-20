@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-  <source>
-    <type>GENERATE</type>
-    <generate>
+    <source>
+        <type>GENERATE</type>
+        <generate>
 <![CDATA[
 SCHEMA:
 masterdata(fn, ln, league, season, team)
@@ -11,11 +11,11 @@ masterdata(fn:  "Michael", ln:  "Jordan",   league:  "NBA", season:  "1994-95", 
 masterdata(fn:  "David",   ln:  "Robinson", league:  "NBA", season:  "1994-95", team:  "San Antonio Spurs")
 //masterdata(fn:  "Michael", ln:  "Jordan",   league:  "NBA", season:  "2001-02", team:  "Washington Wizard")
 ]]>
-    </generate>
-  </source>
-  <target>    
-    <type>GENERATE</type>
-    <generate>
+        </generate>
+    </source>
+    <target>    
+        <type>GENERATE</type>
+        <generate>
 <![CDATA[
 SCHEMA:
 stat(id, fn, mn, ln, rnds, totalpts, j, league, team, arena)
@@ -26,9 +26,9 @@ stat(id: 1, fn:  "Michael", mn:  #NULL#,    ln:  "Jordan", rnds:  "27",  totalpt
 stat(id: 1, fn:  "Michael", mn:  #NULL#,    ln:  "Jordan", rnds:  "1",   totalpts:  "19",  j:  "45", league:  "NBA", team:  "Chicago Bulls",     arena:  "United Center")
 stat(id: 1, fn:  "Michael", mn:  "Jeffrey", ln:  "Jordan", rnds:  "127", totalpts:  "51",  j:  "45", league:  "SL",  team:  "Birmingham Barons", arena:  "Regions Park")
 ]]>
-    </generate>
-  </target>
-  <dependencies>
+        </generate>
+    </target>
+    <dependencies>
 <![CDATA[
 ExtEGDs:
 //(ID) -> FN
@@ -77,38 +77,41 @@ md1: masterdata(fn: $fn, ln: $ln, league: $league, season: $season, team: $team1
 //stat(id: $id, fn: $fn, mn: $mn, ln: $ln, rnds: $rnds, totalpts: $totalpts, j: $j, league: $league, team: $team, arena: $arena) ->
 //result(id: $id, fn: $fn, mn: $mn, ln: $ln, rnds: $rnds, totalpts: $totalpts, league: $league, team: $team).
 ]]>
-  </dependencies>
-  <orderingAttributes>
-    <orderingAttribute>
-      <attribute>stat.fn</attribute>
-      <associatedAttribute>stat.mn</associatedAttribute>
-      <valueComparator sort="DESC"/>
-    </orderingAttribute>
-    <orderingAttribute>
-      <attribute>stat.j</attribute>
-      <associatedAttribute>stat.rnds</associatedAttribute>
-      <valueComparator sort="DESC">
-        <floatComparator/>
-      </valueComparator>
-    </orderingAttribute>
-    <orderingAttribute>
-      <attribute>stat.totalpts</attribute>
-      <associatedAttribute>stat.rnds</associatedAttribute>
-      <valueComparator sort="DESC">
-        <floatComparator/>
-      </valueComparator>
-    </orderingAttribute>
-    <orderingAttribute>
-      <attribute>stat.rnds</attribute>
-      <associatedAttribute>stat.rnds</associatedAttribute>
-      <valueComparator sort="DESC">
-        <floatComparator/>
-      </valueComparator>
-    </orderingAttribute>
-  </orderingAttributes>
-<costManager>
-  <type>Standard</type>
-  <doBackward>false</doBackward>
-</costManager>
+    </dependencies>
+    <orderingAttributes>
+        <orderingAttribute>
+            <attribute>stat.fn</attribute>
+            <associatedAttribute>stat.mn</associatedAttribute>
+            <valueComparator sort="DESC"/>
+        </orderingAttribute>
+        <orderingAttribute>
+            <attribute>stat.j</attribute>
+            <associatedAttribute>stat.rnds</associatedAttribute>
+            <valueComparator sort="DESC">
+                <floatComparator/>
+            </valueComparator>
+        </orderingAttribute>
+        <orderingAttribute>
+            <attribute>stat.totalpts</attribute>
+            <associatedAttribute>stat.rnds</associatedAttribute>
+            <valueComparator sort="DESC">
+                <floatComparator/>
+            </valueComparator>
+        </orderingAttribute>
+        <orderingAttribute>
+            <attribute>stat.rnds</attribute>
+            <associatedAttribute>stat.rnds</associatedAttribute>
+            <valueComparator sort="DESC">
+                <floatComparator/>
+            </valueComparator>
+        </orderingAttribute>
+    </orderingAttributes>
+    <partialOrder>
+        <type>Frequency</type>
+    </partialOrder>
+    <costManager>
+        <type>Standard</type>
+        <doBackward>false</doBackward>
+    </costManager>
 </scenario>
 

@@ -4,10 +4,11 @@ import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;
 import it.unibas.lunatic.model.chase.chaseded.DEDChaserFactory;
-import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
+import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
+import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import java.io.File;
 import java.util.Date;
@@ -68,7 +69,7 @@ public class Main {
     }
 
     private static void chaseMCScenario(Scenario scenario) {
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         long start = new Date().getTime();
         DeltaChaseStep result = chaser.doChase(scenario);
         long end = new Date().getTime();

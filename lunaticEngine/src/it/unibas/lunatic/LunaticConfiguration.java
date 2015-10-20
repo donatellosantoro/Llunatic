@@ -11,14 +11,15 @@ public class LunaticConfiguration {
     private boolean checkGroundSolutions = false;
     private boolean checkSolutions = false;
     private boolean checkSolutionsQuery = false;
+    private boolean checkConsistencyOfDBs = false;
     private boolean removeDuplicates = true;
-    private boolean removeSuspiciousSolutions = true;
     private boolean checkAllNodesForEGDSatisfaction = false;
     private boolean forceMCChaserInTests = false;
     private boolean useSymmetricOptimization = true;
     private boolean checkDCDuringChase = false;
     private boolean chaseDEDGreedyExecuteAllScenarios = false;
     private boolean chaseDEDGreedyRandomScenarios = false;
+    private boolean discardDuplicateTuples = false;
 //
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
     private String deChaser = LunaticConstants.PROXY_MC_CHASER;
@@ -84,14 +85,6 @@ public class LunaticConfiguration {
         this.checkGroundSolutions = checkGroundSolutions;
     }
 
-    public boolean isRemoveSuspiciousSolutions() {
-        return removeSuspiciousSolutions;
-    }
-
-    public void setRemoveSuspiciousSolutions(boolean removeSuspiciousSolutions) {
-        this.removeSuspiciousSolutions = removeSuspiciousSolutions;
-    }
-
     public boolean isCheckAllNodesForEGDSatisfaction() {
         return checkAllNodesForEGDSatisfaction;
     }
@@ -135,7 +128,6 @@ public class LunaticConfiguration {
     public void changeParametersForScalabilityTests() {
         this.checkGroundSolutions = false;
         this.removeDuplicates = false;
-        this.removeSuspiciousSolutions = false;
     }
 
     public String getDeChaser() {
@@ -170,6 +162,14 @@ public class LunaticConfiguration {
         this.checkDCDuringChase = checkDCDuringChase;
     }
 
+    public boolean isCheckConsistencyOfDBs() {
+        return checkConsistencyOfDBs;
+    }
+
+    public void setCheckConsistencyOfDBs(boolean checkConsistencyOfDBs) {
+        this.checkConsistencyOfDBs = checkConsistencyOfDBs;
+    }
+
     public boolean isChaseDEDGreedyRandomScenarios() {
         return chaseDEDGreedyRandomScenarios;
     }
@@ -178,20 +178,29 @@ public class LunaticConfiguration {
         this.chaseDEDGreedyRandomScenarios = chaseDEDGreedyRandomScenarios;
     }
 
+    public boolean isDiscardDuplicateTuples() {
+        return discardDuplicateTuples;
+    }
+
+    public void setDiscardDuplicateTuples(boolean discardDuplicateTuples) {
+        this.discardDuplicateTuples = discardDuplicateTuples;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
-                + "\n\tIterationLimit: " + iterationLimit
-                + "\n\tUseLimit1: " + useLimit1ForEGDs
-                + "\n\tUseCellGroupsForTGDs: " + deProxyMode
-                + "\n\tCheckSolutions: " + checkSolutions
-                + "\n\tCheckSolutionsQuery: " + checkSolutionsQuery
-                + "\n\tCheckGroundSolutions: " + checkGroundSolutions
-                + "\n\tRemoveDuplicates: " + removeDuplicates
-                + "\n\tRemoveSuspiciousSolutions: " + removeSuspiciousSolutions
-                + "\n\tCheckAllNodesForEGDSatisfaction: " + checkAllNodesForEGDSatisfaction
-                + "\n\tUseSymmetricOptimization: " + useSymmetricOptimization
-                + "\n\tCache type: " + cacheType
-                + "\n\tDeChaser: " + deChaser;
+                + "\n\t IterationLimit: " + iterationLimit
+                + "\n\t UseLimit1: " + useLimit1ForEGDs
+                + "\n\t UseCellGroupsForTGDs: " + deProxyMode
+                + "\n\t CheckSolutions: " + checkSolutions
+                + "\n\t CheckSolutionsQuery: " + checkSolutionsQuery
+                + "\n\t CheckGroundSolutions: " + checkGroundSolutions
+                + "\n\t CheckConsistencyOfDBs: " + checkConsistencyOfDBs
+                + "\n\t RemoveDuplicates: " + removeDuplicates
+                + "\n\t CheckAllNodesForEGDSatisfaction: " + checkAllNodesForEGDSatisfaction
+                + "\n\t UseSymmetricOptimization: " + useSymmetricOptimization
+                + "\n\t DiscardDuplicateTuples: " + discardDuplicateTuples
+                + "\n\t Cache type: " + cacheType
+                + "\n\t DeChaser: " + deChaser;
     }
 }

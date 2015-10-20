@@ -19,6 +19,9 @@ public class CellGroupStats {
     public int maxJustifications;
     public int minJustifications;
     public long totalCellGroupHash;
+    // For solution ranking
+    public int changedCells;
+    public int totalNumberOfLluns;
     
     private Map<CellGroup, Integer> cellGroupHashes = new HashMap<CellGroup, Integer>();
     
@@ -56,6 +59,8 @@ public class CellGroupStats {
         result.append("\t MaxJustifications: ").append(maxJustifications).append("\n");
         result.append("\t MinJustifications: ").append(minJustifications).append("\n");
         result.append("\t TotalCellGroupHash: ").append(totalCellGroupHash).append("\n");
+        result.append("\t ChangedCells: ").append(changedCells).append("\n");
+        result.append("\t TotalNumberOfLluns: ").append(totalNumberOfLluns).append("\n");
         result.append("]\n");
         return result.toString();
     }

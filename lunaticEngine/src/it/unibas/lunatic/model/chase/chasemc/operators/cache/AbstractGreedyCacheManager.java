@@ -63,13 +63,17 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
         stats.maxJustifications = 0;
         for (String key : keys) {
             CellGroup cellGroup = getCellGroup(key);
-            if (cellGroup.getValue() instanceof LLUNValue) stats.llunCellGroups++;
+            if (cellGroup.getValue() instanceof LLUNValue) {
+                stats.llunCellGroups++;
+                stats.totalNumberOfLluns += cellGroup.getOccurrences().size();
+            }
             if (cellGroup.getValue() instanceof NullValue) stats.nullCellGroups++;
             if (cellGroup.getValue() instanceof ConstantValue) stats.constantCellGroups++;
             stats.totalOccurrences += cellGroup.getOccurrences().size();
             stats.totalJustifications += cellGroup.getJustifications().size();
             stats.totalUserCells += cellGroup.getUserCells().size();
             stats.totalInvalidCells += (cellGroup.hasInvalidCell() ? 1 : 0);
+            stats.changedCells += computeChangedCells(cellGroup);
             if (cellGroup.getOccurrences().size() > stats.maxOccurrences) stats.maxOccurrences = cellGroup.getOccurrences().size();
             if (stats.minOccurrences == -1 || cellGroup.getOccurrences().size() < stats.minOccurrences) stats.minOccurrences = cellGroup.getOccurrences().size();
             if (cellGroup.getJustifications().size() > stats.maxJustifications) stats.maxJustifications = cellGroup.getJustifications().size();
@@ -196,5 +200,16 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
         }
 //        return cell.hashCode();
         return LunaticConstants.TYPE_INVALID.hashCode();
+    }
+
+    private int computeChangedCells(CellGroup cellGroup) {
+        int total = 0;
+        for (CellGroupCell occurrence : cellGroup.getOccurrences()) {
+            if (occurrence.getOriginalValue().equals(cellGroup.getValue())) {
+                continue;
+            }
+            total++;
+        }
+        return total;
     }
 }

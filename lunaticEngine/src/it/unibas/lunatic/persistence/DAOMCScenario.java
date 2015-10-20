@@ -1,12 +1,11 @@
 package it.unibas.lunatic.persistence;
 
 import it.unibas.lunatic.LunaticConfiguration;
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityToMostFrequentCostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.parser.operators.ParseDependencies;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
@@ -55,12 +54,6 @@ public class DAOMCScenario {
     private static final String PARTIAL_ORDER_STANDARD = "Standard";
     private static final String PARTIAL_ORDER_FREQUENCY = "Frequency";
     private static final String PARTIAL_ORDER_FREQUENCY_FO = "Frequency FO";
-    ///////////////////// COST MANAGER
-    private static final String COST_MANAGER_STANDARD = "Standard";
-    private static final String COST_MANAGER_SIMILARITY = "Similarity";
-//    private static final String COST_MANAGER_SIMILARITY_MULTI_REPAIR = "SimilarityMultiRepair";
-    private static final String COST_MANAGER_SAMPLING = "Sampling";
-    private static final String COST_MANAGER_MINCOST = "MinCost";
     ///////////////////// USER MANAGER
     private static final String USER_MANAGER_STANDARD = "Standard";
     private static final String USER_MANAGER_INTERACTIVE = "Interactive";
@@ -69,6 +62,7 @@ public class DAOMCScenario {
     private static final String USER_MANAGER_AFTER_FORK = "AfterFork";
     private static final String VALUE_COMPARATOR_FLOAT = "floatComparator";
     private static final String VALUE_COMPARATOR_DATE = "dateComparator";
+    private static final String VALUE_COMPARATOR_STRING = "stringComparator";
     private DAOXmlUtility daoUtility = new DAOXmlUtility();
     private TransformFilePaths filePathTransformator = new TransformFilePaths();
     private DAOMainMemoryDatabase daoMainMemoryDatabase = new DAOMainMemoryDatabase();
@@ -111,8 +105,10 @@ public class DAOMCScenario {
             scenario.setScriptPartialOrder(scriptPartialORder);
             //COST-MANAGER
             Element costManagerElement = rootElement.getChild("costManager");
-            ICostManager costManager = loadCostManager(costManagerElement);
-            scenario.setCostManager(costManager);
+            CostManagerConfiguration costManagerConfiguration = loadCostManagerConfiguration(costManagerElement);
+            if (costManagerConfiguration != null) {
+                scenario.setCostManagerConfiguration(costManagerConfiguration);
+            }
             //USER-MANAGER
             Element userManagerElement = rootElement.getChild("userManager");
             IUserManager userManager = loadUserManager(userManagerElement, scenario);
@@ -194,8 +190,17 @@ public class DAOMCScenario {
                     if (type.equalsIgnoreCase(SpeedyConstants.XML)) {
                         fileToImport = new XMLFile(fileName);
                     } else if (type.equalsIgnoreCase(SpeedyConstants.CSV)) {
-                        fileToImport = new CSVFile(fileName);
-                    }else{
+                        CSVFile csvFile = new CSVFile(fileName);
+                        if (inputFileElement.getAttribute("separator") != null) {
+                            String separator = inputFileElement.getAttribute("separator").getValue();
+                            csvFile.setSeparator(separator.charAt(0));
+                        }
+                        if (inputFileElement.getAttribute("quoteCharacter") != null) {
+                            String quoteCharacter = inputFileElement.getAttribute("quoteCharacter").getValue();
+                            csvFile.setQuoteCharacter(quoteCharacter.charAt(0));
+                        }
+                        fileToImport = csvFile;
+                    } else {
                         throw new DAOException("Type " + type + " is not supported");
                     }
                     database.getInitDBConfiguration().addFileToImportForTable(tableName, fileToImport);
@@ -256,6 +261,8 @@ public class DAOMCScenario {
                 comparator = new FloatComparator();
             } else if (VALUE_COMPARATOR_DATE.equalsIgnoreCase(valueComparatorImplName)) {
                 comparator = new DateComparator(valueComparatorImplElement.getAttributeValue("pattern"));
+            } else if (VALUE_COMPARATOR_STRING.equalsIgnoreCase(valueComparatorImplName)) {
+                comparator = new StringComparator();
             }
             if (comparator == null) {
                 throw new DAOException("Unable to load scenario from file " + fileScenario + ". Unknown value comparator " + valueComparatorImplElement.getName());
@@ -305,40 +312,40 @@ public class DAOMCScenario {
         }
     }
 
-    private ICostManager loadCostManager(Element costManagerElement) throws DAOException {
+    private CostManagerConfiguration loadCostManagerConfiguration(Element costManagerElement) throws DAOException {
         if (costManagerElement == null || costManagerElement.getChildren().isEmpty()) {
-            return new StandardCostManager();
+            return null;
         }
         Element typeElement = costManagerElement.getChild("type");
         if (typeElement == null) {
             throw new DAOException("Unable to load scenario from file " + fileScenario + ". Missing tag <type>");
         }
-        ICostManager costManager = null;
+        CostManagerConfiguration costManagerConfiguration = new CostManagerConfiguration();
         String costManagerType = typeElement.getValue();
-        if (COST_MANAGER_STANDARD.equals(costManagerType)) {
-            costManager = new StandardCostManager();
+        if (LunaticConstants.COST_MANAGER_STANDARD.equalsIgnoreCase(costManagerType)) {
+            costManagerConfiguration.setType(LunaticConstants.COST_MANAGER_STANDARD);
         }
-        if (COST_MANAGER_SIMILARITY.equals(costManagerType)) {
-            costManager = new SimilarityToMostFrequentCostManager();
+        if (LunaticConstants.COST_MANAGER_SIMILARITY.equalsIgnoreCase(costManagerType)) {
+            costManagerConfiguration.setType(LunaticConstants.COST_MANAGER_SIMILARITY);
             Element similarityStrategyElement = costManagerElement.getChild("similarityStrategy");
             if (similarityStrategyElement != null) {
-                ((SimilarityToMostFrequentCostManager) costManager).setSimilarityStrategy(similarityStrategyElement.getValue());
+                costManagerConfiguration.setSimilarityStrategy(similarityStrategyElement.getValue());
             }
             Element similarityThresholdElement = costManagerElement.getChild("similarityThreshold");
             if (similarityThresholdElement != null) {
-                ((SimilarityToMostFrequentCostManager) costManager).setSimilarityThreshold(Double.parseDouble(similarityThresholdElement.getValue()));
+                costManagerConfiguration.setSimilarityThreshold(Double.parseDouble(similarityThresholdElement.getValue()));
             }
         }
-        if (costManager == null) {
+        if (costManagerConfiguration == null) {
             throw new DAOException("Unable to load scenario from file " + fileScenario + ". Unknown cost-manager type " + costManagerType);
         }
         Element doBackwardElement = costManagerElement.getChild("doBackward");
         if (doBackwardElement != null) {
-            costManager.setDoBackward(Boolean.parseBoolean(doBackwardElement.getValue()));
+            costManagerConfiguration.setDoBackward(Boolean.parseBoolean(doBackwardElement.getValue()));
         }
         Element doPermutationsElement = costManagerElement.getChild("doPermutations");
         if (doPermutationsElement != null) {
-            costManager.setDoPermutations(Boolean.parseBoolean(doPermutationsElement.getValue()));
+            costManagerConfiguration.setDoPermutations(Boolean.parseBoolean(doPermutationsElement.getValue()));
         }
 //        Element chaseTreeSizeThresholdElement = costManagerElement.getChild("chaseTreeSizeThreshold");
 //        if (chaseTreeSizeThresholdElement != null) {
@@ -346,17 +353,17 @@ public class DAOMCScenario {
 //        }
         Element chaseBranchingThresholdElement = costManagerElement.getChild("chaseBranchingThreshold");
         if (chaseBranchingThresholdElement != null) {
-            costManager.setChaseBranchingThreshold(Integer.parseInt(chaseBranchingThresholdElement.getValue()));
+            costManagerConfiguration.setChaseBranchingThreshold(Integer.parseInt(chaseBranchingThresholdElement.getValue()));
         }
         Element dependencyLimitElement = costManagerElement.getChild("dependencyLimit");
         if (dependencyLimitElement != null) {
-            costManager.setDependencyLimit(Integer.parseInt(dependencyLimitElement.getValue()));
+            costManagerConfiguration.setDependencyLimit(Integer.parseInt(dependencyLimitElement.getValue()));
         }
         Element potentialSolutionsThresholdElement = costManagerElement.getChild("potentialSolutionsThreshold");
         if (potentialSolutionsThresholdElement != null) {
-            costManager.setPotentialSolutionsThreshold(Integer.parseInt(potentialSolutionsThresholdElement.getValue()));
+            costManagerConfiguration.setPotentialSolutionsThreshold(Integer.parseInt(potentialSolutionsThresholdElement.getValue()));
         }
-        return costManager;
+        return costManagerConfiguration;
     }
 
     private IUserManager loadUserManager(Element userManagerElement, Scenario scenario) {
@@ -403,10 +410,6 @@ public class DAOMCScenario {
         Element checkGroundSolutionsElement = configurationElement.getChild("checkGroundSolutions");
         if (checkGroundSolutionsElement != null) {
             configuration.setCheckGroundSolutions(Boolean.parseBoolean(checkGroundSolutionsElement.getValue()));
-        }
-        Element removeSuspiciousSolutionsElement = configurationElement.getChild("removeSuspiciousSolutions");
-        if (removeSuspiciousSolutionsElement != null) {
-            configuration.setRemoveSuspiciousSolutions(Boolean.parseBoolean(removeSuspiciousSolutionsElement.getValue()));
         }
         return configuration;
     }

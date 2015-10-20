@@ -63,6 +63,21 @@ public class References {
 
     
     public static final String persons = "mc/persons/person-mcscenario.xml";
+    public static final String persons_deps = "mc/persons/person-deps-mcscenario.xml";
+    public static final String persons_deps_01 = "mc/persons/person-deps-01-mcscenario.xml";
+    public static final String persons_deps_01b = "mc/persons/person-deps-01b-mcscenario.xml";
+    public static final String persons_deps_02 = "mc/persons/person-deps-02-mcscenario.xml";
+    public static final String persons_deps_03 = "mc/persons/person-deps-03-mcscenario.xml";
+    public static final String persons_deps_03b = "mc/persons/person-deps-03b-mcscenario.xml";
+    public static final String persons_deps_04 = "mc/persons/person-deps-04-mcscenario.xml";
+    public static final String persons_deps_05 = "mc/persons/person-deps-05-mcscenario.xml";
+    public static final String persons_deps_05b = "mc/persons/person-deps-05b-mcscenario.xml";
+    public static final String persons_deps_05c = "mc/persons/person-deps-05c-mcscenario.xml";
+    public static final String persons_deps_06 = "mc/persons/person-deps-06-mcscenario.xml";
+    public static final String persons_deps_06b = "mc/persons/person-deps-06b-mcscenario.xml";
+    public static final String persons_deps_07 = "mc/persons/person-deps-07-mcscenario.xml";
+    public static final String persons_deps_08 = "mc/persons/person-deps-08-mcscenario.xml";
+    public static final String persons_deps_dbms = "mc/persons/person-deps-mcscenario-dbms.xml";
     public static final String persons_fr_sp = "mc/persons/person-fr-sp-mcscenario.xml";
     public static final String persons_dbms = "mc/persons/person-mcscenario-dbms.xml";
     
@@ -116,7 +131,12 @@ public class References {
     
     public static final String hospital = "mc/hospital/hospital-mcscenario.xml";
     public static final String hospital_0_2p_dbms =    "mc/hospital/hospital-0-2p-mcscenario-dbms.xml";    
+    public static final String hospital_small_a_dbms =    "mc/hospital/hospital-HighRep-small-a-dbms.xml";    
+    public static final String hospital_small_b_dbms =    "mc/hospital/hospital-HighRep-small-b-dbms.xml";    
 
+    public static final String bus_30_5p_dbms =    "mc/bus/bus-HighRep-30-5-dbms.xml";    
+    public static final String bus_55_5p_dbms =    "mc/bus/bus-HighRep-55-5-dbms.xml";    
+    public static final String bus_100_5p_dbms =    "mc/bus/bus-HighRep-100-5-dbms.xml";    
     
     public static final String accuracy = "mc/accuracy/accuracy-mcscenario.xml";
     public static final String accuracy_poset = "mc/accuracy/accuracy-poset-mcscenario.xml";

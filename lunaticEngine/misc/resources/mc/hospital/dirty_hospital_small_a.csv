@@ -1,0 +1,7 @@
+providernumber,hospitname,address1,address2,address3,city,state,zip,country,phone,hospittype,hospitowner,emergencyservice,condition,measurecode,measurename,score,sample,stateavg
+1,,,,,SYLACAUGA,,35150,,PHONE-1,,,,,,,,,
+2,,,,,SYLACAUGA,,35150,,PHONE-1,,,,,,,,,
+3,,,,,SYLACAUGA,,35150,,PHONE-1,,,,,,,,,
+4,,,,,BIRMINGHAM-*,,35205,,PHONE-2,,,,,,,,,
+5,,,,,BIRMINGHAM,,35205,,PHONE-2,,,,,,,,,
+6,,,,,BIRMINGHAM,,35205,,PHONE-1,,,,,,,,,
