@@ -117,7 +117,7 @@ public class DependencyUtility {
                 AttributeRef attribute = occurrence.getAttributeRef();
                 AttributeRef unaliasedAttribute = ChaseUtility.unAlias(attribute);
                 LunaticUtility.addIfNotContained(result, unaliasedAttribute);
-            }            
+            }
         }
         for (AttributeRef attributeRef : dependency.getAdditionalAttributes()) {
             if (!result.contains(attributeRef)) {
@@ -126,7 +126,7 @@ public class DependencyUtility {
         }
         return result;
     }
-    
+
     public static List<AttributeRef> findTargetQueriedAttributesForExtTGD(Dependency dependency) {
         List<AttributeRef> queriedAttributes = new ArrayList<AttributeRef>();
         LunaticUtility.addAllIfNotContained(queriedAttributes, findTargetQueriedAttributesInPremise(dependency));
@@ -208,7 +208,7 @@ public class DependencyUtility {
     }
 
     public static String buildVariableIdForConstant(Object constantValue) {
-        return "v" + constantValue;
+        return "v" + valueWithOnlyChars(constantValue);
     }
 
     public static String buildTableNameForConstants(Dependency dependency) {
@@ -216,7 +216,15 @@ public class DependencyUtility {
     }
 
     public static String buildAttributeNameForConstant(Object constantValue) {
-        return "a" + constantValue;
+        return "a" + valueWithOnlyChars(constantValue);
+    }
+    
+    public static String valueWithoutSpaces(Object value) {
+        return value.toString().replaceAll(" ", "");
+    }
+    
+    public static String valueWithOnlyChars(Object value) {
+        return value.toString().replaceAll("[^A-Za-z0-9]", "").toLowerCase();
     }
 
 }

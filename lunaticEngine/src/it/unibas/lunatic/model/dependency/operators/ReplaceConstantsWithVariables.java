@@ -44,7 +44,7 @@ public class ReplaceConstantsWithVariables {
             return;
         }
         addAtomAndVariables(dependency, constantsInFormula);
-        createTable(constantsInFormula, scenario);
+        createTable(constantsInFormula, scenario, true);
         if (logger.isDebugEnabled()) logger.debug("After constant removal: " + dependency.toLongString());
         if (logger.isDebugEnabled()) logger.debug("Constant Table: " + constantsInFormula.toString());
     }
@@ -144,7 +144,7 @@ public class ReplaceConstantsWithVariables {
         }
     }
 
-    private void createTable(AllConstantsInFormula constantsInFormula, Scenario scenario) {
-        this.tableCreator.createTable(constantsInFormula, scenario);
+    private void createTable(AllConstantsInFormula constantsInFormula, Scenario scenario, boolean autoritative) {
+        this.tableCreator.createTable(constantsInFormula, scenario, autoritative);
     }
 }

@@ -23,7 +23,7 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
 
     private static final Logger logger = LoggerFactory.getLogger(MainMemoryCreateTableForConstants.class.getName());
 
-    public void createTable(AllConstantsInFormula constantsInFormula, Scenario scenario) {
+    public void createTable(AllConstantsInFormula constantsInFormula, Scenario scenario, boolean autoritative) {
         if (scenario.getSource() instanceof EmptyDB) {
             MainMemoryDB newSource = createEmptySourceDatabase();
             scenario.setSource(newSource);
@@ -35,7 +35,7 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
         }
         createSchema(tableName, mainMemorySource, constantsInFormula);
         createInstance(tableName, mainMemorySource, constantsInFormula);
-        scenario.getAuthoritativeSources().add(tableName);
+        if (autoritative) scenario.getAuthoritativeSources().add(tableName);
     }
 
     private void createSchema(String tableName, MainMemoryDB mainMemorySource, AllConstantsInFormula constantsInFormula) {
