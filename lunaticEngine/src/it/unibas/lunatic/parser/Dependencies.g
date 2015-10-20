@@ -164,7 +164,7 @@ OPERATOR:	 '==' | '!=' | '>' | '<' | '>=' | '<=';
 
 IDENTIFIER  :    (LETTER) (LETTER | DIGIT | '_')*;
 
-STRING  :  	 '"' (LETTER | DIGIT| '-' | '.' | ' ')+ '"';
+STRING  :  	 '"' (LETTER | DIGIT| '-' | '.' | ' ' | '_' | '*' )+ '"';
 NUMBER	: 	 ('-')? DIGIT+ ('.' DIGIT+)?;
 NULL    :        '#NULL#';
 fragment DIGIT:  '0'..'9' ;

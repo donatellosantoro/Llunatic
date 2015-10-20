@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g 2014-10-08 10:41:19
+// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g 2015-10-20 15:16:24
 
 package it.unibas.lunatic.parser.output;
 
@@ -7,14 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import it.unibas.lunatic.parser.operators.ParseDependencies;
 import it.unibas.lunatic.model.dependency.*;
+import speedy.model.database.AttributeRef;
+import speedy.model.expressions.Expression;
 
 
 import org.antlr.runtime.*;
 import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.antlr.runtime.tree.*;
-import speedy.model.database.AttributeRef;
-import speedy.model.expressions.Expression;
 
 
 @SuppressWarnings("all")
