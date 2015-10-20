@@ -2,7 +2,6 @@ package it.unibas.lunatic.model.chase.chasemc.operators.mainmemory;
 
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfDBOIDs;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import speedy.model.database.Attribute;
@@ -44,12 +43,6 @@ import speedy.utility.SpeedyUtility;
 public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep {
 
     private static Logger logger = LoggerFactory.getLogger(BuildMainMemoryDBForChaseStep.class);
-    private CheckConsistencyOfDBOIDs oidChecker = new CheckConsistencyOfDBOIDs();
-    private boolean checkOIDsInTables;
-
-    public BuildMainMemoryDBForChaseStep(boolean checkOIDsInTables) {
-        this.checkOIDsInTables = checkOIDsInTables;
-    }
 
     @Override
     public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB) {
@@ -72,9 +65,6 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
         if (logger.isDebugEnabled()) logger.debug("Extracted database\n" + result);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_STEP_BUILDER, end - start);
-        if (checkOIDsInTables) {
-            oidChecker.checkDatabase(result);
-        }
         return result;
     }
 
@@ -100,9 +90,6 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
         if (logger.isDebugEnabled()) logger.debug("Extracted database for dependency\n" + dependency + "\n" + result);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_STEP_BUILDER, end - start);
-        if (checkOIDsInTables) {
-            oidChecker.checkDatabase(result);
-        }
         return result;
     }
 

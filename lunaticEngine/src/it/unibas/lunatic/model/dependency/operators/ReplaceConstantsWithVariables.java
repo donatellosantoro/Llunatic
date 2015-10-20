@@ -7,7 +7,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryCrea
 import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.ConstantInFormula;
-import it.unibas.lunatic.model.dependency.AllConstantsInFormula;
+import it.unibas.lunatic.model.dependency.ConstantsInFormula;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaAttribute;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
@@ -37,19 +37,19 @@ public class ReplaceConstantsWithVariables {
     public void replaceConstants(Dependency dependency, Scenario scenario) {
         initTableCreator(scenario);
         if (logger.isDebugEnabled()) logger.debug("Before constant removal: " + dependency);
-        AllConstantsInFormula constantsInFormula = new AllConstantsInFormula(dependency);
+        ConstantsInFormula constantsInFormula = new ConstantsInFormula(dependency);
         findAndReplaceConstantsInPositiveFormula(dependency.getPremise().getPositiveFormula(), constantsInFormula, true);
         findAndReplaceConstantsInPositiveFormula(dependency.getConclusion().getPositiveFormula(), constantsInFormula, false);
         if (constantsInFormula.isEmpty()) {
             return;
         }
         addAtomAndVariables(dependency, constantsInFormula);
-        createTable(constantsInFormula, scenario);
+        createTable(constantsInFormula, scenario, true);
         if (logger.isDebugEnabled()) logger.debug("After constant removal: " + dependency.toLongString());
         if (logger.isDebugEnabled()) logger.debug("Constant Table: " + constantsInFormula.toString());
     }
 
-    private void findAndReplaceConstantsInPositiveFormula(PositiveFormula positiveFormula, AllConstantsInFormula constantsInFormula, boolean premise) {
+    private void findAndReplaceConstantsInPositiveFormula(PositiveFormula positiveFormula, ConstantsInFormula constantsInFormula, boolean premise) {
         for (IFormulaAtom atom : positiveFormula.getAtoms()) {
             if (atom instanceof RelationalAtom) {
                 handleRelationalAtom(atom, constantsInFormula, premise);
@@ -60,7 +60,7 @@ public class ReplaceConstantsWithVariables {
         }
     }
 
-    private void handleRelationalAtom(IFormulaAtom atom, AllConstantsInFormula constantsInFormula, boolean premise) {
+    private void handleRelationalAtom(IFormulaAtom atom, ConstantsInFormula constantsInFormula, boolean premise) {
         RelationalAtom relationalAtom = (RelationalAtom) atom;
         for (FormulaAttribute attribute : relationalAtom.getAttributes()) {
             if (attribute.getValue().isVariable() || attribute.getValue().isNull()) {
@@ -78,7 +78,7 @@ public class ReplaceConstantsWithVariables {
         }
     }
 
-    private void handleComparisonAtom(IFormulaAtom atom, AllConstantsInFormula constantsInFormula) {
+    private void handleComparisonAtom(IFormulaAtom atom, ConstantsInFormula constantsInFormula) {
         ComparisonAtom comparisonAtom = (ComparisonAtom) atom;
         if (comparisonAtom.getVariables().size() == 2) {
             return;
@@ -102,7 +102,7 @@ public class ReplaceConstantsWithVariables {
         return valueString;
     }
 
-    private ConstantInFormula getConstantInFormula(Object constantValue, AllConstantsInFormula constantsInFormula) {
+    private ConstantInFormula getConstantInFormula(Object constantValue, ConstantsInFormula constantsInFormula) {
         ConstantInFormula constantInFormula = constantsInFormula.getConstantMap().get(constantValue.toString());
         if (constantInFormula == null) {
             constantInFormula = new ConstantInFormula(constantValue);
@@ -124,7 +124,7 @@ public class ReplaceConstantsWithVariables {
     }
 
     @SuppressWarnings("unchecked")
-    private void addAtomAndVariables(Dependency dependency, AllConstantsInFormula constantsInFormula) {
+    private void addAtomAndVariables(Dependency dependency, ConstantsInFormula constantsInFormula) {
         PositiveFormula premise = dependency.getPremise().getPositiveFormula();
         RelationalAtom newAtom = new RelationalAtom(DependencyUtility.buildTableNameForConstants(dependency));
         newAtom.getTableAlias().setSource(true);
@@ -144,7 +144,7 @@ public class ReplaceConstantsWithVariables {
         }
     }
 
-    private void createTable(AllConstantsInFormula constantsInFormula, Scenario scenario) {
-        this.tableCreator.createTable(constantsInFormula, scenario);
+    private void createTable(ConstantsInFormula constantsInFormula, Scenario scenario, boolean autoritative) {
+        this.tableCreator.createTable(constantsInFormula, scenario, autoritative);
     }
 }

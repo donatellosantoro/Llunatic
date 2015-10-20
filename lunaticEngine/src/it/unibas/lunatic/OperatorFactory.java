@@ -53,6 +53,9 @@ public class OperatorFactory {
     private IRunQuery mainMemoryQueryRunner = new MainMemoryRunQuery();
     private IRunQuery sqlQueryRunner = new SQLRunQuery();
     //
+    private IBuildDatabaseForChaseStep mainMemoryDatabaseBuilder = new BuildMainMemoryDBForChaseStep();
+    private IBuildDatabaseForChaseStep sqlDatabaseBuilder = new BuildSQLDBForChaseStep();
+    //
     private IInsertTuple mainMemoryInsertTuple = new MainMemoryInsertTuple();
     private IInsertTuple sqlInsertTuple = new SQLInsertTuple();
     //
@@ -104,9 +107,9 @@ public class OperatorFactory {
 
     public IBuildDatabaseForChaseStep getDatabaseBuilder(Scenario scenario) {
         if (scenario.isMainMemory()) {
-            return new BuildMainMemoryDBForChaseStep(scenario.getConfiguration().isCheckConsistencyOfDBs());
+            return mainMemoryDatabaseBuilder;
         }
-        return new BuildSQLDBForChaseStep(scenario.getConfiguration().isCheckConsistencyOfDBs());
+        return sqlDatabaseBuilder;
     }
 
     public IDelete getDeleteOperator(Scenario scenario) {

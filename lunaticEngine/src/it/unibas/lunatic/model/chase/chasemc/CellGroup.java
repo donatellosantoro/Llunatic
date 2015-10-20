@@ -231,7 +231,7 @@ public class CellGroup implements Cloneable, Serializable {
             sb.append(" user:").append(userCells);
         }
         if (hasInvalidCell()) {
-            sb.append(" [+invalid cell] ");
+            sb.append(" ").append(LunaticConstants.TYPE_INVALID);
         }
         sb.append('>');
         return sb.toString();
@@ -270,7 +270,7 @@ public class CellGroup implements Cloneable, Serializable {
         }
         sb.append("]").append((userCells.isEmpty() ? "" : "\n"));
         if (hasInvalidCell()) {
-            sb.append(" [+invalid cell] ");
+            sb.append(" invalid");
         }
         sb.append('>');
         return sb.toString();

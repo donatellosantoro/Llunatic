@@ -35,7 +35,7 @@ public class StandardPartialOrder implements IPartialOrder {
         if (logger.isDebugEnabled()) logger.debug("Finding lub of cell groups\n" + LunaticUtility.printCollection(cellGroups));
         CellGroup lubCellGroup = new CellGroup(LunaticConstants.NULL_IVALUE, true);
         for (CellGroup cellGroup : cellGroups) {
-            CellGroupUtility.mergeCells(cellGroup.clone(), lubCellGroup);
+            CellGroupUtility.mergeCells(cellGroup, lubCellGroup);
         }
         if (logger.isDebugEnabled()) logger.debug("LubCellGroup before setting value: \n" + lubCellGroup.toStringWithAdditionalCells());
         setCellGroupValue(lubCellGroup, scenario);
@@ -48,10 +48,6 @@ public class StandardPartialOrder implements IPartialOrder {
         if (logger.isDebugEnabled()) logger.debug("LubValue: " + lubValue);
         lubCellGroup.setValue(lubValue);
         cellGroupIDFixer.correctCellGroupId(lubCellGroup);
-        IValue finalCellGroupValue = lubCellGroup.getValue();
-        for (CellGroupCell occurrence : lubCellGroup.getOccurrences()) {
-            occurrence.setValue(finalCellGroupValue);
-        }
     }
 
     public String toString() {

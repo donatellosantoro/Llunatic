@@ -1,9 +1,8 @@
 package it.unibas.lunatic.test.mc.dbms;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
+import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -19,9 +18,9 @@ public class TestSQLPersons extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_dbms, true);
         setConfigurationForTest(scenario);
 //        setCheckEGDsAfterEachStep(scenario);
-//        ChaserFactory.setDoBackward(false);
-//        ChaserFactory.setDoPermutations(false);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+//        scenario.getCostManager().setDoBackward(false);
+//        scenario.getCostManager().setDoPermutations(false);
+        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
@@ -36,9 +35,9 @@ public class TestSQLPersons extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_dbms, true);
         setConfigurationForTest(scenario);
 //        setCheckEGDsAfterEachStep(scenario);
-        scenario.getCostManagerConfiguration().setDoBackward(false);
-        scenario.getCostManagerConfiguration().setDoPermutations(false);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        scenario.getCostManager().setDoBackward(false);
+        scenario.getCostManager().setDoPermutations(false);
+        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());

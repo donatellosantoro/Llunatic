@@ -2,7 +2,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators.mainmemory;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ICreateTablesForConstants;
-import it.unibas.lunatic.model.dependency.AllConstantsInFormula;
+import it.unibas.lunatic.model.dependency.ConstantsInFormula;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
 
     private static final Logger logger = LoggerFactory.getLogger(MainMemoryCreateTableForConstants.class.getName());
 
-    public void createTable(AllConstantsInFormula constantsInFormula, Scenario scenario) {
+    public void createTable(ConstantsInFormula constantsInFormula, Scenario scenario, boolean autoritative) {
         if (scenario.getSource() instanceof EmptyDB) {
             MainMemoryDB newSource = createEmptySourceDatabase();
             scenario.setSource(newSource);
@@ -35,10 +35,10 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
         }
         createSchema(tableName, mainMemorySource, constantsInFormula);
         createInstance(tableName, mainMemorySource, constantsInFormula);
-        scenario.getAuthoritativeSources().add(tableName);
+        if (autoritative) scenario.getAuthoritativeSources().add(tableName);
     }
 
-    private void createSchema(String tableName, MainMemoryDB mainMemorySource, AllConstantsInFormula constantsInFormula) {
+    private void createSchema(String tableName, MainMemoryDB mainMemorySource, ConstantsInFormula constantsInFormula) {
         INode setNodeSchema = new SetNode(tableName);
         mainMemorySource.getDataSource().getSchema().addChild(setNodeSchema);
         TupleNode tupleNodeSchema = new TupleNode(tableName + "Tuple");
@@ -60,7 +60,7 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
         return attributeNodeInstance;
     }
 
-    private void createInstance(String tableName, MainMemoryDB mainMemorySource, AllConstantsInFormula constantsInFormula) {
+    private void createInstance(String tableName, MainMemoryDB mainMemorySource, ConstantsInFormula constantsInFormula) {
         INode setNodeInstance = new SetNode(tableName, IntegerOIDGenerator.getNextOID());
         mainMemorySource.getDataSource().getInstances().get(0).addChild(setNodeInstance);
         TupleNode tupleNodeInstance = new TupleNode(tableName + "Tuple", IntegerOIDGenerator.getNextOID());

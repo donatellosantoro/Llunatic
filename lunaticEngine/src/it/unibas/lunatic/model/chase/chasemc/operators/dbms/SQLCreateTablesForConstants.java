@@ -4,7 +4,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ICreateTablesForConstants;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSTable;
-import it.unibas.lunatic.model.dependency.AllConstantsInFormula;
+import it.unibas.lunatic.model.dependency.ConstantsInFormula;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
@@ -20,7 +20,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
 
     private static Logger logger = LoggerFactory.getLogger(SQLCreateTablesForConstants.class);
 
-    public void createTable(AllConstantsInFormula constantsInFormula, Scenario scenario) {
+    public void createTable(ConstantsInFormula constantsInFormula, Scenario scenario, boolean autoritative) {
         if (scenario.getSource() instanceof EmptyDB) {
             DBMSDB newSource = createEmptySourceDatabase(scenario);
             scenario.setSource(newSource);
@@ -31,7 +31,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
             return;
         }
         executeCreateStatement(constantsInFormula, dbmsSourceDB);
-        scenario.getAuthoritativeSources().add(tableName);
+        if (autoritative) scenario.getAuthoritativeSources().add(tableName);
     }
 
     private DBMSDB createEmptySourceDatabase(Scenario scenario) {
@@ -43,7 +43,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         return new DBMSDB(sourceAccessConfiguration);
     }
 
-    private void executeCreateStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB) {
+    private void executeCreateStatement(ConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB) {
         String createStatement = generateCreateStatement(constantsInFormula, dbmsSourceDB);
         String insertStatement = generateInsertStatement(constantsInFormula, dbmsSourceDB);
         String statement = createStatement + insertStatement;
@@ -52,7 +52,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         dbmsSourceDB.addTable(newConstantTable);
     }
 
-    private String generateCreateStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB) {
+    private String generateCreateStatement(ConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB) {
         AccessConfiguration accessConfiguration = dbmsSourceDB.getAccessConfiguration();
         StringBuilder script = new StringBuilder();
         script.append("----- Generating constant table -----\n");
@@ -73,7 +73,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         return script.toString();
     }
 
-    private String generateInsertStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB) {
+    private String generateInsertStatement(ConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB) {
         AccessConfiguration accessConfiguration = dbmsSourceDB.getAccessConfiguration();
         StringBuilder script = new StringBuilder();
         script.append("----- Adding tuple in constant table -----\n");

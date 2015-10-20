@@ -161,7 +161,7 @@ public class OccurrenceHandlerMC {
     }
 
     public void saveNewCellGroup(CellGroup cellGroup, IDatabase deltaDB, String stepId, Scenario scenario) {
-        if (logger.isDebugEnabled()) logger.debug("Adding new cell group " + cellGroup + " in step " + stepId);
+        if (logger.isDebugEnabled()) logger.debug("Adding new cell group " + cellGroup);
         this.cacheManager.putCellGroup(cellGroup, stepId, deltaDB, scenario);
         for (CellGroupCell cellRef : cellGroup.getOccurrences()) {
             saveCellGroupCell(deltaDB, cellGroup.getId(), cellRef, stepId, scenario);

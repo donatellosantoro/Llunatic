@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
+  <source>
+    <type>GENERATE</type>
+    <generate>
+<![CDATA[
+SCHEMA:
+cst1(a, b)
+cst2(a, b)
+INSTANCE:
+cst1(a: "a", b: "14")
+cst2(a: "a", b: "13")
+]]>
+    </generate>
+  </source>
   <target>    
     <type>GENERATE</type>
     <generate>
@@ -19,11 +32,37 @@ ExtEGDs:
 fd1: r(a: $a, b: $b1), r(a: $a, b: $b2) -> $b1 == $b2.
 
 //CFD: R['a'] -> R['14']
-cfd1: r(a: $a, b: $b1), $a == "a" -> $b1 == "14".
+cfd1: r(a: $a, b: $b1), cst1(a: $a, b: $b2) -> $b1 == $b2.
 
 //CFD: R['a'] -> R['13']
-cfd2: r(a: $a, b: $b1), $a == "a" -> $b1 == "13".
+cfd2: r(a: $a, b: $b1), cst2(a: $a, b: $b2) -> $b1 == $b2.
+
 ]]>
   </dependencies>
+  <authoritativeSources>
+    <source>cst1</source>
+    <source>cst2</source>
+  </authoritativeSources>
+  <!--
+  <orderingAttributes>
+    <orderingAttribute>
+      <attribute>r.b</attribute>
+      <associatedAttribute>r.b</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+    </orderingAttribute> 
+  </orderingAttributes>
+-->
+  <configuration>
+      <removeDuplicates>false</removeDuplicates>
+  </configuration>
+<!--  <userManager>
+    <type>AfterLLUN</type>
+  </userManager>
+  <costManager>
+      <type>Standard</type>
+      <doPermutations>false</doPermutations>
+  </costManager>-->
 </scenario>
 

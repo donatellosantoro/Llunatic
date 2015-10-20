@@ -1,9 +1,8 @@
 package it.unibas.lunatic.test.mc.mainmemory;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
+import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.GenerateModifiedCells;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
@@ -20,11 +19,11 @@ public class TestTreatmentsICDE extends CheckTest {
 
     public void testScenarioICDE() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_icde);
-        scenario.getCostManagerConfiguration().setDoBackward(false);
-        scenario.getCostManagerConfiguration().setDoPermutations(false);
+        scenario.getCostManager().setDoBackward(false);
+        scenario.getCostManager().setDoPermutations(false);
         setConfigurationForTest(scenario);
         setCheckEGDsAfterEachStep(scenario);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("treatments", scenario));
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());

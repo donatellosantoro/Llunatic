@@ -1,9 +1,8 @@
 package it.unibas.lunatic.test.mc.mainmemory.tgd;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
+import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -18,8 +17,8 @@ public class TestSyntheticTGD01 extends CheckExpectedSolutionsTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T01);
         setConfigurationForTest(scenario);
-//        ChaserFactory.setDoBackward(false);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+//        scenario.getCostManager().setDoBackward(false);
+        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());

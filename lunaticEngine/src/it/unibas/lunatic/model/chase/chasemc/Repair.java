@@ -6,28 +6,41 @@ import java.util.List;
 
 public class Repair {
 
-    private List<ChangeDescription> changeDescriptions = new ArrayList<ChangeDescription>();
+    private List<ViolationContext> violationContexts = new ArrayList<ViolationContext>();
+    private boolean suspicious;
 
-    public List<ChangeDescription> getChangeDescriptions() {
-        return changeDescriptions;
+    public List<ViolationContext> getViolationContexts() {
+        return violationContexts;
     }
 
-    public void addViolationContext(ChangeDescription changeSet) {
+    public void setViolationContexts(List<ViolationContext> violationContexts) {
+        this.violationContexts = violationContexts;
+    }
+
+    public void addViolationContext(ViolationContext changeSet) {
         if (changeSet == null) {
             throw new IllegalArgumentException("Unable to add null changeSet");
         }
-        this.changeDescriptions.add(changeSet);
+        this.violationContexts.add(changeSet);
+    }
+
+    public boolean isSuspicious() {
+        return suspicious;
+    }
+
+    public void setSuspicious(boolean suspicious) {
+        this.suspicious = suspicious;
     }
 
     public String getChaseModes() {
         boolean forward = false;
         boolean backward = false;
-        for (ChangeDescription changeSet : changeDescriptions) {
+        for (ViolationContext changeSet : violationContexts) {
             if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_FORWARD)) {
                 forward = true;
             }
         }
-        for (ChangeDescription changeSet : changeDescriptions) {
+        for (ViolationContext changeSet : violationContexts) {
             if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
                 backward = true;
             }
@@ -42,7 +55,7 @@ public class Repair {
     }
 
     public boolean isOnlyForward() {
-        for (ChangeDescription changeSet : changeDescriptions) {
+        for (ViolationContext changeSet : violationContexts) {
             if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
                 return false;
             }
@@ -55,15 +68,16 @@ public class Repair {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         final Repair other = (Repair) obj;
-        if (this.changeDescriptions != other.changeDescriptions && (this.changeDescriptions == null || !this.changeDescriptions.equals(other.changeDescriptions))) return false;
+        if (this.violationContexts != other.violationContexts && (this.violationContexts == null || !this.violationContexts.equals(other.violationContexts))) return false;
+        if (this.suspicious != other.suspicious) return false;
         return true;
     }
 
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("Repair: ").append("\n");
-        for (ChangeDescription changeSet : changeDescriptions) {
+        result.append("Repair: ").append(suspicious ? " (suspicious)" : "").append("\n");
+        for (ViolationContext changeSet : violationContexts) {
             result.append("\t").append(changeSet).append("\n");
         }
         return result.toString();

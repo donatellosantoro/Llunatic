@@ -1,0 +1,49 @@
+package it.unibas.lunatic.model.chase.chasede.operators;
+
+import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.exceptions.ChaseFailedException;
+import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
+import it.unibas.lunatic.model.chase.commons.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.control.IChaseState;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
+import it.unibas.lunatic.model.dependency.Dependency;
+import java.util.Date;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.operators.IRunQuery;
+
+public class ChaseDCs {
+
+    private static Logger logger = LoggerFactory.getLogger(ChaseDCs.class);
+
+    private IRunQuery queryRunner;
+    private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
+
+    public ChaseDCs(IRunQuery queryRunner) {
+        this.queryRunner = queryRunner;
+    }
+
+    public void doChase(Scenario scenario, IChaseState chaseState) {
+        long start = new Date().getTime();
+        if (logger.isTraceEnabled()) logger.trace("Chasing dtgds on scenario: " + scenario);
+        for (Dependency dc : scenario.getDCs()) {
+            if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
+            long startDc = new Date().getTime();
+            if (logger.isTraceEnabled()) logger.trace("----Chasing denial constraint: " + dc);
+            IAlgebraOperator treeRoot = treeBuilder.buildTreeForPremise(dc, scenario);
+            ITupleIterator result = queryRunner.run(treeRoot, scenario.getSource(), scenario.getTarget());
+            long endDc = new Date().getTime();
+            ChaseStats.getInstance().addDepenendecyStat(dc, endDc - startDc);
+            if (result.hasNext()) {
+                result.close();
+                if (logger.isDebugEnabled()) logger.debug("Chase fails. Denial constraint \n" + dc + "\nis violated");
+                throw new ChaseFailedException("Chase fails. Denial constraint is violated: " + dc);
+            }
+            result.close();
+        }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.DTGD_TIME, end - start);
+    }
+}

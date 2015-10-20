@@ -25,7 +25,6 @@ public class LunaticConstants {
 
     public static final String DELTA_TABLE_SEPARATOR = "__";
     public static final String NA_TABLE_SUFFIX = DELTA_TABLE_SEPARATOR + "NA";
-    public static final String FINGERPRINT_SEPARATOR = "|";
 
     public static String CELLGROUP_TABLE = "cellgroup_table";
 //    public static String OCCURRENCE_TABLE = "OccurrenceTable";
@@ -59,18 +58,11 @@ public class LunaticConstants {
     ///////////////    DE CHASER STRATEGIES    ///////////////////
     public static final String CLASSIC_DE_CHASER = "CLASSIC_DE_CHASER";
     public static final String PROXY_MC_CHASER = "PROXY_MC_CHASER";
-    
-    ///////////////////// COST MANAGER
-    public static final String COST_MANAGER_STANDARD = "Standard";
-    public static final String COST_MANAGER_SIMILARITY = "Similarity";
-//    public static final String COST_MANAGER_SIMILARITY_MULTI_REPAIR = "SimilarityMultiRepair";
-    public static final String COST_MANAGER_SAMPLING = "Sampling";
-    public static final String COST_MANAGER_MINCOST = "MinCost";
 
     ///////////////    DEBUG MODE     ///////////////////
 //    public static final boolean DBMS_DEBUG = true;
     public static final boolean DBMS_DEBUG = false;
-
+    
     // NULL OBJECTS
     public static final AttributeRef NULL_ATTRIBUTE_REF = new AttributeRef("_NullTable_", "_NullAttribute_");
     public static final AttributeRef INVALID_ATTRIBUTE_REF = new AttributeRef("_InvalidTable_", "_InvalidAttribute_");

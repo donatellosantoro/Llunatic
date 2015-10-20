@@ -2,12 +2,11 @@ package it.unibas.lunatic.test.checker;
 
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
-import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfCellGroups;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.test.GenerateModifiedCells;
 import it.unibas.lunatic.test.comparator.repairs.RepairsComparator;
@@ -24,12 +23,11 @@ import speedy.persistence.relational.QueryStatManager;
 public class CheckTest extends TestCase {
 
     private static Logger logger = LoggerFactory.getLogger(CheckTest.class);
-
+    
     protected ChaseTreeSize resultSizer = new ChaseTreeSize();
-//    protected RepairsComparator comparator = new RepairsComparator();
+    protected RepairsComparator comparator = new RepairsComparator();
     protected ChaseStats chaseStats = ChaseStats.getInstance();
     protected QueryStatManager queryStats = QueryStatManager.getInstance();
-    protected CheckConsistencyOfCellGroups validSolutionChecker = new CheckConsistencyOfCellGroups();
 
     protected GenerateModifiedCells getModifiedCellGenerator(Scenario scenario) {
         return new GenerateModifiedCells(OperatorFactory.getInstance().getQueryRunner(scenario));
@@ -52,8 +50,6 @@ public class CheckTest extends TestCase {
     protected void setConfigurationForTest(Scenario scenario) {
         scenario.getConfiguration().setCheckSolutions(true);
         scenario.getConfiguration().setCheckSolutionsQuery(true);
-        scenario.getConfiguration().setCheckAllNodesForEGDSatisfaction(true);
-        scenario.getConfiguration().setCheckConsistencyOfDBs(true);
         if (scenario.isMainMemory()) scenario.getConfiguration().setDebugMode(true);
     }
 
@@ -63,7 +59,6 @@ public class CheckTest extends TestCase {
 
     protected void checkSolutions(DeltaChaseStep result) {
         if (logger.isDebugEnabled()) logger.debug("Checking that leaves are solutions...");
-        validSolutionChecker.checkConsistencyOfCellGroupsInStep(result);
         Assert.assertTrue("No solution...", resultSizer.getSolutions(result) > 0);
         Assert.assertTrue("No solution...", resultSizer.getAllNodes(result) > 0);
         Assert.assertEquals("Expected solutions", resultSizer.getPotentialSolutions(result), resultSizer.getSolutions(result));
@@ -77,14 +72,14 @@ public class CheckTest extends TestCase {
         if (scenario.getPartialOrder() instanceof FrequencyPartialOrder) {
             name.append("-FR");
         }
-        CostManagerConfiguration costManager = scenario.getCostManagerConfiguration();
+        ICostManager costManager = scenario.getCostManager();
         if (costManager.getDependencyLimit() == 1) {
             name.append("-SP");
         } else {
 //            name.append("-").append(costManager.getChaseTreeSizeThreshold());
             name.append("-").append(costManager.getPotentialSolutionsThreshold());
         }
-        if (!scenario.getCostManagerConfiguration().isDoBackwardForAllDependencies()) {
+        if (!costManager.isDoBackward()) {
             name.append("-FO");
         }
         return name.toString();

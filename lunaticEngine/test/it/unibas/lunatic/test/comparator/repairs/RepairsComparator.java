@@ -1,8 +1,5 @@
 package it.unibas.lunatic.test.comparator.repairs;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,18 +12,17 @@ public class RepairsComparator {
 
     private static String prefixRivals = "V_";
     private static String prefixLunatic = "_L";
-    private static String prefixHolistic = "FV";
 
-    public List<PrecisionAndRecall> calculatePrecisionAndRecallValue(String repairsFile, String expectedFile, double precisionForVariable) {
-        if (isMultiple(repairsFile)) {
+    public List<PrecisionAndRecall> calculatePrecisionAndRecallValue(String repairsFile, String expectedFile, double precisionForVariable, boolean multiple) {
+        if (multiple) {
             return checkExpectedAndCalculatedRepairsMultiple(expectedFile, repairsFile, precisionForVariable);
         } else {
             return checkExpectedAndCalculatedRepairs(expectedFile, repairsFile, precisionForVariable);
         }
     }
 
-    public List<PrecisionAndRecall> calculatePrecisionAndRecallCell(String repairsFile, String expectedFile) {
-        if (isMultiple(repairsFile)) {
+    public List<PrecisionAndRecall> calculatePrecisionAndRecallCell(String repairsFile, String expectedFile, boolean multiple) {
+        if (multiple) {
             return checkExpectedAndCalculatedForCellRepairsMultiple(expectedFile, repairsFile);
         } else {
             return checkExpectedAndCalculatedForCellRepairs(expectedFile, repairsFile);
@@ -64,13 +60,11 @@ public class RepairsComparator {
     private List<PrecisionAndRecall> checkExpectedAndCalculatedRepairsMultiple(String expectectedAbsolutePath, String calculatedAbsolutePath, double precisionForVariable) {
         List<Map<String, Repair>> calculatedRepairs = new DAOCSVRepair().loadMultipleRepair(calculatedAbsolutePath);
         Map<String, Repair> expectedRepair = new DAOCSVRepair().loadRepairMap(expectectedAbsolutePath);
+
         List<PrecisionAndRecall> result = new ArrayList<PrecisionAndRecall>();
-        int solutionNumber = 1;
         for (Map<String, Repair> calculatedRepair : calculatedRepairs) {
             PrecisionAndRecall precisionAndRecall = calcutaorOnExactValue(expectedRepair, calculatedRepair, precisionForVariable);
-            if (logger.isDebugEnabled()) logger.debug("Solution " + solutionNumber + "\t Quality: " + precisionAndRecall.getfMeasure());
             result.add(precisionAndRecall);
-            solutionNumber++;
         }
         return result;
     }
@@ -86,8 +80,6 @@ public class RepairsComparator {
             } else if (calculatedRepair != null && calculatedRepair.equalsVariable(expectedRepair, prefixLunatic)) {
                 result = precisionForVariable;
             } else if (calculatedRepair != null && calculatedRepair.equalsVariable(expectedRepair, prefixRivals)) {
-                result = precisionForVariable;
-            } else if (calculatedRepair != null && calculatedRepair.equalsVariable(expectedRepair, prefixHolistic)) {
                 result = precisionForVariable;
             }
             intersected += result;
@@ -114,23 +106,5 @@ public class RepairsComparator {
 
     private boolean areEqual(Repair calculatedRepair, Repair expectedRepair) {
         return calculatedRepair.toComparisonString().equalsIgnoreCase(expectedRepair.toComparisonString());
-    }
-
-    private boolean isMultiple(String fileName) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(fileName));
-            String line = reader.readLine();
-            return line != null && line.startsWith("+");
-        } catch (IOException exception) {
-            throw new DAOException("Unable to load file: " + fileName + "\n" + exception);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ex) {
-                }
-            }
-        }
     }
 }

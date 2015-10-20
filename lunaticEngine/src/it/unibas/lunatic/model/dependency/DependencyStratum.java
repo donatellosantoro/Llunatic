@@ -7,12 +7,10 @@ import java.util.Set;
 public class DependencyStratum {
 
     private List<Dependency> dependencies;
-    private List<ExtendedDependency> extendedDependencies;
     private String id;
 
-    public DependencyStratum(Set<Dependency> dependencies, Set<ExtendedDependency> extendedDependencies) {
+    public DependencyStratum(Set<Dependency> dependencies) {
         this.dependencies = new ArrayList<Dependency>(dependencies);
-        this.extendedDependencies = new ArrayList<ExtendedDependency>(extendedDependencies);
     }
 
     public List<Dependency> getDependencies() {
@@ -20,7 +18,11 @@ public class DependencyStratum {
     }
 
     public List<ExtendedDependency> getExtendedDependencies() {
-        return extendedDependencies;
+        List<ExtendedDependency> result = new ArrayList<ExtendedDependency>();
+        for (Dependency dependency : this.dependencies) {
+            result.addAll(dependency.getExtendedDependencies());
+        }
+        return result;
     }
 
     public String getId() {

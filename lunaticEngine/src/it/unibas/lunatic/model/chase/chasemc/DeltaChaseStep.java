@@ -31,7 +31,6 @@ public class DeltaChaseStep {
     private boolean duplicate;
     private List<DeltaChaseStep> duplicateNodes;
 
-    //Root node
     public DeltaChaseStep(Scenario scenario, ChaseTree chaseTree, String localId, IDatabase originalDB, IDatabase deltaDB) {
         this.scenario = scenario;
         this.localId = localId;
@@ -41,7 +40,6 @@ public class DeltaChaseStep {
         chaseTree.setRoot(this);
     }
 
-    //EGDs
     public DeltaChaseStep(Scenario scenario, DeltaChaseStep father, String localId, Dependency dependency, Repair repair, String chaseMode) {
         this.scenario = scenario;
         this.father = father;
@@ -54,7 +52,6 @@ public class DeltaChaseStep {
         }
     }
 
-    //TGDs and User nodes
     public DeltaChaseStep(Scenario scenario, DeltaChaseStep father, String localId, String chaseMode) {
         this.scenario = scenario;
         this.father = father;
@@ -260,10 +257,6 @@ public class DeltaChaseStep {
         return OperatorFactory.getInstance().getChaseTreeToString(scenario).toStringLeavesOnlyWithSort(this);
     }
 
-    public String toLongStringLeavesOnlyWithSort() {
-        return OperatorFactory.getInstance().getChaseTreeToString(scenario).toLongStringLeavesOnlyWithSort(this);
-    }
-
     public String toLongString() {
         return OperatorFactory.getInstance().getChaseTreeToString(scenario).toLongString(this);
     }
@@ -286,9 +279,5 @@ public class DeltaChaseStep {
 
     public String toShortStringWithSortWithoutDuplicates() {
         return OperatorFactory.getInstance().getChaseTreeToString(scenario).toShortStringWithSortWithoutDuplicates(this);
-    }
-
-    public String toStats() {
-        return OperatorFactory.getInstance().getChaseTreeToString(scenario).toStatString(this);
     }
 }

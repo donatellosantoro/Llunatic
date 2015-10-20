@@ -41,6 +41,6 @@ public class BackwardAttribute {
 
     @Override
     public String toString() {
-        return "[" + attributeRef + ", var=" + variable + "]";
+        return "BackwardAttribute: " + "attributeRef=" + attributeRef + ", variable=" + variable;
     }
 }

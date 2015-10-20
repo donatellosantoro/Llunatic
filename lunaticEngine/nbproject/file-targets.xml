@@ -30,7 +30,7 @@
                showoutput="true"
                maxmemory="${junit.maxmemory}">
             <assertions>
-                <enable/>
+               <enable/>
             </assertions>
             <classpath refid="test.classpath" />
             <!--

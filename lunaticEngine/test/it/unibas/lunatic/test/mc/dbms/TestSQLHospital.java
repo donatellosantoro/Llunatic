@@ -1,9 +1,8 @@
 package it.unibas.lunatic.test.mc.dbms;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
+import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
@@ -20,7 +19,7 @@ public class TestSQLHospital extends CheckTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital_0_2p_dbms, true);
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         QueryStatManager.getInstance().printStatistics();
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("hospital", scenario));

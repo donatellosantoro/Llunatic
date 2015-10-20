@@ -17,15 +17,15 @@ import speedy.model.database.operators.IRunQuery;
 import speedy.persistence.relational.QueryStatManager;
 
 public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager {
-    
+
     private static Logger logger = LoggerFactory.getLogger(GreedySingleStepJCSCacheManager.class);
-    
+
     public static final String GROUPID = "standard";
     private final JCS cellGroupCache;
     private final JCS clusterIdCache;
     private Set<String> previousCachedStepIds = new HashSet<String>();
     private String currentCachedStepId;
-    
+
     public GreedySingleStepJCSCacheManager(IRunQuery queryRunner) {
         super(queryRunner);
         try {
@@ -36,15 +36,14 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
             throw new IllegalStateException("Unable to create JCS Cache. " + ex.getLocalizedMessage());
         }
     }
-    
+
     public CellGroup loadCellGroupFromId(IValue value, String stepId, IDatabase deltaDB, Scenario scenario) {
         loadCacheForStep(stepId, deltaDB, scenario);
-        if (logger.isDebugEnabled()) logger.debug("Cache in step " + stepId + "\n" + printCache());
         String key = buildKey(value, stepId);
         CellGroup cellGroup = (CellGroup) cellGroupCache.getFromGroup(key, GROUPID);
         return cellGroup;
     }
-    
+
     public void putCellGroup(CellGroup cellGroup, String stepId, IDatabase deltaDB, Scenario scenario) {
         try {
             loadCacheForStep(stepId, deltaDB, scenario);
@@ -55,12 +54,12 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
             throw new IllegalStateException("Unable to add objects to cache. " + ex.getLocalizedMessage());
         }
     }
-    
+
     public void removeCellGroup(IValue value, String stepId) {
         String key = buildKey(value, stepId);
         this.cellGroupCache.remove(key, GROUPID);
     }
-    
+
     public IValue getClusterId(CellRef cellRef, String stepId, IDatabase deltaDB, Scenario scenario) {
         loadCacheForStep(stepId, deltaDB, scenario);
         String key = buildKey(cellRef, stepId);
@@ -70,7 +69,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
         }
         return value;
     }
-    
+
     public void putClusterId(CellRef cellRef, IValue value, String stepId, IDatabase deltaDB, Scenario scenario) {
         try {
             loadCacheForStep(stepId, deltaDB, scenario);
@@ -81,7 +80,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
             throw new IllegalStateException("Unable to add objects to cache. " + ex.getLocalizedMessage());
         }
     }
-    
+
     public void removeClusterId(CellRef cellRef, String stepId) {
         try {
             String key = buildKey(cellRef, stepId);
@@ -91,7 +90,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
             throw new IllegalStateException("Unable to remove objects to cache. " + ex.getLocalizedMessage());
         }
     }
-    
+
     public void reset() {
         try {
             //New step to cache... cleaning old step
@@ -102,7 +101,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
             throw new IllegalStateException("Unable to clear cache. " + ex.getLocalizedMessage());
         }
     }
-    
+
     @Override
     protected void loadCacheForStep(String stepId, IDatabase deltaDB, Scenario scenario) {
         if (stepId.equals(currentCachedStepId)) {
@@ -125,29 +124,21 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
         loadCellGroups(stepId, deltaDB, scenario);
         if (logger.isDebugEnabled()) logger.debug("Cell group for step " + stepId + " loaded: " + this.cellGroupCache.getStats());
     }
-    
+
     @Override
     @SuppressWarnings("unchecked")
     public Set<String> getKeySet() {
         return cellGroupCache.getGroupKeys(GROUPID);
     }
-    
+
     @Override
     public CellGroup getCellGroup(String key) {
         return (CellGroup) this.cellGroupCache.getFromGroup(key, GROUPID);
     }
-    
-    private String printCache() {
-        StringBuilder sb = new StringBuilder();
-        for (String key : getKeySet()) {
-            sb.append("Key: ").append(key).append(", Value: ").append(getCellGroup(key)).append("\n");
-        }
-        return sb.toString();
-    }
 }
 
 class CellRefStringComparator implements Comparator<CellRef> {
-    
+
     public int compare(CellRef t, CellRef t1) {
         return t.toString().compareTo(t1.toString());
     }

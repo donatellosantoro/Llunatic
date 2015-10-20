@@ -56,12 +56,6 @@ public class ChaseTreeToString {
         return result.toString();
     }
 
-    public String toLongStringLeavesOnlyWithSort(DeltaChaseStep root) {
-        StringBuilder result = new StringBuilder();
-        printTree(root, result, false, true, true, false, true);
-        return result.toString();
-    }
-
     public String toShortString(DeltaChaseStep root) {
         StringBuilder result = new StringBuilder();
         printTree(root, result, true, false, false, true, false);
@@ -77,12 +71,6 @@ public class ChaseTreeToString {
     public String toShortStringWithSortWithoutDuplicates(DeltaChaseStep root) {
         StringBuilder result = new StringBuilder();
         printTree(root, result, true, false, true, false, false);
-        return result.toString();
-    }
-
-    public String toStatString(DeltaChaseStep root) {
-        StringBuilder result = new StringBuilder();
-        printStats(root, result);
         return result.toString();
     }
 
@@ -148,13 +136,12 @@ public class ChaseTreeToString {
         IDatabase database = databaseBuilder.extractDatabase(step.getId(), deltaDB, originalDB);
         result.append(database.printInstances(sort));
         if (longFormat) {
-            result.append((step.getCellGroupStats() != null ? step.getCellGroupStats().toString() : ""));
+            result.append((step.getCellGroupStats() != null ? step.getCellGroupStats().toLongString() : ""));
 //            List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsInStepForDebugging(deltaDB, step.getId(), step.getScenario());
             List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsForDebugging(deltaDB, step.getId(), step.getScenario());
             result.append("--------------- CELL GROUPS -----------------\n");
             for (CellGroup cellGroup : cellGroups) {
-//                result.append(cellGroup.toLongString()).append("\n");
-                result.append(cellGroup.toStringWithAdditionalCells()).append("\n");
+                result.append(cellGroup.toLongString()).append("\n");
             }
             result.append("\n");
         }
@@ -167,21 +154,5 @@ public class ChaseTreeToString {
             result.append(dependency.getId()).append(" ");
         }
         return result.toString();
-    }
-
-    private void printStats(DeltaChaseStep node, StringBuilder result) {
-        if (isLeaf(node)) {
-            if (node.isDuplicate()) {
-                return;
-            }
-            result.append("+++++++++++++++");
-            result.append(" Solution ").append(++counter);
-            result.append("+++++++++++++++\n");
-            result.append(node.getCellGroupStats().toString()).append("\n");
-        } else {
-            for (DeltaChaseStep child : node.getChildren()) {
-                printStats(child, result);
-            }
-        }
     }
 }

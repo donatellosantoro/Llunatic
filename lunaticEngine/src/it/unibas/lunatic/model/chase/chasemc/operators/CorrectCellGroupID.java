@@ -34,7 +34,6 @@ public class CorrectCellGroupID {
             Set<CellGroupCell> additionalCells = cellGroup.getAdditionalCells().get(attributeRef);
             correctToSaveInCells(additionalCells, mostFrequentCellGroupId, cellGroup.getId());
         }
-        if (logger.isDebugEnabled()) logger.debug("Result " + cellGroup.toLongString());
     }
 
     private IValue findMostFrequentCellGroupId(CellGroup cellGroup) {

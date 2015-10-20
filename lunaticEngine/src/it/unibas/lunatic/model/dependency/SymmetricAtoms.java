@@ -32,13 +32,9 @@ public class SymmetricAtoms {
     public void setSelfJoin(SelfJoin selfJoin) {
         this.selfJoin = selfJoin;
     }
-
-    public boolean isEmpty() {
+    
+    public boolean isEmpty(){
         return this.symmetricTableAliases.isEmpty();
-    }
-
-    public int getSize() {
-        return this.symmetricTableAliases.size();
     }
 
     @Override

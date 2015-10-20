@@ -10,7 +10,6 @@ import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.DependencyStratum;
@@ -28,22 +27,20 @@ import speedy.model.database.operators.IRunQuery;
 
 public class ChaseDeltaExtEGDs {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChaseDeltaExtEGDs.class);
-    private final CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker;
-    private final IBuildDatabaseForChaseStep databaseBuilder;
-    private final ChangeCell cellChanger;
-    private final CheckDuplicates duplicateChecker;
-    private final IChaseEGDEquivalenceClass symmetricEGDChaser;
-    private final IChaseEGDEquivalenceClass egdChaser;
-    private final OccurrenceHandlerMC occurrenceHandler;
+    private static Logger logger = LoggerFactory.getLogger(ChaseDeltaExtEGDs.class);
+    private CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker;
+    private IBuildDatabaseForChaseStep databaseBuilder;
+    private ChangeCell cellChanger;
+    private CheckDuplicates duplicateChecker;
+    private ChaseEGDEquivalenceClass dependencyChaser;
+    private OccurrenceHandlerMC occurrenceHandler;
 
     public ChaseDeltaExtEGDs(IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
             IInsertTuple insertOperator, IDelete deleteOperator, OccurrenceHandlerMC occurrenceHandler, CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker) {
         this.databaseBuilder = stepBuilder;
         this.cellChanger = new ChangeCell(insertOperator, deleteOperator, occurrenceHandler);
         this.duplicateChecker = new CheckDuplicates();
-        this.symmetricEGDChaser = new ChaseSymmetricEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
-        this.egdChaser = new ChaseEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
+        this.dependencyChaser = new ChaseEGDEquivalenceClass(queryRunner, occurrenceHandler, databaseBuilder, cellChanger);
         this.unsatisfiedDependenciesChecker = new CheckUnsatisfiedDependencies(databaseBuilder, occurrenceHandler, queryRunner);
         this.occurrenceHandler = occurrenceHandler;
     }
@@ -57,6 +54,10 @@ public class ChaseDeltaExtEGDs {
             if (LunaticConfiguration.sout) System.out.println("---- Chasing egd stratum: " + stratum.getId());
             if (logger.isDebugEnabled()) logger.debug("------------------Chasing stratum: ----\n" + stratum);
             userInteractionRequired = userInteractionRequired || chaseTree(root, scenario, chaseState, stratum.getDependencies(), premiseTreeMap);
+//            userInteractionRequired = chaseTree(root, scenario, chaseState, stratum.getDependencies(), premiseTreeMap);
+//            if (userInteractionRequired) {
+//                break;
+//            }
         }
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.EGD_TIME, end - start);
@@ -81,13 +82,6 @@ public class ChaseDeltaExtEGDs {
         return false;
     }
 
-    private IChaseEGDEquivalenceClass getChaser(Dependency egd) {
-        if (egd.hasSymmetricChase()) {
-            return this.symmetricEGDChaser;
-        }
-        return egdChaser;
-    }
-
     private boolean chaseNode(DeltaChaseStep currentNode, Scenario scenario, IChaseState chaseState, List<Dependency> egds, Map<Dependency, IAlgebraOperator> premiseTreeMap) {
         if (scenario.getConfiguration().isRemoveDuplicates()) {
             this.occurrenceHandler.generateCellGroupStats(currentNode);
@@ -102,23 +96,22 @@ public class ChaseDeltaExtEGDs {
             return chaseNode(newStep, scenario, chaseState, egds, premiseTreeMap);
         }
         if (LunaticConfiguration.sout) System.out.println("******Chasing node for egds: " + currentNode.getId());
-        if (logger.isDebugEnabled()) logger.debug("----Chase iteration starting on step " + currentNode.getId() + " ...");
+        if (logger.isDebugEnabled()) logger.debug("----Chase iteration starting...");
         List<DeltaChaseStep> newSteps = new ArrayList<DeltaChaseStep>();
         List<Dependency> unsatisfiedDependencies = unsatisfiedDependenciesChecker.findUnsatisfiedEGDsNoQuery(currentNode, egds);
-        List<Dependency> egdsToChase = CostManagerUtility.selectDependenciesToChase(unsatisfiedDependencies, currentNode.getRoot(), scenario.getCostManagerConfiguration());
+        List<Dependency> egdsToChase = scenario.getCostManager().selectDependenciesToChase(unsatisfiedDependencies, currentNode.getRoot());
         if (logger.isDebugEnabled()) logger.debug("----Unsatisfied Dependencies: " + LunaticUtility.printDependencyIds(unsatisfiedDependencies));
         if (logger.isDebugEnabled()) logger.debug("----Dependencies to chase: " + LunaticUtility.printDependencyIds(egdsToChase));
         boolean userInteractionRequired = false;
         for (Dependency egd : egdsToChase) {
             if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
             long startEgd = new Date().getTime();
-            if (logger.isDebugEnabled()) logger.info("* Chasing dependency " + egd.getId() + " on step " + currentNode.getId());
+            if (logger.isDebugEnabled()) logger.info("* Chasing dependency " + egd);
             if (logger.isDebugEnabled()) logger.info("* Algebra operator " + premiseTreeMap.get(egd));
             if (logger.isDebugEnabled()) logger.debug("Building database for step id: " + currentNode.getId() + "\nDelta db:\n" + currentNode.getDeltaDB().printInstances());
             IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), egd);
             if (logger.isTraceEnabled()) logger.trace("Database for step id: " + currentNode.getId() + "\n" + databaseForStep.printInstances());
-            IChaseEGDEquivalenceClass chaser = getChaser(egd);
-            NewChaseSteps newChaseSteps = chaser.chaseDependency(currentNode, egd, premiseTreeMap.get(egd), scenario, chaseState, databaseForStep);
+            NewChaseSteps newChaseSteps = dependencyChaser.chaseDependency(currentNode, egd, premiseTreeMap.get(egd), scenario, chaseState, databaseForStep);
             long endEgd = new Date().getTime();
             ChaseStats.getInstance().addDepenendecyStat(egd, endEgd - startEgd);
             if (logger.isDebugEnabled()) logger.trace("New steps generated by dependency: " + newChaseSteps);
@@ -171,5 +164,4 @@ public class ChaseDeltaExtEGDs {
 //            duplicateChecker.findDuplicateNode(newChaseStep, scenario);
 //        }
 //    }
-
 }
