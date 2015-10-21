@@ -216,7 +216,7 @@ public class DependencyUtility {
     }
 
     public static String buildAttributeNameForConstant(Object constantValue) {
-        return "a" + valueWithOnlyChars(constantValue);
+        return "a_" + valueWithOnlyChars(constantValue);
     }
     
     public static String valueWithoutSpaces(Object value) {
