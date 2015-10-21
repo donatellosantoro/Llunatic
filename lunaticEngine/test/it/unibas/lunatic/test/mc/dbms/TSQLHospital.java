@@ -12,14 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.persistence.relational.QueryStatManager;
 
-public class TestSQLHospital extends CheckTest {
+public class TSQLHospital extends CheckTest {
 
-    private static Logger logger = LoggerFactory.getLogger(TestSQLHospital.class);
+    private static Logger logger = LoggerFactory.getLogger(TSQLHospital.class);
 
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital_0_2p_dbms, true);
         setConfigurationForTest(scenario);
-//        scenario.getConfiguration().setRemoveDuplicates(true);
+        scenario.getConfiguration().setRemoveDuplicates(true);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         QueryStatManager.getInstance().printStatistics();
@@ -27,8 +27,8 @@ public class TestSQLHospital extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicates: " + resultSizer.getDuplicates(result));
-        Assert.assertEquals(35, resultSizer.getSolutions(result));
-        Assert.assertEquals(25, resultSizer.getDuplicates(result));
+        Assert.assertEquals(129, resultSizer.getSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
     }
 }

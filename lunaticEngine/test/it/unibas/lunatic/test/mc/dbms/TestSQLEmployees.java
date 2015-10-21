@@ -22,6 +22,7 @@ public class TestSQLEmployees extends CheckTest {
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());
-        Assert.assertEquals(3, resultSizer.getSolutions(result));
+        Assert.assertEquals(16, resultSizer.getSolutions(result));
+        Assert.assertEquals(13, resultSizer.getDuplicates(result));
     }
 }

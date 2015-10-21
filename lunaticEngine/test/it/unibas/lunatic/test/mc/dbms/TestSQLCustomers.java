@@ -23,8 +23,8 @@ public class TestSQLCustomers extends CheckTest {
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());
-        Assert.assertEquals(19, resultSizer.getSolutions(result));
-        Assert.assertEquals(7, resultSizer.getDuplicates(result));
+        Assert.assertEquals(36, resultSizer.getSolutions(result));
+        Assert.assertEquals(14, resultSizer.getDuplicates(result));
         checkSolutions(result);
     }
 }

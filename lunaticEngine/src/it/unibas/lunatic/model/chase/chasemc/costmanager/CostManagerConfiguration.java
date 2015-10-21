@@ -16,6 +16,7 @@ public class CostManagerConfiguration {
     private double similarityThreshold = 0.8;
 //    private String similarityStrategy = SimilarityFactory.SIMPLE_EDITS;
     private String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;
+    private boolean requestMajorityInSimilarityCostManager = false;
 
     public boolean isDoBackwardOnDependency(Dependency dependency) {
         return this.doBackward && dependency.isDoBackward();
@@ -24,7 +25,7 @@ public class CostManagerConfiguration {
     public boolean isDoBackwardForAllDependencies() {
         return this.doBackward;
     }
-    
+
     public void setDoBackward(boolean doBackward) {
         this.doBackward = doBackward;
     }
@@ -88,6 +89,14 @@ public class CostManagerConfiguration {
         this.type = type;
     }
 
+    public boolean isRequestMajorityInSimilarityCostManager() {
+        return requestMajorityInSimilarityCostManager;
+    }
+
+    public void setRequestMajorityInSimilarityCostManager(boolean requestMajorityInSimilarityCostManager) {
+        this.requestMajorityInSimilarityCostManager = requestMajorityInSimilarityCostManager;
+    }
+
     @Override
     public String toString() {
         return "Cost manager configuration"
@@ -98,6 +107,7 @@ public class CostManagerConfiguration {
                 + "\n\t potentialSolutionsThreshold=" + potentialSolutionsThreshold
                 + "\n\t dependencyLimit=" + dependencyLimit
                 + "\n\t similarityThreshold=" + similarityThreshold
-                + "\n\t similarityStrategy=" + similarityStrategy;
+                + "\n\t similarityStrategy=" + similarityStrategy
+                + "\n\t requestMajorityInSimilarityCostManager=" + requestMajorityInSimilarityCostManager;
     }
 }

@@ -206,21 +206,21 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
             indexConclusionValues(enrichedCellGroup, equivalenceClass);
         }
 //        if (scenario.getCostManagerConfiguration().isDoBackward()) {
-            //Then adds cell groups for backward repairs - one for each occurrence
-            for (VariableEquivalenceClass witnessVEQ : equivalenceClass.getDependencyVariables().getWitnessVariables()) {
-                Set<CellGroup> cellGroupsForWitnessVariable = new HashSet<CellGroup>();
-                List<FormulaVariableOccurrence> positiveRelationalOccurrences = ChaseUtility.findPositivePremiseOccurrences(equivalenceClass.getEGD(), witnessVEQ);
-                for (FormulaVariableOccurrence premiseRelationalOccurrence : positiveRelationalOccurrences) {
-                    AttributeRef attributeRef = premiseRelationalOccurrence.getAttributeRef();
-                    IValue value = tuple.getCell(attributeRef).getValue();
-                    CellGroup cellGroup = new CellGroup(value, true);
-                    addCellToCellGroup(premiseRelationalOccurrence, tuple, cellGroup);
-                    CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(cellGroup, deltaDB, stepId, scenario);
-                    cellGroupsForWitnessVariable.add(enrichedCellGroup);
-                    indexContext(enrichedCellGroup, violationContext, equivalenceClass);
-                }
-                violationContext.setCellGroupsForWitnessVariable(witnessVEQ, cellGroupsForWitnessVariable);
+        //Then adds cell groups for backward repairs - one for each occurrence
+        for (VariableEquivalenceClass witnessVEQ : equivalenceClass.getDependencyVariables().getWitnessVariables()) {
+            Set<CellGroup> cellGroupsForWitnessVariable = new HashSet<CellGroup>();
+            List<FormulaVariableOccurrence> positiveRelationalOccurrences = ChaseUtility.findPositivePremiseOccurrences(equivalenceClass.getEGD(), witnessVEQ);
+            for (FormulaVariableOccurrence premiseRelationalOccurrence : positiveRelationalOccurrences) {
+                AttributeRef attributeRef = premiseRelationalOccurrence.getAttributeRef();
+                IValue value = tuple.getCell(attributeRef).getValue();
+                CellGroup cellGroup = new CellGroup(value, true);
+                addCellToCellGroup(premiseRelationalOccurrence, tuple, cellGroup);
+                CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(cellGroup, deltaDB, stepId, scenario);
+                cellGroupsForWitnessVariable.add(enrichedCellGroup);
+                indexContext(enrichedCellGroup, violationContext, equivalenceClass);
             }
+            violationContext.setCellGroupsForWitnessVariable(witnessVEQ, cellGroupsForWitnessVariable);
+        }
 //        }
         equivalenceClass.addViolationContext(violationContext);
         if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
@@ -304,7 +304,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
         for (int i = 0; i < repairs.size(); i++) {
             Repair repair = repairs.get(i);
             boolean consistentRepair = purgeOverlappingContexts(egd, repair, scenario);
-            CellGroupUtility.checkCellGroupConsistency(repair); 
+            CellGroupUtility.checkCellGroupConsistency(repair);
             String egdId = egd.getId();
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, currentNode, localId, egd, repair, repair.getChaseModes());
@@ -349,7 +349,8 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
     }
 
     private boolean isEGDSatisfied(Dependency egd, boolean consistentRepair, Scenario scenario) {
-        return consistentRepair && !scenario.getConfiguration().isUseLimit1ForEGDs() && !egd.isOverlapBetweenAffectedAndQueried();
+        return false; //In case of nonsymmetric egds, forward repairs may trigger additional violation. See TestSynthetic09
+//        return consistentRepair && !scenario.getConfiguration().isUseLimit1ForEGDs() && !egd.isOverlapBetweenAffectedAndQueried();
     }
 
     private DependencyVariables buildDependencyVariables(Dependency egd) {

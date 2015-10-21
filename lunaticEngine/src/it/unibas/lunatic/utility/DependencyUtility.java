@@ -218,13 +218,22 @@ public class DependencyUtility {
     public static String buildAttributeNameForConstant(Object constantValue) {
         return "a" + valueWithOnlyChars(constantValue);
     }
-    
+
     public static String valueWithoutSpaces(Object value) {
         return value.toString().replaceAll(" ", "");
     }
-    
+
     public static String valueWithOnlyChars(Object value) {
         return value.toString().replaceAll("[^A-Za-z0-9]", "").toLowerCase();
+    }
+
+    public static Dependency findDependency(String dependencyId, List<Dependency> dependencies) {
+        for (Dependency dependency : dependencies) {
+            if (dependency.getId().equalsIgnoreCase(dependencyId)) {
+                return dependency;
+            }
+        }
+        throw new IllegalArgumentException("Unable to find dependency with id " + dependencyId + " in " + dependencies);
     }
 
 }

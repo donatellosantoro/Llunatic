@@ -18,9 +18,6 @@ public class TestEmployees extends CheckTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_comparisons);
         setConfigurationForTest(scenario);
-//        scenario.getConfiguration().setUseSymmetricOptimization(false);
-//        scenario.getConfiguration().setDiscardDuplicateTuples(true);
-//        scenario.getConfiguration().setUseSymmetricOptimization(false);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
@@ -28,7 +25,7 @@ public class TestEmployees extends CheckTest {
         Assert.assertTrue(scenario.getDependency("e1").hasSymmetricChase());
         Assert.assertFalse(scenario.getDependency("e4").hasSymmetricChase());
         Assert.assertFalse(scenario.getDependency("e5").hasSymmetricChase());
-        Assert.assertEquals(3, resultSizer.getSolutions(result));
+        Assert.assertEquals(47, resultSizer.getSolutions(result));
         Assert.assertEquals(3, resultSizer.getInvalids(result));
     }
 }

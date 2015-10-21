@@ -52,7 +52,7 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
         }
         Map<IValue, Integer> result = new HashMap<IValue, Integer>();
         for (Set<CellGroupCell> similarCells : similarityMap.values()) {
-            IValue mostFrequentValue = findFirstMaximallyFrequentValue(similarCells);
+            IValue mostFrequentValue = findFirstMaximallyFrequentValue(similarCells, costManagerConfiguration.isRequestMajorityInSimilarityCostManager());
             result.put(mostFrequentValue, similarCells.size());
         }
         return result;
@@ -80,20 +80,22 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
         return result;
     }
 
-    private IValue findFirstMaximallyFrequentValue(Set<CellGroupCell> nonAuthoritativeCells) {
+    private IValue findFirstMaximallyFrequentValue(Set<CellGroupCell> nonAuthoritativeCells, boolean requestMajority) {
         Map<IValue, Integer> occurrenceHistogram = buildOccurrenceHistogram(nonAuthoritativeCells);
         List<Map.Entry<IValue, Integer>> entryList = ChaseUtility.sortEntriesWithValues(occurrenceHistogram);
         IValue firstMaxValue = entryList.get(0).getKey();
-        return firstMaxValue;
-//        Integer firstMax = entryList.get(0).getValue();
-//        Integer secondMax = null;
-//        if (entryList.size() > 1) {
-//            secondMax = entryList.get(1).getValue();
-//        }
-//        if (secondMax == null || firstMax > secondMax) { 
-//            return firstMaxValue;
-//        }
-//        return null;
+        if (!requestMajority) {
+            return firstMaxValue;
+        }
+        Integer firstMax = entryList.get(0).getValue();
+        Integer secondMax = null;
+        if (entryList.size() > 1) {
+            secondMax = entryList.get(1).getValue();
+        }
+        if (secondMax == null || firstMax > secondMax) {
+            return firstMaxValue;
+        }
+        return null;
     }
 
     private Map<IValue, Integer> buildOccurrenceHistogram(Set<CellGroupCell> nonAuthoritativeCells) {

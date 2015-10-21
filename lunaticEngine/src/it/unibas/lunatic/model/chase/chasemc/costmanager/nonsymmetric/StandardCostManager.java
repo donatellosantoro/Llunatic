@@ -221,6 +221,7 @@ public class StandardCostManager implements ICostManager {
                 }
                 //If this context is forward, then it is already fixed
                 if (forwardContext.contains(violationContext)) {
+                    if (logger.isDebugEnabled()) logger.debug("A Backward repair on CellGroup " + backwardCellGroup + " will fix forward context " + violationContext.toShortString());
                     forwardContext.remove(violationContext);
                 }
             }

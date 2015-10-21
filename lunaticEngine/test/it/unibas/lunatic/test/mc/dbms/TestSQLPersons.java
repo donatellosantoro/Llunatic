@@ -27,7 +27,8 @@ public class TestSQLPersons extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
-        Assert.assertEquals(9, resultSizer.getPotentialSolutions(result));
+        Assert.assertEquals(15, resultSizer.getPotentialSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
 //        if (logger.isDebugEnabled()) logger.debug("Delta db:\n" + result.getDeltaDB().printInstances());
     }
@@ -45,6 +46,7 @@ public class TestSQLPersons extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
         Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
         checkExpectedSolutions("expected-nop", result);
     }

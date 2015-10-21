@@ -17,8 +17,6 @@ public class TestSynthetic09 extends CheckExpectedSolutionsTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_09);
         setConfigurationForTest(scenario);
-        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
-        scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
 //        ChaserFactory.setDoBackward(false);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
