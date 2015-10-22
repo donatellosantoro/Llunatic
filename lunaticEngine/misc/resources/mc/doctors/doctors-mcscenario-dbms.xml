@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scenario>
-  <source>
-    <type>DBMS</type>
-    <access-configuration>
-      <driver>org.postgresql.Driver</driver>
-      <uri>jdbc:postgresql:doctor</uri>
-      <schema>source</schema>
-      <login>pguser</login>
-      <password>pguser</password>
-    </access-configuration>
-    <init-db>
+    <source>
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:doctor</uri>
+            <schema>source</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
 <![CDATA[
 create schema source;
 SET search_path = source, pg_catalog;
@@ -51,18 +51,18 @@ insert into medprescription(rxid, patient, npi, doctor) values ('P1', 'J. Doe', 
 insert into medprescription(rxid, patient, npi, doctor) values ('P3', 'M. White', '5556', 'G. House');
 insert into hospital(name, npi, doctor, email) values ('PPTH', '5555', 'G. House', 'house@ppth.com');
 ]]>
-    </init-db>
-  </source>
-  <target> 
-    <type>DBMS</type>
-    <access-configuration>
-      <driver>org.postgresql.Driver</driver>
-      <uri>jdbc:postgresql:doctor</uri>
-      <schema>target</schema>
-      <login>pguser</login>
-      <password>pguser</password>
-    </access-configuration>
-    <init-db>
+        </init-db>
+    </source>
+    <target> 
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:doctor</uri>
+            <schema>target</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
 <![CDATA[
 create schema target;
 SET search_path = target, pg_catalog;
@@ -85,8 +85,8 @@ create table doctor (
 insert into prescription(rxid, patient, npiref) values ('P1', 'J. Doe', '1112');
 insert into doctor(npi, name, hospital, email) values ('1112', 'R. Chase', 'Sacred Hearth', 'chase@sh.com');
 ]]>
-    </init-db>
-  </target>
+        </init-db>
+    </target>
     <dependencies>
 <![CDATA[
 STTGDs:
@@ -169,8 +169,9 @@ doctor(npi: $npi2, name: $dname, hospital: $hname, email: $email) ->
         <type>Standard</type>
         <leavesThreshold>50</leavesThreshold>
         <potentialSolutionsThreshold>50</potentialSolutionsThreshold>
-<!--        <leavesThreshold>20</leavesThreshold>
+        <!--        <leavesThreshold>20</leavesThreshold>
         <potentialSolutionsThreshold>10</potentialSolutionsThreshold>-->
+        <noBackwardOnDependency>md1</noBackwardOnDependency>
     </costManager>
     <configuration/>
 </scenario>

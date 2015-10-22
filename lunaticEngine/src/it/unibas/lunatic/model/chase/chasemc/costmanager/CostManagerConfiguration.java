@@ -3,6 +3,8 @@ package it.unibas.lunatic.model.chase.chasemc.costmanager;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CostManagerConfiguration {
 
@@ -17,9 +19,10 @@ public class CostManagerConfiguration {
 //    private String similarityStrategy = SimilarityFactory.SIMPLE_EDITS;
     private String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;
     private boolean requestMajorityInSimilarityCostManager = true;
+    private List<String> noBackwardDependencies = new ArrayList<String>();
 
     public boolean isDoBackwardOnDependency(Dependency dependency) {
-        return this.doBackward && dependency.isDoBackward();
+        return this.doBackward && !this.noBackwardDependencies.contains(dependency.getId());
     }
 
     public boolean isDoBackwardForAllDependencies() {
@@ -96,6 +99,14 @@ public class CostManagerConfiguration {
     public void setRequestMajorityInSimilarityCostManager(boolean requestMajorityInSimilarityCostManager) {
         this.requestMajorityInSimilarityCostManager = requestMajorityInSimilarityCostManager;
     }
+    
+    public void addNoBackwardDependency(String id) {
+        this.noBackwardDependencies.add(id);
+    }
+
+    public List<String> getNoBackwardDependencies() {
+        return noBackwardDependencies;
+    }    
 
     @Override
     public String toString() {
@@ -108,6 +119,7 @@ public class CostManagerConfiguration {
                 + "\n\t dependencyLimit=" + dependencyLimit
                 + "\n\t similarityThreshold=" + similarityThreshold
                 + "\n\t similarityStrategy=" + similarityStrategy
-                + "\n\t requestMajorityInSimilarityCostManager=" + requestMajorityInSimilarityCostManager;
+                + "\n\t requestMajorityInSimilarityCostManager=" + requestMajorityInSimilarityCostManager
+                + "\n\t noBackwardDependencies=" + noBackwardDependencies;
     }
 }

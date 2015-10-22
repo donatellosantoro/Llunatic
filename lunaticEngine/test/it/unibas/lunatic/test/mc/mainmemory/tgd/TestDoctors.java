@@ -19,7 +19,8 @@ public class TestDoctors extends CheckExpectedSolutionsTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.doctors);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
-        DependencyUtility.findDependency("md1", scenario.getExtEGDs()).setDoBackward(false);
+//        scenario.getCostManagerConfiguration().addNoBackwardDependency("md1");
+//        DependencyUtility.findDependency("md1", scenario.getExtEGDs()).setDoBackward(false);
         scenario.getCostManagerConfiguration().setRequestMajorityInSimilarityCostManager(true);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
