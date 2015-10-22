@@ -6,16 +6,22 @@ import java.util.List;
 
 public class ConstantInFormula {
 
-    private Object constantValue;
-    private FormulaVariable formulaVariable;
+    private final Object constantValue;
+    private final FormulaVariable formulaVariable;
+    private final boolean premise;
 
-    public ConstantInFormula(Object constantValue) {
+    public ConstantInFormula(Object constantValue, boolean premise) {
         this.constantValue = constantValue;
         this.formulaVariable = new FormulaVariable(DependencyUtility.buildVariableIdForConstant(constantValue));
+        this.premise = premise;
     }
 
     public Object getConstantValue() {
         return constantValue;
+    }
+
+    public boolean isPremise() {
+        return premise;
     }
 
     public FormulaVariable getFormulaVariable() {

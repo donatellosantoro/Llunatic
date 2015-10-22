@@ -10,8 +10,8 @@ import speedy.utility.comparator.StringComparator;
 
 public class AllConstantsInFormula {
     
-    private Dependency dependency;
-    private Map<String, ConstantInFormula> constantMap = new HashMap<String, ConstantInFormula>();
+    private final Dependency dependency;
+    private final Map<String, ConstantInFormula> constantMap = new HashMap<String, ConstantInFormula>();
 
     public AllConstantsInFormula(Dependency dependency) {
         this.dependency = dependency;
@@ -25,10 +25,14 @@ public class AllConstantsInFormula {
         return constantMap;
     }
 
-    public String getTableName() {
-        return DependencyUtility.buildTableNameForConstants(dependency);
+    public String getTableNameForPremiseConstants() {
+        return DependencyUtility.buildTableNameForConstants(dependency, true);
     }
     
+    public String getTableNameForConclusionConstants() {
+        return DependencyUtility.buildTableNameForConstants(dependency, false);
+    }
+
     @SuppressWarnings("unchecked")
     public List<String> getOrderedKeys() {
         List<String> orderedKeys = new ArrayList<String>(constantMap.keySet());
@@ -44,10 +48,14 @@ public class AllConstantsInFormula {
         return result;
     }
 
-    public List<Object> getConstantValues() {
-        List<Object> result = new ArrayList<Object>();
+    public List<ConstantInFormula> getConstants(boolean premise) {
+        List<ConstantInFormula> result = new ArrayList<ConstantInFormula>();
         for (String key : getOrderedKeys()) {
-            result.add(constantMap.get(key).getConstantValue());
+            ConstantInFormula constant = constantMap.get(key);
+            if (constant.isPremise() != premise) {
+                continue;
+            }
+            result.add(constant);
         }
         return result;
     }

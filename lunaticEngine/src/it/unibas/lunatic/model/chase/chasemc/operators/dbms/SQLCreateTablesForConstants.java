@@ -5,6 +5,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.ICreateTablesForConstants
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSTable;
 import it.unibas.lunatic.model.dependency.AllConstantsInFormula;
+import it.unibas.lunatic.model.dependency.ConstantInFormula;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
@@ -18,7 +19,7 @@ import speedy.persistence.relational.QueryManager;
 
 public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
 
-    private static Logger logger = LoggerFactory.getLogger(SQLCreateTablesForConstants.class);
+    private static final Logger logger = LoggerFactory.getLogger(SQLCreateTablesForConstants.class);
 
     public void createTable(AllConstantsInFormula constantsInFormula, Scenario scenario, boolean autoritative) {
         if (scenario.getSource() instanceof EmptyDB) {
@@ -26,12 +27,18 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
             scenario.setSource(newSource);
         }
         DBMSDB dbmsSourceDB = (DBMSDB) scenario.getSource();
-        String tableName = constantsInFormula.getTableName();
-        if (dbmsSourceDB.getTableNames().contains(tableName)) {
+        String tableNameForPremise = constantsInFormula.getTableNameForPremiseConstants();
+        if (dbmsSourceDB.getTableNames().contains(tableNameForPremise)) {
             return;
         }
-        executeCreateStatement(constantsInFormula, dbmsSourceDB);
-        if (autoritative) scenario.getAuthoritativeSources().add(tableName);
+        executeCreateStatement(constantsInFormula, dbmsSourceDB, true);
+        if (autoritative) scenario.getAuthoritativeSources().add(tableNameForPremise);
+        String tableNameForConclusion = constantsInFormula.getTableNameForConclusionConstants();
+        if (dbmsSourceDB.getTableNames().contains(tableNameForConclusion)) {
+            return;
+        }
+        executeCreateStatement(constantsInFormula, dbmsSourceDB, false);
+        if (autoritative) scenario.getAuthoritativeSources().add(tableNameForConclusion);
     }
 
     private DBMSDB createEmptySourceDatabase(Scenario scenario) {
@@ -43,27 +50,39 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         return new DBMSDB(sourceAccessConfiguration);
     }
 
-    private void executeCreateStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB) {
-        String createStatement = generateCreateStatement(constantsInFormula, dbmsSourceDB);
-        String insertStatement = generateInsertStatement(constantsInFormula, dbmsSourceDB);
+    private void executeCreateStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB, boolean premise) {
+        String createStatement = generateCreateStatement(constantsInFormula, dbmsSourceDB, premise);
+        String insertStatement = generateInsertStatement(constantsInFormula, dbmsSourceDB, premise);
         String statement = createStatement + insertStatement;
         QueryManager.executeScript(statement, dbmsSourceDB.getAccessConfiguration(), true, true, true, false);
-        DBMSTable newConstantTable = new DBMSTable(constantsInFormula.getTableName(), dbmsSourceDB.getAccessConfiguration());
+        DBMSTable newConstantTable;
+        if (premise) {
+            newConstantTable = new DBMSTable(constantsInFormula.getTableNameForPremiseConstants(), dbmsSourceDB.getAccessConfiguration());
+        } else {
+            newConstantTable = new DBMSTable(constantsInFormula.getTableNameForConclusionConstants(), dbmsSourceDB.getAccessConfiguration());
+        }
         dbmsSourceDB.addTable(newConstantTable);
     }
 
-    private String generateCreateStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB) {
+    private String generateCreateStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB, boolean premise) {
         AccessConfiguration accessConfiguration = dbmsSourceDB.getAccessConfiguration();
         StringBuilder script = new StringBuilder();
         script.append("----- Generating constant table -----\n");
-        script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(constantsInFormula.getTableName()).append("(").append("\n");
+        String tableName;
+        if (premise) {
+            tableName = constantsInFormula.getTableNameForPremiseConstants();
+        } else {
+            tableName = constantsInFormula.getTableNameForConclusionConstants();
+        }
+        script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(tableName).append("(").append("\n");
         List<String> attributeNames = constantsInFormula.getAttributeNames();
-        List<Object> constantValues = constantsInFormula.getConstantValues();
+        List<ConstantInFormula> constantValues = constantsInFormula.getConstants(premise);
         for (int i = 0; i < constantValues.size(); i++) {
             String attributeName = attributeNames.get(i);
-            Object constantValue = constantValues.get(i);
+            ConstantInFormula constant = constantValues.get(i);
+            Object constantValue = constant.getConstantValue();
             String type = LunaticUtility.findType(constantValue);
-            type = Types.STRING;//TODO++
+//            type = Types.STRING;//TODO++
             String dbmsType = DBMSUtility.convertDataSourceTypeToDBType(type);
             script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(dbmsType).append(",").append("\n");
         }
@@ -73,16 +92,23 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         return script.toString();
     }
 
-    private String generateInsertStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB) {
+    private String generateInsertStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB, boolean premise) {
         AccessConfiguration accessConfiguration = dbmsSourceDB.getAccessConfiguration();
         StringBuilder script = new StringBuilder();
         script.append("----- Adding tuple in constant table -----\n");
-        script.append("INSERT INTO ").append(accessConfiguration.getSchemaName()).append(".").append(constantsInFormula.getTableName()).append(" VALUES(").append("\n");
-        List<Object> constantValues = constantsInFormula.getConstantValues();
+        String tableName;
+        if (premise) {
+            tableName = constantsInFormula.getTableNameForPremiseConstants();
+        } else {
+            tableName = constantsInFormula.getTableNameForConclusionConstants();
+        }
+        script.append("INSERT INTO ").append(accessConfiguration.getSchemaName()).append(".").append(tableName).append(" VALUES(").append("\n");
+        List<ConstantInFormula> constantValues = constantsInFormula.getConstants(premise);
         for (int i = 0; i < constantValues.size(); i++) {
-            Object constantValue = constantValues.get(i);
+            ConstantInFormula constant = constantValues.get(i);
+            Object constantValue = constant.getConstantValue();
             String type = LunaticUtility.findType(constantValue);
-            type = Types.STRING; //TODO++
+//            type = Types.STRING; //TODO++
             String valueString = constantValue.toString();
             if (type.equals(Types.STRING)) {
                 valueString = "'" + valueString + "'";

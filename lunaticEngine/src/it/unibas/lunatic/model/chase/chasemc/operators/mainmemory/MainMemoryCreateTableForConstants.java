@@ -3,6 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators.mainmemory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ICreateTablesForConstants;
 import it.unibas.lunatic.model.dependency.AllConstantsInFormula;
+import it.unibas.lunatic.model.dependency.ConstantInFormula;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
 import org.slf4j.Logger;
@@ -29,26 +30,33 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
             scenario.setSource(newSource);
         }
         MainMemoryDB mainMemorySource = (MainMemoryDB) scenario.getSource();
-        String tableName = constantsInFormula.getTableName();
-        if (mainMemorySource.getTableNames().contains(tableName)) {
+        String tableNameForPremise = constantsInFormula.getTableNameForPremiseConstants();
+        if (mainMemorySource.getTableNames().contains(tableNameForPremise)) {
             return;
         }
-        createSchema(tableName, mainMemorySource, constantsInFormula);
-        createInstance(tableName, mainMemorySource, constantsInFormula);
-        if (autoritative) scenario.getAuthoritativeSources().add(tableName);
+        createSchema(tableNameForPremise, mainMemorySource, constantsInFormula, true);
+        createInstance(tableNameForPremise, mainMemorySource, constantsInFormula, true);
+        if (autoritative) scenario.getAuthoritativeSources().add(tableNameForPremise);
+        String tableNameForConclusion = constantsInFormula.getTableNameForConclusionConstants();
+        if (mainMemorySource.getTableNames().contains(tableNameForConclusion)) {
+            return;
+        }
+        createSchema(tableNameForConclusion, mainMemorySource, constantsInFormula, false);
+        createInstance(tableNameForConclusion, mainMemorySource, constantsInFormula, false);
+        if (autoritative) scenario.getAuthoritativeSources().add(tableNameForConclusion);
     }
 
-    private void createSchema(String tableName, MainMemoryDB mainMemorySource, AllConstantsInFormula constantsInFormula) {
+    private void createSchema(String tableName, MainMemoryDB mainMemorySource, AllConstantsInFormula constantsInFormula, boolean premise) {
         INode setNodeSchema = new SetNode(tableName);
         mainMemorySource.getDataSource().getSchema().addChild(setNodeSchema);
         TupleNode tupleNodeSchema = new TupleNode(tableName + "Tuple");
         setNodeSchema.addChild(tupleNodeSchema);
         List<String> attributeNames = constantsInFormula.getAttributeNames();
-        List<Object> constantValues = constantsInFormula.getConstantValues();
-        for (int i = 0; i < constantValues.size(); i++) {
+        List<ConstantInFormula> constants = constantsInFormula.getConstants(premise);
+        for (int i = 0; i < constants.size(); i++) {
             String attributeName = attributeNames.get(i);
-            Object constantValue = constantValues.get(i);
-            tupleNodeSchema.addChild(createAttributeSchema(attributeName, constantValue));
+            ConstantInFormula constant = (ConstantInFormula)constants.get(i);
+            tupleNodeSchema.addChild(createAttributeSchema(attributeName, constant.getConstantValue()));
         }
     }
 
@@ -60,17 +68,17 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
         return attributeNodeInstance;
     }
 
-    private void createInstance(String tableName, MainMemoryDB mainMemorySource, AllConstantsInFormula constantsInFormula) {
+    private void createInstance(String tableName, MainMemoryDB mainMemorySource, AllConstantsInFormula constantsInFormula, boolean premise) {
         INode setNodeInstance = new SetNode(tableName, IntegerOIDGenerator.getNextOID());
         mainMemorySource.getDataSource().getInstances().get(0).addChild(setNodeInstance);
         TupleNode tupleNodeInstance = new TupleNode(tableName + "Tuple", IntegerOIDGenerator.getNextOID());
         setNodeInstance.addChild(tupleNodeInstance);
         List<String> attributeNames = constantsInFormula.getAttributeNames();
-        List<Object> constantValues = constantsInFormula.getConstantValues();
-        for (int i = 0; i < constantValues.size(); i++) {
+        List<ConstantInFormula> constants = constantsInFormula.getConstants(premise);
+        for (int i = 0; i < constants.size(); i++) {
             String attributeName = attributeNames.get(i);
-            Object constantValue = constantValues.get(i);
-            tupleNodeInstance.addChild(createAttributeInstance(attributeName, constantValue));
+            ConstantInFormula constant = (ConstantInFormula)constants.get(i);
+            tupleNodeInstance.addChild(createAttributeInstance(attributeName, constant.getConstantValue()));
         }
     }
 

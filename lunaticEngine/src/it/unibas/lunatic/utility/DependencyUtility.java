@@ -211,8 +211,9 @@ public class DependencyUtility {
         return "v" + valueWithOnlyChars(constantValue);
     }
 
-    public static String buildTableNameForConstants(Dependency dependency) {
-        return "consts_in_" + dependency.getId();
+    public static String buildTableNameForConstants(Dependency dependency, boolean premise) {
+        String suffix = (premise ? "prem" : "conc");
+        return "c_in_" + dependency.getId() + "_" + suffix;
     }
 
     public static String buildAttributeNameForConstant(Object constantValue) {

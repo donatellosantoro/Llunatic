@@ -43,7 +43,8 @@ public class ReplaceConstantsWithVariables {
         if (constantsInFormula.isEmpty()) {
             return;
         }
-        addAtomAndVariables(dependency, constantsInFormula);
+        addJoinAttribute(constantsInFormula);
+        addAtomsAndVariables(dependency, constantsInFormula);
         createTable(constantsInFormula, scenario, true);
         if (logger.isDebugEnabled()) logger.debug("After constant removal: " + dependency.toLongString());
         if (logger.isDebugEnabled()) logger.debug("Constant Table: " + constantsInFormula.toString());
@@ -55,7 +56,7 @@ public class ReplaceConstantsWithVariables {
                 handleRelationalAtom(atom, constantsInFormula, premise);
             }
             if (atom instanceof ComparisonAtom) {
-                handleComparisonAtom(atom, constantsInFormula);
+                handleComparisonAtom(atom, constantsInFormula, premise);
             }
         }
     }
@@ -67,7 +68,7 @@ public class ReplaceConstantsWithVariables {
                 continue;
             }
             Object constantValue = createConstantValue(attribute.getValue());
-            ConstantInFormula constantInFormula = getConstantInFormula(constantValue, constantsInFormula);
+            ConstantInFormula constantInFormula = getConstantInFormula(constantValue, constantsInFormula, premise);
             AttributeRef attributeRef = new AttributeRef(relationalAtom.getTableAlias(), attribute.getAttributeName());
             if (premise) {
                 constantInFormula.addPremiseRelationalOccurrence(attributeRef);
@@ -78,14 +79,14 @@ public class ReplaceConstantsWithVariables {
         }
     }
 
-    private void handleComparisonAtom(IFormulaAtom atom, AllConstantsInFormula constantsInFormula) {
+    private void handleComparisonAtom(IFormulaAtom atom, AllConstantsInFormula constantsInFormula, boolean premise) {
         ComparisonAtom comparisonAtom = (ComparisonAtom) atom;
         if (comparisonAtom.getVariables().size() == 2) {
             return;
         }
         Object originalConstantValue = (comparisonAtom.getLeftConstant() != null ? comparisonAtom.getLeftConstant() : comparisonAtom.getRightConstant());
         Object constantValue = createConstantValue(originalConstantValue);
-        ConstantInFormula constantInFormula = getConstantInFormula(constantValue, constantsInFormula);
+        ConstantInFormula constantInFormula = getConstantInFormula(constantValue, constantsInFormula, premise);
         if (comparisonAtom.getLeftConstant() != null) {
             comparisonAtom.setLeftConstant(null);
             comparisonAtom.getVariables().add(0, constantInFormula.getFormulaVariable());
@@ -102,13 +103,17 @@ public class ReplaceConstantsWithVariables {
         return valueString;
     }
 
-    private ConstantInFormula getConstantInFormula(Object constantValue, AllConstantsInFormula constantsInFormula) {
-        ConstantInFormula constantInFormula = constantsInFormula.getConstantMap().get(constantValue.toString());
+    private ConstantInFormula getConstantInFormula(Object constantValue, AllConstantsInFormula constantsInFormula, boolean premise) {
+        ConstantInFormula constantInFormula = constantsInFormula.getConstantMap().get(getKey(constantValue, premise));
         if (constantInFormula == null) {
-            constantInFormula = new ConstantInFormula(constantValue);
+            constantInFormula = new ConstantInFormula(constantValue, premise);
             constantsInFormula.getConstantMap().put(constantValue.toString(), constantInFormula);
         }
         return constantInFormula;
+    }
+    
+    private String getKey(Object constantValue, boolean premise) {
+       return constantValue.toString() + "-" + premise; 
     }
 
     private void fixExpression(ComparisonAtom comparisonAtom, Object constantValue, FormulaVariable formulaVariable) {
@@ -123,22 +128,43 @@ public class ReplaceConstantsWithVariables {
         }
     }
 
+    private void addJoinAttribute(AllConstantsInFormula constantsInFormula) {
+        ConstantInFormula premiseConstant = new ConstantInFormula("j", true);
+        constantsInFormula.getConstantMap().put(getKey("j",  true), premiseConstant);
+        ConstantInFormula conclusionConstant = new ConstantInFormula("j", false);
+        constantsInFormula.getConstantMap().put(getKey("j",  false), conclusionConstant);
+    }
+
     @SuppressWarnings("unchecked")
-    private void addAtomAndVariables(Dependency dependency, AllConstantsInFormula constantsInFormula) {
+    private void addAtomsAndVariables(Dependency dependency, AllConstantsInFormula constantsInFormula) {
+        // Premise constants atom
         PositiveFormula premise = dependency.getPremise().getPositiveFormula();
-        RelationalAtom newAtom = new RelationalAtom(DependencyUtility.buildTableNameForConstants(dependency));
-        newAtom.getTableAlias().setSource(true);
-        newAtom.getTableAlias().setAuthoritative(true);
-        newAtom.setFormula(premise);
-        premise.getAtoms().add(0, newAtom);
-        for (String constantValue : constantsInFormula.getOrderedKeys()) {
-            ConstantInFormula constantInFormula = constantsInFormula.getConstantMap().get(constantValue);
+        RelationalAtom newAtomForConstantsInPremise = new RelationalAtom(DependencyUtility.buildTableNameForConstants(dependency, true));
+        newAtomForConstantsInPremise.getTableAlias().setSource(true);
+        newAtomForConstantsInPremise.setFormula(premise);
+        premise.getAtoms().add(0, newAtomForConstantsInPremise);
+        // Conclusion constants atom
+        RelationalAtom newAtomForConstantsInConclusion = new RelationalAtom(DependencyUtility.buildTableNameForConstants(dependency, false));
+        newAtomForConstantsInConclusion.getTableAlias().setSource(true);
+        newAtomForConstantsInConclusion.getTableAlias().setAuthoritative(true);
+        newAtomForConstantsInConclusion.setFormula(premise);
+        premise.getAtoms().add(1, newAtomForConstantsInConclusion);
+        // Variables
+        for (String constantKey : constantsInFormula.getOrderedKeys()) {
+            ConstantInFormula constantInFormula = constantsInFormula.getConstantMap().get(constantKey);
             FormulaVariable variable = constantInFormula.getFormulaVariable();
+            String constantValue = constantInFormula.getConstantValue().toString();
             FormulaAttribute attribute = new FormulaAttribute(DependencyUtility.buildAttributeNameForConstant(constantValue));
-            AttributeRef attributeRef = new AttributeRef(newAtom.getTableAlias(), DependencyUtility.buildAttributeNameForConstant(constantValue));
+            AttributeRef attributeRef;
+            if (constantInFormula.isPremise()) {
+                attributeRef = new AttributeRef(newAtomForConstantsInPremise.getTableAlias(), DependencyUtility.buildAttributeNameForConstant(constantValue));
+                newAtomForConstantsInPremise.addAttribute(attribute);
+            } else {
+                attributeRef = new AttributeRef(newAtomForConstantsInConclusion.getTableAlias(), DependencyUtility.buildAttributeNameForConstant(constantValue));
+                newAtomForConstantsInConclusion.addAttribute(attribute);
+            }
             FormulaVariableOccurrence occurrence = new FormulaVariableOccurrence(attributeRef, variable.getId());
             attribute.setValue(occurrence);
-            newAtom.addAttribute(attribute);
             variable.addPremiseRelationalOccurrence(occurrence);
             premise.getLocalVariables().add(variable);
         }
@@ -147,4 +173,5 @@ public class ReplaceConstantsWithVariables {
     private void createTable(AllConstantsInFormula constantsInFormula, Scenario scenario, boolean autoritative) {
         this.tableCreator.createTable(constantsInFormula, scenario, autoritative);
     }
+
 }
