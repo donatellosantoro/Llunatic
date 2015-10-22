@@ -48,8 +48,11 @@ public class ReplaceConstantsWithVariables {
         addJoinAttribute(constantsInFormula);
         addAtomsAndVariables(dependency, constantsInFormula);
         createTable(constantsInFormula, scenario, true);
-        if (logger.isDebugEnabled()) logger.debug("After constant removal: " + dependency.toLongString());
         if (logger.isDebugEnabled()) logger.debug("Constant Table: " + constantsInFormula.toString());
+        if (logger.isDebugEnabled()) logger.debug("After constant removal: " + dependency.toLongString());
+//        for (FormulaVariable variable : dependency.getPremise().getLocalVariables()) {
+//            logger.info(variable.toLongString());
+//        }
     }
 
     private void findAndReplaceConstantsInPositiveFormula(PositiveFormula positiveFormula, AllConstantsInFormula constantsInFormula, boolean premise) {
@@ -112,16 +115,16 @@ public class ReplaceConstantsWithVariables {
     }
 
     private ConstantInFormula getConstantInFormula(ConstantWithType constant, AllConstantsInFormula constantsInFormula, boolean premise) {
-        ConstantInFormula constantInFormula = constantsInFormula.getConstantMap().get(getKey(constant, premise));
+        ConstantInFormula constantInFormula = constantsInFormula.getConstantMap().get(getKey(constant.value, premise));
         if (constantInFormula == null) {
             constantInFormula = new ConstantInFormula(constant.value, constant.type, premise);
-            constantsInFormula.getConstantMap().put(constant.value.toString(), constantInFormula);
+            constantsInFormula.getConstantMap().put(getKey(constant.value, premise), constantInFormula);
         }
         return constantInFormula;
     }
-    
+
     private String getKey(Object constantValue, boolean premise) {
-       return constantValue.toString() + "-" + premise; 
+        return constantValue.toString() + "-" + premise;
     }
 
     private void fixExpression(ComparisonAtom comparisonAtom, Object constantValue, FormulaVariable formulaVariable) {
@@ -138,9 +141,10 @@ public class ReplaceConstantsWithVariables {
 
     private void addJoinAttribute(AllConstantsInFormula constantsInFormula) {
         ConstantInFormula premiseConstant = new ConstantInFormula("j", Types.STRING, true);
-        constantsInFormula.getConstantMap().put(getKey("j",  true), premiseConstant);
+        constantsInFormula.getConstantMap().put(getKey("j", true), premiseConstant);
         ConstantInFormula conclusionConstant = new ConstantInFormula("j", Types.STRING, false);
-        constantsInFormula.getConstantMap().put(getKey("j",  false), conclusionConstant);
+        constantsInFormula.getConstantMap().put(getKey("j", false), conclusionConstant);
+        conclusionConstant.setFormulaVariable(premiseConstant.getFormulaVariable());
     }
 
     @SuppressWarnings("unchecked")
@@ -174,7 +178,9 @@ public class ReplaceConstantsWithVariables {
             FormulaVariableOccurrence occurrence = new FormulaVariableOccurrence(attributeRef, variable.getId());
             attribute.setValue(occurrence);
             variable.addPremiseRelationalOccurrence(occurrence);
-            premise.getLocalVariables().add(variable);
+            if (!premise.getLocalVariables().contains(variable)) {
+                premise.getLocalVariables().add(variable);
+            }
         }
     }
 
@@ -185,6 +191,7 @@ public class ReplaceConstantsWithVariables {
 }
 
 class ConstantWithType {
+
     Object value;
     String type;
 
@@ -192,5 +199,5 @@ class ConstantWithType {
         this.value = value;
         this.type = type;
     }
-    
+
 }

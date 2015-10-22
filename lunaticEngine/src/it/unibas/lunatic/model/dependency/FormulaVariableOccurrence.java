@@ -37,6 +37,16 @@ public class FormulaVariableOccurrence implements IFormulaValue {
         return false;
     }
     
+    public IFormulaValue clone() {
+        try {
+            FormulaVariableOccurrence c = (FormulaVariableOccurrence) super.clone();
+            c.attributeRef = this.attributeRef.clone();
+            return c;
+        } catch (CloneNotSupportedException ex) {
+            throw new IllegalArgumentException("Unable to clone FormulaVariableOccurrence " + ex.getLocalizedMessage());
+        }
+    }
+
     public String toString() {
         return this.variableId;
     }
@@ -47,15 +57,5 @@ public class FormulaVariableOccurrence implements IFormulaValue {
     
     public String toFormulaString() {
         return "$" + this.variableId;
-    }
-    
-    public IFormulaValue clone() {
-        try {
-            FormulaVariableOccurrence c = (FormulaVariableOccurrence) super.clone();
-            c.attributeRef = this.attributeRef.clone();
-            return c;
-        } catch (CloneNotSupportedException ex) {
-            throw new IllegalArgumentException("Unable to clone FormulaVariableOccurrence " + ex.getLocalizedMessage());
-        }
     }
 }

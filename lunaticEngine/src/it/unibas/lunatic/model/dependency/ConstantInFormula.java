@@ -8,8 +8,8 @@ public class ConstantInFormula {
 
     private final Object constantValue;
     private final String type;
-    private final FormulaVariable formulaVariable;
     private final boolean premise;
+    private FormulaVariable formulaVariable;
 
     public ConstantInFormula(Object constantValue, String type, boolean premise) {
         this.constantValue = constantValue;
@@ -21,7 +21,7 @@ public class ConstantInFormula {
     public Object getConstantValue() {
         return constantValue;
     }
-
+    
     public String getType() {
         return type;
     }
@@ -32,6 +32,10 @@ public class ConstantInFormula {
 
     public FormulaVariable getFormulaVariable() {
         return formulaVariable;
+    }
+
+    public void setFormulaVariable(FormulaVariable formulaVariable) {
+        this.formulaVariable = formulaVariable;
     }
 
     public String getVariableId() {

@@ -22,11 +22,6 @@ public class FormulaExpression implements IFormulaValue {
         return false;
     }
 
-    @Override
-    public String toString() {
-        return expression.toString();
-    }
-
     public IFormulaValue clone() {
         try {
             FormulaExpression c = (FormulaExpression) super.clone();
@@ -35,5 +30,14 @@ public class FormulaExpression implements IFormulaValue {
         } catch (CloneNotSupportedException ex) {
             throw new IllegalArgumentException("Unable to clone FormulaValue " + ex.getLocalizedMessage());
         }
+    }
+
+    @Override
+    public String toString() {
+        return expression.toString();
+    }
+
+    public String toLongString() {
+        return "Expression : " + expression.toString();
     }
 }

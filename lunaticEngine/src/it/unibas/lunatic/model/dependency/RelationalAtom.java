@@ -126,6 +126,11 @@ public class RelationalAtom implements IFormulaAtom, Cloneable {
     }
 
     public String toLongString() {
-        return toString();
+        StringBuilder result = new StringBuilder();
+        result.append(tableAlias.getTableName()).append("\n");
+        for (FormulaAttribute attribute : attributes) {
+            result.append("\t").append(attribute.toLongString()).append("\n");
+        }
+        return result.toString();
     }
 }

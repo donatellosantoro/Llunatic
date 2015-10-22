@@ -4,6 +4,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ICreateTablesForConstants;
 import it.unibas.lunatic.model.dependency.AllConstantsInFormula;
 import it.unibas.lunatic.model.dependency.ConstantInFormula;
+import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
 import org.slf4j.Logger;
@@ -51,18 +52,14 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
         mainMemorySource.getDataSource().getSchema().addChild(setNodeSchema);
         TupleNode tupleNodeSchema = new TupleNode(tableName + "Tuple");
         setNodeSchema.addChild(tupleNodeSchema);
-        List<String> attributeNames = constantsInFormula.getAttributeNames();
-        List<ConstantInFormula> constants = constantsInFormula.getConstants(premise);
-        for (int i = 0; i < constants.size(); i++) {
-            String attributeName = attributeNames.get(i);
-            ConstantInFormula constant = (ConstantInFormula)constants.get(i);
-            tupleNodeSchema.addChild(createAttributeSchema(attributeName, constant.getConstantValue()));
+        for (ConstantInFormula constant : constantsInFormula.getConstants(premise)) {
+            String attributeName = DependencyUtility.buildAttributeNameForConstant(constant.getConstantValue()) ;  
+            tupleNodeSchema.addChild(createAttributeSchema(attributeName, constant.getConstantValue(), constant.getType()));
         }
     }
 
-    private AttributeNode createAttributeSchema(String attributeName, Object value) {
+    private AttributeNode createAttributeSchema(String attributeName, Object value, String type) {
         AttributeNode attributeNodeInstance = new AttributeNode(attributeName);
-        String type = LunaticUtility.findType(value);
         LeafNode leafNodeInstance = new LeafNode(type);
         attributeNodeInstance.addChild(leafNodeInstance);
         return attributeNodeInstance;
@@ -73,11 +70,8 @@ public class MainMemoryCreateTableForConstants implements ICreateTablesForConsta
         mainMemorySource.getDataSource().getInstances().get(0).addChild(setNodeInstance);
         TupleNode tupleNodeInstance = new TupleNode(tableName + "Tuple", IntegerOIDGenerator.getNextOID());
         setNodeInstance.addChild(tupleNodeInstance);
-        List<String> attributeNames = constantsInFormula.getAttributeNames();
-        List<ConstantInFormula> constants = constantsInFormula.getConstants(premise);
-        for (int i = 0; i < constants.size(); i++) {
-            String attributeName = attributeNames.get(i);
-            ConstantInFormula constant = (ConstantInFormula)constants.get(i);
+        for (ConstantInFormula constant : constantsInFormula.getConstants(premise)) {
+            String attributeName = DependencyUtility.buildAttributeNameForConstant(constant.getConstantValue()) ;  
             tupleNodeInstance.addChild(createAttributeInstance(attributeName, constant.getConstantValue()));
         }
     }

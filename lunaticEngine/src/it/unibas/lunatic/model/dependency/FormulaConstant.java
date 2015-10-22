@@ -26,11 +26,6 @@ public class FormulaConstant implements IFormulaValue {
         return false;
     }
 
-    @Override
-    public String toString() {
-        return value.toString();
-    }
-
     public IFormulaValue clone() {
         try {
             return (IFormulaValue) super.clone();
@@ -38,4 +33,14 @@ public class FormulaConstant implements IFormulaValue {
             throw new IllegalArgumentException("Unable to clone FormulaValue " + ex.getLocalizedMessage());
         }
     }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
+    
+    public String toLongString() {
+        return "Constant : " + value.toString();
+    }
+
 }

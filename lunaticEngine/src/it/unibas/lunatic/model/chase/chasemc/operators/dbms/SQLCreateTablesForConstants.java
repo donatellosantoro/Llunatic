@@ -7,6 +7,7 @@ import speedy.model.database.dbms.DBMSTable;
 import it.unibas.lunatic.model.dependency.AllConstantsInFormula;
 import it.unibas.lunatic.model.dependency.ConstantInFormula;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
+import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
 import org.slf4j.Logger;
@@ -75,11 +76,8 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
             tableName = constantsInFormula.getTableNameForConclusionConstants();
         }
         script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(tableName).append("(").append("\n");
-        List<String> attributeNames = constantsInFormula.getAttributeNames();
-        List<ConstantInFormula> constantValues = constantsInFormula.getConstants(premise);
-        for (int i = 0; i < constantValues.size(); i++) {
-            String attributeName = attributeNames.get(i);
-            ConstantInFormula constant = constantValues.get(i);
+        for (ConstantInFormula constant : constantsInFormula.getConstants(premise)) {
+            String attributeName = DependencyUtility.buildAttributeNameForConstant(constant.getConstantValue()) ;  
             String type = constant.getType();
 //            String type = LunaticUtility.findType(constantValue);
             String dbmsType = DBMSUtility.convertDataSourceTypeToDBType(type);
@@ -102,13 +100,11 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
             tableName = constantsInFormula.getTableNameForConclusionConstants();
         }
         script.append("INSERT INTO ").append(accessConfiguration.getSchemaName()).append(".").append(tableName).append(" VALUES(").append("\n");
-        List<ConstantInFormula> constantValues = constantsInFormula.getConstants(premise);
-        for (int i = 0; i < constantValues.size(); i++) {
-            ConstantInFormula constant = constantValues.get(i);
-            Object constantValue = constant.getConstantValue();
+        for (ConstantInFormula constant : constantsInFormula.getConstants(premise)) {
+            String attributeName = DependencyUtility.buildAttributeNameForConstant(constant.getConstantValue()) ;  
             String type = constant.getType();
 //            String type = LunaticUtility.findType(constantValue);
-            String valueString = constantValue.toString();
+            String valueString = constant.getConstantValue().toString();
             if (type.equals(Types.STRING)) {
                 valueString = "'" + valueString + "'";
             }

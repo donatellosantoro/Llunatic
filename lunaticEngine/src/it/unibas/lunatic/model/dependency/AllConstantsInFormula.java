@@ -39,14 +39,6 @@ public class AllConstantsInFormula {
         Collections.sort(orderedKeys, new StringComparator()); 
         return orderedKeys;
     }
-    
-    public List<String> getAttributeNames() {
-        List<String> result = new ArrayList<String>();
-        for (String key : getOrderedKeys()) {
-            result.add(DependencyUtility.buildAttributeNameForConstant(constantMap.get(key).getConstantValue()));
-        }
-        return result;
-    }
 
     public List<ConstantInFormula> getConstants(boolean premise) {
         List<ConstantInFormula> result = new ArrayList<ConstantInFormula>();
