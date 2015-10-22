@@ -41,6 +41,7 @@ $surname1 == $surname2 -> $name1 == $name2.
     <type>Similarity</type>
     <doPermutations>false</doPermutations>
     <similarityThreshold>0.5</similarityThreshold>
+    <requestMajority>false</requestMajority>
   </costManager>
 </scenario>
 
