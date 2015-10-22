@@ -335,6 +335,10 @@ public class DAOMCScenario {
             if (similarityThresholdElement != null) {
                 costManagerConfiguration.setSimilarityThreshold(Double.parseDouble(similarityThresholdElement.getValue()));
             }
+            Element requestMajority = costManagerElement.getChild("requestMajority");
+            if (requestMajority != null) {
+                costManagerConfiguration.setRequestMajorityInSimilarityCostManager(Boolean.parseBoolean(requestMajority.getValue()));
+            }
         }
         if (costManagerConfiguration == null) {
             throw new DAOException("Unable to load scenario from file " + fileScenario + ". Unknown cost-manager type " + costManagerType);
