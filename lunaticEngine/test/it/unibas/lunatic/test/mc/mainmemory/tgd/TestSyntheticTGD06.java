@@ -27,8 +27,7 @@ public class TestSyntheticTGD06 extends CheckExpectedSolutionsTest {
         checkSolutions(result);
         Assert.assertEquals(39, resultSizer.getPotentialSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
-        exportResults("/Temp/lunatic_tmp/expectedSyntheticTGD06", result);
-        checkExpectedSolutions("expectedSyntheticTGD06", result);
+//        checkExpectedSolutions("expectedSyntheticTGD06", result);
 
     }
 }

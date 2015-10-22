@@ -50,7 +50,7 @@
     <!--<logger name="speedy.model.algebra.operators.BuildAlgebraTreeForSymmetricEGD" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->
     <!--<logger name="speedy.model.dependency.operators.NormalizeDependency" level="DEBUG"/>-->
-    <!--<logger name="speedy.model.algebra.sql.AlgebraTreeToSQL" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.operators.sql.AlgebraTreeToSQL" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.sql.GenerateTrigger" level="DEBUG"/>-->
     
     <!--     DBMS     -->
