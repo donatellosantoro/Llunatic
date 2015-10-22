@@ -9,6 +9,7 @@ import it.unibas.lunatic.model.dependency.ConstantInFormula;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
+import java.sql.DatabaseMetaData;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         AccessConfiguration sourceAccessConfiguration = ((DBMSDB) scenario.getTarget()).getAccessConfiguration().clone();
         sourceAccessConfiguration.setSchemaName("source");
         StringBuilder createSchemaStatement = new StringBuilder();
+        createSchemaStatement.append("DROP SCHEMA IF EXISTS ").append(sourceAccessConfiguration.getSchemaName()).append(" CASCADE;\n\n");
         createSchemaStatement.append("CREATE SCHEMA ").append(sourceAccessConfiguration.getSchemaName()).append(";\n\n");
         QueryManager.executeScript(createSchemaStatement.toString(), sourceAccessConfiguration, true, true, false, false);
         return new DBMSDB(sourceAccessConfiguration);
