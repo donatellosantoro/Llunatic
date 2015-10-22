@@ -80,9 +80,8 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         for (int i = 0; i < constantValues.size(); i++) {
             String attributeName = attributeNames.get(i);
             ConstantInFormula constant = constantValues.get(i);
-            Object constantValue = constant.getConstantValue();
-            String type = LunaticUtility.findType(constantValue);
-//            type = Types.STRING;//TODO++
+            String type = constant.getType();
+//            String type = LunaticUtility.findType(constantValue);
             String dbmsType = DBMSUtility.convertDataSourceTypeToDBType(type);
             script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(dbmsType).append(",").append("\n");
         }
@@ -107,8 +106,8 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         for (int i = 0; i < constantValues.size(); i++) {
             ConstantInFormula constant = constantValues.get(i);
             Object constantValue = constant.getConstantValue();
-            String type = LunaticUtility.findType(constantValue);
-//            type = Types.STRING; //TODO++
+            String type = constant.getType();
+//            String type = LunaticUtility.findType(constantValue);
             String valueString = constantValue.toString();
             if (type.equals(Types.STRING)) {
                 valueString = "'" + valueString + "'";

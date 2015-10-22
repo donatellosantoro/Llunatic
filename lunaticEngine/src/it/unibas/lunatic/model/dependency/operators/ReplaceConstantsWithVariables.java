@@ -17,8 +17,10 @@ import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import speedy.model.expressions.Expression;
 import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.utility.LunaticUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.persistence.Types;
 
 public class ReplaceConstantsWithVariables {
 
@@ -67,8 +69,8 @@ public class ReplaceConstantsWithVariables {
             if (attribute.getValue().isVariable() || attribute.getValue().isNull()) {
                 continue;
             }
-            Object constantValue = createConstantValue(attribute.getValue());
-            ConstantInFormula constantInFormula = getConstantInFormula(constantValue, constantsInFormula, premise);
+            ConstantWithType constant = createConstantValue(attribute.getValue());
+            ConstantInFormula constantInFormula = getConstantInFormula(constant, constantsInFormula, premise);
             AttributeRef attributeRef = new AttributeRef(relationalAtom.getTableAlias(), attribute.getAttributeName());
             if (premise) {
                 constantInFormula.addPremiseRelationalOccurrence(attributeRef);
@@ -85,8 +87,8 @@ public class ReplaceConstantsWithVariables {
             return;
         }
         Object originalConstantValue = (comparisonAtom.getLeftConstant() != null ? comparisonAtom.getLeftConstant() : comparisonAtom.getRightConstant());
-        Object constantValue = createConstantValue(originalConstantValue);
-        ConstantInFormula constantInFormula = getConstantInFormula(constantValue, constantsInFormula, premise);
+        ConstantWithType constant = createConstantValue(originalConstantValue);
+        ConstantInFormula constantInFormula = getConstantInFormula(constant, constantsInFormula, premise);
         if (comparisonAtom.getLeftConstant() != null) {
             comparisonAtom.setLeftConstant(null);
             comparisonAtom.getVariables().add(0, constantInFormula.getFormulaVariable());
@@ -98,16 +100,22 @@ public class ReplaceConstantsWithVariables {
         fixExpression(comparisonAtom, originalConstantValue, constantInFormula.getFormulaVariable());
     }
 
-    private Object createConstantValue(Object value) {
-        String valueString = value.toString().replaceAll("\"", "");
-        return valueString;
+    private ConstantWithType createConstantValue(Object value) {
+        if (value.toString().startsWith("\"")) {
+            String valueString = value.toString().replaceAll("\"", "");
+            String type = Types.STRING;
+            return new ConstantWithType(valueString, type);
+        }
+        String valueString = value.toString();
+        String type = LunaticUtility.findType(valueString);
+        return new ConstantWithType(valueString, type);
     }
 
-    private ConstantInFormula getConstantInFormula(Object constantValue, AllConstantsInFormula constantsInFormula, boolean premise) {
-        ConstantInFormula constantInFormula = constantsInFormula.getConstantMap().get(getKey(constantValue, premise));
+    private ConstantInFormula getConstantInFormula(ConstantWithType constant, AllConstantsInFormula constantsInFormula, boolean premise) {
+        ConstantInFormula constantInFormula = constantsInFormula.getConstantMap().get(getKey(constant, premise));
         if (constantInFormula == null) {
-            constantInFormula = new ConstantInFormula(constantValue, premise);
-            constantsInFormula.getConstantMap().put(constantValue.toString(), constantInFormula);
+            constantInFormula = new ConstantInFormula(constant.value, constant.type, premise);
+            constantsInFormula.getConstantMap().put(constant.value.toString(), constantInFormula);
         }
         return constantInFormula;
     }
@@ -129,9 +137,9 @@ public class ReplaceConstantsWithVariables {
     }
 
     private void addJoinAttribute(AllConstantsInFormula constantsInFormula) {
-        ConstantInFormula premiseConstant = new ConstantInFormula("j", true);
+        ConstantInFormula premiseConstant = new ConstantInFormula("j", Types.STRING, true);
         constantsInFormula.getConstantMap().put(getKey("j",  true), premiseConstant);
-        ConstantInFormula conclusionConstant = new ConstantInFormula("j", false);
+        ConstantInFormula conclusionConstant = new ConstantInFormula("j", Types.STRING, false);
         constantsInFormula.getConstantMap().put(getKey("j",  false), conclusionConstant);
     }
 
@@ -174,4 +182,15 @@ public class ReplaceConstantsWithVariables {
         this.tableCreator.createTable(constantsInFormula, scenario, autoritative);
     }
 
+}
+
+class ConstantWithType {
+    Object value;
+    String type;
+
+    public ConstantWithType(Object value, String type) {
+        this.value = value;
+        this.type = type;
+    }
+    
 }
