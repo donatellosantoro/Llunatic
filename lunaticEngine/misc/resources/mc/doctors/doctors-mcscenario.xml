@@ -115,8 +115,9 @@ doctor(npi: $npi2, name: $dname, hospital: $hname, email: $email) ->
         <type>Standard</type>
         <leavesThreshold>50</leavesThreshold>
         <potentialSolutionsThreshold>50</potentialSolutionsThreshold>
-<!--        <leavesThreshold>20</leavesThreshold>
+        <!--        <leavesThreshold>20</leavesThreshold>
         <potentialSolutionsThreshold>10</potentialSolutionsThreshold>-->
+        <noBackwardOnDependency>md1</noBackwardOnDependency>
     </costManager>
     <configuration/>
 </scenario>
