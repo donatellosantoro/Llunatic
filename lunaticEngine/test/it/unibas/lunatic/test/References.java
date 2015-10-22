@@ -77,12 +77,29 @@ public class References {
     public static final String persons_deps_06b = "mc/persons/person-deps-06b-mcscenario.xml";
     public static final String persons_deps_07 = "mc/persons/person-deps-07-mcscenario.xml";
     public static final String persons_deps_08 = "mc/persons/person-deps-08-mcscenario.xml";
-    public static final String persons_deps_dbms = "mc/persons/person-deps-mcscenario-dbms.xml";
     public static final String persons_fr_sp = "mc/persons/person-fr-sp-mcscenario.xml";
+    
+    public static final String persons_deps_dbms = "mc/persons/person-deps-mcscenario-dbms.xml";
     public static final String persons_dbms = "mc/persons/person-mcscenario-dbms.xml";
+    public static final String persons_deps_01_dbms = "mc/persons/person-deps-01-mcscenario-dbms.xml";
+    public static final String persons_deps_01b_dbms = "mc/persons/person-deps-01b-mcscenario-dbms.xml";
+    public static final String persons_deps_02_dbms = "mc/persons/person-deps-02-mcscenario-dbms.xml";
+    public static final String persons_deps_03_dbms = "mc/persons/person-deps-03-mcscenario-dbms.xml";
+    public static final String persons_deps_03b_dbms = "mc/persons/person-deps-03b-mcscenario-dbms.xml";
+    public static final String persons_deps_04_dbms = "mc/persons/person-deps-04-mcscenario-dbms.xml";
+    public static final String persons_deps_05_dbms = "mc/persons/person-deps-05-mcscenario-dbms.xml";
+    public static final String persons_deps_05b_dbms = "mc/persons/person-deps-05b-mcscenario-dbms.xml";
+    public static final String persons_deps_05c_dbms = "mc/persons/person-deps-05c-mcscenario-dbms.xml";
+    public static final String persons_deps_06_dbms = "mc/persons/person-deps-06-mcscenario-dbms.xml";
+    public static final String persons_deps_06b_dbms = "mc/persons/person-deps-06b-mcscenario-dbms.xml";
+    public static final String persons_deps_07_dbms = "mc/persons/person-deps-07-mcscenario-dbms.xml";
+    public static final String persons_deps_08_dbms = "mc/persons/person-deps-08-mcscenario-dbms.xml";
+    public static final String persons_fr_sp_dbms = "mc/persons/person-fr-sp-mcscenario-dbms.xml";
     
     public static final String flipflop = "mc/flipflop/flipflop-mcscenario.xml";
+    public static final String flipflop_dmbs = "mc/flipflop/flipflop-mcscenario-dbms.xml";
     public static final String contraddicting = "mc/flipflop/contradictingcfd-mcscenario.xml";
+    public static final String contraddicting_dmbs = "mc/flipflop/contradictingcfd-mcscenario-dbms.xml";
     
     public static final String synthetic_01 = "mc/synthetic/synthetic-01-mcscenario.xml";
     public static final String synthetic_01_dbms = "mc/synthetic/synthetic-01-mcscenario-dbms.xml";
@@ -95,10 +112,13 @@ public class References {
     public static final String synthetic_04 = "mc/synthetic/synthetic-04-mcscenario.xml";
     public static final String synthetic_04_dbms = "mc/synthetic/synthetic-04-mcscenario-dbms.xml";
     public static final String synthetic_05 = "mc/synthetic/synthetic-05-mcscenario.xml";
+    public static final String synthetic_05_dbms = "mc/synthetic/synthetic-05-mcscenario-dbms.xml";
     public static final String synthetic_06 = "mc/synthetic/synthetic-06-mcscenario.xml";
+    public static final String synthetic_06_dbms = "mc/synthetic/synthetic-06-mcscenario-dbms.xml";
     public static final String synthetic_07 = "mc/synthetic/synthetic-07-mcscenario.xml";
     public static final String synthetic_07_dbms = "mc/synthetic/synthetic-07-mcscenario-dbms.xml";
     public static final String synthetic_08 = "mc/synthetic/synthetic-08-mcscenario.xml";
+    public static final String synthetic_08_dbms = "mc/synthetic/synthetic-08-mcscenario-dbms.xml";
     public static final String synthetic_09 = "mc/synthetic/synthetic-09-mcscenario.xml";
     public static final String synthetic_10 = "mc/synthetic/synthetic-10-mcscenario.xml";
     public static final String synthetic_10_similarity = "mc/synthetic/synthetic-10-similarity-mcscenario.xml";

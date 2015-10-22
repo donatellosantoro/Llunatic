@@ -1,11 +1,14 @@
 #doctor
 npi,name,hospital,email
-_L29,G. House,PPTH,_L170
-_L594,_L600,Sacred Hearth,chase@sh.com
+5555,G. House,PPTH,house@ppth.com
+5556,_L161,NULL,NULL
+1112,R. Chase,Sacred Hearth,chase@sh.com
+1222,C. Taub,NULL,NULL
 
 #prescription
 rxid,patient,npiref
-P1,J. Doe,_L594
-P2,W. Smith,_L29
-P3,M. White,_L29
+P1,J. Doe,1222
+P3,M. White,5556
+P2,W. Smith,5555
+_L10,J. Doe,1112
 

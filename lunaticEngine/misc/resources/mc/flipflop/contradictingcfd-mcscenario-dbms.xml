@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target> 
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:contraddicting</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table r (
+  oid serial,
+  a varchar(50),
+  b varchar(50)
+);
+
+insert into r(a,b) values ('a', '1');
+insert into r(a,b) values ('a', '2');
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+//FD: A -> B 
+fd1: r(a: $a, b: $b1), r(a: $a, b: $b2) -> $b1 == $b2.
+
+//CFD: R['a'] -> R['14']
+cfd1: r(a: $a, b: $b1), $a == "a" -> $b1 == "14".
+
+//CFD: R['a'] -> R['13']
+cfd2: r(a: $a, b: $b1), $a == "a" -> $b1 == "13".
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

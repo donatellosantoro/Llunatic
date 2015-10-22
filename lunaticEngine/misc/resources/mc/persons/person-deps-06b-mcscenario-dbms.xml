@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:person</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table person (
+  oid serial,
+  ssn varchar(50),
+  surname varchar(50),
+  name varchar(50),
+  boss varchar(50)
+);
+create table cars (
+  oid serial,
+  plate varchar(50),
+  model varchar(50),
+  owner varchar(50)
+);
+
+insert into person(ssn, surname, name, boss) values ('123', 'Smith', 'Walter', 'Boss1');
+insert into person(ssn, surname, name, boss) values ('123', 'Smith', 'Walter', 'Boss2');
+insert into person(ssn, surname, name, boss) values ('123', 'Smith', 'Walzer', 'Boss4');
+insert into person(ssn, surname, name, boss) values ('123', 'Smith', 'John', 'Boss5');
+insert into person(ssn, surname, name, boss) values ('123', 'Smith', 'John', 'Boss6');
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+// Person[ssn] -> Person[name]
+fd0: person(ssn: $ssn, surname: $surname1, name: $name1, boss: $boss1),
+person(ssn: $ssn, surname: $surname2, name: $name2, boss: $boss2)
+ -> $name1 == $name2.
+]]>
+  </dependencies>
+  <partialOrder>
+    <type>Frequency</type>
+  </partialOrder>
+  <costManager>
+    <type>Similarity</type>
+    <doPermutations>false</doPermutations>
+    <similarityThreshold>0.8</similarityThreshold>
+  </costManager>
+</scenario>
+

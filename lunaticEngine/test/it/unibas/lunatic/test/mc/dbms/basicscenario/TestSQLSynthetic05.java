@@ -1,4 +1,4 @@
-package it.unibas.lunatic.test.mc.dbms;
+package it.unibas.lunatic.test.mc.dbms.basicscenario;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
@@ -11,23 +11,26 @@ import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestSQLSynthetic04 extends CheckExpectedSolutionsTest {
+public class TestSQLSynthetic05 extends CheckExpectedSolutionsTest {
 
-    private static Logger logger = LoggerFactory.getLogger(TestSQLSynthetic04.class);
+    private static Logger logger = LoggerFactory.getLogger(TestSQLSynthetic05.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_04_dbms,true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_05_dbms, true);
         setConfigurationForTest(scenario);
+//        scenario.getConfiguration().setUseLimit1(true);
+        scenario.getCostManagerConfiguration().setDoBackward(false);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
-        Assert.assertEquals(3, resultSizer.getSolutions(result));
+        Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
-//        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedSynthetic04", result);
-        checkExpectedSolutions("expectedSynthetic04", result);
+//        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedSynthetic05", result);
+        checkExpectedSolutions("expectedSynthetic05", result);
     }
+
 }

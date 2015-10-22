@@ -40,11 +40,12 @@ public class StandardCostManager implements ICostManager {
             List<Repair> repairsForDependency, Scenario scenario, String stepId,
             OccurrenceHandlerMC occurrenceHandler) {
         EquivalenceClassForEGD equivalenceClass = (EquivalenceClassForEGD) equivalenceClassProxy.getEquivalenceClass();
-        if (logger.isInfoEnabled()) logger.info("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName());
+        if (logger.isInfoEnabled()) logger.info("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName() + " in step " + stepId);
         if (logger.isDebugEnabled()) logger.debug("######## Current node: " + chaseTreeRoot.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("######## Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<CellGroup> conclusionCellGroups = equivalenceClass.getAllConclusionCellGroups();
         if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && satisfactionChecker.isSatisfiedAfterUpgrades(conclusionCellGroups)) {
+            if (logger.isDebugEnabled()) logger.debug("Dependency " + equivalenceClass.getEGD() + " is satisfied after upgrades in step " + stepId);
             return Collections.EMPTY_LIST;
         }
         List<Repair> result = new ArrayList<Repair>();

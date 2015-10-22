@@ -25,14 +25,9 @@ public class TestSyntheticTGD07 extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getSolutions(result));
-//        for (Dependency dependency : scenario.getExtEGDs()) {
-//            if (logger.isDebugEnabled()) logger.debug(dependency.toLongString());
-//        }
-//        if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
-//        checkExpectedInstances((MainMemoryDB) result, scenario);
         checkSolutions(result);
-        Assert.assertEquals(11, resultSizer.getPotentialSolutions(result));
-        Assert.assertEquals(2, resultSizer.getDuplicates(result));
+        Assert.assertEquals(40, resultSizer.getPotentialSolutions(result));
+        Assert.assertEquals(9, resultSizer.getDuplicates(result));
 //        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedSyntheticTGD07", result);
         checkExpectedSolutions("expectedSyntheticTGD07", result);
     }

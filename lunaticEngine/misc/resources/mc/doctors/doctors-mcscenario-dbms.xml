@@ -107,15 +107,15 @@ ExtEGDs:
 ep1: prescription(rxid: $rxid, patient: $name1, npiref: $npi1),
 prescription(rxid: $rxid, patient: $name2, npiref: $npi2) -> $name1 == $name2.
 
-//ep2: prescription(rxid: $rxid, patient: $name1, npiref: $npi1),
-//prescription(rxid: $rxid, patient: $name2, npiref: $npi2) -> $npi1 == $npi2.
-
 ep2: prescription(rxid: $rxid, patient: $name1, npiref: $npi1),
-prescription(rxid: $rxid, patient: $name2, npiref: $npi2),
-doctor(npi: $npi1, name: $docname1, hospital: $hospital1, email: $email1),
-doctor(npi: $npi2, name: $docname2, hospital: $hospital2, email: $email2),
-prescription(rxid: $r1, patient: $n1, npiref: $npi1),
-prescription(rxid: $r2, patient: $n2, npiref: $npi2) -> $npi1 == $npi2.
+prescription(rxid: $rxid, patient: $name2, npiref: $npi2) -> $npi1 == $npi2.
+
+//ep2: prescription(rxid: $rxid, patient: $name1, npiref: $npi1),
+//prescription(rxid: $rxid, patient: $name2, npiref: $npi2),
+//doctor(npi: $npi1, name: $docname1, hospital: $hospital1, email: $email1),
+//doctor(npi: $npi2, name: $docname2, hospital: $hospital2, email: $email2),
+//prescription(rxid: $r1, patient: $n1, npiref: $npi1),
+//prescription(rxid: $r2, patient: $n2, npiref: $npi2) -> $npi1 == $npi2.
 
 ed1: doctor(npi: $npi, name: $docname1, hospital: $hospital1, email: $email1),
 doctor(npi: $npi, name: $docname2, hospital: $hospital2, email: $email2) ->
@@ -129,36 +129,36 @@ ed3: doctor(npi: $npi, name: $docname1, hospital: $hospital1, email: $email1),
 doctor(npi: $npi, name: $docname2, hospital: $hospital2, email: $email2) ->
   $email1 == $email2.
 
-//ed4: doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
-//doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2) ->
-  //$npi1 == $npi2.
-
-doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
-doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2),
-prescription(rxid: $rxid1, patient: $name1, npiref: $npi1),
-prescription(rxid: $rxid2, patient: $name2, npiref: $npi2)  ->
+ed4: doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
+doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2) ->
   $npi1 == $npi2.
 
-doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
-doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2),
-prescription(rxid: $rxid1, patient: $name1, npiref: $npi1)
-and not exists(prescription(rxid: $rxid2, patient: $name2, npiref: $npi2))  ->
-  $npi1 == $npi2.
+//doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
+//doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2),
+//prescription(rxid: $rxid1, patient: $name1, npiref: $npi1),
+//prescription(rxid: $rxid2, patient: $name2, npiref: $npi2)  ->
+//  $npi1 == $npi2.
 
-doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
-doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2)
-and not exists(prescription(rxid: $rxid1, patient: $name1, npiref: $npi1))
-and not exists(prescription(rxid: $rxid2, patient: $name2, npiref: $npi2))  ->
-  $npi1 == $npi2.
+//doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
+//doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2),
+//prescription(rxid: $rxid1, patient: $name1, npiref: $npi1)
+//and not exists(prescription(rxid: $rxid2, patient: $name2, npiref: $npi2))  ->
+//  $npi1 == $npi2.
 
-//md1: hospital(name: $hname, npi: $npi1, doctor: $dname, email: $email),
-//doctor(npi: $npi2, name: $dname, hospital: $hname, email: $email) ->
-    //$npi1 == $npi2.
+//doctor(npi: $npi1, name: $docname, hospital: $hospital1, email: $email1),
+//doctor(npi: $npi2, name: $docname, hospital: $hospital2, email: $email2)
+//and not exists(prescription(rxid: $rxid1, patient: $name1, npiref: $npi1))
+//and not exists(prescription(rxid: $rxid2, patient: $name2, npiref: $npi2))  ->
+//  $npi1 == $npi2.
 
 md1: hospital(name: $hname, npi: $npi1, doctor: $dname, email: $email),
-doctor(npi: $npi2, name: $dname, hospital: $hname, email: $email),
-prescription(rxid: $rxid1, patient: $name1, npiref: $npi2) ->
+doctor(npi: $npi2, name: $dname, hospital: $hname, email: $email) ->
     $npi1 == $npi2.
+
+//md1: hospital(name: $hname, npi: $npi1, doctor: $dname, email: $email),
+//doctor(npi: $npi2, name: $dname, hospital: $hname, email: $email),
+//prescription(rxid: $rxid1, patient: $name1, npiref: $npi2) ->
+//    $npi1 == $npi2.
 ]]>
     </dependencies>
     <authoritativeSources>
@@ -167,8 +167,10 @@ prescription(rxid: $rxid1, patient: $name1, npiref: $npi2) ->
     <partialOrder/>
     <costManager>
         <type>Standard</type>
-        <leavesThreshold>20</leavesThreshold>
-        <potentialSolutionsThreshold>10</potentialSolutionsThreshold>
+        <leavesThreshold>50</leavesThreshold>
+        <potentialSolutionsThreshold>50</potentialSolutionsThreshold>
+<!--        <leavesThreshold>20</leavesThreshold>
+        <potentialSolutionsThreshold>10</potentialSolutionsThreshold>-->
     </costManager>
     <configuration/>
 </scenario>

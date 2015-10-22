@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source/>
+  <target> 
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:synthetic_04</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table r (
+  oid serial,
+  a varchar(50),
+  b varchar(50),
+  c varchar(50)
+);
+
+create table s (
+  oid serial,
+  a varchar(50),
+  b varchar(50),
+  c varchar(50)
+);
+
+create table t (
+  oid serial,
+  a varchar(50),
+  b varchar(50)
+);
+
+insert into r(a,b,c) values ('1', '3', 'a');
+insert into r(a,b,c) values ('1', '3', 'c');
+insert into r(a,b,c) values ('1', '4', 'b');
+insert into r(a,b,c) values ('1', '4', 'd');
+insert into s(a,b,c) values ('a', 'x', 'q');
+insert into s(a,b,c) values ('c', 'z', 'p');
+insert into t(a,b) values ('b', 'y');
+insert into t(a,b) values ('d', 'e');
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+r(a: $x, b: $y1, c: $z1), 
+r(a: $x, b: $y2, c: $z2), 
+               s(a: $z1, b: $v, c: $q), 
+               t(a: $z2, b: $w) -> $y1 == $y2.
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>

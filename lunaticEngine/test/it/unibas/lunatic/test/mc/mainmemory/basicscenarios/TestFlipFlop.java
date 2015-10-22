@@ -33,8 +33,6 @@ public class TestFlipFlop extends CheckExpectedSolutionsTest {
     public void testScenarioContraddicting() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.contraddicting);
         setConfigurationForTest(scenario);
-        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
-        scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
         scenario.getConfiguration().setRemoveDuplicates(false);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + scenario);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
@@ -48,8 +46,6 @@ public class TestFlipFlop extends CheckExpectedSolutionsTest {
     public void testScenarioContraddictingForwardOnly() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.contraddicting);
         setConfigurationForTest(scenario);
-        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
-        scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
         scenario.getCostManagerConfiguration().setDoPermutations(false);
         scenario.getCostManagerConfiguration().setDoBackward(false);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + scenario);

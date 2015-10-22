@@ -29,9 +29,11 @@
     <!--<logger name="it.unibas.lunatic.model.chasemc.partialorder.AbstractPartialOrder" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseEGDEquivalenceClass" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.StandardCostManager" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.SimilarityToPreferredValueCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.SimilarityToPreferredValueSymmetricCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.CheckVariablesInExpressions" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.FindVariableEquivalenceClasses" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.GenerateSymmetricPremise" level="DEBUG"/>-->

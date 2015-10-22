@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:person</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table person (
+  oid serial,
+  ssn varchar(50),
+  surname varchar(50),
+  name varchar(50),
+  boss varchar(50)
+);
+create table cars (
+  oid serial,
+  plate varchar(50),
+  model varchar(50),
+  owner varchar(50)
+);
+
+insert into person(ssn, surname, name, boss) values ('123', 'Bruce', 'Wayne', 'Boss1');
+insert into person(ssn, surname, name, boss) values ('123', 'Bruce', 'Wayne', 'Boss2');
+insert into person(ssn, surname, name, boss) values ('321', 'Bruce', 'Wayne', 'Boss3');
+insert into person(ssn, surname, name, boss) values ('231', 'Bruce', 'Wayne', 'Boss4');
+insert into cars(plate, model, owner) values ('BM321XS', 'BatMobile', '123');
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+
+e1: person(ssn: $ssn1, surname: $surname, name: $name1, boss: $boss1), 
+person(ssn: $ssn2, surname: $surname, name: $name2, boss: $boss2), 
+ cars(plate: $plate1, model: $model1, owner: $ssn1)
+ and not exists (cars(plate: $plate2, model: $model2, owner: $ssn2))
+ -> $ssn1 == $ssn2.
+]]>
+  </dependencies>
+</scenario>

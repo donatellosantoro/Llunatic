@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source/>
+  <target> 
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:synthetic_04</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table r (
+  oid serial,
+  a varchar(50),
+  b varchar(50),
+  conf float,
+  c varchar(50)
+);
+
+insert into r(a,b,conf,c) values ('1', 'x', 0.9, '10');
+insert into r(a,b,conf,c) values ('1', 'y', 0.0, '2');
+insert into r(a,b,conf,c) values ('10', 'y', 0.5, '2');
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+fd1: r(a: $a, b: $b1,  conf: $conf1, c: $c1),
+r(a: $a, b: $b2,  conf: $conf2, c: $c2) 
+    -> $b1 == $b2.
+
+fd2: r(a: $a1, b: $b1,  conf: $conf1, c: $c),
+r(a: $a2, b: $b2,  conf: $conf2, c: $c) 
+    -> $b1 == $b2.
+]]>
+  </dependencies>
+  <orderingAttributes>
+    <orderingAttribute>
+      <attribute>r.b</attribute>
+      <associatedAttribute>r.conf</associatedAttribute>
+      <valueComparator sort="DESC">
+        <floatComparator/>
+      </valueComparator>
+    </orderingAttribute>  
+  </orderingAttributes>
+</scenario>
+

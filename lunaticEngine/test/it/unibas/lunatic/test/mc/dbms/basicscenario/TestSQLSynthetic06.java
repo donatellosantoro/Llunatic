@@ -1,4 +1,4 @@
-package it.unibas.lunatic.test.mc.dbms;
+package it.unibas.lunatic.test.mc.dbms.basicscenario;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
@@ -11,22 +11,23 @@ import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestSQLSynthetic02 extends CheckExpectedSolutionsTest {
+public class TestSQLSynthetic06 extends CheckExpectedSolutionsTest {
 
-    private static Logger logger = LoggerFactory.getLogger(TestSQLSynthetic02.class);
+    private static Logger logger = LoggerFactory.getLogger(TestSQLSynthetic06.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_02_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_06_dbms, true);
         setConfigurationForTest(scenario);
-//        scenario.getConfiguration().setRemoveDuplicates(true);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
-        if (logger.isDebugEnabled()) logger.debug(result.toStringLeavesOnlyWithSort());
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
+        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
-        Assert.assertEquals(10, resultSizer.getPotentialSolutions(result));
-        Assert.assertEquals(6, resultSizer.getDuplicates(result));
+        Assert.assertEquals(3, resultSizer.getSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
-        checkExpectedSolutions("expectedSynthetic02", result);
+//                exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedSynthetic06", result);
+        checkExpectedSolutions("expectedSynthetic06", result);
     }
 }

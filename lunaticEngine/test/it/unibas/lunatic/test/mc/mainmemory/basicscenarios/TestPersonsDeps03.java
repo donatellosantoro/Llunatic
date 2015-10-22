@@ -19,8 +19,6 @@ public class TestPersonsDeps03 extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_03);
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setRemoveDuplicates(true);
-        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
-        scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
         DeltaChaseStep result = ChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + scenarioName);
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
@@ -38,8 +36,6 @@ public class TestPersonsDeps03 extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_03b);
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setRemoveDuplicates(true);
-        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
-        scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
         scenario.getCostManagerConfiguration().setDoPermutations(false);
         DeltaChaseStep result = ChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + scenarioName);

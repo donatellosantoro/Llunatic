@@ -51,6 +51,9 @@ public class PrecisionAndRecall implements Comparable<PrecisionAndRecall> {
         if (this.fMeasure < o.fMeasure) {
             return 1;
         }
-        return -1;
+        if (this.fMeasure > o.fMeasure) {
+            return -1;
+        }
+        return 0;
     }
 }
