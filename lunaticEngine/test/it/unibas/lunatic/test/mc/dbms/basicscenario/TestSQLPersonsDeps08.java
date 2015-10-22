@@ -26,8 +26,8 @@ public class TestSQLPersonsDeps08 extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
-        Assert.assertEquals(2, resultSizer.getPotentialSolutions(result));
         checkSolutions(result);
+        checkExpectedSolutions("expected-" + scenarioName, result);
 //        exportResults("/Temp/expected-" + scenarioName, result);
 //        checkExpectedSolutions("expected-" + scenarioName, result);
     }

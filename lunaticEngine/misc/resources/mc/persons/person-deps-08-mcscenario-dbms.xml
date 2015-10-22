@@ -49,6 +49,9 @@ person(ssn: $ssn, surname: $surname2, name: $name2, boss: $boss2)
  -> $boss1 == $boss2.
 ]]>
   </dependencies>
+  <partialOrder>
+    <type>Frequency</type>
+  </partialOrder>
   <costManager>
     <type>Similarity</type>
     <similarityThreshold>0.8</similarityThreshold>
