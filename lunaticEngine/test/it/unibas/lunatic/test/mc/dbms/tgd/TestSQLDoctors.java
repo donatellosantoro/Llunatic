@@ -7,24 +7,30 @@ import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
+import it.unibas.lunatic.utility.DependencyUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TestSQLDoctors extends CheckExpectedSolutionsTest {
-
+    
     private static Logger logger = LoggerFactory.getLogger(TestSQLDoctors.class);
-
+    
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.doctors_dbms, true);
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
+        DependencyUtility.findDependency("md1", scenario.getExtEGDs()).setDoBackward(false);
+        scenario.getCostManagerConfiguration().setRequestMajorityInSimilarityCostManager(true);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
-//        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
+//        if (logger.isDebugEnabled()) logger.debug(result.toLongStringLeavesOnlyWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
-//        Assert.assertEquals(8, resultSizer.getSolutions(result));
-//        Assert.assertEquals(13, resultSizer.getDuplicates(result));
+        assertEquals(12, resultSizer.getSolutions(result));
+        assertEquals(12, resultSizer.getDuplicates(result));
         checkSolutions(result);
+//        exportResults("/Temp/expectedDoctors/", result);
         checkExpectedSolutions("expectedDoctors", result);
     }
 }

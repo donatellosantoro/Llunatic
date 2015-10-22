@@ -16,7 +16,7 @@ public class CostManagerConfiguration {
     private double similarityThreshold = 0.8;
 //    private String similarityStrategy = SimilarityFactory.SIMPLE_EDITS;
     private String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;
-    private boolean requestMajorityInSimilarityCostManager = false;
+    private boolean requestMajorityInSimilarityCostManager = true;
 
     public boolean isDoBackwardOnDependency(Dependency dependency) {
         return this.doBackward && dependency.isDoBackward();

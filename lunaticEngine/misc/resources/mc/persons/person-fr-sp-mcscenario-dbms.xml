@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:person</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table person (
+  oid serial,
+  ssn varchar(50),
+  surname varchar(50),
+  name varchar(50),
+  address varchar(50)
+);
+
+insert into person(ssn, surname, name, address) values (123, 'Smith', 'John', 'a1');
+insert into person(ssn, surname, name, address) values (123, 'Smith-x', 'Josh', 'a2');
+insert into person(ssn, surname, name, address) values (321, 'White', 'Frankx', 'a3');
+insert into person(ssn, surname, name, address) values (321, 'Red', 'Frank', 'a4');
+insert into person(ssn, surname, name, address) values (321, 'White', 'Frank', 'a5');
+insert into person(ssn, surname, name, address) values (321, 'White', 'Frank', 'a6');
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+//person(ssn: $ssn, surname: $surname1, name: $name1, address: $address1), 
+// person(ssn: $ssn, surname: $surname2, name: $name2, address: $address2)
+// -> $surname1 == $surname2.
+//person(ssn: $ssn1, surname: $surname, name: $name1, address: $address1), 
+// person(ssn: $ssn2, surname: $surname, name: $name2, address: $address2)
+// -> $name1 == $name2.
+person(ssn: $ssn1, surname: $surname1, name: $name1, address: $address1), 
+person(ssn: $ssn2, surname: $surname2, name: $name2, address: $address2),
+$ssn1 == $ssn2 -> $surname1 == $surname2.
+
+person(ssn: $ssn1, surname: $surname1, name: $name1, address: $address1), 
+ person(ssn: $ssn2, surname: $surname2, name: $name2, address: $address2),
+$surname1 == $surname2 -> $name1 == $name2.
+]]>
+  </dependencies>
+  <partialOrder>
+    <type>Frequency</type>
+  </partialOrder>
+  <costManager>
+    <type>Similarity</type>
+    <doPermutations>false</doPermutations>
+    <similarityThreshold>0.5</similarityThreshold>
+  </costManager>
+</scenario>

@@ -22,10 +22,8 @@ public class TestEmployees extends CheckTest {
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());
-        Assert.assertTrue(scenario.getDependency("e1").hasSymmetricChase());
-        Assert.assertFalse(scenario.getDependency("e4").hasSymmetricChase());
-        Assert.assertFalse(scenario.getDependency("e5").hasSymmetricChase());
         Assert.assertEquals(47, resultSizer.getSolutions(result));
-        Assert.assertEquals(3, resultSizer.getInvalids(result));
+        Assert.assertEquals(3, resultSizer.getDuplicates(result));
+        Assert.assertEquals(0, resultSizer.getInvalids(result));
     }
 }

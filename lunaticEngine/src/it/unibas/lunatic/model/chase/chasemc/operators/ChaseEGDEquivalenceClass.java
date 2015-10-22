@@ -67,7 +67,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
     @Override
     public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
         if (logger.isDebugEnabled()) logger.info("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
-        if (logger.isDebugEnabled()) logger.debug(databaseForStep.printInstances());
+        if (logger.isTraceEnabled()) logger.trace(databaseForStep.printInstances());
         this.lastTuple = null;
         this.lastTupleHandled = false;
         DependencyVariables dv = buildDependencyVariables(egd);
@@ -299,7 +299,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
     }
 
     private NewChaseSteps applyRepairs(DeltaChaseStep currentNode, List<Repair> repairs, Dependency egd, Scenario scenario) {
-        if (logger.isDebugEnabled()) logger.debug("---Applying repairs...");
+        if (logger.isDebugEnabled()) logger.debug("---Applying repairs in step " + currentNode.getId() + " for egd " + egd.getId() + "...");
         NewChaseSteps newChaseSteps = new NewChaseSteps(egd);
         for (int i = 0; i < repairs.size(); i++) {
             Repair repair = repairs.get(i);

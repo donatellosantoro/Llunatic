@@ -11,9 +11,9 @@ import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestHospital extends CheckTest {
+public class THospital extends CheckTest {
 
-    private static Logger logger = LoggerFactory.getLogger(TestHospital.class);
+    private static Logger logger = LoggerFactory.getLogger(THospital.class);
 
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital);
@@ -28,8 +28,8 @@ public class TestHospital extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicates: " + resultSizer.getDuplicates(result));
-        Assert.assertEquals(35, resultSizer.getSolutions(result));
-        Assert.assertEquals(25, resultSizer.getDuplicates(result));
+        Assert.assertEquals(129, resultSizer.getSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
     }
 }

@@ -25,7 +25,6 @@ insert into person(ssn, surname, name) values ('123', 'Smith', 'John');
 insert into person(ssn, surname, name) values ('123', 'Doe', 'Josh');
 insert into person(ssn, surname, name) values ('321', 'White', 'Mike');
 insert into person(ssn, surname, name) values ('321', 'Red', 'Frank');
-insert into person(ssn, surname, name) values ('321', 'White', 'Mike');
 ]]>
     </init-db>
   </target>

@@ -21,7 +21,7 @@ public class NodeClustering {
         }
         LunaticUtility.addIfNotContained(cluster, step);
         if (containsAncestor(cluster)) {
-            throw new IllegalArgumentException("Unable to set ancestor and descentant as duplicate. \nCluster: " + printClusterId(cluster) + "\nStep:" + step.getId());
+            throw new IllegalArgumentException("Unable to set ancestor and descentant as duplicate. \nCluster: " + printClusterId(cluster) + "\nSteps:" + step.toLongStringWithSort());
         }
         step.setDuplicateNodes(cluster);
     }

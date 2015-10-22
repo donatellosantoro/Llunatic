@@ -23,7 +23,7 @@ public class TestSQLSyntheticTGD01Rew extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
-        Assert.assertEquals(5, resultSizer.getPotentialSolutions(result));
+        Assert.assertEquals(11, resultSizer.getPotentialSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
         checkExpectedSolutions("expectedTGD01Rew", result);

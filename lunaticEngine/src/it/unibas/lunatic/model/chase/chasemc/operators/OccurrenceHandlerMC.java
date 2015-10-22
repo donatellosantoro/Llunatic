@@ -42,7 +42,7 @@ public class OccurrenceHandlerMC {
     private IInsertTuple insertOperator;
     private IDelete deleteOperator;
     private ICacheManager cacheManager;
-    
+
     private FindOriginalValuesForCellGroupCells cellGroupMerger = new FindOriginalValuesForCellGroupCells();
 
     public OccurrenceHandlerMC(IRunQuery queryRunner, IInsertTuple insertOperator, IDelete deleteOperator, ICacheManager cacheManager) {
@@ -52,14 +52,25 @@ public class OccurrenceHandlerMC {
         this.cacheManager = cacheManager;
     }
 
+    private boolean isDebug(IValue value, String stepId) {
+        return false;
+//        return value.toString().equals("_L137") && stepId.startsWith("r.cfd1_0_f#.cfd2_0_f#.md3_0_f#");
+//        return value.toString().equals("_L137") && stepId.equals("r.cfd1_0_f#.cfd2_0_f#.md3_0_f#.cfd2_0_f#");
+    }
+
     public CellGroup loadCellGroupFromId(IValue value, IDatabase deltaDB, String stepId, Scenario scenario) {
         CellGroup cellGroup = this.cacheManager.loadCellGroupFromId(value, stepId, deltaDB, scenario);
+        if (isDebug(value, stepId)) {
+            if (cellGroup != null && cellGroup.getJustifications().size() < 3) {
+                throw new IllegalArgumentException("Wrong cell group " + cellGroup);
+            }
+        }
         if (logger.isDebugEnabled()) logger.debug("CellGroup for id " + value + ": " + cellGroup);
         return cellGroup;
     }
 
     public CellGroup enrichCellGroups(CellGroup preliminaryCellGroup, IDatabase deltaDB, String step, Scenario scenario) {
-        if (logger.isDebugEnabled()) logger.debug("Searching occurrences and provenances for cell group: " + preliminaryCellGroup);
+        if (logger.isDebugEnabled()) logger.debug("Enriching cell group: " + preliminaryCellGroup + "\n In step " + step);
         IValue value = preliminaryCellGroup.getValue();
         if (logger.isDebugEnabled()) logger.debug("Value: " + value);
         List<CellGroup> cellGroupsToMerge = new ArrayList<CellGroup>();

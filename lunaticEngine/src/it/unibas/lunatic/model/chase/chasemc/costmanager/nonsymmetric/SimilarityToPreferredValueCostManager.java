@@ -46,17 +46,19 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
             logger.warn("#### SimilarityToPreferredValueCostManager is usually used with a FrequencyPartialOrder ####");
         }
         EquivalenceClassForEGD equivalenceClass = (EquivalenceClassForEGD) equivalenceClassProxy.getEquivalenceClass();
-        if (logger.isInfoEnabled()) logger.info("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName());
+        if (logger.isInfoEnabled()) logger.info("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName() + " in step " + stepId);
         if (logger.isTraceEnabled()) logger.trace("######## Current node: " + chaseTreeRoot.toStringWithSort());
         if (logger.isInfoEnabled()) logger.info("######## Choosing repair strategy for equivalence class: " + equivalenceClass);
         List<CellGroup> conclusionCellGroups = equivalenceClass.getAllConclusionCellGroups();
         if (DependencyUtility.hasSourceSymbols(equivalenceClass.getEGD()) && satisfactionChecker.isSatisfiedAfterUpgrades(conclusionCellGroups)) {
+            if (logger.isDebugEnabled()) logger.debug("Dependency " + equivalenceClass.getEGD() + " is satisfied after upgrades in step " + stepId);
             return Collections.EMPTY_LIST;
         }
         List<CellGroup> forwardCellGroups = equivalenceClass.getAllConclusionCellGroups();
         if (!scenario.getCostManagerConfiguration().isDoBackwardOnDependency(equivalenceClass.getEGD())) {
             List<ViolationContext> forwardContexts = equivalenceClass.getViolationContexts();
             Repair forwardRepair = CostManagerUtility.generateStandardForwardRepair(forwardContexts, scenario);
+            if (logger.isInfoEnabled()) logger.info("Returning repair " + forwardRepair);
             return new ArrayList<Repair>(Arrays.asList(new Repair[]{forwardRepair}));
         }
         IValue preferredValue = CostManagerUtility.findPreferredValue(forwardCellGroups, scenario);
@@ -82,6 +84,7 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
     }
 
     private Repair generateRepairForConstantPreferredValue(IValue preferredValue, EquivalenceClassForEGD equivalenceClass, Scenario scenario) {
+        //TODO++ Conclusion values may the original values of constants (we build the index using allCells of conclusion cell groups)
         Set<IValue> forwardValues = CostManagerUtility.findForwardValues(preferredValue, equivalenceClass.getAllConclusionValues(), scenario.getCostManagerConfiguration());
         Set<TupleOID> forwardTupleOIDs = extractTupleOIDs(forwardValues, equivalenceClass);
         boolean debug = isDebug(equivalenceClass);

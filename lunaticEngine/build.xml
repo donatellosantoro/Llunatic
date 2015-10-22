@@ -408,7 +408,7 @@
             <classpath refid="test.classpath" />
             <batchtest todir="${test.report.dir}">
                 <fileset dir="${test.build.dir}">
-                    <include name="**/mc/mainmemory/**/basicscenarios/**/Test*.class" />
+                    <include name="**/mc/**/basicscenarios/**/Test*.class" />
                 </fileset>
             </batchtest>
             <formatter type="brief" usefile="false" />
