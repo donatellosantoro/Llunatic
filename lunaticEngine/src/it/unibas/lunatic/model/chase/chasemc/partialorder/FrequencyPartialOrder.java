@@ -6,7 +6,6 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import java.util.ArrayList;
 import speedy.model.database.IValue;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,11 +14,13 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.ConstantValue;
 import speedy.model.database.LLUNValue;
 
 public class FrequencyPartialOrder extends StandardPartialOrder {
 
     private static Logger logger = LoggerFactory.getLogger(FrequencyPartialOrder.class);
+    private static final String NO_MAJORITY = "NO_MAJORITY";
 
     @Override
     public IValue generalizeNonAuthoritativeConstantCells(Set<CellGroupCell> constantCells, CellGroup cellGroup, Scenario scenario) {
@@ -29,18 +30,29 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
         }
         Map<IValue, Integer> occurrenceHistogram = buildSimilarityHistogram(constantCells, scenario.getCostManagerConfiguration());
         if (logger.isDebugEnabled()) logger.debug("Histogram for cells " + constantCells + "\n" + occurrenceHistogram);
-        IValue mostFrequentValue = findValueWithMostSimilarOccurrences(occurrenceHistogram);
-        if (mostFrequentValue != null) {
+        IValue mostFrequentValue = findValueWithMostSimilarOccurrences(occurrenceHistogram, scenario.getCostManagerConfiguration().isRequestMajorityInSimilarityCostManager());
+        if (mostFrequentValue != null && !mostFrequentValue.toString().startsWith(NO_MAJORITY)) {
             if (logger.isDebugEnabled()) logger.debug("Most frequent value in cell group:" + cellGroup + "\n\t ->" + mostFrequentValue);
             return mostFrequentValue;
         }
         return lubValue;
     }
 
-    private IValue findValueWithMostSimilarOccurrences(Map<IValue, Integer> occurrenceHistogram) {
+    private IValue findValueWithMostSimilarOccurrences(Map<IValue, Integer> occurrenceHistogram, boolean requestMajority) {
         List<Map.Entry<IValue, Integer>> entryList = ChaseUtility.sortEntriesWithValues(occurrenceHistogram);
         IValue firstMaxValue = entryList.get(0).getKey();
-        return firstMaxValue;
+        if (!requestMajority) {
+            return firstMaxValue;
+        }
+        Integer firstMax = entryList.get(0).getValue();
+        Integer secondMax = null;
+        if (entryList.size() > 1) {
+            secondMax = entryList.get(1).getValue();
+        }
+        if (secondMax == null || firstMax > secondMax) {
+            return firstMaxValue;
+        }
+        return null;
     }
 
     private Map<IValue, Integer> buildSimilarityHistogram(Set<CellGroupCell> nonAuthoritativeCells, CostManagerConfiguration costManagerConfiguration) {
@@ -50,9 +62,13 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
             Set<CellGroupCell> similarCells = findSimilarCells(nonAuthoritativeCells, value, costManagerConfiguration);
             similarityMap.put(value, similarCells);
         }
+        int counterNoMajority = 1;
         Map<IValue, Integer> result = new HashMap<IValue, Integer>();
         for (Set<CellGroupCell> similarCells : similarityMap.values()) {
             IValue mostFrequentValue = findFirstMaximallyFrequentValue(similarCells, costManagerConfiguration.isRequestMajorityInSimilarityCostManager());
+            if (mostFrequentValue == null) {
+                mostFrequentValue = new ConstantValue(counterNoMajority + (counterNoMajority++));
+            }
             result.put(mostFrequentValue, similarCells.size());
         }
         return result;

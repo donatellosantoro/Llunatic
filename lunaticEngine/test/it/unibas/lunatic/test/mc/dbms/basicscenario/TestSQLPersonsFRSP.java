@@ -21,7 +21,7 @@ public class TestSQLPersonsFRSP extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         scenario.getCostManagerConfiguration().setType(LunaticConstants.COST_MANAGER_SIMILARITY);
         scenario.getCostManagerConfiguration().setDoPermutations(false);
-        scenario.getCostManagerConfiguration().setRequestMajorityInSimilarityCostManager(false);
+//        scenario.getCostManagerConfiguration().setRequestMajorityInSimilarityCostManager(false);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
 //        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
@@ -42,7 +42,7 @@ public class TestSQLPersonsFRSP extends CheckExpectedSolutionsTest {
         scenario.getConfiguration().setDiscardDuplicateTuples(true);
         scenario.getCostManagerConfiguration().setType(LunaticConstants.COST_MANAGER_SIMILARITY);
         scenario.getCostManagerConfiguration().setDoPermutations(false);
-        scenario.getCostManagerConfiguration().setRequestMajorityInSimilarityCostManager(false);
+//        scenario.getCostManagerConfiguration().setRequestMajorityInSimilarityCostManager(false);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
 //        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
