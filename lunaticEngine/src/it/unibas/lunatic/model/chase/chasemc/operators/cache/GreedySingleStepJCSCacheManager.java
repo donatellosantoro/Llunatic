@@ -15,6 +15,7 @@ import speedy.model.database.IDatabase;
 import speedy.model.database.IValue;
 import speedy.model.database.operators.IRunQuery;
 import speedy.persistence.relational.QueryStatManager;
+import speedy.utility.comparator.TupleComparatorOIDs;
 
 public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager {
 
@@ -165,7 +166,12 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
 
 class CellRefStringComparator implements Comparator<CellRef> {
 
-    public int compare(CellRef t, CellRef t1) {
-        return t.toString().compareTo(t1.toString());
+    public int compare(CellRef t1, CellRef t2) {
+        Integer oid1 = Integer.parseInt(t1.getTupleOID().toString());
+        Integer oid2 = Integer.parseInt(t1.getTupleOID().toString());
+        if (oid1.equals(oid2)) {
+            return t1.toString().compareTo(t2.toString());
+        }
+        return oid1.compareTo(oid2);
     }
 }
