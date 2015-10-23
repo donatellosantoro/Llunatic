@@ -14,6 +14,7 @@ public class CostManagerConfiguration {
     private int chaseBranchingThreshold = 50;
     private int potentialSolutionsThreshold = 50;
     private int dependencyLimit = -1;
+    private int numberOfCandidateValuesForSimilarity = 50;
     // Similarity
     private double similarityThreshold = 0.8;
 //    private String similarityStrategy = SimilarityFactory.SIMPLE_EDITS;
@@ -99,14 +100,22 @@ public class CostManagerConfiguration {
     public void setRequestMajorityInSimilarityCostManager(boolean requestMajorityInSimilarityCostManager) {
         this.requestMajorityInSimilarityCostManager = requestMajorityInSimilarityCostManager;
     }
-    
+
     public void addNoBackwardDependency(String id) {
         this.noBackwardDependencies.add(id);
     }
 
     public List<String> getNoBackwardDependencies() {
         return noBackwardDependencies;
-    }    
+    }
+
+    public int getNumberOfCandidateValuesForSimilarity() {
+        return numberOfCandidateValuesForSimilarity;
+    }
+
+    public void setNumberOfCandidateValuesForSimilarity(int numberOfCandidateValuesForSimilarity) {
+        this.numberOfCandidateValuesForSimilarity = numberOfCandidateValuesForSimilarity;
+    }
 
     @Override
     public String toString() {
@@ -120,6 +129,7 @@ public class CostManagerConfiguration {
                 + "\n\t similarityThreshold=" + similarityThreshold
                 + "\n\t similarityStrategy=" + similarityStrategy
                 + "\n\t requestMajorityInSimilarityCostManager=" + requestMajorityInSimilarityCostManager
+                + "\n\t numberOfCandidateValuesForSimilarity=" + numberOfCandidateValuesForSimilarity
                 + "\n\t noBackwardDependencies=" + noBackwardDependencies;
     }
 }

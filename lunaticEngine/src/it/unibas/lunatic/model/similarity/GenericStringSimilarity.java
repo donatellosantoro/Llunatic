@@ -1,5 +1,10 @@
 package it.unibas.lunatic.model.similarity;
 
+import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import speedy.model.database.IValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,10 +14,11 @@ public class GenericStringSimilarity implements ISimilarityStrategy {
 
     private static Logger logger = LoggerFactory.getLogger(GenericStringSimilarity.class);
 
+    private static final String PACKAGE_NAME = "uk.ac.shef.wit.simmetrics.similaritymetrics";
+    private Map<String, Double> cache = new HashMap<String, Double>();
     private static int minimumLenght = 1;
 //    private static int minimumLenght = 3;
     private static InterfaceStringMetric comparator;
-    private static final String PACKAGE_NAME = "uk.ac.shef.wit.simmetrics.similaritymetrics";
 
     public GenericStringSimilarity(String className) {
         try {
@@ -32,6 +38,19 @@ public class GenericStringSimilarity implements ISimilarityStrategy {
     }
 
     public double computeSimilarity(String s1, String s2) {
+        long start = new Date().getTime();
+        String key = buildKey(s1, s2);
+        Double cachedValue = cache.get(key);
+        if (cachedValue == null) {
+            cachedValue = computeSimilarityBtwStrings(s1, s2);
+            cache.put(key, cachedValue);
+        }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.COMPUTE_SIMILARITY_TIME, end - start);
+        return cachedValue;
+    }
+
+    private double computeSimilarityBtwStrings(String s1, String s2) {
         if (isNumeric(s1) && isNumeric(s2)) {
             double d1 = Double.parseDouble(s1);
             double d2 = Double.parseDouble(s2);
@@ -57,5 +76,13 @@ public class GenericStringSimilarity implements ISimilarityStrategy {
 
     private double computeNumericalSimilarity(double d1, double d2) {
         return 1 - (Math.abs(d1 - d2) / Math.max(d1, d2));
+    }
+
+    private String buildKey(String s1, String s2) {
+        if (s1.compareTo(s2) < 1) {
+            return s1 + LunaticConstants.FINGERPRINT_SEPARATOR + s2;
+        } else {
+            return s2 + LunaticConstants.FINGERPRINT_SEPARATOR + s1;
+        }
     }
 }

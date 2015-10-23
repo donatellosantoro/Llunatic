@@ -30,6 +30,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.cache.ICacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryOIDGenerator;
+import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,6 +87,7 @@ public class OperatorFactory {
     public void reset() {
         if (logger.isDebugEnabled()) logger.debug("Resetting occurrence handler map...");
         this.occurrenceHandlerMap.clear();
+        SimilarityFactory.getInstance().reset();
     }
 
     public IRunQuery getQueryRunner(Scenario scenario) {
