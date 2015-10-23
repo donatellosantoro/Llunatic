@@ -185,7 +185,6 @@ public class CostManagerUtility {
             return true;
         }
         double similarity = SimilarityFactory.getInstance().getStrategy(similarityStrategy).computeSimilarity(v1, v2);
-        //TODO: Handling numerical values
         try {
             double d1 = Double.parseDouble(v1.toString());
             double d2 = Double.parseDouble(v2.toString());

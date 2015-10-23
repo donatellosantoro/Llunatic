@@ -19,8 +19,6 @@ public class THospital extends CheckTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.hospital);
 //        ChaserFactory.setDoBackward(false);
         setConfigurationForTest(scenario);
-//        scenario.getConfiguration().setUseSymmetricOptimization(false);//TODO++ Remove
-//        scenario.getConfiguration().setDiscardDuplicateTuples(true);//TODO++ Remove
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("hospital", scenario));

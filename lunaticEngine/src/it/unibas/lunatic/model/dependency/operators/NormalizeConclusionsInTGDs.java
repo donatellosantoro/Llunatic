@@ -51,7 +51,7 @@ public class NormalizeConclusionsInTGDs {
         if (logger.isDebugEnabled()) logger.debug("Tgd is not normalized...");
         for (int i = 0; i < connectedComponents.size(); i++) {
             Set<RelationalAtom> connectedComponent = connectedComponents.get(i);
-            String suffixId = "_NORM_" + (i + 1);
+            String suffixId = "_norm_" + (i + 1);
             normalizedTgds.add(separateComponent(tgd, connectedComponent, suffixId));
         }
         if (logger.isDebugEnabled()) logger.debug("Resulting set of normalized tgds: " + normalizedTgds);

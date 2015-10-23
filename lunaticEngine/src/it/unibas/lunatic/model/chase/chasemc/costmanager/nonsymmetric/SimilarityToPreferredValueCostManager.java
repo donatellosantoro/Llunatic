@@ -84,7 +84,6 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
     }
 
     private Repair generateRepairForConstantPreferredValue(IValue preferredValue, EquivalenceClassForEGD equivalenceClass, Scenario scenario) {
-        //TODO++ Conclusion values may the original values of constants (we build the index using allCells of conclusion cell groups)
         Set<IValue> forwardValues = CostManagerUtility.findForwardValues(preferredValue, equivalenceClass.getAllConclusionValues(), scenario.getCostManagerConfiguration());
         Set<TupleOID> forwardTupleOIDs = extractTupleOIDs(forwardValues, equivalenceClass);
         boolean debug = isDebug(equivalenceClass);

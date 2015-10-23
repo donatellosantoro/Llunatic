@@ -21,11 +21,11 @@ import speedy.model.database.operators.IRunQuery;
 public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
 
     public static final int ITERATION_LIMIT = 10;
-    private static Logger logger = LoggerFactory.getLogger(ChaseDeltaExtTGDs.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChaseDeltaExtTGDs.class);
 
-    private ChaseTGDEquivalenceClass dependencyChaser;
-    private IBuildDatabaseForChaseStep databaseBuilder;
-    private IOIDGenerator oidGenerator;
+    private final ChaseTGDEquivalenceClass dependencyChaser;
+    private final IBuildDatabaseForChaseStep databaseBuilder;
+    private final IOIDGenerator oidGenerator;
 
     public ChaseDeltaExtTGDs(IRunQuery queryRunner, IBuildDatabaseForChaseStep databaseBuilder,
             OccurrenceHandlerMC occurrenceHandler, IOIDGenerator oidGenerator, ChangeCell cellChanger) {
@@ -88,7 +88,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 IAlgebraOperator tgdQuery = tgdTreeMap.get(eTgd);
                 if (logger.isTraceEnabled()) logger.debug("----TGD Query: " + tgdQuery);
                 IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), eTgd);
-//                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()); //TODO++ Optimize checking test deds workers
+//                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()); //TODO Optimize deds workers
                 if (logger.isTraceEnabled()) logger.trace("Database for step: " + databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()).printInstances() + "\nDeltaDB: " + newStep.getDeltaDB().printInstances());
                 long start = new Date().getTime();
                 boolean insertedTuples = dependencyChaser.chaseDependency(newStep, eTgd, tgdQuery, scenario, chaseState, databaseForStep);
