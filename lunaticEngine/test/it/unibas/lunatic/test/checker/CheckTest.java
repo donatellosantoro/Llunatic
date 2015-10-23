@@ -8,9 +8,9 @@ import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfCellGroups;
+import it.unibas.lunatic.model.chase.chasemc.operators.PrintRankedSolutions;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.test.GenerateModifiedCells;
-import it.unibas.lunatic.test.comparator.repairs.RepairsComparator;
 import it.unibas.lunatic.test.comparator.repairs.PrecisionAndRecall;
 import java.util.List;
 import junit.framework.Assert;
@@ -26,6 +26,7 @@ public class CheckTest extends TestCase {
     private static Logger logger = LoggerFactory.getLogger(CheckTest.class);
 
     protected ChaseTreeSize resultSizer = new ChaseTreeSize();
+    protected PrintRankedSolutions solutionPrinter = new PrintRankedSolutions();
 //    protected RepairsComparator comparator = new RepairsComparator();
     protected ChaseStats chaseStats = ChaseStats.getInstance();
     protected QueryStatManager queryStats = QueryStatManager.getInstance();

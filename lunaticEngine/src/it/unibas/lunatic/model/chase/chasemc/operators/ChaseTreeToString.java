@@ -12,8 +12,8 @@ import java.util.List;
 public class ChaseTreeToString {
 
     private int counter;
-    private IBuildDatabaseForChaseStep databaseBuilder;
-    private OccurrenceHandlerMC occurrenceHandler;
+    private final IBuildDatabaseForChaseStep databaseBuilder;
+    private final OccurrenceHandlerMC occurrenceHandler;
 
     public ChaseTreeToString(IBuildDatabaseForChaseStep databaseBuilder, OccurrenceHandlerMC occurrenceHandler) {
         this.databaseBuilder = databaseBuilder;

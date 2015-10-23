@@ -35,7 +35,7 @@ public class TestDoctorsUserInput extends CheckTest {
         addUserNode(result, scenario);
 //        if (logger.isDebugEnabled()) logger.debug("Result after user node #1:\n" + result.toStringWithSort());
 
-        result = chaser.doChase(result, scenario);
+        result = chaser.resumeChaseFromStep(result, scenario);
         if (logger.isDebugEnabled()) logger.debug("Result #2:\n" + result.toStringWithSort());
 
 //        Assert.assertEquals(resultSizer.getLeaves(result), resultSizer.getSolutions(result)); //With StandardUserManager

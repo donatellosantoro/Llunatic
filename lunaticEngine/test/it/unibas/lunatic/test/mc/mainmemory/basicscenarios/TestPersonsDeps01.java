@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TestPersonsDeps01 extends CheckExpectedSolutionsTest {
-
+    
     private static Logger logger = LoggerFactory.getLogger(TestPersonsDeps01.class);
-
+    
     public void test01() throws Exception { //FD Single column
         String scenarioName = "persons-deps-01";
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_01);
@@ -26,6 +26,7 @@ public class TestPersonsDeps01 extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
+        if (logger.isDebugEnabled()) logger.debug(solutionPrinter.toLongString(result.getChaseTree()));
         Assert.assertEquals(7, resultSizer.getPotentialSolutions(result)); // 2^(#groups) - 1
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
@@ -44,6 +45,7 @@ public class TestPersonsDeps01 extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(result.toStringLeavesOnlyWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
+        if (logger.isDebugEnabled()) logger.debug(solutionPrinter.toLongString(result.getChaseTree()));
         Assert.assertEquals(13, resultSizer.getPotentialSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
@@ -64,6 +66,7 @@ public class TestPersonsDeps01 extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
+        if (logger.isDebugEnabled()) logger.debug(solutionPrinter.toLongString(result.getChaseTree()));
         Assert.assertEquals(7, resultSizer.getPotentialSolutions(result)); // 2^(#groups) - 1
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);
@@ -84,6 +87,7 @@ public class TestPersonsDeps01 extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(result.toStringLeavesOnlyWithSort());
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
+        if (logger.isDebugEnabled()) logger.debug(solutionPrinter.toLongString(result.getChaseTree()));
         Assert.assertEquals(13, resultSizer.getPotentialSolutions(result));
         Assert.assertEquals(0, resultSizer.getDuplicates(result));
         checkSolutions(result);

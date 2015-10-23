@@ -6,7 +6,6 @@ public class LunaticConfiguration {
     private boolean debugMode = false;
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;
-    private boolean useSingleEquivalenceClassForTGDs = false;
     private boolean deProxyMode = false; //MCProxy for DE chase
     private boolean checkGroundSolutions = false;
     private boolean checkSolutions = false;
@@ -20,9 +19,10 @@ public class LunaticConfiguration {
     private boolean chaseDEDGreedyExecuteAllScenarios = false;
     private boolean chaseDEDGreedyRandomScenarios = false;
     private boolean discardDuplicateTuples = false;
+    private double numberCellsWeightForRanking = 0.7;
 //
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
-    private String deChaser = LunaticConstants.PROXY_MC_CHASER;
+    private final String deChaser = LunaticConstants.PROXY_MC_CHASER;
 //
 //    private String cacheType = LunaticConstants.NO_CACHE;
 //    private String cacheType = LunaticConstants.LAZY_CACHE;
@@ -63,10 +63,6 @@ public class LunaticConfiguration {
 
     public void setUseLimit1ForEGDs(boolean useLimit1ForEGDs) {
         this.useLimit1ForEGDs = useLimit1ForEGDs;
-    }
-
-    public boolean isUseSingleEquivalenceClassForTGDs() {
-        return useSingleEquivalenceClassForTGDs;
     }
 
     public boolean isDeProxyMode() {
@@ -137,7 +133,6 @@ public class LunaticConfiguration {
 //    public void setDeChaser(String deChaser) {
 //        this.deChaser = deChaser;
 //    }
-
     public boolean isUseSymmetricOptimization() {
         return useSymmetricOptimization;
     }
@@ -186,6 +181,14 @@ public class LunaticConfiguration {
         this.discardDuplicateTuples = discardDuplicateTuples;
     }
 
+    public double getNumberCellsWeightForRanking() {
+        return numberCellsWeightForRanking;
+    }
+
+    public void setNumberCellsWeightForRanking(double numberCellsWeightForRanking) {
+        this.numberCellsWeightForRanking = numberCellsWeightForRanking;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
@@ -199,6 +202,7 @@ public class LunaticConfiguration {
                 + "\n\t RemoveDuplicates: " + removeDuplicates
                 + "\n\t CheckAllNodesForEGDSatisfaction: " + checkAllNodesForEGDSatisfaction
                 + "\n\t UseSymmetricOptimization: " + useSymmetricOptimization
+                + "\n\t NumberCellsWeightForRanking: " + numberCellsWeightForRanking
                 + "\n\t DiscardDuplicateTuples: " + discardDuplicateTuples
                 + "\n\t Cache type: " + cacheType
                 + "\n\t DeChaser: " + deChaser;

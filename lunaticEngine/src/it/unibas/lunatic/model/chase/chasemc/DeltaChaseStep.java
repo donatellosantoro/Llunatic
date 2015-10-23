@@ -12,7 +12,7 @@ import speedy.model.database.IDatabase;
 
 public class DeltaChaseStep {
 
-    private Scenario scenario;
+    private final Scenario scenario;
     private ChaseTree chaseTree;
     private IDatabase originalDB;
     private IDatabase deltaDB;
@@ -30,6 +30,7 @@ public class DeltaChaseStep {
     private CellGroupStats cellGroupStats;
     private boolean duplicate;
     private List<DeltaChaseStep> duplicateNodes;
+    private double score; // for solutions only
 
     //Root node
     public DeltaChaseStep(Scenario scenario, ChaseTree chaseTree, String localId, IDatabase originalDB, IDatabase deltaDB) {
@@ -229,6 +230,14 @@ public class DeltaChaseStep {
 
     public void setDuplicateNodes(List<DeltaChaseStep> duplicateNodes) {
         this.duplicateNodes = duplicateNodes;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
     }
 
     @Override

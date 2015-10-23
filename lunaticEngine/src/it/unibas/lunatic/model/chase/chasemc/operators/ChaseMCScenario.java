@@ -35,17 +35,18 @@ import speedy.model.database.operators.IRunQuery;
 
 public class ChaseMCScenario {
 
-    private static Logger logger = LoggerFactory.getLogger(ChaseMCScenario.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChaseMCScenario.class);
     public static final int ITERATION_LIMIT = 10;
-    private BuildAlgebraTreeForTGD treeBuilderForTGD = new BuildAlgebraTreeForTGD();
-    private BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
-    private IChaseSTTGDs stChaser;
-    private IChaseDeltaExtTGDs extTgdChaser;
-    private ChaseDeltaDCs dChaser;
-    private ChaseDeltaExtEGDs egdChaser;
-    private IBuildDeltaDB deltaBuilder;
-    private AnalyzeDependencies stratificationBuilder = new AnalyzeDependencies();
-    private CheckSolution solutionChecker;
+    private final BuildAlgebraTreeForTGD treeBuilderForTGD = new BuildAlgebraTreeForTGD();
+    private final BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
+    private final IChaseSTTGDs stChaser;
+    private final IChaseDeltaExtTGDs extTgdChaser;
+    private final ChaseDeltaDCs dChaser;
+    private final ChaseDeltaExtEGDs egdChaser;
+    private final IBuildDeltaDB deltaBuilder;
+    private final AnalyzeDependencies stratificationBuilder = new AnalyzeDependencies();
+    private final CheckSolution solutionChecker;
+    private final RankSolutions solutionRanker = new RankSolutions();
 
     public ChaseMCScenario(IChaseSTTGDs stChaser, IChaseDeltaExtTGDs extTgdChaser,
             IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
@@ -59,7 +60,7 @@ public class ChaseMCScenario {
         this.solutionChecker = solutionChecker;
     }
 
-    public DeltaChaseStep doChase(Scenario scenario, IChaseState chaseState) {
+    public ChaseTree doChase(Scenario scenario, IChaseState chaseState) {
         long start = new Date().getTime();
         try {
             // s-t tgds are chased in the standard way; this works fine as long as there are no authoritative sources
@@ -74,7 +75,9 @@ public class ChaseMCScenario {
             if (logger.isDebugEnabled()) logger.debug("DeltaDB: " + deltaDB);
             DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);
             DeltaChaseStep result = doChase(root, scenario, chaseState);
-            return result;
+            chaseTree.setRoot(result);
+            solutionRanker.rankSolutions(chaseTree);
+            return chaseTree;
         } catch (ChaseFailedException e) {
             throw e;
         } finally {
@@ -82,9 +85,10 @@ public class ChaseMCScenario {
             ChaseStats.getInstance().addStat(ChaseStats.TOTAL_TIME, end - start);
             if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
         }
+        
     }
-
-    public DeltaChaseStep doChase(DeltaChaseStep root, Scenario scenario, IChaseState chaseState) {
+    
+    private DeltaChaseStep doChase(DeltaChaseStep root, Scenario scenario, IChaseState chaseState) {
         if (scenario.isDEDScenario()) {
             throw new ChaseException("ChaseMCScenario cannot handle scenarios with deds");
         }
@@ -136,11 +140,13 @@ public class ChaseMCScenario {
         return root;
     }
 
+    // used in tests
     public DeltaChaseStep doChase(Scenario scenario) {
-        return doChase(scenario, ImmutableChaseState.getInstance());
+        return doChase(scenario, ImmutableChaseState.getInstance()).getRoot();
     }
 
-    public DeltaChaseStep doChase(DeltaChaseStep root, Scenario scenario) {
-        return doChase(root, scenario, ImmutableChaseState.getInstance());
+    // for user nodes
+    public DeltaChaseStep resumeChaseFromStep(DeltaChaseStep step, Scenario scenario) { 
+        return doChase(step, scenario, ImmutableChaseState.getInstance());
     }
 }
