@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CellGroupStats {
-    
+
     public int totalCellGroups;
     public int llunCellGroups;
     public int nullCellGroups;
@@ -22,18 +22,18 @@ public class CellGroupStats {
     // For solution ranking
     public int changedCells;
     public int totalNumberOfLluns;
-    
+
     private Map<CellGroup, Integer> cellGroupHashes = new HashMap<CellGroup, Integer>();
-    
+
     public void addCellGroupHash(CellGroup cellGroup, int hash) {
-        this.cellGroupHashes.put(cellGroup, hash);
+//        this.cellGroupHashes.put(cellGroup, hash);
     }
-    
+
     @Override
     public int hashCode() {
         return this.toString().hashCode();
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
@@ -41,7 +41,7 @@ public class CellGroupStats {
         final CellGroupStats other = (CellGroupStats) obj;
         return (this.toString().equals(other.toString()));
     }
-    
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
@@ -64,9 +64,9 @@ public class CellGroupStats {
         result.append("]\n");
         return result.toString();
     }
-    
+
     public String toLongString() {
         return toString() + "\n" + LunaticUtility.printMap(this.cellGroupHashes);
     }
-    
+
 }

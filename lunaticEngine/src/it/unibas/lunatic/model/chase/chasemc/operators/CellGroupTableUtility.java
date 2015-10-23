@@ -52,16 +52,14 @@ public class CellGroupTableUtility {
         AttributeRef cellTable = new AttributeRef(table, LunaticConstants.CELL_TABLE);
         AttributeRef cellAttr = new AttributeRef(table, LunaticConstants.CELL_ATTRIBUTE);
         AttributeRef step = new AttributeRef(table, SpeedyConstants.STEP);
-        AttributeRef originalValue = new AttributeRef(table, LunaticConstants.CELL_ORIGINAL_VALUE);
         AttributeRef type = new AttributeRef(table, LunaticConstants.CELL_TYPE);
-        List<AttributeRef> groupingAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{cellOid, cellTable, cellAttr, originalValue, type}));
+        List<AttributeRef> groupingAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{cellOid, cellTable, cellAttr, type}));
         IAggregateFunction max = new MaxAggregateFunction(step);
         IAggregateFunction oidAggregateValue = new ValueAggregateFunction(cellOid);
         IAggregateFunction tableAggregateValue = new ValueAggregateFunction(cellTable);
         IAggregateFunction attributeAggregateValue = new ValueAggregateFunction(cellAttr);
-        IAggregateFunction originalAggregateValue = new ValueAggregateFunction(originalValue);
         IAggregateFunction typeAggregateValue = new ValueAggregateFunction(type);
-        List<IAggregateFunction> aggregateFunctions = new ArrayList<IAggregateFunction>(Arrays.asList(new IAggregateFunction[]{max, oidAggregateValue, tableAggregateValue, attributeAggregateValue, originalAggregateValue, typeAggregateValue}));
+        List<IAggregateFunction> aggregateFunctions = new ArrayList<IAggregateFunction>(Arrays.asList(new IAggregateFunction[]{max, oidAggregateValue, tableAggregateValue, attributeAggregateValue, typeAggregateValue}));
         GroupBy groupBy = new GroupBy(groupingAttributes, aggregateFunctions);
         groupBy.addChild(stepSelect);
         // select * from R_A_1
@@ -79,6 +77,7 @@ public class CellGroupTableUtility {
         join.addChild(groupBy);
         join.addChild(aliasScan);
         AttributeRef cellGroupId = new AttributeRef(alias, LunaticConstants.GROUP_ID);
+        AttributeRef originalValue = new AttributeRef(alias, LunaticConstants.CELL_ORIGINAL_VALUE);
         List<AttributeRef> attributes = Arrays.asList(new AttributeRef[]{cellGroupId, cellOid, cellTable, cellAttr, originalValue, type});
         Project project = new Project(SpeedyUtility.createProjectionAttributes(attributes));
         project.addChild(join);

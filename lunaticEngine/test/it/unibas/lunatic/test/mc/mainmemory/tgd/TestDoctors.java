@@ -23,12 +23,12 @@ public class TestDoctors extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
-        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
-//        if (logger.isDebugEnabled()) logger.debug(result.toLongStringLeavesOnlyWithSort());
+//        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
-        assertEquals(15, resultSizer.getSolutions(result));
-        assertEquals(9, resultSizer.getDuplicates(result));
+        assertEquals(9, resultSizer.getSolutions(result));
+        assertEquals(15, resultSizer.getDuplicates(result));
 //        checkSolutions(result);
 //        exportResults("/Temp/expectedDoctorsMM/", result);
         checkExpectedSolutions("expectedDoctors", result);

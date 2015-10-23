@@ -1,9 +1,9 @@
 #doctor
 npi,name,hospital,email
-5555,_L22,PPTH,house@ppth.com
+5556,_L23,NULL,NULL
+5555,G. House,PPTH,house@ppth.com
 1112,R. Chase,Sacred Hearth,chase@sh.com
 _L9,NULL,NULL,NULL
-5556,G. House,NULL,NULL
 1222,C. Taub,NULL,NULL
 
 #prescription

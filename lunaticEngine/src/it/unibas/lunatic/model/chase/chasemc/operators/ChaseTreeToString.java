@@ -148,7 +148,8 @@ public class ChaseTreeToString {
         IDatabase database = databaseBuilder.extractDatabase(step.getId(), deltaDB, originalDB);
         result.append(database.printInstances(sort));
         if (longFormat) {
-            result.append((step.getCellGroupStats() != null ? step.getCellGroupStats().toString() : ""));
+//            result.append((step.getCellGroupStats() != null ? step.getCellGroupStats().toString() : ""));
+            result.append((step.getCellGroupStats() != null ? step.getCellGroupStats().toLongString() : ""));
 //            List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsInStepForDebugging(deltaDB, step.getId(), step.getScenario());
             List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsForDebugging(deltaDB, step.getId(), step.getScenario());
             result.append("--------------- CELL GROUPS -----------------\n");

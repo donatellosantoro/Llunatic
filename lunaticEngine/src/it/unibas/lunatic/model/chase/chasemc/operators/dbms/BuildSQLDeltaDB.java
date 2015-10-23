@@ -227,6 +227,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         result.append("OR POSITION ('").append(SpeedyConstants.LLUN_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar) ) = 1 ");
         result.append("THEN").append("\n");
         result.append(longIndent).append("NEW.").append(LunaticConstants.GROUP_ID).append(" = NEW.").append(attributeName).append(";\n");
+//        result.append(longIndent).append("NEW.").append(LunaticConstants.CELL_ORIGINAL_VALUE).append(" = NEW.").append(attributeName).append(";\n");
 //        result.append(indent).append("ELSIF NEW.").append(LunaticConstants.GROUP_ID).append(" = '").append(LunaticConstants.GEN_GROUP_ID).append("' THEN\n");
 //        result.append(longIndent).append("NEW.").append(LunaticConstants.GROUP_ID).append(" = '");
 //        result.append(LunaticConstants.LLUN_PREFIX).append("' || ").append("NEW.").append(SpeedyConstants.TID).append(" || '").append(attributeName);

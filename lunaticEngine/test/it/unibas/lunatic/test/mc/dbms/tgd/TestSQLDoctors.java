@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TestSQLDoctors extends CheckExpectedSolutionsTest {
-    
+
     private static Logger logger = LoggerFactory.getLogger(TestSQLDoctors.class);
-    
+
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.doctors_dbms, true);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
@@ -23,14 +23,12 @@ public class TestSQLDoctors extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
-        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
-//        if (logger.isDebugEnabled()) logger.debug(result.toLongStringLeavesOnlyWithSort());
-        if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
-        if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
-        assertEquals(12, resultSizer.getSolutions(result));
-        assertEquals(12, resultSizer.getDuplicates(result));
+//        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
+        assertEquals(9, resultSizer.getSolutions(result));
+        assertEquals(15, resultSizer.getDuplicates(result));
         checkSolutions(result);
-//        exportResults("/Temp/expectedDoctors/", result);
+        exportResults("/Temp/expectedDoctors/", result);
         checkExpectedSolutions("expectedDoctors", result);
     }
 }

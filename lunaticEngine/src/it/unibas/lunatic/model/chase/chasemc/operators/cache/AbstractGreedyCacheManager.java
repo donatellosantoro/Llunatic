@@ -11,8 +11,11 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupTableUtility;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +37,7 @@ import speedy.model.database.operators.IRunQuery;
 public abstract class AbstractGreedyCacheManager implements ICacheManager {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractGreedyCacheManager.class);
+    private static final String KEY_SEPARATOR = "$";
 
     private IRunQuery queryRunner;
 
@@ -56,14 +60,15 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
 //        }
         CellGroupStats stats = new CellGroupStats();
         step.setCellGroupStats(stats);
-        Set<String> keys = getKeySet();
-        stats.totalCellGroups = keys.size();
+        Set<String> cellGroupKeys = getKeySet();
+        Collection<String> maximalCellGroupKeys = filterKeys(cellGroupKeys);
+        stats.totalCellGroups = maximalCellGroupKeys.size();
         stats.minOccurrences = -1;
         stats.maxOccurrences = 0;
         stats.minJustifications = -1;
         stats.maxJustifications = 0;
-        for (String key : keys) {
-            CellGroup cellGroup = getCellGroup(key);
+        for (String cellGroupKey : maximalCellGroupKeys) {
+            CellGroup cellGroup = getCellGroup(cellGroupKey);
             if (cellGroup.getValue() instanceof LLUNValue) {
                 stats.llunCellGroups++;
                 stats.totalNumberOfLluns += cellGroup.getOccurrences().size();
@@ -85,6 +90,30 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
         }
         if (stats.minOccurrences == -1) stats.minOccurrences = 0;
         if (stats.minJustifications == -1) stats.minJustifications = 0;
+    }
+
+    private Collection<String> filterKeys(Set<String> cellGroupKeys) {
+        Map<CellRef, String> maximalKeyForCells = new HashMap<CellRef, String>();
+        for (String cellGroupKey : cellGroupKeys) {
+            CellGroup cellGroup = getCellGroup(cellGroupKey);
+            for (CellGroupCell occurrence : cellGroup.getOccurrences()) {
+                CellRef cellRef = new CellRef(occurrence);
+                String previousKey = maximalKeyForCells.get(cellRef);
+                if (previousKey == null || wasGeneratedInThisStep(cellGroup)) {
+                    maximalKeyForCells.put(cellRef, cellGroupKey);
+                }
+            }
+        }
+        return maximalKeyForCells.values();
+    }
+
+    private boolean wasGeneratedInThisStep(CellGroup cellGroup) {
+        for (CellGroupCell cell : cellGroup.getAllCells()) {
+            if (cell.isToSave()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int cellGroupHashCode(CellGroup cellGroup) {
@@ -109,14 +138,21 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
     }
 
     protected String buildKey(Object value, String stepId) {
-        return stepId + "#" + value.toString();
+        return stepId + KEY_SEPARATOR + value.toString();
+    }
+
+    private boolean isDebug(String stepId) {
+        return false;
+//        return stepId.equalsIgnoreCase("r.ep2_0_f#.ed4_0_f#.ed2_0_f#.md1_0_f#.ed3_0_f#");
     }
 
     public void loadCellGroups(String stepId, IDatabase deltaDB, Scenario scenario) {
+//        if (isDebug(stepId)) logger.warn("Loading occurrences value for step " + stepId);
         if (logger.isTraceEnabled()) logger.trace("Loading occurrences value for step " + stepId);
         if (logger.isTraceEnabled()) logger.trace("DeltaDB " + deltaDB.printInstances());
         IAlgebraOperator query = CellGroupTableUtility.buildQueryToExtractCellGroupCellsForStep(stepId);
         if (logger.isDebugEnabled()) logger.debug("QueryToExtractCellGroupIds:\n " + query);
+//        if (isDebug(stepId)) logger.warn(new AlgebraTreeToSQL().treeToSQL(query, null, deltaDB, ""));
         ITupleIterator it = queryRunner.run(query, null, deltaDB);
         while (it.hasNext()) {
             Tuple tuple = it.next();
@@ -134,6 +170,7 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
             if (logger.isDebugEnabled()) logger.debug("Added cellgroup cell " + cellGroupCell + " into cg:\n" + cellGroup.toLongString());
         }
         it.close();
+//        if (isDebug(stepId)) throw new IllegalArgumentException();
     }
 
     private void addCellGroupCellIntoCellGroup(CellGroupCell cell, CellGroup cellGroup) {
@@ -213,4 +250,5 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
         }
         return total;
     }
+
 }
