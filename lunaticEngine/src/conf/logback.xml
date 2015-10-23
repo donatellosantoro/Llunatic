@@ -32,6 +32,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.SimilarityToPreferredValueCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.SimilarityToPreferredValueSymmetricCostManager" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.CheckVariablesInExpressions" level="DEBUG"/>-->
@@ -66,12 +67,10 @@
     <logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseSymmetricEGDEquivalenceClass" level="DEBUG"/>
     <logger name="it.unibas.lunatic.model.chase.chasemc.costmanager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityToMostFrequentCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility" level="TRACE"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CorrectCellGroupID" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.FindOriginalValuesForCellGroupCells" level="DEBUG"/>-->
