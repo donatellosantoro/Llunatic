@@ -9,6 +9,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
+import speedy.exceptions.DBMSException;
 import speedy.model.algebra.Scan;
 import speedy.model.algebra.Select;
 import speedy.model.algebra.operators.IDelete;
@@ -73,8 +74,13 @@ public class ChangeCell {
         if (logger.isDebugEnabled()) logger.debug("Inserting new value in TableName: " + tableName + " AttributeName: " + attributeName);
         String deltaTableName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
         Tuple tupleToInsert = ChaseUtility.buildTuple(tid, stepId, newValue, originalValue, groupID, tableName, attributeName);
+        try{
         insertOperator.execute(deltaDB.getTable(deltaTableName), tupleToInsert, null, deltaDB);
 //        occurrenceHandler.handleNewTuple(tupleToInsert, occurrenceValue, deltaDB, tableName, attributeName);
+        } catch (DBMSException ex) {
+            logger.error("Change of cell " + cell + " to value " + newValue + " failed. Please check the data type of your database attribute, it might be incompatible with the new value...");
+            throw ex;
+        }
     }
 
     private void delete(String tableName, String attributeName, String stepId, IDatabase deltaDB) {

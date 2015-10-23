@@ -1,10 +1,10 @@
 package it.unibas.lunatic.model.database.lazyloading;
 
-import it.unibas.lunatic.exceptions.DBMSException;
 import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import speedy.exceptions.DBMSException;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 

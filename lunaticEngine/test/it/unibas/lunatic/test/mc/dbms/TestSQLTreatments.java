@@ -57,8 +57,8 @@ public class TestSQLTreatments extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug("Number of solutions: " + resultSizer.getSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
         checkSolutions(result);
-        Assert.assertEquals(4, resultSizer.getSolutions(result));
-        Assert.assertEquals(2, resultSizer.getDuplicates(result));
+        Assert.assertEquals(2, resultSizer.getSolutions(result));
+        Assert.assertEquals(3, resultSizer.getDuplicates(result));
 //        exportResults("/Temp/expectedTreatmentsScenarioPOFRS5", result);
         checkExpectedSolutions("expectedTreatmentsScenarioPOFRS5", result);
     }

@@ -26,8 +26,8 @@ public class TestSQLSynthetic03Const extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
-        Assert.assertEquals(7, resultSizer.getSolutions(result));
-        Assert.assertEquals(3, resultSizer.getDuplicates(result));
+        Assert.assertEquals(6, resultSizer.getSolutions(result));
+        Assert.assertEquals(4, resultSizer.getDuplicates(result));
         checkSolutions(result);
         checkExpectedSolutions("expected03", result);
     }

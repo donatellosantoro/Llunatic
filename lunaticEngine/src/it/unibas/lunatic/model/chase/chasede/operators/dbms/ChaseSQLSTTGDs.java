@@ -2,7 +2,6 @@ package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.exceptions.DBMSException;
 import it.unibas.lunatic.model.algebra.sql.GenerateTargetInsert;
 import it.unibas.lunatic.model.algebra.sql.GenerateTrigger;
 import it.unibas.lunatic.model.algebra.sql.MaterializePremiseQueries;
@@ -12,17 +11,18 @@ import it.unibas.lunatic.persistence.relational.DBMSUtility;
 import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.exceptions.DBMSException;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 
 public class ChaseSQLSTTGDs implements IChaseSTTGDs {
 
-    private static Logger logger = LoggerFactory.getLogger(ChaseSQLSTTGDs.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChaseSQLSTTGDs.class);
 
-    private MaterializePremiseQueries materializeQuery = new MaterializePremiseQueries();
-    private GenerateTargetInsert targetInsertQuery = new GenerateTargetInsert();
-    private GenerateTrigger triggerGenerator = new GenerateTrigger();
+    private final MaterializePremiseQueries materializeQuery = new MaterializePremiseQueries();
+    private final GenerateTargetInsert targetInsertQuery = new GenerateTargetInsert();
+    private final GenerateTrigger triggerGenerator = new GenerateTrigger();
 
     public void doChase(Scenario scenario, boolean cleanTarget) {
         if (!scenario.isDBMS()) {

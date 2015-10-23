@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.exceptions.DBMSException;
 import it.unibas.lunatic.model.chase.chasede.operators.IValueOccurrenceHandlerDE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.exceptions.DBMSException;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
 import speedy.model.database.CellRef;
@@ -23,7 +23,7 @@ import speedy.persistence.relational.QueryManager;
 
 public class SQLDEOccurrenceHandlerWithCache implements IValueOccurrenceHandlerDE {
 
-    private static Logger logger = LoggerFactory.getLogger(SQLDEOccurrenceHandlerWithCache.class);
+    private static final Logger logger = LoggerFactory.getLogger(SQLDEOccurrenceHandlerWithCache.class);
 
     private Map<String, List<Cell>> cache;
     private boolean useCache = true;

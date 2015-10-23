@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.dbms;
 
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
-import it.unibas.lunatic.exceptions.DBMSException;
 import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSTable;
 import java.sql.ResultSet;
@@ -9,6 +8,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import speedy.SpeedyConstants;
+import speedy.exceptions.DBMSException;
 import speedy.model.database.mainmemory.datasource.OID;
 import speedy.persistence.relational.QueryManager;
 

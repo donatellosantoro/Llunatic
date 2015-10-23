@@ -69,7 +69,7 @@ public class ChaseMCScenario {
             DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);
             DeltaChaseStep result = doChase(root, scenario, chaseState);
             chaseTree.setRoot(result);
-            if (scenario.getConfiguration().isRemoveDuplicates()) {
+            if (hasChaseStats(scenario)) {
                 solutionRanker.rankSolutions(chaseTree);
             }
             return chaseTree;
@@ -143,5 +143,9 @@ public class ChaseMCScenario {
     // for user nodes
     public DeltaChaseStep resumeChaseFromStep(DeltaChaseStep step, Scenario scenario) {
         return doChase(step, scenario, ImmutableChaseState.getInstance());
+    }
+
+    private boolean hasChaseStats(Scenario scenario) {
+        return !scenario.getExtEGDs().isEmpty() && scenario.getConfiguration().isRemoveDuplicates();
     }
 }
