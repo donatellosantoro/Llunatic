@@ -7,7 +7,6 @@ import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
-import it.unibas.lunatic.utility.DependencyUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

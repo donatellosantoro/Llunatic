@@ -63,7 +63,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
     @Override
     public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
         if (logger.isDebugEnabled()) logger.debug("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
-        if (logger.isDebugEnabled()) logger.debug(databaseForStep.printInstances());
+        if (logger.isTraceEnabled()) logger.trace(databaseForStep.printInstances());
         this.lastTuple = null;
         this.lastTupleHandled = false;
         if (logger.isDebugEnabled()) logger.debug("Executing premise query: " + premiseQuery);
