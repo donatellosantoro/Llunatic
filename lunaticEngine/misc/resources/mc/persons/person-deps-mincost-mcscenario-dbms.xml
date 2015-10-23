@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:person</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table person (
+  oid serial,
+  ssn integer,
+  surname varchar(50),
+  name varchar(50),
+  boss varchar(50)
+);
+
+insert into person(ssn, surname, name, boss) values (123, 'Smith', 'Walter', 'Xoss');
+insert into person(ssn, surname, name, boss) values (123, 'Smith', 'Walter', 'Bxss');
+insert into person(ssn, surname, name, boss) values (123, 'Smith', 'Walzer', 'Boss');
+insert into person(ssn, surname, name, boss) values (123, 'Smith', 'John', 'Boxs');
+insert into person(ssn, surname, name, boss) values (123, 'Smith', 'John', 'Bosx');
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+// Person[ssn] -> Person[name]
+fd0: person(ssn: $ssn, surname: $surname1, name: $name1, boss: $boss1),
+person(ssn: $ssn, surname: $surname2, name: $name2, boss: $boss2)
+ -> $name1 == $name2.
+
+// Person[name] -> Person[ssn] - Always satisfied
+fd1: person(ssn: $ssn1, surname: $surname1, name: $name, boss: $boss1),
+person(ssn: $ssn2, surname: $surname2, name: $name, boss: $boss2)
+ -> $ssn1 == $ssn2.
+
+// Person[ssn] -> Person[boss]
+fd2: person(ssn: $ssn, surname: $surname1, name: $name1, boss: $boss1),
+person(ssn: $ssn, surname: $surname2, name: $name2, boss: $boss2)
+ -> $boss1 == $boss2.
+]]>
+  </dependencies>
+  <partialOrder>
+    <type>Greedy</type>
+  </partialOrder>
+  <costManager>
+    <type>Greedy</type>
+    <doPermutations>false</doPermutations>
+    <doBackward>false</doBackward>
+  </costManager>
+</scenario>
+

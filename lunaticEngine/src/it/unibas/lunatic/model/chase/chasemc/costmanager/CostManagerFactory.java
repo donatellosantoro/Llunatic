@@ -2,8 +2,10 @@ package it.unibas.lunatic.model.chase.chasemc.costmanager;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.GreedyCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.SimilarityToPreferredValueCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.StandardCostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.GreedySymmetricCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.SimilarityToPreferredValueSymmetricCostManager;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -33,6 +35,9 @@ public class CostManagerFactory {
         if (costManagerConfiguration.getType().equals(LunaticConstants.COST_MANAGER_SIMILARITY)) {
             return new SimilarityToPreferredValueSymmetricCostManager();
         }
+        if (costManagerConfiguration.getType().equals(LunaticConstants.COST_MANAGER_GREEDY)) {
+            return new GreedySymmetricCostManager();
+        }
         throw new IllegalArgumentException("Unknown costmanager type " + costManagerConfiguration.getType());
     }
 
@@ -42,6 +47,9 @@ public class CostManagerFactory {
         }
         if (costManagerConfiguration.getType().equals(LunaticConstants.COST_MANAGER_SIMILARITY)) {
             return new SimilarityToPreferredValueCostManager();
+        }
+        if (costManagerConfiguration.getType().equals(LunaticConstants.COST_MANAGER_GREEDY)) {
+            return new GreedyCostManager();
         }
         throw new IllegalArgumentException("Unknown costmanager type " + costManagerConfiguration.getType());
     }

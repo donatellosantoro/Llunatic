@@ -7,6 +7,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
+import it.unibas.lunatic.model.chase.chasemc.partialorder.GreedyPartialOrder;
 import it.unibas.lunatic.parser.operators.ParseDependencies;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.OrderingAttribute;
@@ -53,6 +54,7 @@ public class DAOMCScenario {
     ///////////////////// PARTIAL ORDER
     private static final String PARTIAL_ORDER_STANDARD = "Standard";
     private static final String PARTIAL_ORDER_FREQUENCY = "Frequency";
+    private static final String PARTIAL_ORDER_GREEDY = "Greedy";
     private static final String PARTIAL_ORDER_FREQUENCY_FO = "Frequency FO";
     ///////////////////// USER MANAGER
     private static final String USER_MANAGER_STANDARD = "Standard";
@@ -288,6 +290,9 @@ public class DAOMCScenario {
         if (PARTIAL_ORDER_FREQUENCY.equals(partialOrderType)) {
             return new FrequencyPartialOrder();
         }
+        if (PARTIAL_ORDER_GREEDY.equals(partialOrderType)) {
+            return new GreedyPartialOrder();
+        }
         if (PARTIAL_ORDER_FREQUENCY_FO.equals(partialOrderType)) {
             return new FrequencyPartialOrder();
 //            return new FrequencyPartialOrderFO();
@@ -324,6 +329,9 @@ public class DAOMCScenario {
         String costManagerType = typeElement.getValue();
         if (LunaticConstants.COST_MANAGER_STANDARD.equalsIgnoreCase(costManagerType)) {
             costManagerConfiguration.setType(LunaticConstants.COST_MANAGER_STANDARD);
+        }
+        if (LunaticConstants.COST_MANAGER_GREEDY.equalsIgnoreCase(costManagerType)) {
+            costManagerConfiguration.setType(LunaticConstants.COST_MANAGER_GREEDY);
         }
         if (LunaticConstants.COST_MANAGER_SIMILARITY.equalsIgnoreCase(costManagerType)) {
             costManagerConfiguration.setType(LunaticConstants.COST_MANAGER_SIMILARITY);

@@ -25,6 +25,7 @@ public class GreedyCostManager implements ICostManager {
     private static final Logger logger = LoggerFactory.getLogger(GreedyCostManager.class.getName());
     private final CheckSatisfactionAfterUpgradesEGD satisfactionChecker = new CheckSatisfactionAfterUpgradesEGD();
 
+    @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot, List<Repair> repairsForDependency, Scenario scenario, String stepId, OccurrenceHandlerMC occurrenceHandler) {
         assert (scenario.getPartialOrder() instanceof GreedyPartialOrder && scenario.getScriptPartialOrder() == null) : "The Greedy cost manager requires a Greedy partial order " + scenario;
         assert (scenario.getCostManagerConfiguration().isDoPermutations() == false) : "No permutations allowed in greedy repair cost manager " + scenario;

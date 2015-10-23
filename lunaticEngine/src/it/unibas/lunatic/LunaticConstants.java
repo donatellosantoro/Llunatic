@@ -65,7 +65,7 @@ public class LunaticConstants {
     public static final String COST_MANAGER_SIMILARITY = "Similarity";
 //    public static final String COST_MANAGER_SIMILARITY_MULTI_REPAIR = "SimilarityMultiRepair";
     public static final String COST_MANAGER_SAMPLING = "Sampling";
-    public static final String COST_MANAGER_MINCOST = "MinCost";
+    public static final String COST_MANAGER_GREEDY = "Greedy";
 
     ///////////////    DEBUG MODE     ///////////////////
 //    public static final boolean DBMS_DEBUG = true;
