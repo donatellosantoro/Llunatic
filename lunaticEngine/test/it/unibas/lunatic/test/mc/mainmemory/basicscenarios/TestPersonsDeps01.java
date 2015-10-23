@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TestPersonsDeps01 extends CheckExpectedSolutionsTest {
-    
+
     private static Logger logger = LoggerFactory.getLogger(TestPersonsDeps01.class);
-    
+
     public void test01() throws Exception { //FD Single column
         String scenarioName = "persons-deps-01";
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_01);

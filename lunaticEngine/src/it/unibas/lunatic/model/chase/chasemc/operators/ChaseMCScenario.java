@@ -76,7 +76,9 @@ public class ChaseMCScenario {
             DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);
             DeltaChaseStep result = doChase(root, scenario, chaseState);
             chaseTree.setRoot(result);
-            solutionRanker.rankSolutions(chaseTree);
+            if (scenario.getConfiguration().isRemoveDuplicates()) {
+                solutionRanker.rankSolutions(chaseTree);
+            }
             return chaseTree;
         } catch (ChaseFailedException e) {
             throw e;
@@ -85,9 +87,9 @@ public class ChaseMCScenario {
             ChaseStats.getInstance().addStat(ChaseStats.TOTAL_TIME, end - start);
             if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
         }
-        
+
     }
-    
+
     private DeltaChaseStep doChase(DeltaChaseStep root, Scenario scenario, IChaseState chaseState) {
         if (scenario.isDEDScenario()) {
             throw new ChaseException("ChaseMCScenario cannot handle scenarios with deds");
@@ -146,7 +148,7 @@ public class ChaseMCScenario {
     }
 
     // for user nodes
-    public DeltaChaseStep resumeChaseFromStep(DeltaChaseStep step, Scenario scenario) { 
+    public DeltaChaseStep resumeChaseFromStep(DeltaChaseStep step, Scenario scenario) {
         return doChase(step, scenario, ImmutableChaseState.getInstance());
     }
 }

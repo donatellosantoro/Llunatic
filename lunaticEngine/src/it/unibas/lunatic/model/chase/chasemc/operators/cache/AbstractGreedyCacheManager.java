@@ -46,7 +46,8 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
     @Override
     @SuppressWarnings("unchecked")
     public void generateCellGroupStats(DeltaChaseStep step) {
-        if (step.getCellGroupStats() != null || LunaticConstants.CHASE_STEP_TGD.equals(step.getChaseMode())) {
+//        if (step.getCellGroupStats() != null || LunaticConstants.CHASE_STEP_TGD.equals(step.getChaseMode())) {
+        if (step.getCellGroupStats() != null) {
             return;
         }
         loadCacheForStep(step.getId(), step.getDeltaDB(), step.getScenario());

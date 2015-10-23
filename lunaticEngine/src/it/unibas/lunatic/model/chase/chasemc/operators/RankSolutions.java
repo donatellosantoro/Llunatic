@@ -13,6 +13,7 @@ public class RankSolutions {
         List<DeltaChaseStep> solutions = extractSolutions(chaseTree);
         double numberCellsWeight = chaseTree.getScenario().getConfiguration().getNumberCellsWeightForRanking();
         for (DeltaChaseStep solution : solutions) {
+            assert (solution.getCellGroupStats() != null) : "No CellGroupStats in solution " + solution.toLongString();
             double rank = computeScore(solution, numberCellsWeight);
             solution.setScore(rank);
         }

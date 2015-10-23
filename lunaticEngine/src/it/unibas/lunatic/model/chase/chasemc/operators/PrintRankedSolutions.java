@@ -3,8 +3,11 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import java.text.DecimalFormat;
 
 public class PrintRankedSolutions {
+
+    private final DecimalFormat df = new DecimalFormat("#.##");
 
     public String toString(ChaseTree chaseTree) {
         return printRankedSolutions(chaseTree, false);
@@ -15,11 +18,14 @@ public class PrintRankedSolutions {
     }
 
     private String printRankedSolutions(ChaseTree chaseTree, boolean longString) {
+        if(!chaseTree.getScenario().getConfiguration().isRemoveDuplicates()){
+            return "*** Ranking not available. Please enable removeDuplicates in configuration *** ";
+        }
         StringBuilder sb = new StringBuilder();
         sb.append("+++++ RANKED SOLUTIONS +++++").append("\n");
         for (DeltaChaseStep rankedSolution : chaseTree.getRankedSolutions()) {
             sb.append("Solution: ").append(rankedSolution.getId());
-            sb.append(" Score: ").append(rankedSolution.getScore());
+            sb.append(" Score: ").append(df.format(rankedSolution.getScore()));
             sb.append(getAdditionalInfo(rankedSolution)).append("\n");
             if (longString) {
                 sb.append(OperatorFactory.getInstance().getChaseTreeToString(chaseTree.getScenario()).printStep(rankedSolution, true, false));
