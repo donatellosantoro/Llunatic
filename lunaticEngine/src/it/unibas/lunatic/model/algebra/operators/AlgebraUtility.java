@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.algebra.operators;
 
-import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.StringComparator;
+import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.StringComparatorForIValues;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
@@ -88,7 +88,7 @@ public class AlgebraUtility {
         if (result.isEmpty()) {
             return;
         }
-        Collections.sort(result, new StringComparator());
+        Collections.sort(result, new StringComparatorForIValues());
         Iterator tupleIterator = result.iterator();
         String prevValues = tupleIterator.next().toString();
         while (tupleIterator.hasNext()) {

@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator;
 import it.unibas.lunatic.exceptions.ChaseException;
 import speedy.model.database.IValue;
 
-public class FloatComparator extends StringComparator {
+public class FloatComparator extends StringComparatorForIValues {
 
     @Override
     public int compare(IValue v1, IValue v2) {

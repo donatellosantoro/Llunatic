@@ -15,7 +15,7 @@ import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.DateComparator;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.FloatComparator;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.IValueComparator;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.StringComparator;
+import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.StringComparatorForIValues;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.AfterForkUserManager;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.AfterLLUNForkUserManager;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.AfterLLUNUserManager;
@@ -253,7 +253,7 @@ public class DAOMCScenario {
         }
         IValueComparator comparator = null;
         if (valueComparatorElement.getChildren().isEmpty()) {
-            comparator = new StringComparator();
+            comparator = new StringComparatorForIValues();
         } else {
             Element valueComparatorImplElement = (Element) valueComparatorElement.getChildren().get(0);
             String valueComparatorImplName = valueComparatorImplElement.getName();
@@ -262,7 +262,7 @@ public class DAOMCScenario {
             } else if (VALUE_COMPARATOR_DATE.equalsIgnoreCase(valueComparatorImplName)) {
                 comparator = new DateComparator(valueComparatorImplElement.getAttributeValue("pattern"));
             } else if (VALUE_COMPARATOR_STRING.equalsIgnoreCase(valueComparatorImplName)) {
-                comparator = new StringComparator();
+                comparator = new StringComparatorForIValues();
             }
             if (comparator == null) {
                 throw new DAOException("Unable to load scenario from file " + fileScenario + ". Unknown value comparator " + valueComparatorImplElement.getName());

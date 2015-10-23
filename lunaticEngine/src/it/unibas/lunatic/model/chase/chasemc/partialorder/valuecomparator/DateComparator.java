@@ -7,7 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateComparator extends StringComparator {
+public class DateComparator extends StringComparatorForIValues {
 
     private DateFormat dateFormat;
 

@@ -49,10 +49,6 @@ public class StandardSymmetricCostManager implements ICostManager {
                     throw new ChaseException("Result already contains repair " + repair + "\nResult: " + result);
                 }
                 result.add(repair);
-//                if (result.contains(repair)) {
-//                    logger.info("Result already contains repair " + repair + "\nResult: " + result);
-//                }
-//                LunaticUtility.addIfNotContained(result, repair);
             }
         }
         return result;

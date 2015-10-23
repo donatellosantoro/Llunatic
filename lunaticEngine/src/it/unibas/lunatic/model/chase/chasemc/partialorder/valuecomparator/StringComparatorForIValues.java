@@ -4,9 +4,9 @@ import speedy.model.database.IValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StringComparator implements IValueComparator {
+public class StringComparatorForIValues implements IValueComparator {
 
-    private static Logger logger = LoggerFactory.getLogger(StringComparator.class);
+    private static Logger logger = LoggerFactory.getLogger(StringComparatorForIValues.class);
 
     private String sort;
 

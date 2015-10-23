@@ -54,10 +54,6 @@ public class StandardPartialOrder implements IPartialOrder {
         }
     }
 
-    public String toString() {
-        return "Standard";
-    }
-
     private IValue findLubValue(CellGroup lubCellGroup, Scenario scenario) {
         //User Cells
         Set<CellGroupCell> userCells = lubCellGroup.getUserCells();
@@ -192,4 +188,9 @@ public class StandardPartialOrder implements IPartialOrder {
         throw new ChaseException("Unable to extract additional cell for cell " + cell + " in cell group \n\t" + cellGroup);
     }
 
+
+    @Override
+    public String toString() {
+        return "Standard";
+    }
 }
