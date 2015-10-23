@@ -15,7 +15,7 @@ public class TestPersonsMinCost extends CheckExpectedSolutionsTest {
 
     public void testMinCost() throws Exception {
         String scenarioName = "persons-mincost";
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_mincost);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_greedy);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setCheckAllNodesForEGDSatisfaction(true);
@@ -33,7 +33,7 @@ public class TestPersonsMinCost extends CheckExpectedSolutionsTest {
 
     public void testMinCostNonSymmetric() throws Exception {
         String scenarioName = "persons-mincost";
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_mincost);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_greedy);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setRemoveDuplicates(false);

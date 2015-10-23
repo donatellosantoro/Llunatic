@@ -96,8 +96,8 @@ public class References {
     public static final String persons_deps_07_dbms = "mc/persons/person-deps-07-mcscenario-dbms.xml";
     public static final String persons_deps_08_dbms = "mc/persons/person-deps-08-mcscenario-dbms.xml";
     public static final String persons_fr_sp_dbms = "mc/persons/person-fr-sp-mcscenario-dbms.xml";
-    public static final String persons_deps_mincost = "mc/persons/person-deps-mincost-mcscenario.xml";
-    public static final String persons_deps_mincost_dbms = "mc/persons/person-deps-mincost-mcscenario-dbms.xml";
+    public static final String persons_deps_greedy = "mc/persons/person-deps-greedy-mcscenario.xml";
+    public static final String persons_deps_greedy_dbms = "mc/persons/person-deps-greedy-mcscenario-dbms.xml";
     
     public static final String flipflop = "mc/flipflop/flipflop-mcscenario.xml";
     public static final String flipflop_dmbs = "mc/flipflop/flipflop-mcscenario-dbms.xml";

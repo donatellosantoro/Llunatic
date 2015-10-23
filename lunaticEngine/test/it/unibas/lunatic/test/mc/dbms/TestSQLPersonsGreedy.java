@@ -9,13 +9,13 @@ import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestSQLPersonsMinCost extends CheckExpectedSolutionsTest {
+public class TestSQLPersonsGreedy extends CheckExpectedSolutionsTest {
 
-    private static Logger logger = LoggerFactory.getLogger(TestSQLPersonsMinCost.class);
+    private static Logger logger = LoggerFactory.getLogger(TestSQLPersonsGreedy.class);
 
     public void testMinCost() throws Exception {
         String scenarioName = "persons-mincost";
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_mincost_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_greedy_dbms, true);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setCheckAllNodesForEGDSatisfaction(true);
@@ -33,7 +33,7 @@ public class TestSQLPersonsMinCost extends CheckExpectedSolutionsTest {
 
     public void testMinCostNonSymmetric() throws Exception {
         String scenarioName = "persons-mincost";
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_mincost_dbms, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_greedy_dbms, true);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setRemoveDuplicates(false);

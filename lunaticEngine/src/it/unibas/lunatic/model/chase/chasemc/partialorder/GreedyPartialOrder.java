@@ -4,6 +4,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.CorrectCellGroupID;
+import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.StringComparatorForIValues;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,13 +13,14 @@ import speedy.model.database.IValue;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.utility.SpeedyUtility;
 import speedy.utility.comparator.StringComparator;
 
 public class GreedyPartialOrder extends StandardPartialOrder {
 
     private static final Logger logger = LoggerFactory.getLogger(GreedyPartialOrder.class);
     private final CorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
-    private final String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;   
+    private final String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;
 
     @Override
     public void setCellGroupValue(CellGroup lubCellGroup, Scenario scenario) {
@@ -35,10 +37,11 @@ public class GreedyPartialOrder extends StandardPartialOrder {
     private IValue findMinCostValue(CellGroup lubCellGroup, Scenario scenario) {
         IValue minCostValue = null;
         double minCost = Double.MAX_VALUE;
-        List<CellGroupCell> orderedOccurrences = new ArrayList<CellGroupCell>(lubCellGroup.getOccurrences());
-        Collections.sort(orderedOccurrences, new StringComparator());
-        for (CellGroupCell occurrence : orderedOccurrences) {
-            IValue value = occurrence.getOriginalValue(); 
+        List<CellGroupCell> occurrences = new ArrayList<CellGroupCell>(lubCellGroup.getOccurrences());
+        List<IValue> orderedValues = extractValues(occurrences);
+        Collections.sort(orderedValues, new StringComparatorForIValues());
+        if (logger.isDebugEnabled()) logger.debug("Ordered occurrences:\n" + SpeedyUtility.printCollection(orderedValues, "\t"));
+        for (IValue value : orderedValues) {
 //            if (value instanceof LLUNValue) {
 //                throw new IllegalArgumentException("Lluns are not allowed in GreedyCostManager..." + lubCellGroup);
 //            }
@@ -50,6 +53,14 @@ public class GreedyPartialOrder extends StandardPartialOrder {
             }
         }
         return minCostValue;
+    }
+
+    private List<IValue> extractValues(List<CellGroupCell> occurrences) {
+        List<IValue> result = new ArrayList<IValue>();
+        for (CellGroupCell occurrence : occurrences) {
+            result.add(occurrence.getOriginalValue());
+        }
+        return result;
     }
 
     private double calculateCost(IValue value, Set<CellGroupCell> occurrences, String similarityStrategy) {
