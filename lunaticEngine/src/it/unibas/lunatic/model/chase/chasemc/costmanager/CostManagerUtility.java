@@ -177,14 +177,14 @@ public class CostManagerUtility {
         return lub;
     }
 
-    public static boolean areSimilar(IValue v1, IValue v2, String similarityStrategy, double similarityThreshold) {
+    public static boolean areSimilar(IValue v1, IValue v2, SimilarityConfiguration similarityConfiguration) {
         if (v1 instanceof NullValue || v2 instanceof NullValue) {
             return true;
         }
         if (v1.toString().equalsIgnoreCase(v2.toString())) {
             return true;
         }
-        double similarity = SimilarityFactory.getInstance().getStrategy(similarityStrategy).computeSimilarity(v1, v2);
+        double similarity = SimilarityFactory.getInstance().getStrategy(similarityConfiguration.getStrategy()).computeSimilarity(v1, v2);
         try {
             double d1 = Double.parseDouble(v1.toString());
             double d2 = Double.parseDouble(v2.toString());
@@ -193,7 +193,7 @@ public class CostManagerUtility {
         }
         //
         if (logger.isDebugEnabled()) logger.debug("Checking similarity between " + v1 + " and " + v2 + ". Result: " + similarity);
-        return similarity > similarityThreshold;
+        return similarity > similarityConfiguration.getThreshold();
     }
 
     public static Repair generateSymmetricForwardRepair(List<EGDEquivalenceClassTuple> forwardTuples, Scenario scenario) {
@@ -338,12 +338,10 @@ public class CostManagerUtility {
         return result;
     }
 
-    public static Set<IValue> findForwardValues(IValue preferredValue, Set<IValue> conclusionValues, CostManagerConfiguration costManagerConfiguration) {
-        String similarityStrategy = costManagerConfiguration.getSimilarityStrategy();
-        double similarityThreshold = costManagerConfiguration.getSimilarityThreshold();
+    public static Set<IValue> findForwardValues(IValue preferredValue, Set<IValue> conclusionValues, SimilarityConfiguration similarityConfiguration) {
         Set<IValue> forwardValues = new HashSet<IValue>();
         for (IValue conclusionValue : conclusionValues) {
-            if (CostManagerUtility.areSimilar(preferredValue, conclusionValue, similarityStrategy, similarityThreshold)) {
+            if (CostManagerUtility.areSimilar(preferredValue, conclusionValue, similarityConfiguration)) {
                 forwardValues.add(conclusionValue);
             }
         }
@@ -395,5 +393,24 @@ public class CostManagerUtility {
             result.addAll(scenario.getStratification().getDependenciesForAttribute(attributeRef));
         }
         return result;
+    }
+
+    public static SimilarityConfiguration findSimilarityConfigurationForCells(Collection<CellGroupCell> cells, CostManagerConfiguration costManagerConfiguration) {
+        SimilarityConfiguration similarityConfiguration = costManagerConfiguration.getSimilarityConfiguration(cells.iterator().next().getAttributeRef());
+        for (CellGroupCell constantCell : cells) {
+            SimilarityConfiguration similarityConfigurationForAttribute = costManagerConfiguration.getSimilarityConfiguration(constantCell.getAttributeRef());
+            if (!similarityConfiguration.equals(similarityConfigurationForAttribute)) {
+                throw new IllegalArgumentException("Cells that are handled together must have the same similarity configuration. " + constantCell);
+            }
+        }
+        return similarityConfiguration;
+    }
+
+    public static SimilarityConfiguration findSimilarityConfigurationForCellGroups(List<CellGroup> cellGroups, CostManagerConfiguration costManagerConfiguration) {
+        List<CellGroupCell> occurrences = new ArrayList<CellGroupCell>();
+        for (CellGroup forwardCellGroup : cellGroups) {
+            occurrences.addAll(forwardCellGroup.getOccurrences());
+        }
+        return findSimilarityConfigurationForCells(occurrences, costManagerConfiguration);
     }
 }

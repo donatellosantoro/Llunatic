@@ -4,7 +4,10 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import speedy.model.database.AttributeRef;
 
 public class CostManagerConfiguration {
 
@@ -14,11 +17,10 @@ public class CostManagerConfiguration {
     private int chaseBranchingThreshold = 50;
     private int potentialSolutionsThreshold = 50;
     private int dependencyLimit = -1;
-    private int numberOfCandidateValuesForSimilarity = 50;
+    private int numberOfCandidateValuesForSimilarity = 5;
     // Similarity
-    private double similarityThreshold = 0.8;
-//    private String similarityStrategy = SimilarityFactory.SIMPLE_EDITS;
-    private String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;
+    private SimilarityConfiguration defaultSimilarityConfiguration = new SimilarityConfiguration(SimilarityFactory.LEVENSHTEIN_STRATEGY, 0.8);
+    private Map<AttributeRef, SimilarityConfiguration> similarityConfigurationForAttribute = new HashMap<AttributeRef, SimilarityConfiguration>();
     private boolean requestMajorityInSimilarityCostManager = true;
     private List<String> noBackwardDependencies = new ArrayList<String>();
 
@@ -69,20 +71,24 @@ public class CostManagerConfiguration {
         this.dependencyLimit = dependencyLimit;
     }
 
-    public double getSimilarityThreshold() {
-        return similarityThreshold;
+    public SimilarityConfiguration getDefaultSimilarityConfiguration() {
+        return defaultSimilarityConfiguration;
     }
 
-    public void setSimilarityThreshold(double similarityThreshold) {
-        this.similarityThreshold = similarityThreshold;
+    public void setDefaultSimilarityConfiguration(SimilarityConfiguration defaultSimilarityConfiguration) {
+        this.defaultSimilarityConfiguration = defaultSimilarityConfiguration;
     }
 
-    public String getSimilarityStrategy() {
-        return similarityStrategy;
+    public SimilarityConfiguration getSimilarityConfiguration(AttributeRef attribute) {
+        SimilarityConfiguration similarityConfiguration = similarityConfigurationForAttribute.get(attribute);
+        if (similarityConfiguration != null) {
+            return similarityConfiguration;
+        }
+        return defaultSimilarityConfiguration;
     }
 
-    public void setSimilarityStrategy(String similarityStrategy) {
-        this.similarityStrategy = similarityStrategy;
+    public void setSimilarityConfigurationForAttribute(AttributeRef attribute, SimilarityConfiguration similarityConfiguration) {
+        this.similarityConfigurationForAttribute.put(attribute, similarityConfiguration);
     }
 
     public String getType() {
@@ -126,8 +132,8 @@ public class CostManagerConfiguration {
                 + "\n\t chaseTreeSizeThreshold=" + chaseBranchingThreshold
                 + "\n\t potentialSolutionsThreshold=" + potentialSolutionsThreshold
                 + "\n\t dependencyLimit=" + dependencyLimit
-                + "\n\t similarityThreshold=" + similarityThreshold
-                + "\n\t similarityStrategy=" + similarityStrategy
+                + "\n\t defaultSimilarityConfigurationThreshold=" + defaultSimilarityConfiguration
+                + "\n\t similarityConfigurationForAttribute=" + similarityConfigurationForAttribute
                 + "\n\t requestMajorityInSimilarityCostManager=" + requestMajorityInSimilarityCostManager
                 + "\n\t numberOfCandidateValuesForSimilarity=" + numberOfCandidateValuesForSimilarity
                 + "\n\t noBackwardDependencies=" + noBackwardDependencies;

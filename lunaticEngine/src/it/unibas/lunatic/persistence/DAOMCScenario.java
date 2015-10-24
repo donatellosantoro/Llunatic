@@ -337,11 +337,11 @@ public class DAOMCScenario {
             costManagerConfiguration.setType(LunaticConstants.COST_MANAGER_SIMILARITY);
             Element similarityStrategyElement = costManagerElement.getChild("similarityStrategy");
             if (similarityStrategyElement != null) {
-                costManagerConfiguration.setSimilarityStrategy(similarityStrategyElement.getValue().trim());
+                costManagerConfiguration.getDefaultSimilarityConfiguration().setStrategy(similarityStrategyElement.getValue().trim());
             }
             Element similarityThresholdElement = costManagerElement.getChild("similarityThreshold");
             if (similarityThresholdElement != null) {
-                costManagerConfiguration.setSimilarityThreshold(Double.parseDouble(similarityThresholdElement.getValue()));
+                costManagerConfiguration.getDefaultSimilarityConfiguration().setThreshold(Double.parseDouble(similarityThresholdElement.getValue()));
             }
             Element requestMajority = costManagerElement.getChild("requestMajority");
             if (requestMajority != null) {

@@ -27,7 +27,7 @@
                errorProperty="test.failed"
                failureProperty="test.failed"
                fork="true"
-               showoutput="true"
+               showoutput="false"
                maxmemory="${junit.maxmemory}">
             <assertions>
                <enable/>
