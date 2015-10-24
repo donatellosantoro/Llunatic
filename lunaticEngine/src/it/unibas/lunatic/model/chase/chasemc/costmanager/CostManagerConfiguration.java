@@ -22,7 +22,7 @@ public class CostManagerConfiguration {
     private SimilarityConfiguration defaultSimilarityConfiguration = new SimilarityConfiguration(SimilarityFactory.LEVENSHTEIN_STRATEGY, 0.8);
     private Map<AttributeRef, SimilarityConfiguration> similarityConfigurationForAttribute = new HashMap<AttributeRef, SimilarityConfiguration>();
     private boolean requestMajorityInSimilarityCostManager = true;
-    private List<String> noBackwardDependencies = new ArrayList<String>();
+    private final List<String> noBackwardDependencies = new ArrayList<String>();
 
     public boolean isDoBackwardOnDependency(Dependency dependency) {
         return this.doBackward && !this.noBackwardDependencies.contains(dependency.getId());

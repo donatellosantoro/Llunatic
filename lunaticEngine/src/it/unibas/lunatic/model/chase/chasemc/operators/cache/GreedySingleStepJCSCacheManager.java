@@ -15,7 +15,6 @@ import speedy.model.database.IDatabase;
 import speedy.model.database.IValue;
 import speedy.model.database.operators.IRunQuery;
 import speedy.persistence.relational.QueryStatManager;
-import speedy.utility.comparator.TupleComparatorOIDs;
 
 public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager {
 
