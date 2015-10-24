@@ -1,9 +1,13 @@
-package it.unibas.lunatic.model.chase.chasemc.costmanager;
+package it.unibas.lunatic.model.similarity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SimilarityConfiguration {
 
     private String strategy;
     private double threshold;
+    private Map<String, String> params = new HashMap<String, String>();
 
     public SimilarityConfiguration(String strategy, double threshold) {
         this.strategy = strategy;
@@ -24,6 +28,10 @@ public class SimilarityConfiguration {
 
     public void setThreshold(double threshold) {
         this.threshold = threshold;
+    }
+
+    public Map<String, String> getParams() {
+        return params;
     }
 
     @Override

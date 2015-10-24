@@ -2,7 +2,7 @@ package it.unibas.lunatic;
 
 public class LunaticConfiguration {
 
-    public static boolean sout = true;
+    public static boolean sout = false;
     private boolean debugMode = false;
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;

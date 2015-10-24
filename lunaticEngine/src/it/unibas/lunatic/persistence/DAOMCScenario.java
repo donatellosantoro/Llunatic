@@ -6,6 +6,7 @@ import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
+import it.unibas.lunatic.model.similarity.SimilarityConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.GreedyPartialOrder;
 import it.unibas.lunatic.parser.operators.ParseDependencies;
@@ -26,6 +27,7 @@ import it.unibas.lunatic.model.chase.chasemc.usermanager.StandardUserManager;
 import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.script.ScriptException;
 import org.jdom.Attribute;
 import org.jdom.Document;
@@ -343,6 +345,7 @@ public class DAOMCScenario {
             if (similarityThresholdElement != null) {
                 costManagerConfiguration.getDefaultSimilarityConfiguration().setThreshold(Double.parseDouble(similarityThresholdElement.getValue()));
             }
+            loadExtraParams(costManagerConfiguration.getDefaultSimilarityConfiguration().getParams(), costManagerElement);
             Element requestMajority = costManagerElement.getChild("requestMajority");
             if (requestMajority != null) {
                 costManagerConfiguration.setRequestMajorityInSimilarityCostManager(Boolean.parseBoolean(requestMajority.getValue()));
@@ -379,7 +382,29 @@ public class DAOMCScenario {
             Element noBackwardElement = (Element) noBackwardEl;
             costManagerConfiguration.addNoBackwardDependency(noBackwardElement.getValue().trim());
         }
+        for (Object similarityAttributeEl : costManagerElement.getChildren("similarityForAttribute")) {
+            Element similarityAttributeElement = (Element) similarityAttributeEl;
+            String tableName = similarityAttributeElement.getAttribute("tableName").getValue().trim();
+            String attributeName = similarityAttributeElement.getAttribute("attributeName").getValue().trim();
+            AttributeRef attribute = new AttributeRef(tableName, attributeName);
+            String similarityStrategy = similarityAttributeElement.getChild("similarityStrategy").getValue().trim();
+            double similarityThreshold = Double.parseDouble(similarityAttributeElement.getChild("similarityThreshold").getValue().trim());
+            SimilarityConfiguration similarityConfiguration = new SimilarityConfiguration(similarityStrategy, similarityThreshold);
+            costManagerConfiguration.setSimilarityConfigurationForAttribute(attribute, similarityConfiguration);
+            loadExtraParams(similarityConfiguration.getParams(), similarityAttributeElement);
+        }
         return costManagerConfiguration;
+    }
+
+    private void loadExtraParams(Map<String, String> params, Element father) {
+        Element paramsElement = father.getChild("params");
+        if (paramsElement == null) return;
+        for (Object children : paramsElement.getChildren()) {
+            Element nameElement = (Element) children;
+            String key = nameElement.getName();
+            String value = nameElement.getValue().trim();
+            params.put(key, value);
+        }
     }
 
     private IUserManager loadUserManager(Element userManagerElement, Scenario scenario) {

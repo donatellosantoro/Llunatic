@@ -5,7 +5,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityConfiguration;
+import it.unibas.lunatic.model.similarity.SimilarityConfiguration;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import java.util.ArrayList;
 import speedy.model.database.IValue;
@@ -82,15 +82,6 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
             }
         }
         return similarCells;
-    }
-
-    private Set<IValue> extractAllOriginalValues(Set<CellGroupCell> nonAuthoritativeCells) {
-        Set<IValue> result = new HashSet<IValue>();
-        for (CellGroupCell cell : nonAuthoritativeCells) {
-            IValue originalValue = cell.getOriginalValue();
-            result.add(originalValue);
-        }
-        return result;
     }
 
     private IValue findFirstMaximallyFrequentValue(Set<CellGroupCell> nonAuthoritativeCells, boolean requestMajority) {

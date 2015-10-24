@@ -6,6 +6,7 @@ import java.util.Map;
 public class SimilarityFactory {
 
     public static final String MIXED_STRATEGY = "Mixed";
+    public static final String NUMERICAL_STRATEGY = "Numerical";
     public static final String SIMPLE_EDITS = "SimpleEdits";
     public static final String LEVENSHTEIN_STRATEGY = "Levenshtein";
     public static final String SMITH_WATERMAN_STRATEGY = "SmithWaterman";
@@ -19,21 +20,24 @@ public class SimilarityFactory {
         return singleton;
     }
 
-    public ISimilarityStrategy getStrategy(String strategyName) {
+    public ISimilarityStrategy getStrategy(String strategyName, Map<String, String> params) {
         ISimilarityStrategy cachedStrategy = cache.get(strategyName);
         if (cachedStrategy == null) {
-            cachedStrategy = createStrategy(strategyName);
+            cachedStrategy = createStrategy(strategyName, params);
             cache.put(strategyName, cachedStrategy);
         }
         return cachedStrategy;
     }
 
-    private ISimilarityStrategy createStrategy(String strategyName) {
+    private ISimilarityStrategy createStrategy(String strategyName, Map<String, String> params) {
         if (SIMPLE_EDITS.equals(strategyName)) {
             return new SimpleEditsSimilarity();
         }
         if (MIXED_STRATEGY.equals(strategyName)) {
             return new MixedSimilarity();
+        }
+        if (NUMERICAL_STRATEGY.equals(strategyName)) {
+            return new NumericalSimilarity(params);
         }
         return new GenericStringSimilarity(strategyName);
     }

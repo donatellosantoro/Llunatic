@@ -18,7 +18,7 @@ public class TSimilarity extends TestCase {
         for (int i = 0; i < values.length; i++) {
             IValue string1 = new ConstantValue(values[i][0]);
             IValue string2 = new ConstantValue(values[i][1]);
-            logger.info(string1 + " - " + string2 + " similarity: " + SimilarityFactory.getInstance().getStrategy("Levenshtein").computeSimilarity(string1, string2));            
+            logger.info(string1 + " - " + string2 + " similarity: " + SimilarityFactory.getInstance().getStrategy("Levenshtein", null).computeSimilarity(string1, string2));            
 //            logger.info(string1 + " - " + string2 + " similarity: " + SimilarityFactory.getInstance().getStrategy("SmithWaterman").computeSimilarity(string1, string2));            
 //            logger.info(string1 + " - " + string2 + " similarity: " + SimilarityFactory.getInstance().getStrategy("Soundex").computeSimilarity(string1, string2));            
 //            logger.info(string1 + " - " + string2 + " similarity: " + SimilarityFactory.getInstance().getStrategy("Jaro").computeSimilarity(string1, string2));            

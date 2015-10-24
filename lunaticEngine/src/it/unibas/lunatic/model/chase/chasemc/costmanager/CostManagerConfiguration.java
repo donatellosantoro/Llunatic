@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.costmanager;
 
+import it.unibas.lunatic.model.similarity.SimilarityConfiguration;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;

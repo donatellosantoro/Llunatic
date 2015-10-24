@@ -8,13 +8,14 @@ import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.String
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import speedy.model.database.IValue;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.utility.SpeedyUtility;
-import speedy.utility.comparator.StringComparator;
 
 public class GreedyPartialOrder extends StandardPartialOrder {
 
@@ -46,7 +47,7 @@ public class GreedyPartialOrder extends StandardPartialOrder {
 //                throw new IllegalArgumentException("Lluns are not allowed in GreedyCostManager..." + lubCellGroup);
 //            }
 //            double valueChangeCost = calculateCost(value, lubCellGroup.getOccurrences(), scenario.getCostManagerConfiguration().getSimilarityStrategy());
-            double valueChangeCost = calculateCost(value, lubCellGroup.getOccurrences(), similarityStrategy);
+            double valueChangeCost = calculateCost(value, lubCellGroup.getOccurrences(), similarityStrategy, new HashMap<String, String>());
             if (valueChangeCost < minCost) {
                 minCost = valueChangeCost;
                 minCostValue = value;
@@ -63,10 +64,10 @@ public class GreedyPartialOrder extends StandardPartialOrder {
         return result;
     }
 
-    private double calculateCost(IValue value, Set<CellGroupCell> occurrences, String similarityStrategy) {
+    private double calculateCost(IValue value, Set<CellGroupCell> occurrences, String similarityStrategy, Map<String, String> params) {
         double cost = 0;
         for (CellGroupCell occurrence : occurrences) {
-            double distance = 1.0 - SimilarityFactory.getInstance().getStrategy(similarityStrategy).computeSimilarity(value, occurrence.getValue());
+            double distance = 1.0 - SimilarityFactory.getInstance().getStrategy(similarityStrategy, params).computeSimilarity(value, occurrence.getValue());
             cost += distance;
         }
         return cost;

@@ -18,8 +18,7 @@ public class TSimilarityBatch extends TestCase {
     public void test() {
         ArrayList<Repair>[] repairs = new ArrayList[]{
             new ArrayList<Repair>(new DAOCSVRepair().loadRepair(UtilityTest.getAbsoluteFileName(References.similarity_mt))),
-            new ArrayList<Repair>(new DAOCSVRepair().loadRepair(UtilityTest.getAbsoluteFileName(References.similarity_backward))),
-//            new ArrayList<Repair>(new DAOCSVRepair().loadRepair(UtilityTest.getAbsoluteFileName(References.similarity_forward)))
+            new ArrayList<Repair>(new DAOCSVRepair().loadRepair(UtilityTest.getAbsoluteFileName(References.similarity_backward))), //            new ArrayList<Repair>(new DAOCSVRepair().loadRepair(UtilityTest.getAbsoluteFileName(References.similarity_forward)))
         };
         String[] strategies = new String[]{
             "MongeElkan",
@@ -59,7 +58,7 @@ public class TSimilarityBatch extends TestCase {
     }
 
     private double computeQuality(Collection<Repair> repairs, String similarityStrategyName, double similarityThreshold, boolean similar) {
-        ISimilarityStrategy similarityStrategy = SimilarityFactory.getInstance().getStrategy(similarityStrategyName);
+        ISimilarityStrategy similarityStrategy = SimilarityFactory.getInstance().getStrategy(similarityStrategyName, null);
         int recognized = 0;
         for (Repair repair : repairs) {
             double similarity = similarityStrategy.computeSimilarity(repair.getGroundValue(), repair.getDirtyValue());

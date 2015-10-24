@@ -178,7 +178,7 @@ public class ChaseTreeToString {
             result.append("+++++++++++++++");
             result.append(" Solution ").append(++counter);
             result.append("+++++++++++++++\n");
-            result.append(node.getCellGroupStats().toString()).append("\n");
+            result.append((node.getCellGroupStats() != null ? node.getCellGroupStats().toString()+"\n" : ""));
         } else {
             for (DeltaChaseStep child : node.getChildren()) {
                 printStats(child, result);

@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.costmanager;
 
+import it.unibas.lunatic.model.similarity.SimilarityConfiguration;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
@@ -184,13 +185,13 @@ public class CostManagerUtility {
         if (v1.toString().equalsIgnoreCase(v2.toString())) {
             return true;
         }
-        double similarity = SimilarityFactory.getInstance().getStrategy(similarityConfiguration.getStrategy()).computeSimilarity(v1, v2);
-        try {
-            double d1 = Double.parseDouble(v1.toString());
-            double d2 = Double.parseDouble(v2.toString());
-            similarity = 0.9;
-        } catch (NumberFormatException nfe) {
-        }
+        double similarity = SimilarityFactory.getInstance().getStrategy(similarityConfiguration.getStrategy(), similarityConfiguration.getParams()).computeSimilarity(v1, v2);
+//        try {
+//            double d1 = Double.parseDouble(v1.toString());
+//            double d2 = Double.parseDouble(v2.toString());
+//            similarity = 0.9;
+//        } catch (NumberFormatException nfe) {
+//        }
         //
         if (logger.isDebugEnabled()) logger.debug("Checking similarity between " + v1 + " and " + v2 + ". Result: " + similarity);
         return similarity > similarityConfiguration.getThreshold();
