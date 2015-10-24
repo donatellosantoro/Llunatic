@@ -6,6 +6,8 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedDependency;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.DependencyStratum;
+import it.unibas.lunatic.model.dependency.IFormulaAtom;
+import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ public class AnalyzeDependencies {
         findAllAffectedAttributes(scenario.getExtEGDs());
         assignAdditionalAttributes(scenario.getExtEGDs(), scenario);
         scenario.setStratification(stratification);
+        checkAuthoritativeSources(scenario.getExtEGDs(), scenario);        
     }
 
     private void findAllQueriedAttributesForEGDs(List<Dependency> dependencies) {
@@ -148,6 +151,27 @@ public class AnalyzeDependencies {
             }
             for (AttributeRef attribute : dependency.getAffectedAttributes()) {
                 stratification.addDependencyForAttribute(attribute, dependency);
+            }
+        }
+    }
+
+    private void checkAuthoritativeSources(List<Dependency> extEGDs, Scenario scenario) {
+        for (Dependency egd : extEGDs) {
+            if (!DependencyUtility.hasSourceSymbols(egd)) {
+                continue;
+            }
+            for (IFormulaAtom atom : egd.getPremise().getPositiveFormula().getAtoms()) {
+                if (!(atom instanceof RelationalAtom)) {
+                    continue;
+                }
+                RelationalAtom relationalAtom = (RelationalAtom)atom;
+                if (!relationalAtom.isSource()) {
+                    continue;
+                }
+                String tableName = relationalAtom.getTableName();
+                if (!scenario.getAuthoritativeSources().contains(tableName)) {
+                    System.out.println("**** WARNING: egd " + egd.getId() + " contain a source non-authoritative atom:\n" + egd);
+                }
             }
         }
     }
