@@ -195,7 +195,7 @@ public class ParseDependencies {
         }
     }
 
-// final callback method for processing tgds
+// final callback method for processing dependencies
     public void processDependencies() {
         scenario.setSTTGDs(processDependencies(stTGDs));
         scenario.setExtTGDs(processExtTGDs(eTGDs, false));
