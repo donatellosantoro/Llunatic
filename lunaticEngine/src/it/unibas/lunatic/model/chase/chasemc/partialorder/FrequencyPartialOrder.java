@@ -5,6 +5,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityConfiguration;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import java.util.ArrayList;
 import speedy.model.database.IValue;
@@ -29,6 +30,8 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
         if (!(lubValue instanceof LLUNValue)) {
             return lubValue;
         }
+        CostManagerConfiguration costManagerConfiguration = scenario.getCostManagerConfiguration();
+        SimilarityConfiguration similarityConfiguration = CostManagerUtility.findSimilarityConfigurationForCells(constantCells, scenario.getCostManagerConfiguration());
         Map<IValue, Set<CellGroupCell>> occurrenceHistogram = partitionCellsByValue(constantCells);
         if (logger.isDebugEnabled()) logger.debug("Histogram for cells\n" + occurrenceHistogram);
         List<Map.Entry<IValue, Set<CellGroupCell>>> sortedHistogram = ChaseUtility.sortEntriesWithSizes(occurrenceHistogram);
@@ -36,9 +39,9 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
         if (hasMajority(sortedHistogram, constantCells.size())) {
             return firstMaxValue;
         }
-        Map<IValue, Integer> similarityHistogram = buildSimilarityHistogram(sortedHistogram, scenario.getCostManagerConfiguration());
+        Map<IValue, Integer> similarityHistogram = buildSimilarityHistogram(sortedHistogram, similarityConfiguration, costManagerConfiguration);
         if (logger.isDebugEnabled()) logger.debug("Similarity Histogram for cells\n" + similarityHistogram);
-        IValue mostFrequentValue = findValueWithMostSimilarOccurrences(similarityHistogram, scenario.getCostManagerConfiguration().isRequestMajorityInSimilarityCostManager());
+        IValue mostFrequentValue = findValueWithMostSimilarOccurrences(similarityHistogram, costManagerConfiguration.isRequestMajorityInSimilarityCostManager());
         if (mostFrequentValue != null && !mostFrequentValue.toString().startsWith(NO_MAJORITY)) {
             if (logger.isDebugEnabled()) logger.debug("Most frequent value in cell group:" + cellGroup + "\n\t ->" + mostFrequentValue);
             return mostFrequentValue;
@@ -51,11 +54,11 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
         return occurrencesOfFirstMaxValue > (size / 2);
     }
 
-    private Map<IValue, Integer> buildSimilarityHistogram(List<Map.Entry<IValue, Set<CellGroupCell>>> sortedHistogram, CostManagerConfiguration costManagerConfiguration) {
+    private Map<IValue, Integer> buildSimilarityHistogram(List<Map.Entry<IValue, Set<CellGroupCell>>> sortedHistogram, SimilarityConfiguration similarityConfiguration, CostManagerConfiguration costManagerConfiguration) {
         List<IValue> candidateValues = findCandidateValues(sortedHistogram, costManagerConfiguration.getNumberOfCandidateValuesForSimilarity());
         Map<IValue, Set<CellGroupCell>> similarityMap = new HashMap<IValue, Set<CellGroupCell>>();
         for (IValue value : candidateValues) {
-            Set<CellGroupCell> similarCells = findSimilarCells(value, sortedHistogram, costManagerConfiguration);
+            Set<CellGroupCell> similarCells = findSimilarCells(value, sortedHistogram, similarityConfiguration);
             similarityMap.put(value, similarCells);
         }
         int counterNoMajority = 1;
@@ -70,13 +73,11 @@ public class FrequencyPartialOrder extends StandardPartialOrder {
         return result;
     }
 
-    private Set<CellGroupCell> findSimilarCells(IValue value, List<Map.Entry<IValue, Set<CellGroupCell>>> sortedHistogram, CostManagerConfiguration costManagerConfiguration) {
-        String similarityStrategy = costManagerConfiguration.getSimilarityStrategy();
-        double similarityThreshold = costManagerConfiguration.getSimilarityThreshold();
+    private Set<CellGroupCell> findSimilarCells(IValue value, List<Map.Entry<IValue, Set<CellGroupCell>>> sortedHistogram, SimilarityConfiguration similarityConfiguration) {
         Set<CellGroupCell> similarCells = new HashSet<CellGroupCell>();
         for (int i = 0; i < sortedHistogram.size(); i++) {
             IValue valueInMap = sortedHistogram.get(i).getKey();
-            if (CostManagerUtility.areSimilar(value, valueInMap, similarityStrategy, similarityThreshold)) {
+            if (CostManagerUtility.areSimilar(value, valueInMap, similarityConfiguration)) {
                 similarCells.addAll(sortedHistogram.get(i).getValue());
             }
         }

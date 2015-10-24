@@ -11,6 +11,7 @@ import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CellGroupScore;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
@@ -55,6 +56,7 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
             return Collections.EMPTY_LIST;
         }
         List<CellGroup> forwardCellGroups = equivalenceClass.getAllConclusionCellGroups();
+        SimilarityConfiguration similarityConfiguration = CostManagerUtility.findSimilarityConfigurationForCellGroups(forwardCellGroups, scenario.getCostManagerConfiguration());
         if (!scenario.getCostManagerConfiguration().isDoBackwardOnDependency(equivalenceClass.getEGD())) {
             List<ViolationContext> forwardContexts = equivalenceClass.getViolationContexts();
             Repair forwardRepair = CostManagerUtility.generateStandardForwardRepair(forwardContexts, scenario);
@@ -68,7 +70,7 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
             List<ViolationContext> forwardContexts = equivalenceClass.getViolationContexts();
             repair = CostManagerUtility.generateStandardForwardRepair(forwardContexts, scenario);
         } else {
-            repair = generateRepairForConstantPreferredValue(preferredValue, equivalenceClass, scenario);
+            repair = generateRepairForConstantPreferredValue(preferredValue, equivalenceClass, similarityConfiguration, scenario);
         }
         if (logger.isInfoEnabled()) logger.info("Returning repair " + repair);
         return new ArrayList<Repair>(Arrays.asList(new Repair[]{repair}));
@@ -83,8 +85,8 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
         return false;
     }
 
-    private Repair generateRepairForConstantPreferredValue(IValue preferredValue, EquivalenceClassForEGD equivalenceClass, Scenario scenario) {
-        Set<IValue> forwardValues = CostManagerUtility.findForwardValues(preferredValue, equivalenceClass.getAllConclusionValues(), scenario.getCostManagerConfiguration());
+    private Repair generateRepairForConstantPreferredValue(IValue preferredValue, EquivalenceClassForEGD equivalenceClass, SimilarityConfiguration similarityConfiguration, Scenario scenario) {
+        Set<IValue> forwardValues = CostManagerUtility.findForwardValues(preferredValue, equivalenceClass.getAllConclusionValues(), similarityConfiguration);
         Set<TupleOID> forwardTupleOIDs = extractTupleOIDs(forwardValues, equivalenceClass);
         boolean debug = isDebug(equivalenceClass);
         if (debug) logger.info("Forward values: " + forwardValues);
