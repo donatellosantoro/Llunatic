@@ -205,7 +205,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
             indexContext(enrichedCellGroup, violationContext, equivalenceClass);
             indexConclusionValues(enrichedCellGroup, equivalenceClass);
         }
-//        if (scenario.getCostManagerConfiguration().isDoBackward()) {
+//        if (scenario.getCostManagerConfiguration().isDoBackwardForAllDependencies()) {
         //Then adds cell groups for backward repairs - one for each occurrence
         for (VariableEquivalenceClass witnessVEQ : equivalenceClass.getDependencyVariables().getWitnessVariables()) {
             Set<CellGroup> cellGroupsForWitnessVariable = new HashSet<CellGroup>();
