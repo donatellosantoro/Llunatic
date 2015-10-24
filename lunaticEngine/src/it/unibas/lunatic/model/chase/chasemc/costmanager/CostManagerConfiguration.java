@@ -20,7 +20,7 @@ public class CostManagerConfiguration {
 //    private String similarityStrategy = SimilarityFactory.SIMPLE_EDITS;
     private String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;
     private boolean requestMajorityInSimilarityCostManager = true;
-    private List<String> noBackwardDependencies = new ArrayList<String>();
+    private final List<String> noBackwardDependencies = new ArrayList<String>();
 
     public boolean isDoBackwardOnDependency(Dependency dependency) {
         return this.doBackward && !this.noBackwardDependencies.contains(dependency.getId());

@@ -111,6 +111,7 @@ public class ChaseDeltaExtEGDs {
         boolean userInteractionRequired = false;
         for (Dependency egd : egdsToChase) {
             if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
+            if (LunaticConfiguration.sout) System.out.println("\t******Chasing edg: " + egd.getId());
             long startEgd = new Date().getTime();
             if (logger.isDebugEnabled()) logger.info("* Chasing dependency " + egd.getId() + " on step " + currentNode.getId());
             if (logger.isDebugEnabled()) logger.info("* Algebra operator " + premiseTreeMap.get(egd));
