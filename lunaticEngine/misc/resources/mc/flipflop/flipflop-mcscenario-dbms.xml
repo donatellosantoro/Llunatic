@@ -68,6 +68,10 @@ r(a: $a, b: $b),
  -> $a == $a1.
 ]]>
   </dependencies>
+  <authoritativeSources>
+    <source>const1</source>
+    <source>const2</source>
+  </authoritativeSources>
   <partialOrder/>
 </scenario>
 

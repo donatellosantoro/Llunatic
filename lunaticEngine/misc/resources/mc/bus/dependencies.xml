@@ -73,6 +73,6 @@ e10: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiern
 ]]>
     </dependencies>
 <authoritativeSources>
-    <source>consttablecf1</source>
-    <source>consttablecf2</source>
+    <!--<source>consttablecf1</source>-->
+    <!--<source>consttablecf2</source>-->
 </authoritativeSources>

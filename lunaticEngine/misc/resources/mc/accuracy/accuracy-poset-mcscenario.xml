@@ -106,6 +106,9 @@ md1: masterdata(fn: $fn, ln: $ln, league: $league, season: $season, team: $team1
             </valueComparator>
         </orderingAttribute>
     </orderingAttributes>
+  <authoritativeSources>
+    <source>masterdata</source>
+  </authoritativeSources>
     <partialOrder>
         <type>Frequency</type>
     </partialOrder>

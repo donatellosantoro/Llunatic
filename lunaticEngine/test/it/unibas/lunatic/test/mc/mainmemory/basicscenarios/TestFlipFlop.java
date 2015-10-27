@@ -15,20 +15,20 @@ public class TestFlipFlop extends CheckExpectedSolutionsTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestFlipFlop.class);
 
-//    public void testScenarioFlipFlop() throws Exception {
-//        Scenario scenario = UtilityTest.loadScenarioFromResources(References.flipflop);
-//        setConfigurationForTest(scenario);
-//        if (logger.isDebugEnabled()) logger.debug("Scenario " + scenario);
-//        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
-//        DeltaChaseStep result = chaser.doChase(scenario);
-////        if (logger.isDebugEnabled()) logger.debug(result.toShortString());
-//        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
-//        Assert.assertEquals(2, resultSizer.getPotentialSolutions(result));
-//        Assert.assertEquals(0, resultSizer.getDuplicates(result));
-//        checkSolutions(result);
-////        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedFlipFlop", result);
-//        checkExpectedSolutions("expectedFlipFlop", result);
-//    }
+    public void testScenarioFlipFlop() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.flipflop);
+        setConfigurationForTest(scenario);
+        if (logger.isDebugEnabled()) logger.debug("Scenario " + scenario);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        DeltaChaseStep result = chaser.doChase(scenario);
+//        if (logger.isDebugEnabled()) logger.debug(result.toShortString());
+        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
+        Assert.assertEquals(2, resultSizer.getPotentialSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
+        checkSolutions(result);
+//        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedFlipFlop", result);
+        checkExpectedSolutions("expectedFlipFlop", result);
+    }
 
     public void testScenarioContraddicting() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.contraddicting);
@@ -43,19 +43,19 @@ public class TestFlipFlop extends CheckExpectedSolutionsTest {
         checkSolutions(result);
     }
 
-//    public void testScenarioContraddictingForwardOnly() throws Exception {
-//        Scenario scenario = UtilityTest.loadScenarioFromResources(References.contraddicting);
-//        setConfigurationForTest(scenario);
-//        scenario.getCostManagerConfiguration().setDoPermutations(false);
-//        scenario.getCostManagerConfiguration().setDoBackward(false);
-//        if (logger.isDebugEnabled()) logger.debug("Scenario " + scenario);
-//        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
-//        DeltaChaseStep result = chaser.doChase(scenario);
-//        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
-//        Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
-//        Assert.assertEquals(0, resultSizer.getDuplicates(result));
-//        checkSolutions(result);
-////        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedContraddictingForwardOnly", result);
-//        checkExpectedSolutions("expectedContraddictingForwardOnly", result);
-//    }
+    public void testScenarioContraddictingForwardOnly() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.contraddicting);
+        setConfigurationForTest(scenario);
+        scenario.getCostManagerConfiguration().setDoPermutations(false);
+        scenario.getCostManagerConfiguration().setDoBackward(false);
+        if (logger.isDebugEnabled()) logger.debug("Scenario " + scenario);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        DeltaChaseStep result = chaser.doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
+        Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
+        checkSolutions(result);
+//        exportResults("/Users/enzoveltri/Temp/lunatic_tmp/expectedContraddictingForwardOnly", result);
+        checkExpectedSolutions("expectedContraddictingForwardOnly", result);
+    }
 }

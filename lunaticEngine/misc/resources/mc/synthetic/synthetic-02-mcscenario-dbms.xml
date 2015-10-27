@@ -58,5 +58,8 @@ r(a: $x1, b: $y1, c: $z), r(a: $x2, b: $y2, c: $z) -> $x1 == $x2.
 ]]>
   </dependencies>
   <partialOrder/>
+  <authoritativeSources>
+    <source>consta1</source>
+  </authoritativeSources>
 </scenario>
 

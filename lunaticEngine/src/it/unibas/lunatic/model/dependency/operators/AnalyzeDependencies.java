@@ -171,6 +171,7 @@ public class AnalyzeDependencies {
                 String tableName = relationalAtom.getTableName();
                 if (!scenario.getAuthoritativeSources().contains(tableName)) {
                     System.out.println("**** WARNING: egd " + egd.getId() + " contain a source non-authoritative atom:\n" + egd);
+//                    throw new IllegalArgumentException("**** WARNING: egd " + egd.getId() + " contain a source non-authoritative atom:\n" + egd);
                 }
             }
         }

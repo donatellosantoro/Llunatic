@@ -38,6 +38,7 @@ public class ChaseMCScenario {
     private final ChaseDeltaExtEGDs egdChaser;
     private final IBuildDeltaDB deltaBuilder;
     private final AnalyzeDependencies stratificationBuilder = new AnalyzeDependencies();
+    private final CheckRedundancyInAuthoritativeTables checkRedundancy = new CheckRedundancyInAuthoritativeTables();
     private final CheckSolution solutionChecker;
     private final RankSolutions solutionRanker = new RankSolutions();
 
@@ -56,6 +57,7 @@ public class ChaseMCScenario {
     public ChaseTree doChase(Scenario scenario, IChaseState chaseState) {
         long start = new Date().getTime();
         try {
+            checkRedundancy.check(scenario);
             // s-t tgds are chased in the standard way; this works fine as long as there are no authoritative sources
             // in place of null cells + justifications, new cells with values are generated
             stChaser.doChase(scenario, false);

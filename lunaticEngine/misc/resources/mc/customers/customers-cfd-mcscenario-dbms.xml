@@ -71,6 +71,10 @@ cust(cc: $cc, ac: $ac, name: $name1, street: $street1, city: $city1, zip: $zip1)
 consttable2(cc: $cc, ac: $ac, city: $city2) -> $city1 == $city2.
 ]]>
   </dependencies>
+  <authoritativeSources>
+    <source>consttable1</source>
+    <source>consttable2</source>
+  </authoritativeSources>
   <partialOrder/>
 </scenario>
 

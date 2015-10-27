@@ -50,6 +50,7 @@ public class UtilityTest {
     }
 
     private static Scenario loadScenario(String fileScenario, boolean recreateDB) {
+        if (logger.isDebugEnabled()) logger.debug("Loading scenario: " + fileScenario);
         Assert.assertNotNull(fileScenario);
         try {
             if (recreateDB) {

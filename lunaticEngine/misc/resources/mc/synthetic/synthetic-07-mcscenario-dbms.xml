@@ -67,6 +67,9 @@ const(a: $x)
  -> $y1 == $y2.
 ]]>
     </dependencies>
+  <authoritativeSources>
+    <source>const</source>
+  </authoritativeSources>
     <partialOrder/>
     <configuration/>
 </scenario>
