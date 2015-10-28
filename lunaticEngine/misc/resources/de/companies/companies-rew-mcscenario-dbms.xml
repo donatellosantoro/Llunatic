@@ -95,7 +95,7 @@ CREATE TABLE company (
     name text
 ) with oids;
 
-CREATE TABLE "grant" (
+CREATE TABLE "grants" (
     amount text,
     company text
 ) with oids;
@@ -120,7 +120,7 @@ nsfgrantee(id: $x1943, name: $x1944) ->
         company(id: $x1943, name: $x1944).
 
 nsfgrant(amount: $x1945, company: $x1946) -> 
-        grant(amount: $x1945, company: $x1946).
+        grants(amount: $x1945, company: $x1946).
 
 publiccompany(name: $x1950, city: $x1947), 
 publicgrant(company: $x1950, investigator: $x1948, amount: $x1949)
@@ -129,7 +129,7 @@ publicgrant(company: $x1950, investigator: $x1948, amount: $x1949)
         nsfgrant(amount: $x1949, company: $x1951)
   ) -> 
         company(id: $Y1955, name: $x1950), 
-        grant(amount: $x1949, company: $Y1955).
+        grants(amount: $x1949, company: $Y1955).
 ]]>
   </dependencies>
   <partialOrder/>
