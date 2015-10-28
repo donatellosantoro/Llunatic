@@ -3,7 +3,9 @@ package it.unibas.lunatic.model.chase.chasemc.operators.cache;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.jcs.JCS;
@@ -125,6 +127,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
 //            logger.warn("Cache for step " + stepId + " already loaded...");
             return;
         }
+        long start = new Date().getTime();
         if (LunaticConfiguration.sout) System.out.println("\t******Loading cache for step: " + stepId + " (current step: " + currentCachedStepId + ")");
 //        if (previousCachedStepIds.contains(stepId)) {
 //            if (logger.isDebugEnabled()) logger.debug("Reloading an old cached step... " + stepId);
@@ -141,6 +144,8 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
         loadCellGroups(stepId, deltaDB, scenario);
         if (logger.isDebugEnabled()) logger.debug("Cell groups for step " + stepId + " loaded: " + this.cellGroupCache.getStats());
         if (logger.isDebugEnabled()) logger.debug("### CACHE FOR STEP " + stepId + " LOADED...");
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.CACHE_LOAD_TIME, end - start);
     }
 
     @Override

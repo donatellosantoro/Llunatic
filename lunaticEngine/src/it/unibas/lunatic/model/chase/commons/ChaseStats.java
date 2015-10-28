@@ -22,6 +22,8 @@ public class ChaseStats {
     public static final String REMOVE_DUPLICATE_TIME = "Removing Duplicate Time";
     public static final String DUPLICATE_TIME = "Finding Duplicate Time";
     public static final String COMPUTE_SIMILARITY_TIME = "Compute Similarity Time";
+    public static final String CHECK_REDUNDANCY_TIME = "Check Redundancy Time";
+    public static final String CACHE_LOAD_TIME = "Cache Load Time";
     public static final String NUMBER_OF_STTGDS = "#ST-TGDs";
     public static final String NUMBER_OF_EXTGDS = "#Ex-TGDs";
     public static final String NUMBER_OF_EXTEGDS = "#Ex-EGDs";
@@ -113,9 +115,11 @@ public class ChaseStats {
         if (stats.containsKey(DTGD_TIME)) sb.append(DTGD_TIME + ": ").append(stats.get(DTGD_TIME)).append(" ms").append("\n");
         if (stats.containsKey(DELTA_DB_BUILDER)) sb.append(DELTA_DB_BUILDER + ": ").append(stats.get(DELTA_DB_BUILDER)).append(" ms").append("\n");
         if (stats.containsKey(DELTA_DB_STEP_BUILDER)) sb.append(DELTA_DB_STEP_BUILDER + ": ").append(stats.get(DELTA_DB_STEP_BUILDER)).append(" ms").append("\n");
+        if (stats.containsKey(CACHE_LOAD_TIME)) sb.append(CACHE_LOAD_TIME + ": ").append(stats.get(CACHE_LOAD_TIME)).append(" ms").append("\n");
         if (stats.containsKey(DUPLICATE_TIME)) sb.append(DUPLICATE_TIME + ": ").append(stats.get(DUPLICATE_TIME)).append(" ms").append("\n");
         if (stats.containsKey(REMOVE_DUPLICATE_TIME)) sb.append(REMOVE_DUPLICATE_TIME + ": ").append(stats.get(REMOVE_DUPLICATE_TIME)).append(" ms").append("\n");
         if (stats.containsKey(COMPUTE_SIMILARITY_TIME)) sb.append(COMPUTE_SIMILARITY_TIME + ": ").append(stats.get(COMPUTE_SIMILARITY_TIME)).append(" ms").append("\n");
+        if (stats.containsKey(CHECK_REDUNDANCY_TIME)) sb.append(CHECK_REDUNDANCY_TIME + ": ").append(stats.get(CHECK_REDUNDANCY_TIME)).append(" ms").append("\n");
         sb.append("-------------------------").append("\n");
         sb.append("------ CHASE STATS ------").append("\n");
         for (Dependency d : dependencyStats.keySet()) {

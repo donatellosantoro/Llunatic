@@ -44,21 +44,21 @@ import speedy.model.database.TupleOID;
 import speedy.model.database.operators.IRunQuery;
 
 public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(ChaseSymmetricEGDEquivalenceClass.class);
-
+    
     private final IRunQuery queryRunner;
     private final OccurrenceHandlerMC occurrenceHandler;
     private final ChangeCell cellChanger;
     private Tuple lastTuple;
     private boolean lastTupleHandled;
-
+    
     public ChaseSymmetricEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, ChangeCell cellChanger) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
         this.cellChanger = cellChanger;
     }
-
+    
     @Override
     public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
         if (logger.isDebugEnabled()) logger.debug("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
@@ -102,11 +102,11 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         ChaseStats.getInstance().addStat(ChaseStats.EGD_REPAIR_TIME, repairEnd - repairStart);
         return newSteps;
     }
-
+    
     private boolean noMoreTuples(ITupleIterator it) {
         return (!it.hasNext() && lastTupleHandled);
     }
-
+    
     private EquivalenceClassForSymmetricEGD readNextEquivalenceClass(ITupleIterator it, Dependency egd, IDatabase deltaDB, String stepId, IChaseState chaseState, Scenario scenario) {
         if (!it.hasNext() && (this.lastTupleHandled || this.lastTuple == null)) {
             return null;
@@ -140,7 +140,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         if (logger.isDebugEnabled()) logger.debug("-------- Equivalence class:\n" + equivalenceClass + "\n---------------");
         return equivalenceClass;
     }
-
+    
     private EquivalenceClassForSymmetricEGD createEquivalenceClass(Dependency egd) {
         FormulaVariable v1 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(0);
         AttributeRef variableOccurrence = v1.getPremiseRelationalOccurrences().get(0).getAttributeRef();
@@ -148,7 +148,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         List<BackwardAttribute> attributesForBackwardChasing = findAttributesForBackwardChasing(egd);
         return new EquivalenceClassForSymmetricEGD(egd, conclusionAttribute, attributesForBackwardChasing);
     }
-
+    
     private List<BackwardAttribute> findAttributesForBackwardChasing(Dependency egd) {
         List<BackwardAttribute> attributesForBackwardChasing = new ArrayList<BackwardAttribute>();
         for (FormulaVariableOccurrence backwardAttributeOccurrence : egd.getBackwardAttributes()) {
@@ -162,7 +162,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         }
         return attributesForBackwardChasing;
     }
-
+    
     private void addTuple(Tuple tuple, EquivalenceClassForSymmetricEGD equivalenceClass, CostManagerConfiguration costManagerConfiguration, IDatabase deltaDB, String stepId, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.trace("Adding tuple " + tuple + " to equivalence class: " + equivalenceClass);
         AttributeRef conclusionAttribute = equivalenceClass.getConclusionAttribute();
@@ -177,7 +177,6 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         addAdditionalAttributes(forwardCellGroup, originalOid, tuple, equivalenceClass.getEGD());
         CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(forwardCellGroup, deltaDB, stepId, scenario);
         EGDEquivalenceClassTuple tupleCells = new EGDEquivalenceClassTuple(enrichedCellGroup);
-//        if (costManagerConfiguration.isDoBackward()) {
         for (BackwardAttribute backwardAttribute : equivalenceClass.getAttributesToChangeForBackwardChasing()) {
             AttributeRef attributeForBackwardChasing = backwardAttribute.getAttributeRef();
             Cell cellForBackward = tuple.getCell(attributeForBackwardChasing);
@@ -189,19 +188,20 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             CellGroup enrichedBackwardCellGroup = this.occurrenceHandler.enrichCellGroups(backwardCellGroup, deltaDB, stepId, scenario);
             tupleCells.setCellGroupForBackwardAttribute(backwardAttribute, enrichedBackwardCellGroup);
         }
-//        }
         equivalenceClass.addTupleCells(tupleCells);
         equivalenceClass.addTupleCellsForValue(conclusionValue, tupleCells);
-        indexCells(tupleCells, equivalenceClass);
+//        if (costManagerConfiguration.isDoBackwardOnDependency(equivalenceClass.getEGD())) {
+            indexCells(tupleCells, equivalenceClass);
+//        }
         if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
     }
-
+    
     private void indexCells(EGDEquivalenceClassTuple tupleCells, EquivalenceClassForSymmetricEGD equivalenceClass) {
         for (Cell cell : tupleCells.getAllCells()) {
             equivalenceClass.indexTupleCellsForCell(cell, tupleCells);
         }
     }
-
+    
     private void addAdditionalAttributes(CellGroup cellGroup, TupleOID originalOIDForConclusionValue, Tuple tuple, Dependency egd) {
         for (AttributeRef additionalAttribute : egd.getAdditionalAttributes()) {
             for (Cell additionalCell : tuple.getCells()) {
@@ -218,7 +218,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             }
         }
     }
-
+    
     private NewChaseSteps applyRepairs(DeltaChaseStep currentNode, List<Repair> repairs, Dependency egd, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("---Applying repairs...");
         NewChaseSteps newChaseSteps = new NewChaseSteps(egd);
@@ -246,7 +246,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         }
         return newChaseSteps;
     }
-
+    
     private boolean purgeOverlappingContexts(Dependency egd, Repair repair) {
         //Needed also for FDs due to the presence of cellgroups that can span different eq. classes
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);
@@ -264,5 +264,5 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         }
         return consistent;
     }
-
+    
 }

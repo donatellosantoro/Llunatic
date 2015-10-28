@@ -1,11 +1,14 @@
 package it.unibas.lunatic.utility;
 
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.operators.AlgebraUtility;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormula;
+import it.unibas.lunatic.model.dependency.IFormulaAtom;
+import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
 import it.unibas.lunatic.model.dependency.operators.FindSourceAtoms;
 import java.util.ArrayList;
@@ -235,6 +238,38 @@ public class DependencyUtility {
             }
         }
         throw new IllegalArgumentException("Unable to find dependency with id " + dependencyId + " in " + dependencies);
+    }
+
+    public static List<String> findSourceAtoms(Dependency egd, Scenario scenario) {
+        List<String> result = new ArrayList<String>();
+        if (!DependencyUtility.hasSourceSymbols(egd)) {
+            return result;
+        }
+        for (IFormulaAtom atom : egd.getPremise().getPositiveFormula().getAtoms()) {
+            if (!(atom instanceof RelationalAtom)) {
+                continue;
+            }
+            RelationalAtom relationalAtom = (RelationalAtom) atom;
+            if (!relationalAtom.isSource()) {
+                continue;
+            }
+            result.add(relationalAtom.getTableName());
+        }
+        return result;
+    }
+
+    public static List<String> findAuthoritativeAtoms(Dependency egd, Scenario scenario) {
+        List<String> result = new ArrayList<String>();
+        for (String sourceTable : findSourceAtoms(egd, scenario)) {
+            if (scenario.getAuthoritativeSources().contains(sourceTable)) {
+                result.add(sourceTable);
+            }
+        }
+        return result;
+    }
+    
+    public static boolean hasAuthoritativeAtoms(Dependency egd, Scenario scenario){
+        return !findAuthoritativeAtoms(egd, scenario).isEmpty();
     }
 
 }

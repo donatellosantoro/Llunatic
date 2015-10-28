@@ -16,7 +16,6 @@ import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.utility.combinatorial.GenericMultiCombinationsGenerator;
 import it.unibas.lunatic.utility.combinatorial.GenericPowersetGenerator;
 import java.util.ArrayList;

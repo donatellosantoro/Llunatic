@@ -143,7 +143,6 @@ public class References {
     public static final String synthetic_T07 = "mc/tgd/synthetic-T07-mcscenario.xml";
     public static final String synthetic_TScal_dbms = "mc/tgd/synthetic-TScal-mcscenario-dbms.xml";
 
-    
     public static final String doctors = "mc/doctors/doctors-mcscenario.xml";
     public static final String doctors_pipeline_sttgd = "mc/doctors/doctors-pipeline-sttgd-mcscenario.xml";
     public static final String doctors_pipeline_tgd = "mc/doctors/doctors-pipeline-tgd-mcscenario.xml";
@@ -163,11 +162,6 @@ public class References {
     
     public static final String accuracy = "mc/accuracy/accuracy-mcscenario.xml";
     public static final String accuracy_poset = "mc/accuracy/accuracy-poset-mcscenario.xml";
-    
-    //OTHER
-    public static final String similarity_forward = "testSimilarity/forward.csv";
-    public static final String similarity_backward = "testSimilarity/backward.csv";
-    public static final String similarity_mt = "testSimilarity/mt.csv";
 
     //DEDs
     public static final String deds_rs = "deds/RS/RS-mcscenario.xml";

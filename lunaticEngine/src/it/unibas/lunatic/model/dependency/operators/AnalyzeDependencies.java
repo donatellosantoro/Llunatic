@@ -46,7 +46,7 @@ public class AnalyzeDependencies {
         findAllAffectedAttributes(scenario.getExtEGDs());
         assignAdditionalAttributes(scenario.getExtEGDs(), scenario);
         scenario.setStratification(stratification);
-        checkAuthoritativeSources(scenario.getExtEGDs(), scenario);        
+        checkAuthoritativeSources(scenario.getExtEGDs(), scenario);
     }
 
     private void findAllQueriedAttributesForEGDs(List<Dependency> dependencies) {
@@ -72,7 +72,7 @@ public class AnalyzeDependencies {
         for (Set<ExtendedDependency> extendedDependencySet : stronglyConnectedComponents) {
             Set<Dependency> dependencySet = buildDependencySet(extendedDependencySet);
             DependencyStratum stratum = new DependencyStratum(dependencySet, extendedDependencySet);
-            Collections.sort(stratum.getDependencies(), new DependencyComparator());
+            Collections.sort(stratum.getDependencies(), new DependencyComparator(scenario));
             stratification.addStratum(stratum);
         }
         Collections.sort(stratification.getStrata(), new StratumComparator(dependencyGraph));
@@ -157,18 +157,8 @@ public class AnalyzeDependencies {
 
     private void checkAuthoritativeSources(List<Dependency> extEGDs, Scenario scenario) {
         for (Dependency egd : extEGDs) {
-            if (!DependencyUtility.hasSourceSymbols(egd)) {
-                continue;
-            }
-            for (IFormulaAtom atom : egd.getPremise().getPositiveFormula().getAtoms()) {
-                if (!(atom instanceof RelationalAtom)) {
-                    continue;
-                }
-                RelationalAtom relationalAtom = (RelationalAtom)atom;
-                if (!relationalAtom.isSource()) {
-                    continue;
-                }
-                String tableName = relationalAtom.getTableName();
+            List<String> sourceAtoms = DependencyUtility.findSourceAtoms(egd, scenario);
+            for (String tableName : sourceAtoms) {
                 if (!scenario.getAuthoritativeSources().contains(tableName)) {
                     System.out.println("**** WARNING: egd " + egd.getId() + " contain a source non-authoritative atom:\n" + egd);
 //                    throw new IllegalArgumentException("**** WARNING: egd " + egd.getId() + " contain a source non-authoritative atom:\n" + egd);
