@@ -26,9 +26,11 @@ import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,21 +46,21 @@ import speedy.model.database.TupleOID;
 import speedy.model.database.operators.IRunQuery;
 
 public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ChaseSymmetricEGDEquivalenceClass.class);
-    
+
     private final IRunQuery queryRunner;
     private final OccurrenceHandlerMC occurrenceHandler;
     private final ChangeCell cellChanger;
     private Tuple lastTuple;
     private boolean lastTupleHandled;
-    
+
     public ChaseSymmetricEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, ChangeCell cellChanger) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
         this.cellChanger = cellChanger;
     }
-    
+
     @Override
     public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
         if (logger.isDebugEnabled()) logger.debug("***** Step: " + currentNode.getId() + " - Chasing dependency: " + egd);
@@ -102,11 +104,11 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         ChaseStats.getInstance().addStat(ChaseStats.EGD_REPAIR_TIME, repairEnd - repairStart);
         return newSteps;
     }
-    
+
     private boolean noMoreTuples(ITupleIterator it) {
         return (!it.hasNext() && lastTupleHandled);
     }
-    
+
     private EquivalenceClassForSymmetricEGD readNextEquivalenceClass(ITupleIterator it, Dependency egd, IDatabase deltaDB, String stepId, IChaseState chaseState, Scenario scenario) {
         if (!it.hasNext() && (this.lastTupleHandled || this.lastTuple == null)) {
             return null;
@@ -140,7 +142,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         if (logger.isDebugEnabled()) logger.debug("-------- Equivalence class:\n" + equivalenceClass + "\n---------------");
         return equivalenceClass;
     }
-    
+
     private EquivalenceClassForSymmetricEGD createEquivalenceClass(Dependency egd) {
         FormulaVariable v1 = ((ComparisonAtom) egd.getConclusion().getAtoms().get(0)).getVariables().get(0);
         AttributeRef variableOccurrence = v1.getPremiseRelationalOccurrences().get(0).getAttributeRef();
@@ -148,7 +150,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         List<BackwardAttribute> attributesForBackwardChasing = findAttributesForBackwardChasing(egd);
         return new EquivalenceClassForSymmetricEGD(egd, conclusionAttribute, attributesForBackwardChasing);
     }
-    
+
     private List<BackwardAttribute> findAttributesForBackwardChasing(Dependency egd) {
         List<BackwardAttribute> attributesForBackwardChasing = new ArrayList<BackwardAttribute>();
         for (FormulaVariableOccurrence backwardAttributeOccurrence : egd.getBackwardAttributes()) {
@@ -162,7 +164,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         }
         return attributesForBackwardChasing;
     }
-    
+
     private void addTuple(Tuple tuple, EquivalenceClassForSymmetricEGD equivalenceClass, CostManagerConfiguration costManagerConfiguration, IDatabase deltaDB, String stepId, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.trace("Adding tuple " + tuple + " to equivalence class: " + equivalenceClass);
         AttributeRef conclusionAttribute = equivalenceClass.getConclusionAttribute();
@@ -190,18 +192,18 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         }
         equivalenceClass.addTupleCells(tupleCells);
         equivalenceClass.addTupleCellsForValue(conclusionValue, tupleCells);
-//        if (costManagerConfiguration.isDoBackwardOnDependency(equivalenceClass.getEGD())) {
+        if (costManagerConfiguration.isDoBackwardOnDependency(equivalenceClass.getEGD())) {
             indexCells(tupleCells, equivalenceClass);
-//        }
+        }
         if (logger.isDebugEnabled()) logger.trace("Equivalence class: " + equivalenceClass);
     }
-    
+
     private void indexCells(EGDEquivalenceClassTuple tupleCells, EquivalenceClassForSymmetricEGD equivalenceClass) {
         for (Cell cell : tupleCells.getAllCells()) {
             equivalenceClass.indexTupleCellsForCell(cell, tupleCells);
         }
     }
-    
+
     private void addAdditionalAttributes(CellGroup cellGroup, TupleOID originalOIDForConclusionValue, Tuple tuple, Dependency egd) {
         for (AttributeRef additionalAttribute : egd.getAdditionalAttributes()) {
             for (Cell additionalCell : tuple.getCells()) {
@@ -218,13 +220,13 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             }
         }
     }
-    
+
     private NewChaseSteps applyRepairs(DeltaChaseStep currentNode, List<Repair> repairs, Dependency egd, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("---Applying repairs...");
         NewChaseSteps newChaseSteps = new NewChaseSteps(egd);
         for (int i = 0; i < repairs.size(); i++) {
             Repair repair = repairs.get(i);
-            boolean consistentRepair = purgeOverlappingContexts(egd, repair);
+            boolean consistentRepair = purgeOverlappingContexts(egd, repair, currentNode.getAffectedAttributesInAncestors());
             CellGroupUtility.checkCellGroupConsistency(repair);
             String egdId = egd.getId();
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
@@ -236,8 +238,8 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
                 if (logger.isDebugEnabled()) logger.debug("EGD " + egd.getId() + " is satisfied in this step...");
                 newStep.addSatisfiedEGD(egd);
             }
-            List<AttributeRef> affectedAttributes = ChaseUtility.extractAffectedAttributes(repair);
-            newStep.setAffectedAttributes(affectedAttributes);
+            newStep.setAffectedAttributesInNode(ChaseUtility.extractAffectedAttributes(repair));
+            newStep.setAffectedAttributesInAncestors(ChaseUtility.findChangedAttributesInAncestors(newStep));
             if (logger.isDebugEnabled()) logger.debug("Generated step " + newStep.getId() + " for repair: " + repair);
             newChaseSteps.addChaseStep(newStep);
         }
@@ -246,23 +248,31 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         }
         return newChaseSteps;
     }
-    
-    private boolean purgeOverlappingContexts(Dependency egd, Repair repair) {
-        //Needed also for FDs due to the presence of cellgroups that can span different eq. classes
+
+    private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Set<AttributeRef> affectedAttributesSoFar) {
+        //Needed also for FDs due to the presence of cellgroups that can span different eq. classes,
+        //  but only if some earlier dependencies has generated a cell group for this attribute
+//        if(affectedAttributesSoFar.isEmpty()){
+//            return true;
+//        }
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);
         boolean consistent = true;
-        Set<CellGroupCell> cellsToChange = new HashSet<CellGroupCell>();
+        Map<AttributeRef, Set<CellRef>> changedCellMap = new HashMap<AttributeRef, Set<CellRef>>();
         for (Iterator<ChangeDescription> it = repair.getChangeDescriptions().iterator(); it.hasNext();) {
-            ChangeDescription violationContexts = it.next();
-            if (ChaseUtility.occurrencesOverlap(violationContexts, cellsToChange) || ChaseUtility.witnessOverlaps(violationContexts, cellsToChange)) {
-                if (logger.isDebugEnabled()) logger.debug("Violation context has overlaps: " + violationContexts);
+            ChangeDescription changeDescription = it.next();
+//            Set<AttributeRef> changedAttributes = ChaseUtility.extractAffectedAttributes(changeDescription);
+//            if (LunaticUtility.hasEmptyIntersection(affectedAttributesSoFar, changedAttributes)) {
+//                continue;
+//            }
+            if (ChaseUtility.occurrencesOverlap(changeDescription, changedCellMap) || ChaseUtility.witnessOverlaps(changeDescription, changedCellMap)) {
+                if (logger.isDebugEnabled()) logger.debug("Violation context has overlaps: " + changeDescription);
                 it.remove();
                 consistent = false;
             } else {
-                cellsToChange.addAll(violationContexts.getCellGroup().getOccurrences());
+                ChaseUtility.addChangedCellsToMap(changeDescription.getCellGroup().getOccurrences(), changedCellMap);
             }
         }
         return consistent;
     }
-    
+
 }

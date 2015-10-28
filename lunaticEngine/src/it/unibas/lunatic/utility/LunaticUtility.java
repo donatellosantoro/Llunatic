@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import speedy.SpeedyConstants;
 import speedy.model.algebra.operators.ITupleIterator;
@@ -355,6 +356,22 @@ public class LunaticUtility {
             sb.append(backwardContext.toShortString()).append(" ");
         }
         return sb.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static boolean hasEmptyIntersection(Set set1, Set set2) {
+        Set smallerSet = set1;
+        Set largerSet = set2;
+        if (set2.size() < set1.size()) {
+            smallerSet = set2;
+            largerSet = set1;
+        }
+        for (Object o : smallerSet) {
+            if (largerSet.contains(o)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

@@ -372,46 +372,71 @@ public class ChaseUtility {
         return result;
     }
 
-    public static boolean occurrencesOverlap(ChangeDescription violationContext, Set<CellGroupCell> cellsToChange) {
+    public static boolean occurrencesOverlap(ChangeDescription violationContext, Map<AttributeRef, Set<CellRef>> changedCellMap) {
         CellGroup cellGroup = violationContext.getCellGroup();
-        boolean inconsistent = containsCellRefs(CellGroupUtility.extractAllCellRefs(cellGroup), cellsToChange);
+        boolean inconsistent = containsCellRefs(CellGroupUtility.extractAllCellRefs(cellGroup), changedCellMap);
         if (inconsistent && logger.isDebugEnabled()) logger.debug("Occurrences Overlap:\n" + violationContext);
         return inconsistent;
     }
 
-    public static boolean witnessOverlaps(ChangeDescription changeSet, Set<CellGroupCell> cellsToChange) {
+    public static boolean witnessOverlaps(ChangeDescription changeSet, Map<AttributeRef, Set<CellRef>> changedCellMap) {
         if (changeSet.getChaseMode().equals(LunaticConstants.CHASE_BACKWARD)) {
             return false;
         }
         Set<CellRef> witnessCells = CellGroupUtility.extractAllCellRefs(changeSet.getWitnessCells());
-        if (containsCellRefs(witnessCells, cellsToChange)) {
+        if (containsCellRefs(witnessCells, changedCellMap)) {
             if (logger.isDebugEnabled()) logger.debug("Witness Overlaps:\n" + witnessCells);
             return true;
         }
         return false;
     }
 
-    public static boolean containsCellRefs(Set<CellRef> witnessCells, Set<CellGroupCell> cellsToChange) {
-        Set<CellRef> cellRefsToChange = ChaseUtility.createCellRefsFromCells(cellsToChange);
-        for (CellRef cell : witnessCells) {
-            if (cellRefsToChange.contains(cell)) {
+    public static boolean containsCellRefs(Set<CellRef> newCells, Map<AttributeRef, Set<CellRef>> changedCellMap) {
+        for (CellRef cell : newCells) {
+            AttributeRef attribute = cell.getAttributeRef();
+            Set<CellRef> cellRefsToChange = changedCellMap.get(attribute);
+            if (cellRefsToChange != null && cellRefsToChange.contains(cell)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static List<AttributeRef> extractAffectedAttributes(Repair repair) {
-        List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
+    public static Set<AttributeRef> extractAffectedAttributes(Repair repair) {
+        Set<AttributeRef> affectedAttributes = new HashSet<AttributeRef>();
         for (ChangeDescription changeSet : repair.getChangeDescriptions()) {
-            CellGroup cellGroupToChange = changeSet.getCellGroup();
-            for (Cell occurrenceCell : cellGroupToChange.getOccurrences()) {
-                if (!affectedAttributes.contains(occurrenceCell.getAttributeRef())) {
-                    affectedAttributes.add(occurrenceCell.getAttributeRef());
-                }
-            }
+            affectedAttributes.addAll(extractAffectedAttributes(changeSet));
         }
         return affectedAttributes;
+    }
+
+    public static Set<AttributeRef> extractAffectedAttributes(ChangeDescription changeSet) {
+        Set<AttributeRef> affectedAttributes = new HashSet<AttributeRef>();
+        CellGroup cellGroupToChange = changeSet.getCellGroup();
+        for (Cell occurrenceCell : cellGroupToChange.getOccurrences()) {
+            affectedAttributes.add(occurrenceCell.getAttributeRef());
+        }
+        return affectedAttributes;
+    }
+
+    public static Set<AttributeRef> findChangedAttributesInAncestors(DeltaChaseStep currentNode) {
+        Set<AttributeRef> result = new HashSet<AttributeRef>();
+        result.addAll(currentNode.getAffectedAttributesInNode());
+        if (currentNode.getFather() != null) {
+            result.addAll(findChangedAttributesInAncestors(currentNode.getFather()));
+        }
+        return result;
+    }
+
+    public static void addChangedCellsToMap(Set<CellGroupCell> occurrences, Map<AttributeRef, Set<CellRef>> changedCellMap) {
+        for (CellGroupCell occurrence : occurrences) {
+            Set<CellRef> cellsForAttribute = changedCellMap.get(occurrence.getAttributeRef());
+            if (cellsForAttribute == null) {
+                cellsForAttribute = new HashSet<CellRef>();
+                changedCellMap.put(occurrence.getAttributeRef(), cellsForAttribute);
+            }
+            cellsForAttribute.add(new CellRef(occurrence));
+        }
     }
 
 }

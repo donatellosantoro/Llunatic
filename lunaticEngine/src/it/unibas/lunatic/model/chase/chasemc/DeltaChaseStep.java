@@ -6,7 +6,9 @@ import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.IDatabase;
 
@@ -22,7 +24,8 @@ public class DeltaChaseStep {
     private DeltaChaseStep father;
     private String localId;
     private List<DeltaChaseStep> children = new ArrayList<DeltaChaseStep>();
-    private List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
+    private Set<AttributeRef> affectedAttributesInNode = new HashSet<AttributeRef>();
+    private Set<AttributeRef> affectedAttributesInAncestors = new HashSet<AttributeRef>();
     private boolean invalid = false;
     private boolean solution = false;
     private boolean ground = false;
@@ -141,12 +144,20 @@ public class DeltaChaseStep {
         return ChaseUtility.getChaseNodeId(father, localId);
     }
 
-    public List<AttributeRef> getAffectedAttributes() {
-        return affectedAttributes;
+    public Set<AttributeRef> getAffectedAttributesInNode() {
+        return affectedAttributesInNode;
     }
 
-    public void setAffectedAttributes(List<AttributeRef> affectedAttributes) {
-        this.affectedAttributes = affectedAttributes;
+    public void setAffectedAttributesInNode(Set<AttributeRef> affectedAttributesInNode) {
+        this.affectedAttributesInNode = affectedAttributesInNode;
+    }
+
+    public Set<AttributeRef> getAffectedAttributesInAncestors() {
+        return affectedAttributesInAncestors;
+    }
+
+    public void setAffectedAttributesInAncestors(Set<AttributeRef> affectedAttributesInAncestors) {
+        this.affectedAttributesInAncestors = affectedAttributesInAncestors;
     }
 
     public DeltaChaseStep getRoot() {

@@ -316,8 +316,8 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
                 if (logger.isDebugEnabled()) logger.debug("EGD " + egd.getId() + " is satisfied in this step...");
                 newStep.addSatisfiedEGD(egd);
             }
-            List<AttributeRef> affectedAttributes = ChaseUtility.extractAffectedAttributes(repair);
-            newStep.setAffectedAttributes(affectedAttributes);
+            newStep.setAffectedAttributesInNode(ChaseUtility.extractAffectedAttributes(repair));
+            newStep.setAffectedAttributesInAncestors(ChaseUtility.findChangedAttributesInAncestors(newStep));
             if (logger.isDebugEnabled()) logger.debug("Generated step " + newStep.getId() + " for repair: " + repair);
             if (logger.isDebugEnabled()) logger.debug(newStep.getDeltaDB().printInstances());
             newChaseSteps.addChaseStep(newStep);
@@ -332,17 +332,18 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
         if (scenario.getConfiguration().isUseLimit1ForEGDs()) {
             return true;
         }
+        // In non symmetric case optimization for the symmetric case do not apply (the same cell may belong to multiple contexts).
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);
         boolean consistent = true;
-        Set<CellGroupCell> cellsToChange = new HashSet<CellGroupCell>();
+        Map<AttributeRef, Set<CellRef>> changedCellMap = new HashMap<AttributeRef, Set<CellRef>>();
         for (Iterator<ChangeDescription> it = repair.getChangeDescriptions().iterator(); it.hasNext();) {
-            ChangeDescription violationContexts = it.next();
-            if (ChaseUtility.occurrencesOverlap(violationContexts, cellsToChange) || ChaseUtility.witnessOverlaps(violationContexts, cellsToChange)) {
-                if (logger.isDebugEnabled()) logger.debug("Violation context has overlaps: " + violationContexts);
+            ChangeDescription changeDescription = it.next();
+            if (ChaseUtility.occurrencesOverlap(changeDescription, changedCellMap) || ChaseUtility.witnessOverlaps(changeDescription, changedCellMap)) {
+                if (logger.isDebugEnabled()) logger.debug("Violation context has overlaps: " + changeDescription);
                 it.remove();
                 consistent = false;
             } else {
-                cellsToChange.addAll(violationContexts.getCellGroup().getOccurrences());
+                ChaseUtility.addChangedCellsToMap(changeDescription.getCellGroup().getOccurrences(), changedCellMap);
             }
         }
         return consistent;

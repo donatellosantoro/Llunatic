@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
@@ -239,7 +240,7 @@ public class CheckUnsatisfiedDependencies {
             if (currentNode.getSatisfiedEGDs().contains(dependency)) {
                 return true;
             }
-            if (hasModifiedQueriedAttributes(currentNode.getAffectedAttributes(), dependency.getQueriedAttributes())) {
+            if (hasModifiedQueriedAttributes(currentNode.getAffectedAttributesInNode(), dependency.getQueriedAttributes())) {
                 return false;
             }
             currentNode = currentNode.getFather();
@@ -254,7 +255,7 @@ public class CheckUnsatisfiedDependencies {
         return false;
     }
 
-    private boolean hasModifiedQueriedAttributes(List<AttributeRef> affectedAttributes, List<AttributeRef> queriedAttributes) {
+    private boolean hasModifiedQueriedAttributes(Set<AttributeRef> affectedAttributes, List<AttributeRef> queriedAttributes) {
         if (logger.isDebugEnabled()) logger.debug("Checking if dependency is satisfied. Affected attributes: " + affectedAttributes + " - Queried attributes: " + queriedAttributes);
         for (AttributeRef affectedAttribute : affectedAttributes) {
             if (queriedAttributes.contains(affectedAttribute)) {

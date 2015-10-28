@@ -88,6 +88,9 @@ public class CheckRedundancy {
     }
 
     private void checkDuplicateOIDsInTable(String tableName, boolean source, Scenario scenario) {
+        if(scenario.isMainMemory()){
+            return;
+        }
         ITable table;
         if (source) {
             table = scenario.getSource().getTable(tableName);
