@@ -34,7 +34,7 @@ public class ChaseMainMemorySTTGDs implements IChaseSTTGDs {
             IAlgebraOperator treeRoot = treeBuilder.buildTreeForPremise(stTgd, scenario);
             if (logger.isDebugEnabled()) logger.debug("----Algebra tree: " + treeRoot);
             MainMemoryInsertFromSelectNaive insert = new MainMemoryInsertFromSelectNaive();
-            insert.execute(stTgd, treeRoot, (MainMemoryDB) scenario.getSource(), (MainMemoryDB) target);
+            insert.execute(stTgd, treeRoot, (MainMemoryDB) scenario.getSource(), (MainMemoryDB) target, scenario);
         }
         duplicateRemover.removeDuplicatesModuloOID((MainMemoryDB) target);
         long end = new Date().getTime();

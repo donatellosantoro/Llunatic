@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.model.algebra.operators.AlgebraUtility;
 import it.unibas.lunatic.model.chase.chasede.operators.IInsertFromSelectNaive;
@@ -38,7 +39,7 @@ public class MainMemoryInsertFromSelectNaive implements IInsertFromSelectNaive {
     private IValueOccurrenceHandlerDE occurrenceHandlerDE = new MainMemoryDEOccurrenceHandler();
 
     @Override
-    public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target) {
+    public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target, Scenario scenario) {
         Map<AttributeRef, IValueGenerator> targetGenerators = dependency.getTargetGenerators();
         if (logger.isDebugEnabled()) logger.debug("----Executing insert. Tgd generator map: " + LunaticUtility.printMap(targetGenerators));
         if (logger.isDebugEnabled()) logger.debug("----Source query: " + sourceQuery);

@@ -1,6 +1,5 @@
 package it.unibas.lunatic.test.de.dbms;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
@@ -16,21 +15,21 @@ public class TestSQLEmployees extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLEmployees.class);
 
     public void testScenario() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_rew_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_rew_dbms, true);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }
 
     public void testScenarioEGD() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_egd_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_egd_dbms, true);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }
 
     public void testScenarioDenial() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_dtgd_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_dtgd_dbms, true);
         try {
             DEChaserFactory.getChaser(scenario).doChase(scenario);
             fail();

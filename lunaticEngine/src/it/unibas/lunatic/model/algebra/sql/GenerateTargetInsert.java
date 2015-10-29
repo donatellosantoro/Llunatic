@@ -24,19 +24,19 @@ public class GenerateTargetInsert {
         result.append("----- Generating target insert -----\n");
         Map<String, List<String>> insertMap = new HashMap<String, List<String>>();
         for (Dependency stTgd : scenario.getSTTgds()) {
-            generateScript(stTgd, insertMap);
+            generateScript(stTgd, insertMap, scenario);
         }
         result.append(generateScriptFromMap(scenario, insertMap));
         return result.toString();
     }
 
-    private void generateScript(Dependency stTgd, Map<String, List<String>> insertMap) {
+    private void generateScript(Dependency stTgd, Map<String, List<String>> insertMap, Scenario scenario) {
         IFormula conclusion = stTgd.getConclusion();
         for (IFormulaAtom atom : conclusion.getAtoms()) {
             RelationalAtom relationalAtom = (RelationalAtom) atom;
             TableAlias tableAlias = relationalAtom.getTableAlias();
             List<String> selects = getSelectsForTable(insertMap, tableAlias.getTableName());
-            String sourceSQLQuery = generateSelectForInsert(relationalAtom, stTgd);
+            String sourceSQLQuery = generateSelectForInsert(relationalAtom, stTgd, scenario);
             selects.add(sourceSQLQuery);
         }
     }
@@ -50,12 +50,12 @@ public class GenerateTargetInsert {
         return selects;
     }
 
-    private String generateSelectForInsert(RelationalAtom relationalAtom, Dependency stTgd) {
+    private String generateSelectForInsert(RelationalAtom relationalAtom, Dependency stTgd, Scenario scenario) {
         StringBuilder result = new StringBuilder();
         result.append(SpeedyConstants.INDENT).append("SELECT DISTINCT ");
         Map<FormulaVariable, SkolemFunctionGenerator> skolems = new HashMap<FormulaVariable, SkolemFunctionGenerator>();
         for (FormulaAttribute formulaAttribute : relationalAtom.getAttributes()) {
-            result.append(attributeGenerator.generateSQL(formulaAttribute, stTgd, skolems));
+            result.append(attributeGenerator.generateSQL(formulaAttribute, stTgd, skolems, scenario));
             result.append(", ");
         }
         LunaticUtility.removeChars(", ".length(), result);
@@ -86,7 +86,7 @@ public class GenerateTargetInsert {
         DBMSTable table = (DBMSTable) target.getTable(tableToInsert);
         StringBuilder attributes = new StringBuilder("(");
         for (Attribute attribute : table.getAttributes()) {
-            if(attribute.getName().equals(SpeedyConstants.OID)){
+            if (attribute.getName().equals(SpeedyConstants.OID)) {
                 continue;
             }
             attributes.append(attribute.getName()).append(", ");

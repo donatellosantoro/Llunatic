@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.sql.FormulaAttributeToSQL;
 import it.unibas.lunatic.model.chase.chasede.operators.IInsertFromSelectNaive;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -23,9 +24,9 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
     private FormulaAttributeToSQL attributeGenerator = new FormulaAttributeToSQL();
 
-    public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target) {
+    public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target, Scenario scenario) {
         String selectQuery = queryBuilder.treeToSQL(sourceQuery, source, target, SpeedyConstants.INDENT + SpeedyConstants.INDENT);
-        String insertQuery = generateInsertScript(dependency, selectQuery, (DBMSDB) target);
+        String insertQuery = generateInsertScript(dependency, selectQuery, (DBMSDB) target, scenario);
         return QueryManager.executeInsertOrDelete(insertQuery, ((DBMSDB) target).getAccessConfiguration());
     }
 
@@ -40,25 +41,25 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
 //        }
 //        return result;
 //    }
-    private String generateInsertScript(Dependency dependency, String selectQuery, DBMSDB target) {
+    private String generateInsertScript(Dependency dependency, String selectQuery, DBMSDB target, Scenario scenario) {
         StringBuilder result = new StringBuilder();
         String targetSchemaName = (target).getAccessConfiguration().getSchemaName();
         for (IFormulaAtom atom : dependency.getConclusion().getAtoms()) {
             RelationalAtom relationalAtom = (RelationalAtom) atom;
             String tableToInsert = relationalAtom.getTableName();
             result.append("INSERT INTO ").append(targetSchemaName).append(".").append(tableToInsert).append("\n");
-            result.append(generateSelectForInsert(relationalAtom, dependency, selectQuery));
+            result.append(generateSelectForInsert(relationalAtom, dependency, selectQuery, scenario));
             result.append(";\n\n");
         }
         return result.toString();
     }
 
-    private String generateSelectForInsert(RelationalAtom relationalAtom, Dependency stTgd, String selectQuery) {
+    private String generateSelectForInsert(RelationalAtom relationalAtom, Dependency stTgd, String selectQuery, Scenario scenario) {
         StringBuilder result = new StringBuilder();
         result.append(SpeedyConstants.INDENT).append("SELECT DISTINCT ");
         Map<FormulaVariable, SkolemFunctionGenerator> skolems = new HashMap<FormulaVariable, SkolemFunctionGenerator>();
         for (FormulaAttribute formulaAttribute : relationalAtom.getAttributes()) {
-            result.append(attributeGenerator.generateSQL(formulaAttribute, stTgd, skolems));
+            result.append(attributeGenerator.generateSQL(formulaAttribute, stTgd, skolems, scenario));
             result.append(", ");
         }
         result.deleteCharAt(result.length() - 1);

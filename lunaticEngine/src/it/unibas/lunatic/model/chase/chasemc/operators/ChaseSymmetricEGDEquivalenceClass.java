@@ -27,7 +27,6 @@ import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -252,18 +251,18 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
     private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Set<AttributeRef> affectedAttributesSoFar) {
         //Needed also for FDs due to the presence of cellgroups that can span different eq. classes,
         //  but only if some earlier dependencies has generated a cell group for this attribute
-//        if(affectedAttributesSoFar.isEmpty()){
-//            return true;
-//        }
+        if(affectedAttributesSoFar.isEmpty()){
+            return true;
+        }
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);
         boolean consistent = true;
         Map<AttributeRef, Set<CellRef>> changedCellMap = new HashMap<AttributeRef, Set<CellRef>>();
         for (Iterator<ChangeDescription> it = repair.getChangeDescriptions().iterator(); it.hasNext();) {
             ChangeDescription changeDescription = it.next();
-//            Set<AttributeRef> changedAttributes = ChaseUtility.extractAffectedAttributes(changeDescription);
-//            if (LunaticUtility.hasEmptyIntersection(affectedAttributesSoFar, changedAttributes)) {
-//                continue;
-//            }
+            Set<AttributeRef> changedAttributes = ChaseUtility.extractAffectedAttributes(changeDescription);
+            if (LunaticUtility.hasEmptyIntersection(affectedAttributesSoFar, changedAttributes)) {
+                continue;
+            }
             if (ChaseUtility.occurrencesOverlap(changeDescription, changedCellMap) || ChaseUtility.witnessOverlaps(changeDescription, changedCellMap)) {
                 if (logger.isDebugEnabled()) logger.debug("Violation context has overlaps: " + changeDescription);
                 it.remove();

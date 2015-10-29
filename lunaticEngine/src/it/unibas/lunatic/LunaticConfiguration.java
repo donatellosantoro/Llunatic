@@ -21,6 +21,7 @@ public class LunaticConfiguration {
     private boolean chaseDEDGreedyRandomScenarios = false;
     private boolean discardDuplicateTuples = false;
     private double numberCellsWeightForRanking = 0.7;
+    private boolean useHashForSkolem = true;
 //
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
     private final String deChaser = LunaticConstants.PROXY_MC_CHASER;
@@ -188,6 +189,14 @@ public class LunaticConfiguration {
 
     public void setNumberCellsWeightForRanking(double numberCellsWeightForRanking) {
         this.numberCellsWeightForRanking = numberCellsWeightForRanking;
+    }
+
+    public boolean isUseHashForSkolem() {
+        return useHashForSkolem;
+    }
+
+    public void setUseHashForSkolem(boolean useHashForSkolem) {
+        this.useHashForSkolem = useHashForSkolem;
     }
 
     @Override

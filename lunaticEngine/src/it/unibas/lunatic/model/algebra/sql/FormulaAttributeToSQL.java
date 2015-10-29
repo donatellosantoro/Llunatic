@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.algebra.sql;
 
-import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.database.skolem.AppendSkolemPart;
 import it.unibas.lunatic.model.database.skolem.ISkolemPart;
 import it.unibas.lunatic.model.database.skolem.StringSkolemPart;
@@ -16,23 +16,23 @@ import speedy.SpeedyConstants;
 
 public class FormulaAttributeToSQL {
 
-    public String generateSQL(FormulaAttribute attribute, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems) {
+    public String generateSQL(FormulaAttribute attribute, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems, Scenario scenario) {
         if (attribute.getValue() instanceof FormulaExpression) {
             throw new UnsupportedOperationException("Target expressions are not supported yet in SQL script");
         } else if (attribute.getValue() instanceof FormulaConstant) {
             FormulaConstant constant = (FormulaConstant) attribute.getValue();
             return "'" + constant.toString() + "'";
         } else if (attribute.getValue() instanceof FormulaVariableOccurrence) {
-            return formulaVariableOccurrenceToSQL(attribute, dependency, skolems);
+            return formulaVariableOccurrenceToSQL(attribute, dependency, skolems, scenario);
         }
         throw new IllegalArgumentException("Unknow type for attribute " + attribute);
     }
 
-    private String formulaVariableOccurrenceToSQL(FormulaAttribute attribute, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems) {
+    private String formulaVariableOccurrenceToSQL(FormulaAttribute attribute, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems, Scenario scenario) {
         FormulaVariableOccurrence occurrence = (FormulaVariableOccurrence) attribute.getValue();
         FormulaVariable existentialVariable = LunaticUtility.findVariableInList(occurrence, dependency.getConclusion().getLocalVariables());
         if (existentialVariable != null) {
-            return createSkolemGenerator(existentialVariable, dependency, skolems).toString();
+            return createSkolemGenerator(existentialVariable, dependency, skolems, scenario).toString();
         }
         FormulaVariable universalVariable = LunaticUtility.findVariableInList(occurrence, dependency.getPremise().getLocalVariables());
         FormulaVariableOccurrence sourceOccurrence = universalVariable.getPremiseRelationalOccurrences().get(0);
@@ -40,7 +40,8 @@ public class FormulaAttributeToSQL {
         return DBMSUtility.attributeRefToSQL(sourceOccurrence.getAttributeRef());
     }
 
-    private IValueGenerator createSkolemGenerator(FormulaVariable variable, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems) {
+    private IValueGenerator createSkolemGenerator(FormulaVariable variable, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems, Scenario scenario) {
+        boolean useHash = scenario.getConfiguration().isUseHashForSkolem();
         SkolemFunctionGenerator generatorForVariable = skolems.get(variable);
         if (generatorForVariable != null) {
             return generatorForVariable;
@@ -48,7 +49,15 @@ public class FormulaAttributeToSQL {
         ISkolemPart root = new AppendSkolemPart();
         ISkolemPart name = new StringSkolemPart("'" + SpeedyConstants.SKOLEM_PREFIX + dependency.getId() + SpeedyConstants.SKOLEM_SEPARATOR + variable.getId());
         root.addChild(name);
-        AppendSkolemPart append = new AppendSkolemPart("(['||", "||'])'", "||']-['||");
+        String prefix = "(['||";
+        if(useHash){
+            prefix += " left(md5(";
+        }
+        String suffix = "||'])'";
+        if(useHash){
+            suffix = "),10) " + suffix;
+        }
+        AppendSkolemPart append = new AppendSkolemPart(prefix, suffix, "||']-['||");
         root.addChild(append);
         List<FormulaVariable> universalVariablesInConclusion = findUniversalVariablesInConclusion(dependency);
         for (FormulaVariable formulaVariable : universalVariablesInConclusion) {
