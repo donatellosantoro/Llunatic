@@ -12,7 +12,7 @@ import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
-import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.utility.DependencyUtility;
@@ -37,8 +37,7 @@ public class StandardCostManager implements ICostManager {
 
     @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot,
-            List<Repair> repairsForDependency, Scenario scenario, String stepId,
-            OccurrenceHandlerMC occurrenceHandler) {
+            List<Repair> repairsForDependency, Scenario scenario, String stepId, IOccurrenceHandler occurrenceHandler) {
         EquivalenceClassForEGD equivalenceClass = (EquivalenceClassForEGD) equivalenceClassProxy.getEquivalenceClass();
         if (logger.isInfoEnabled()) logger.info("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName() + " in step " + stepId);
         if (logger.isDebugEnabled()) logger.debug("######## Current node: " + chaseTreeRoot.toStringWithSort());
@@ -50,7 +49,7 @@ public class StandardCostManager implements ICostManager {
         }
         List<Repair> result = new ArrayList<Repair>();
         List<ViolationContext> allContexts = equivalenceClass.getViolationContexts();
-        Repair forwardRepair = CostManagerUtility.generateStandardForwardRepair(allContexts, scenario);
+        Repair forwardRepair = CostManagerUtility.generateForwardRepair(allContexts, scenario);
         result.add(forwardRepair);
         if (canDoBackward(chaseTreeRoot, equivalenceClass.getEGD(), scenario.getCostManagerConfiguration())) {
             List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass, scenario, chaseTreeRoot.getDeltaDB(), stepId);

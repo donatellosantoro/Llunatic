@@ -53,12 +53,12 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
     private static final Logger logger = LoggerFactory.getLogger(ChaseEGDEquivalenceClass.class);
 
     private final IRunQuery queryRunner;
-    private final OccurrenceHandlerMC occurrenceHandler;
-    private final ChangeCell cellChanger;
+    private final IOccurrenceHandler occurrenceHandler;
+    private final IChangeCell cellChanger;
     private Tuple lastTuple;
     private boolean lastTupleHandled;
 
-    public ChaseEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, ChangeCell cellChanger) {
+    public ChaseEGDEquivalenceClass(IRunQuery queryRunner, IOccurrenceHandler occurrenceHandler, IChangeCell cellChanger) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
         this.cellChanger = cellChanger;

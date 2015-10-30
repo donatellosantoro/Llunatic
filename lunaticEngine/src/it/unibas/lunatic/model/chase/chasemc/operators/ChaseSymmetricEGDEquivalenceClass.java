@@ -49,12 +49,12 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
     private static final Logger logger = LoggerFactory.getLogger(ChaseSymmetricEGDEquivalenceClass.class);
 
     private final IRunQuery queryRunner;
-    private final OccurrenceHandlerMC occurrenceHandler;
-    private final ChangeCell cellChanger;
+    private final IOccurrenceHandler occurrenceHandler;
+    private final IChangeCell cellChanger;
     private Tuple lastTuple;
     private boolean lastTupleHandled;
 
-    public ChaseSymmetricEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, ChangeCell cellChanger) {
+    public ChaseSymmetricEGDEquivalenceClass(IRunQuery queryRunner, IOccurrenceHandler occurrenceHandler, IChangeCell cellChanger) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
         this.cellChanger = cellChanger;

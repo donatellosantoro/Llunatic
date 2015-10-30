@@ -4,6 +4,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.CorrectCellGroupID;
+import it.unibas.lunatic.model.chase.chasemc.operators.ICorrectCellGroupID;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.StringComparatorForIValues;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import speedy.utility.SpeedyUtility;
 public class GreedyPartialOrder extends StandardPartialOrder {
 
     private static final Logger logger = LoggerFactory.getLogger(GreedyPartialOrder.class);
-    private final CorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
+    private final ICorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
     private final String similarityStrategy = SimilarityFactory.LEVENSHTEIN_STRATEGY;
 
     @Override

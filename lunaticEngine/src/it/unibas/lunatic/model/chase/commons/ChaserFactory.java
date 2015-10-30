@@ -8,7 +8,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
-import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import speedy.model.algebra.operators.IInsertTuple;
 import speedy.model.database.operators.IRunQuery;
 
@@ -20,7 +20,7 @@ public class ChaserFactory {
         IBuildDatabaseForChaseStep stepBuilder = OperatorFactory.getInstance().getDatabaseBuilder(scenario);
         IRunQuery queryRunner = OperatorFactory.getInstance().getQueryRunner(scenario);
         IInsertTuple insertOperatorForEgds = OperatorFactory.getInstance().getInsertTuple(scenario);
-        OccurrenceHandlerMC occurrenceHandler = OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario);
+        IOccurrenceHandler occurrenceHandler = OperatorFactory.getInstance().getOccurrenceHandler(scenario);
         IChaseDeltaExtTGDs extTgdChaser = OperatorFactory.getInstance().getExtTgdChaser(scenario);
         CheckSolution solutionChecker = OperatorFactory.getInstance().getSolutionChecker(scenario);
         ChaseDeltaExtEGDs egdChaser = OperatorFactory.getInstance().getEGDChaser(scenario);

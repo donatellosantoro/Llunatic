@@ -46,15 +46,8 @@ public class LunaticConstants {
     public static final String TYPE_ADDITIONAL = "ADDTL_FOR_";
 
     ///////////////    CACHE STRATEGIES    ///////////////////
-//    public static final String NO_CACHE = "NO_CACHE";
-//    public static final String LAZY_CACHE = "SIMPLE";
-    public static final String GREEDY_SIMPLE_CACHE = "GREEDY";
-    public static final String GREEDY_EHCACHE = "EHCACHE_GREEDY";
     public static final String GREEDY_JCS = "JCS_GREEDY";
-    public static final String GREEDY_SINGLESTEP_SIMPLE_CACHE = "GREEDY_SIMPLE_SINGLESTEP";
-    public static final String GREEDY_SINGLESTEP_EHCACHE_CACHE = "GREEDY_EHCACHE_SINGLESTEP";
     public static final String GREEDY_SINGLESTEP_JCS_CACHE = "GREEDY_JCS_SINGLESTEP";
-//    public static final String GREEDY_FATHER_JCS_CACHE = "GREEDY_JCS_FATHER";
 
     ///////////////    DE CHASER STRATEGIES    ///////////////////
     public static final String CLASSIC_DE_CHASER = "CLASSIC_DE_CHASER";

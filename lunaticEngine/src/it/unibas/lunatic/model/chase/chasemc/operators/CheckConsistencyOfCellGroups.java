@@ -17,7 +17,7 @@ import speedy.model.database.IDatabase;
 public class CheckConsistencyOfCellGroups {
 
     private static Logger logger = LoggerFactory.getLogger(CheckConsistencyOfCellGroups.class);
-    private OccurrenceHandlerMC occurrenceHandler;
+    private IOccurrenceHandler occurrenceHandler;
 
     public void checkConsistencyOfCellGroupsInStep(DeltaChaseStep chaseStep) {
         Scenario scenario = chaseStep.getScenario();
@@ -47,6 +47,6 @@ public class CheckConsistencyOfCellGroups {
     }
 
     private void initializeOperators(Scenario scenario) {
-        this.occurrenceHandler = OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario);
+        this.occurrenceHandler = OperatorFactory.getInstance().getOccurrenceHandler(scenario);
     }
 }

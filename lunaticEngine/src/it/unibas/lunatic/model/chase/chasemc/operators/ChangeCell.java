@@ -15,21 +15,22 @@ import speedy.model.database.IValue;
 import speedy.model.database.Tuple;
 import speedy.model.database.TupleOID;
 
-public class ChangeCell {
+public class ChangeCell implements IChangeCell {
 
     private static Logger logger = LoggerFactory.getLogger(ChangeCell.class);
 
-    private IInsertTuple insertOperator;
-    private IBatchInsert batchInsertOperator;
-    private OccurrenceHandlerMC occurrenceHandler;
+    protected IInsertTuple insertOperator;
+    protected IBatchInsert batchInsertOperator;
+    protected IOccurrenceHandler occurrenceHandler;
 
-    public ChangeCell(IInsertTuple insertOperator, IBatchInsert batchInsertOperator, OccurrenceHandlerMC occurrenceHandler) {
+    public ChangeCell(IInsertTuple insertOperator, IBatchInsert batchInsertOperator, IOccurrenceHandler occurrenceHandler) {
         this.batchInsertOperator = batchInsertOperator;
         this.insertOperator = insertOperator;
         this.occurrenceHandler = occurrenceHandler;
     }
 
     //NOTICE: Call flush after inserts
+    @Override
     public void changeCells(CellGroup cellGroup, IDatabase deltaDB, String stepId, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Saving cell group " + cellGroup.toLongString());
         occurrenceHandler.saveNewCellGroup(cellGroup, deltaDB, stepId, scenario);
@@ -47,11 +48,12 @@ public class ChangeCell {
         if (logger.isDebugEnabled()) logger.debug("New target: " + deltaDB.printInstances());
     }
 
+    @Override
     public void flush(IDatabase database) {
         this.batchInsertOperator.flush(database);
     }
 
-    private void insertNewValue(CellGroupCell cell, String stepId, IValue newValue, IValue groupID, IDatabase deltaDB, boolean useBatchInsert) {
+    protected void insertNewValue(CellGroupCell cell, String stepId, IValue newValue, IValue groupID, IDatabase deltaDB, boolean useBatchInsert) {
         String tableName = cell.getAttributeRef().getTableName();
         String attributeName = cell.getAttributeRef().getName();
         TupleOID tid = cell.getTupleOID();

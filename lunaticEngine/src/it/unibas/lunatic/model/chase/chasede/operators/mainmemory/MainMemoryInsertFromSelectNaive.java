@@ -2,9 +2,7 @@ package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.model.algebra.operators.AlgebraUtility;
 import it.unibas.lunatic.model.chase.chasede.operators.IInsertFromSelectNaive;
-import it.unibas.lunatic.model.chase.chasede.operators.IValueOccurrenceHandlerDE;
 import speedy.model.database.Attribute;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
@@ -26,9 +24,7 @@ import speedy.model.database.NullValue;
 import speedy.model.database.TableAlias;
 import speedy.model.database.Tuple;
 import speedy.model.database.TupleOID;
-import speedy.model.database.mainmemory.MainMemoryDB;
 import speedy.model.database.mainmemory.MainMemoryTable;
-import speedy.model.database.mainmemory.datasource.INode;
 import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 
 public class MainMemoryInsertFromSelectNaive implements IInsertFromSelectNaive {
@@ -36,7 +32,7 @@ public class MainMemoryInsertFromSelectNaive implements IInsertFromSelectNaive {
     private static Logger logger = LoggerFactory.getLogger(MainMemoryInsertFromSelectNaive.class);
 
     private IInsertTuple insertOperator = new MainMemoryInsertTuple();
-    private IValueOccurrenceHandlerDE occurrenceHandlerDE = new MainMemoryDEOccurrenceHandler();
+    private MainMemoryDEOccurrenceHandler occurrenceHandlerDE = new MainMemoryDEOccurrenceHandler();
 
     @Override
     public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target, Scenario scenario) {
@@ -95,11 +91,11 @@ public class MainMemoryInsertFromSelectNaive implements IInsertFromSelectNaive {
         return generator.generateValue(sourceTuple);
     }
 
-    private void removeDuplicates(List<TableAlias> targetTablesToInsert, MainMemoryDB target) {
-        INode instance = target.getDataSource().getInstances().get(0);
-        for (TableAlias table : targetTablesToInsert) {
-            INode tableRoot = instance.getChild(table.getTableName());
-            AlgebraUtility.removeDuplicates(tableRoot.getChildren());
-        }
-    }
+//    private void removeDuplicates(List<TableAlias> targetTablesToInsert, MainMemoryDB target) {
+//        INode instance = target.getDataSource().getInstances().get(0);
+//        for (TableAlias table : targetTablesToInsert) {
+//            INode tableRoot = instance.getChild(table.getTableName());
+//            AlgebraUtility.removeDuplicates(tableRoot.getChildren());
+//        }
+//    }
 }

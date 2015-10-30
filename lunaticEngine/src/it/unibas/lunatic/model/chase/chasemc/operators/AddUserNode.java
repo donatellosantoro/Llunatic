@@ -11,9 +11,9 @@ import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 
 public class AddUserNode {
 
-    private ChangeCell cellChanger;
+    private IChangeCell cellChanger;
 
-    public AddUserNode(ChangeCell cellChanger) {
+    public AddUserNode(IChangeCell cellChanger) {
         this.cellChanger = cellChanger;
     }
 

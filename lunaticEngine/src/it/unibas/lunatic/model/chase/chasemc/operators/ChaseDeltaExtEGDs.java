@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.IBatchInsert;
-import speedy.model.algebra.operators.IDelete;
 import speedy.model.algebra.operators.IInsertTuple;
 import speedy.model.database.IDatabase;
 import speedy.model.database.operators.IRunQuery;
@@ -32,16 +31,15 @@ public class ChaseDeltaExtEGDs {
     private static final Logger logger = LoggerFactory.getLogger(ChaseDeltaExtEGDs.class);
     private final CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker;
     private final IBuildDatabaseForChaseStep databaseBuilder;
-    private final ChangeCell cellChanger;
     private final CheckDuplicates duplicateChecker;
     private final IChaseEGDEquivalenceClass symmetricEGDChaser;
     private final IChaseEGDEquivalenceClass egdChaser;
-    private final OccurrenceHandlerMC occurrenceHandler;
+    private final IOccurrenceHandler occurrenceHandler;
 
     public ChaseDeltaExtEGDs(IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
-            IInsertTuple insertOperator, IBatchInsert batchInsertOperator, OccurrenceHandlerMC occurrenceHandler, CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker) {
+            IInsertTuple insertOperator, IBatchInsert batchInsertOperator, IChangeCell cellChanger,
+            IOccurrenceHandler occurrenceHandler, CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker) {
         this.databaseBuilder = stepBuilder;
-        this.cellChanger = new ChangeCell(insertOperator, batchInsertOperator, occurrenceHandler);
         this.duplicateChecker = new CheckDuplicates();
         this.symmetricEGDChaser = new ChaseSymmetricEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
         this.egdChaser = new ChaseEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
@@ -55,7 +53,7 @@ public class ChaseDeltaExtEGDs {
         boolean userInteractionRequired = false;
         DependencyStratification stratification = scenario.getStratification();
         for (DependencyStratum stratum : stratification.getStrata()) {
-            if (LunaticConfiguration.sout) System.out.println("---- Chasing egd stratum: " + stratum.getId());
+            if (LunaticConfiguration.isPrintSteps()) System.out.println("---- Chasing egd stratum: " + stratum.getId());
             if (logger.isDebugEnabled()) logger.debug("------------------Chasing stratum: ----\n" + stratum);
             userInteractionRequired = userInteractionRequired || chaseTree(root, scenario, chaseState, stratum.getDependencies(), premiseTreeMap);
         }
@@ -102,7 +100,7 @@ public class ChaseDeltaExtEGDs {
             currentNode.addChild(newStep);
             return chaseNode(newStep, scenario, chaseState, egds, premiseTreeMap);
         }
-        if (LunaticConfiguration.sout) System.out.println("******Chasing node for egds: " + currentNode.getId());
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("******Chasing node for egds: " + currentNode.getId());
         if (logger.isDebugEnabled()) logger.debug("----Chase iteration starting on step " + currentNode.getId() + " ...");
         List<DeltaChaseStep> newSteps = new ArrayList<DeltaChaseStep>();
         List<Dependency> unsatisfiedDependencies = unsatisfiedDependenciesChecker.findUnsatisfiedEGDsNoQuery(currentNode, egds);
@@ -112,7 +110,7 @@ public class ChaseDeltaExtEGDs {
         boolean userInteractionRequired = false;
         for (Dependency egd : egdsToChase) {
             if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
-            if (LunaticConfiguration.sout) System.out.println("\t******Chasing edg: " + egd.getId());
+            if (LunaticConfiguration.isPrintSteps()) System.out.println("\t******Chasing edg: " + egd.getId());
             long startEgd = new Date().getTime();
             if (logger.isDebugEnabled()) logger.info("* Chasing dependency " + egd.getId() + " on step " + currentNode.getId());
             if (logger.isDebugEnabled()) logger.info("* Algebra operator " + premiseTreeMap.get(egd));

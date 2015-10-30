@@ -10,7 +10,7 @@ import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
-import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.GreedyPartialOrder;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class GreedyCostManager implements ICostManager {
     private final CheckSatisfactionAfterUpgradesEGD satisfactionChecker = new CheckSatisfactionAfterUpgradesEGD();
 
     @SuppressWarnings("unchecked")
-    public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot, List<Repair> repairsForDependency, Scenario scenario, String stepId, OccurrenceHandlerMC occurrenceHandler) {
+    public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot, List<Repair> repairsForDependency, Scenario scenario, String stepId, IOccurrenceHandler occurrenceHandler) {
         assert (scenario.getPartialOrder() instanceof GreedyPartialOrder && scenario.getScriptPartialOrder() == null) : "The Greedy cost manager requires a Greedy partial order " + scenario;
         assert (scenario.getCostManagerConfiguration().isDoPermutations() == false) : "No permutations allowed in greedy repair cost manager " + scenario;
         assert (scenario.getCostManagerConfiguration().isDoBackwardForAllDependencies() == false) : "No backward allowed in greedy repair cost manager " + scenario;
@@ -40,7 +40,7 @@ public class GreedyCostManager implements ICostManager {
             return Collections.EMPTY_LIST;
         }
         List<ViolationContext> forwardContexts = equivalenceClass.getViolationContexts();
-        Repair forwardRepair = CostManagerUtility.generateStandardForwardRepair(forwardContexts, scenario);
+        Repair forwardRepair = CostManagerUtility.generateForwardRepair(forwardContexts, scenario);
         if (logger.isInfoEnabled()) logger.info("Returning repair " + forwardRepair);
         return new ArrayList<Repair>(Arrays.asList(new Repair[]{forwardRepair}));
     }

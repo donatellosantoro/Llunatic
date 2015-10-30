@@ -25,6 +25,7 @@ public class ChaseDEScenarioProxy implements IDEChaser {
     private static Logger logger = LoggerFactory.getLogger(ChaseDEScenarioProxy.class);
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
+        ChaseMCScenario mcChaser = ChaserFactory.getChaser(scenario);
         List<Dependency> egds = scenario.getEGDs();
         scenario.setEGDs(new ArrayList<Dependency>());
         scenario.setExtEGDs(egds);
@@ -35,7 +36,6 @@ public class ChaseDEScenarioProxy implements IDEChaser {
         scenario.setPartialOrder(new DEPartialOrder());
         scenario.getConfiguration().setDeProxyMode(true);
         scenario.getConfiguration().setRemoveDuplicates(false);
-        ChaseMCScenario mcChaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep chaseStep = mcChaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("----MC result: " + chaseStep);
         if (chaseStep.getNumberOfLeaves() > 1) {

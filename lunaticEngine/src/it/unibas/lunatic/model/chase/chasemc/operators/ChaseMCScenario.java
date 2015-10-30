@@ -44,7 +44,7 @@ public class ChaseMCScenario {
 
     public ChaseMCScenario(IChaseSTTGDs stChaser, IChaseDeltaExtTGDs extTgdChaser,
             IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
-            IInsertTuple insertOperatorForEgds, OccurrenceHandlerMC occurrenceHandler,
+            IInsertTuple insertOperatorForEgds, IOccurrenceHandler occurrenceHandler,
             ChaseDeltaExtEGDs egdChaser, CheckSolution solutionChecker) {
         this.stChaser = stChaser;
         this.deltaBuilder = deltaBuilder;
@@ -133,7 +133,7 @@ public class ChaseMCScenario {
         if (!scenario.getConfiguration().isCheckSolutions() && !userInteractionRequired) {
             solutionChecker.markLeavesAsSolutions(root, scenario);
         } else {
-            if (LunaticConfiguration.sout) System.out.println("------ Checking solutions...");
+            if (LunaticConfiguration.isPrintSteps()) System.out.println("------ Checking solutions...");
             solutionChecker.checkSolutions(root, scenario);
         }
         dChaser.doChase(root, scenario, chaseState, dQueryMap);

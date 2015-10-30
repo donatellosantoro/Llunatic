@@ -37,10 +37,10 @@ public class CheckUnsatisfiedDependencies {
     private BuildAlgebraTreeForTGD treeBuilderForTGD = new BuildAlgebraTreeForTGD();
     private BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
     private IBuildDatabaseForChaseStep databaseBuilder;
-    private OccurrenceHandlerMC occurrenceHandler;
+    private IOccurrenceHandler occurrenceHandler;
     private final IRunQuery queryRunner;
 
-    public CheckUnsatisfiedDependencies(IBuildDatabaseForChaseStep databaseBuilder, OccurrenceHandlerMC occurrenceHandler, IRunQuery queryRunner) {
+    public CheckUnsatisfiedDependencies(IBuildDatabaseForChaseStep databaseBuilder, IOccurrenceHandler occurrenceHandler, IRunQuery queryRunner) {
         this.databaseBuilder = databaseBuilder;
         this.occurrenceHandler = occurrenceHandler;
         this.queryRunner = queryRunner;

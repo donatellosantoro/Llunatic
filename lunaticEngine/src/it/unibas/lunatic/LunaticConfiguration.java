@@ -2,8 +2,7 @@ package it.unibas.lunatic;
 
 public class LunaticConfiguration {
 
-//    public static boolean sout = true;
-    public static boolean sout = false;
+    private static boolean printSteps = true;
     private boolean debugMode = false;
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;
@@ -35,6 +34,14 @@ public class LunaticConfiguration {
 //    private String cacheType = LunaticConstants.GREEDY_SIMPLE_CACHE;
 //    private String cacheType = LunaticConstants.GREEDY_EHCACHE;
 //    private String cacheType = LunaticConstants.GREEDY_SINGLESTEP_EHCACHE_CACHE;
+
+    public static boolean isPrintSteps() {
+        return printSteps;
+    }
+
+    public static void setPrintSteps(boolean aPrintSteps) {
+        printSteps = aPrintSteps;
+    }
 
     public boolean isDebugMode() {
         return debugMode;

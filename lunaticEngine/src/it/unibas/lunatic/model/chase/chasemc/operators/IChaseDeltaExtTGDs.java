@@ -8,7 +8,6 @@ import java.util.Map;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.database.IDatabase;
 
-
 public interface IChaseDeltaExtTGDs {
 
     boolean doChase(DeltaChaseStep treeRoot, Scenario scenario, IChaseState chaseState, Map<Dependency, IAlgebraOperator> tgdTreeMap, Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap);

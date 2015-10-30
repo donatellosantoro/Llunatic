@@ -1,10 +1,16 @@
 package it.unibas.lunatic;
 
+import it.unibas.lunatic.model.chase.chasede.operators.ChangeCellDEProxy;
+import it.unibas.lunatic.model.chase.chasede.operators.ChaseTargetTGDsWithBatchInsert;
+import it.unibas.lunatic.model.chase.chasede.operators.IInsertTuplesForTargetTGDs;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
+import it.unibas.lunatic.model.chase.chasede.operators.OccurrenceHandlerDEProxy;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDs;
+import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertTuplesForTargetTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLUpdateCell;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.ChaseMainMemorySTTGDs;
+import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertTuplesForTargetTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryUpdateCell;
 import it.unibas.lunatic.model.chase.chaseded.IDatabaseManager;
 import it.unibas.lunatic.model.chase.chaseded.dbms.SQLDatabaseManager;
@@ -18,8 +24,10 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
+import it.unibas.lunatic.model.chase.chasemc.operators.IChangeCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
+import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDeltaDB;
@@ -80,7 +88,7 @@ public class OperatorFactory {
     private IDatabaseManager mainMemoryDatabaseManager = new MainMemoryDatabaseManager();
     private IDatabaseManager sqlDatabaseManager = new SQLDatabaseManager();
     //
-    private Map<Scenario, OccurrenceHandlerMC> occurrenceHandlerMap = new HashMap<Scenario, OccurrenceHandlerMC>();
+    private Map<Scenario, IOccurrenceHandler> occurrenceHandlerMap = new HashMap<Scenario, IOccurrenceHandler>();
 
     private OperatorFactory() {
     }
@@ -165,70 +173,56 @@ public class OperatorFactory {
         return sqlDatabaseManager;
     }
 
-    public OccurrenceHandlerMC getOccurrenceHandlerMC(Scenario scenario) {
-        OccurrenceHandlerMC occurrenceHandler = occurrenceHandlerMap.get(scenario);
+    public IOccurrenceHandler getOccurrenceHandler(Scenario scenario) {
+        IOccurrenceHandler occurrenceHandler = occurrenceHandlerMap.get(scenario);
         if (occurrenceHandler != null) {
             return occurrenceHandler;
         }
         String cacheType = scenario.getConfiguration().getCacheType();
-//        if (cacheType.equals(LunaticConstants.NO_CACHE)) {
-//            occurrenceHandler = new OccurrenceHandlerMC(getQueryRunner(scenario), getInsertTuple(scenario), getDeleteOperator(scenario));
-//        }
-//        if (cacheType.equals(LunaticConstants.LAZY_CACHE)) {
-//            ICacheManager cacheManager = new SimpleCacheManagerForLazyOccurrenceHandler();
-//            occurrenceHandler = new OccurrenceHandlerWithCacheLazy(cacheManager, getQueryRunner(scenario), getInsertTuple(scenario), getDeleteOperator(scenario));
-//        }
-//        if (cacheType.equals(LunaticConstants.GREEDY_SIMPLE_CACHE)) {
-//            ICacheManager cacheManager = new GreedySimpleCacheManager(getQueryRunner(scenario));
-//            occurrenceHandler = new OccurrenceHandlerWithCacheGreedy(cacheManager, getQueryRunner(scenario), getInsertTuple(scenario), getDeleteOperator(scenario), getCellUpdater(scenario));
-//        }
-//        if (cacheType.equals(LunaticConstants.GREEDY_EHCACHE)) {
-//            ICacheManager cacheManager = new GreedyEhCacheManager(getQueryRunner(scenario));
-//            occurrenceHandler = new OccurrenceHandlerWithCacheGreedy(cacheManager, getQueryRunner(scenario), getInsertTuple(scenario), getDeleteOperator(scenario), getCellUpdater(scenario));
-//        }
+        ICacheManager cacheManager;
         if (cacheType.equals(LunaticConstants.GREEDY_JCS)) {
-            ICacheManager cacheManager = new GreedyJCSCacheManager(getQueryRunner(scenario));
-            occurrenceHandler = new OccurrenceHandlerMC(getQueryRunner(scenario), getInsertTuple(scenario), getDeleteOperator(scenario), cacheManager);
+            cacheManager = new GreedyJCSCacheManager(getQueryRunner(scenario));
+        } else if (cacheType.equals(LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE)) {
+            cacheManager = new GreedySingleStepJCSCacheManager(getQueryRunner(scenario));
+        } else {
+            throw new IllegalArgumentException("Cache manager " + cacheType + " not supported.");
         }
-//        if (cacheType.equals(LunaticConstants.GREEDY_SINGLESTEP_SIMPLE_CACHE)) {
-//            ICacheManager cacheManager = new GreedySingleStepSimpleCacheManager(getQueryRunner(scenario));
-//            occurrenceHandler = new OccurrenceHandlerWithCacheGreedy(cacheManager, getQueryRunner(scenario), getInsertTuple(scenario), getDeleteOperator(scenario), getCellUpdater(scenario));
-//        }
-//        if (cacheType.equals(LunaticConstants.GREEDY_SINGLESTEP_EHCACHE_CACHE)) {
-//            ICacheManager cacheManager = new GreedySingleStepEhCacheManager(getQueryRunner(scenario));
-//            occurrenceHandler = new OccurrenceHandlerWithCacheGreedy(cacheManager, getQueryRunner(scenario), getInsertTuple(scenario), getDeleteOperator(scenario), getCellUpdater(scenario));
-//        }
-        if (cacheType.equals(LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE)) {
-            ICacheManager cacheManager = new GreedySingleStepJCSCacheManager(getQueryRunner(scenario));
+        if (scenario.isDEScenario()) {
+            occurrenceHandler = new OccurrenceHandlerDEProxy(getQueryRunner(scenario), getInsertTuple(scenario), getDeleteOperator(scenario), cacheManager);
+        } else {
             occurrenceHandler = new OccurrenceHandlerMC(getQueryRunner(scenario), getInsertTuple(scenario), getDeleteOperator(scenario), cacheManager);
-        }
-        if (occurrenceHandler == null) {
-            throw new IllegalArgumentException("Cache type " + cacheType + " unknown");
         }
         occurrenceHandlerMap.put(scenario, occurrenceHandler);
         return occurrenceHandler;
     }
 
     public IChaseDeltaExtTGDs getExtTgdChaser(Scenario scenario) {
+        if (scenario.isDEScenario()) {
+            return new ChaseTargetTGDsWithBatchInsert(getInsertTupleForTargetTGDs(scenario), getDatabaseBuilder(scenario));
+        }
         return new ChaseDeltaExtTGDs(getQueryRunner(scenario), getDatabaseBuilder(scenario),
-                getOccurrenceHandlerMC(scenario), getOIDGenerator(scenario), getCellChanger(scenario));
+                getOccurrenceHandler(scenario), getOIDGenerator(scenario), getCellChanger(scenario));
     }
 
     public CheckUnsatisfiedDependencies getUnsatisfiedDependenciesChecker(Scenario scenario) {
-        return new CheckUnsatisfiedDependencies(getDatabaseBuilder(scenario), getOccurrenceHandlerMC(scenario), getQueryRunner(scenario));
+        return new CheckUnsatisfiedDependencies(getDatabaseBuilder(scenario), getOccurrenceHandler(scenario), getQueryRunner(scenario));
     }
 
     public CheckSolution getSolutionChecker(Scenario scenario) {
-        return new CheckSolution(getUnsatisfiedDependenciesChecker(scenario), getOccurrenceHandlerMC(scenario), getQueryRunner(scenario), getDatabaseBuilder(scenario));
+        return new CheckSolution(getUnsatisfiedDependenciesChecker(scenario), getOccurrenceHandler(scenario), getQueryRunner(scenario), getDatabaseBuilder(scenario));
     }
 
     public ChaseDeltaExtEGDs getEGDChaser(Scenario scenario) {
-        return new ChaseDeltaExtEGDs(getDeltaDBBuilder(scenario), getDatabaseBuilder(scenario), getQueryRunner(scenario), getInsertTuple(scenario),
-                getSingletonBatchInsertOperator(scenario), getOccurrenceHandlerMC(scenario), getUnsatisfiedDependenciesChecker(scenario));
+        return new ChaseDeltaExtEGDs(getDeltaDBBuilder(scenario), getDatabaseBuilder(scenario), getQueryRunner(scenario),
+                getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getCellChanger(scenario),
+                getOccurrenceHandler(scenario), getUnsatisfiedDependenciesChecker(scenario));
     }
 
-    public ChangeCell getCellChanger(Scenario scenario) {
-        return new ChangeCell(getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getOccurrenceHandlerMC(scenario));
+    public IChangeCell getCellChanger(Scenario scenario) {
+        if (scenario.isDEScenario()) {
+            return new ChangeCellDEProxy(getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getOccurrenceHandler(scenario));
+        }
+        return new ChangeCell(getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getOccurrenceHandler(scenario));
     }
 
     public AddUserNode getUserNodeCreator(Scenario scenario) {
@@ -236,6 +230,13 @@ public class OperatorFactory {
     }
 
     public ChaseTreeToString getChaseTreeToString(Scenario scenario) {
-        return new ChaseTreeToString(getDatabaseBuilder(scenario), getOccurrenceHandlerMC(scenario));
+        return new ChaseTreeToString(getDatabaseBuilder(scenario), getOccurrenceHandler(scenario));
+    }
+
+    private IInsertTuplesForTargetTGDs getInsertTupleForTargetTGDs(Scenario scenario) {
+        if (scenario.isMainMemory()) {
+            return new MainMemoryInsertTuplesForTargetTGDs(getInsertTuple(scenario), getQueryRunner(scenario), getOccurrenceHandler(scenario), getOIDGenerator(scenario));
+        }
+        return new SQLInsertTuplesForTargetTGDs(getOIDGenerator(scenario));
     }
 }

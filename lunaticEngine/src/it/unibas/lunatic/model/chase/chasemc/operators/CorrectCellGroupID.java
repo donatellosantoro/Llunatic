@@ -13,10 +13,11 @@ import org.slf4j.LoggerFactory;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.IValue;
 
-public class CorrectCellGroupID {
+public class CorrectCellGroupID implements ICorrectCellGroupID {
 
     private static Logger logger = LoggerFactory.getLogger(CorrectCellGroupID.class);
 
+    @Override
     public void correctCellGroupId(CellGroup cellGroup) {
         if (logger.isDebugEnabled()) logger.debug("Correcting cell group id/value for cell group:\n" + cellGroup.toLongString());
         IValue mostFrequentCellGroupId = findMostFrequentCellGroupId(cellGroup);

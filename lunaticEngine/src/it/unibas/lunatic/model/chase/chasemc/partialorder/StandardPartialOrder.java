@@ -10,6 +10,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.CorrectCellGroupID;
+import it.unibas.lunatic.model.chase.chasemc.operators.ICorrectCellGroupID;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.CellComparatorUsingAdditionalValue;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.IValueComparator;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -29,7 +30,7 @@ public class StandardPartialOrder implements IPartialOrder {
 
     private static Logger logger = LoggerFactory.getLogger(StandardPartialOrder.class);
 
-    private CorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
+    private ICorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
 
     public CellGroup findLUB(List<CellGroup> cellGroups, Scenario scenario) throws PartialOrderException {
         if (logger.isDebugEnabled()) logger.debug("Finding lub of cell groups\n" + LunaticUtility.printCollection(cellGroups));

@@ -427,10 +427,10 @@ public class DAOMCScenario {
             userManager = new AfterForkUserManager();
         }
         if (USER_MANAGER_AFTER_LLUN.equals(userManagerType)) {
-            userManager = new AfterLLUNUserManager(OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario));
+            userManager = new AfterLLUNUserManager(OperatorFactory.getInstance().getOccurrenceHandler(scenario));
         }
         if (USER_MANAGER_AFTER_LLUN_FORK.equals(userManagerType)) {
-            userManager = new AfterLLUNForkUserManager(OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario));
+            userManager = new AfterLLUNForkUserManager(OperatorFactory.getInstance().getOccurrenceHandler(scenario));
         }
         return userManager;
     }

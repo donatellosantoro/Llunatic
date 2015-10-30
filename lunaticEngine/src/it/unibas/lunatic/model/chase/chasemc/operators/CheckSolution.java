@@ -15,9 +15,9 @@ public class CheckSolution {
 
     private static Logger logger = LoggerFactory.getLogger(CheckSolution.class);
     private CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker;
-    private OccurrenceHandlerMC occurrenceHandler;
+    private IOccurrenceHandler occurrenceHandler;
 
-    public CheckSolution(CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker, OccurrenceHandlerMC occurrenceHandler, IRunQuery queryRunner, IBuildDatabaseForChaseStep databaserBuilder) {
+    public CheckSolution(CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker, IOccurrenceHandler occurrenceHandler, IRunQuery queryRunner, IBuildDatabaseForChaseStep databaserBuilder) {
         this.unsatisfiedDependenciesChecker = unsatisfiedDependenciesChecker;
         this.occurrenceHandler = occurrenceHandler;
     }

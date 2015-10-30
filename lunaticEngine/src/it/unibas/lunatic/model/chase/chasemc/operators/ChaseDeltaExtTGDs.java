@@ -27,8 +27,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
     private final IBuildDatabaseForChaseStep databaseBuilder;
     private final IOIDGenerator oidGenerator;
 
-    public ChaseDeltaExtTGDs(IRunQuery queryRunner, IBuildDatabaseForChaseStep databaseBuilder,
-            OccurrenceHandlerMC occurrenceHandler, IOIDGenerator oidGenerator, ChangeCell cellChanger) {
+    public ChaseDeltaExtTGDs(IRunQuery queryRunner, IBuildDatabaseForChaseStep databaseBuilder, IOccurrenceHandler occurrenceHandler, IOIDGenerator oidGenerator, IChangeCell cellChanger) {
         this.databaseBuilder = databaseBuilder;
         this.oidGenerator = oidGenerator;
         this.dependencyChaser = new ChaseTGDEquivalenceClass(queryRunner, oidGenerator, occurrenceHandler, cellChanger);
@@ -71,7 +70,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
             chaseNode(newStep, scenario, chaseState, tgdTreeMap, tgdQuerySatisfactionMap);
             return;
         }
-        if (LunaticConfiguration.sout) System.out.println("******Chasing node for tgds: " + node.getId());
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("******Chasing node for tgds: " + node.getId());
         if (logger.isDebugEnabled()) logger.debug("Chasing ext tgds:\n" + LunaticUtility.printCollection(scenario.getExtTGDs()) + "\non tree: " + node);
         int iterations = 0;
         while (true) {
@@ -93,7 +92,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 long start = new Date().getTime();
                 boolean insertedTuples = dependencyChaser.chaseDependency(newStep, eTgd, tgdQuery, scenario, chaseState, databaseForStep);
                 long end = new Date().getTime();
-                if (LunaticConfiguration.sout) System.out.println("Dependency chasing Execution time: " + (end - start) + " ms");
+                if (LunaticConfiguration.isPrintSteps()) System.out.println("Dependency chasing Execution time: " + (end - start) + " ms");
                 ChaseStats.getInstance().addDepenendecyStat(eTgd, end - start);
                 if (insertedTuples) {
                     if (logger.isDebugEnabled()) logger.debug("Tuples have been inserted, adding new step to tree...");

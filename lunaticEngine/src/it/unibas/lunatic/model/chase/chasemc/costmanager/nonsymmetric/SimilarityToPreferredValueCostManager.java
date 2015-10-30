@@ -13,7 +13,7 @@ import it.unibas.lunatic.model.chase.chasemc.costmanager.CellGroupScore;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.similarity.SimilarityConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
-import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.database.IValue;
@@ -41,8 +41,7 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
 
     @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot,
-            List<Repair> repairsForDependency, Scenario scenario, String stepId,
-            OccurrenceHandlerMC occurrenceHandler) {
+            List<Repair> repairsForDependency, Scenario scenario, String stepId, IOccurrenceHandler occurrenceHandler) {
         if (!(scenario.getPartialOrder() instanceof FrequencyPartialOrder)) {
             logger.warn("#### SimilarityToPreferredValueCostManager is usually used with a FrequencyPartialOrder ####");
         }
@@ -59,7 +58,7 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
         SimilarityConfiguration similarityConfiguration = CostManagerUtility.findSimilarityConfigurationForCellGroups(forwardCellGroups, scenario.getCostManagerConfiguration());
         if (!scenario.getCostManagerConfiguration().isDoBackwardOnDependency(equivalenceClass.getEGD())) {
             List<ViolationContext> forwardContexts = equivalenceClass.getViolationContexts();
-            Repair forwardRepair = CostManagerUtility.generateStandardForwardRepair(forwardContexts, scenario);
+            Repair forwardRepair = CostManagerUtility.generateForwardRepair(forwardContexts, scenario);
             if (logger.isInfoEnabled()) logger.info("Returning repair " + forwardRepair);
             return new ArrayList<Repair>(Arrays.asList(new Repair[]{forwardRepair}));
         }
@@ -68,7 +67,7 @@ public class SimilarityToPreferredValueCostManager implements ICostManager {
         Repair repair;
         if (preferredValue instanceof LLUNValue || preferredValue instanceof NullValue) {
             List<ViolationContext> forwardContexts = equivalenceClass.getViolationContexts();
-            repair = CostManagerUtility.generateStandardForwardRepair(forwardContexts, scenario);
+            repair = CostManagerUtility.generateForwardRepair(forwardContexts, scenario);
         } else {
             repair = generateRepairForConstantPreferredValue(preferredValue, equivalenceClass, similarityConfiguration, scenario);
         }

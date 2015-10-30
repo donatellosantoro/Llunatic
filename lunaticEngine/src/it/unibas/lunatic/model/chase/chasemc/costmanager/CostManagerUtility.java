@@ -214,7 +214,7 @@ public class CostManagerUtility {
         return cellGroups;
     }
 
-    public static Repair generateStandardForwardRepair(List<ViolationContext> forwardContexts, Scenario scenario) {
+    public static Repair generateForwardRepair(List<ViolationContext> forwardContexts, Scenario scenario) {
         Repair repair = new Repair();
         List<CellGroup> forwardCellGroups = extractConclusionCellGroupsFromContexts(forwardContexts);
         CellGroup lub = getLUB(forwardCellGroups, scenario);
@@ -239,7 +239,7 @@ public class CostManagerUtility {
                     + "\n\tbackward combination: " + backwardCellGroups);
         Repair repair;
         if (!forwardContexts.isEmpty()) {
-            repair = CostManagerUtility.generateStandardForwardRepair(forwardContexts, scenario);
+            repair = CostManagerUtility.generateForwardRepair(forwardContexts, scenario);
         } else {
             repair = new Repair();
         }
