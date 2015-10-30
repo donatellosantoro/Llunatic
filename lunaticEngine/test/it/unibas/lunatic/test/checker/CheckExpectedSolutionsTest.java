@@ -86,7 +86,7 @@ public class CheckExpectedSolutionsTest extends CheckTest {
         if (tmpFile.exists()) {
             tmpFile.delete();
         }
-        ExportChaseStepResultsCSV resultExporter = OperatorFactory.getInstance().getResultExporter(result.getScenario());
+        ExportChaseStepResultsCSV resultExporter = new ExportChaseStepResultsCSV();
         List<String> resultFiles = resultExporter.exportResult(result, tmpFilePath, materializeFKJoins);
         if (logger.isTraceEnabled()) logger.debug("Exported solutions:\n" + LunaticUtility.printCollection(resultFiles));
         return resultFiles;
@@ -124,6 +124,7 @@ public class CheckExpectedSolutionsTest extends CheckTest {
     }
 
     protected void exportResults(String folderName, DeltaChaseStep result) {
-        OperatorFactory.getInstance().getResultExporter(result.getScenario()).exportResult(result, folderName, false);
+        ExportChaseStepResultsCSV resultExporter = new ExportChaseStepResultsCSV();
+        resultExporter.exportResult(result, folderName, false);
     }
 }

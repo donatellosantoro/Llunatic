@@ -31,15 +31,17 @@ import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemor
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryOIDGenerator;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
-import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.operators.IBatchInsert;
 import speedy.model.algebra.operators.IDelete;
 import speedy.model.algebra.operators.IInsertTuple;
+import speedy.model.algebra.operators.mainmemory.MainMemoryBatchInsert;
 import speedy.model.algebra.operators.mainmemory.MainMemoryDelete;
 import speedy.model.algebra.operators.mainmemory.MainMemoryInsertTuple;
+import speedy.model.algebra.operators.sql.SQLBatchInsert;
 import speedy.model.algebra.operators.sql.SQLDelete;
 import speedy.model.algebra.operators.sql.SQLInsertTuple;
 import speedy.model.database.operators.IRunQuery;
@@ -56,6 +58,9 @@ public class OperatorFactory {
     //
     private IInsertTuple mainMemoryInsertTuple = new MainMemoryInsertTuple();
     private IInsertTuple sqlInsertTuple = new SQLInsertTuple();
+    //
+    private IBatchInsert mainMemoryBatchInsertOperator = new MainMemoryBatchInsert();
+    private IBatchInsert sqlBatchInsertOperator = new SQLBatchInsert();
     //
     private IDelete mainMemoryDeleteOperator = new MainMemoryDelete();
     private IDelete sqlDeleteOperator = new SQLDelete();
@@ -102,6 +107,13 @@ public class OperatorFactory {
             return mainMemoryInsertTuple;
         }
         return sqlInsertTuple;
+    }
+
+    public IBatchInsert getSingletonBatchInsertOperator(Scenario scenario) {
+        if (scenario.isMainMemory()) {
+            return mainMemoryBatchInsertOperator;
+        }
+        return sqlBatchInsertOperator;
     }
 
     public IBuildDatabaseForChaseStep getDatabaseBuilder(Scenario scenario) {
@@ -202,10 +214,6 @@ public class OperatorFactory {
                 getOccurrenceHandlerMC(scenario), getOIDGenerator(scenario), getCellChanger(scenario));
     }
 
-    public ExportChaseStepResultsCSV getResultExporter(Scenario scenario) {
-        return new ExportChaseStepResultsCSV(getDatabaseBuilder(scenario), getQueryRunner(scenario));
-    }
-
     public CheckUnsatisfiedDependencies getUnsatisfiedDependenciesChecker(Scenario scenario) {
         return new CheckUnsatisfiedDependencies(getDatabaseBuilder(scenario), getOccurrenceHandlerMC(scenario), getQueryRunner(scenario));
     }
@@ -215,11 +223,12 @@ public class OperatorFactory {
     }
 
     public ChaseDeltaExtEGDs getEGDChaser(Scenario scenario) {
-        return new ChaseDeltaExtEGDs(getDeltaDBBuilder(scenario), getDatabaseBuilder(scenario), getQueryRunner(scenario), getInsertTuple(scenario), getDeleteOperator(scenario), getOccurrenceHandlerMC(scenario), getUnsatisfiedDependenciesChecker(scenario));
+        return new ChaseDeltaExtEGDs(getDeltaDBBuilder(scenario), getDatabaseBuilder(scenario), getQueryRunner(scenario), getInsertTuple(scenario),
+                getSingletonBatchInsertOperator(scenario), getOccurrenceHandlerMC(scenario), getUnsatisfiedDependenciesChecker(scenario));
     }
 
     public ChangeCell getCellChanger(Scenario scenario) {
-        return new ChangeCell(getInsertTuple(scenario), getDeleteOperator(scenario), getOccurrenceHandlerMC(scenario));
+        return new ChangeCell(getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getOccurrenceHandlerMC(scenario));
     }
 
     public AddUserNode getUserNodeCreator(Scenario scenario) {

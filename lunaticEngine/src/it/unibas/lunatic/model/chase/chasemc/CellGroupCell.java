@@ -83,10 +83,27 @@ public class CellGroupCell extends Cell {
         this.lastSavedCellGroupId = lastSavedCellGroupId;
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + " (" + originalValue + ")";
-    }
+//    @Override
+//    public String toString() {
+//        return super.toString() + " (" + originalValue + ")";
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        long start = new Date().getTime(); //TODO: Comment
+//        int hash = this.toString().hashCode();
+//        long end = new Date().getTime();
+//        ChaseStats.getInstance().addStat(ChaseStats.HASH_CELL_GROUP_CELL_TIME, end - start);
+//        ChaseStats.getInstance().addStat(ChaseStats.HASHED_CELL_GROUP_CELLS, 1);
+//        return hash;
+//    }
+//
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (obj == null) return false;
+//        if (getClass() != obj.getClass()) return false;
+//        return this.toString().equals(obj.toString());
+//    }
 
     public String toLongString() {
         return this.toString() + type + " - toSave:" + toSave + " - last saved CGid=" + (lastSavedCellGroupId == null ? "[]" : lastSavedCellGroupId)

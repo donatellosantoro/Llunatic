@@ -14,6 +14,9 @@ public class ChaseStats {
     public static final String TGD_VIOLATION_QUERY_TIME = "TGD Violation Query Time";
     public static final String EGD_EQUIVALENCE_CLASS_TIME = "EGD Equivalence Class Time";
     public static final String EGD_REPAIR_TIME = "EGD Repairing Time";
+    public static final String TGD_EQUIVALENCE_CLASS_TIME = "TGD Equivalence Class Time";
+    public static final String TGD_GENERATE_UPDATE_TIME = "TGD Generate Update Time";
+    public static final String TGD_REPAIR_TIME = "TGD Repairing Time";
     public static final String TGD_TIME = "TGD Time";
     public static final String STTGD_TIME = "ST-TGD Time";
     public static final String DTGD_TIME = "Denial TGD Time";
@@ -24,6 +27,7 @@ public class ChaseStats {
     public static final String COMPUTE_SIMILARITY_TIME = "Compute Similarity Time";
     public static final String CHECK_REDUNDANCY_TIME = "Check Redundancy Time";
     public static final String CACHE_LOAD_TIME = "Cache Load Time";
+    public static final String CELL_GROUP_CONSISTENCY_CHECK_TIME = "CellGroup Consistency Check Time";
     public static final String NUMBER_OF_STTGDS = "#ST-TGDs";
     public static final String NUMBER_OF_EXTGDS = "#Ex-TGDs";
     public static final String NUMBER_OF_EXTEGDS = "#Ex-EGDs";
@@ -35,6 +39,11 @@ public class ChaseStats {
     public static final String NUMBER_OF_GREEDY_SCENARIOS = "#Greedy Scenarios";
     public static final String NUMBER_OF_EXECUTED_GREEDY_SCENARIOS = "#Executed greedy Scenarios";
     public static final String NUMBER_OF_FAILED_GREEDY_SCENARIOS = "#Failed greedy Scenarios";
+    /////
+    public static final String HASHED_CELL_GROUPS = "#Hashed cellgroup";
+    public static final String HASH_CELL_GROUP_TIME = "Hash cellgroup time";
+    public static final String HASHED_CELL_GROUP_CELLS = "#Hashed cellgroup-cell";
+    public static final String HASH_CELL_GROUP_CELL_TIME = "Hash cell group cell time";
     /////
     private static Logger logger = LoggerFactory.getLogger(ChaseStats.class);
     private static ChaseStats singleton = new ChaseStats();
@@ -111,11 +120,16 @@ public class ChaseStats {
         if (stats.containsKey(EGD_VIOLATION_QUERY_TIME)) sb.append(EGD_VIOLATION_QUERY_TIME + ": ").append(stats.get(EGD_VIOLATION_QUERY_TIME)).append(" ms").append("\n");
         if (stats.containsKey(EGD_EQUIVALENCE_CLASS_TIME)) sb.append(EGD_EQUIVALENCE_CLASS_TIME + ": ").append(stats.get(EGD_EQUIVALENCE_CLASS_TIME)).append(" ms").append("\n");
         if (stats.containsKey(EGD_REPAIR_TIME)) sb.append(EGD_REPAIR_TIME + ": ").append(stats.get(EGD_REPAIR_TIME)).append(" ms").append("\n");
+        if (stats.containsKey(TGD_VIOLATION_QUERY_TIME)) sb.append(TGD_VIOLATION_QUERY_TIME + ": ").append(stats.get(TGD_VIOLATION_QUERY_TIME)).append(" ms").append("\n");
+        if (stats.containsKey(TGD_EQUIVALENCE_CLASS_TIME)) sb.append(TGD_EQUIVALENCE_CLASS_TIME + ": ").append(stats.get(TGD_EQUIVALENCE_CLASS_TIME)).append(" ms").append("\n");
+        if (stats.containsKey(TGD_GENERATE_UPDATE_TIME)) sb.append(TGD_GENERATE_UPDATE_TIME + ": ").append(stats.get(TGD_GENERATE_UPDATE_TIME)).append(" ms").append("\n");
+        if (stats.containsKey(TGD_REPAIR_TIME)) sb.append(TGD_REPAIR_TIME + ": ").append(stats.get(TGD_REPAIR_TIME)).append(" ms").append("\n");
         if (stats.containsKey(TGD_TIME)) sb.append(TGD_TIME + ": ").append(stats.get(TGD_TIME)).append(" ms").append("\n");
         if (stats.containsKey(DTGD_TIME)) sb.append(DTGD_TIME + ": ").append(stats.get(DTGD_TIME)).append(" ms").append("\n");
         if (stats.containsKey(DELTA_DB_BUILDER)) sb.append(DELTA_DB_BUILDER + ": ").append(stats.get(DELTA_DB_BUILDER)).append(" ms").append("\n");
         if (stats.containsKey(DELTA_DB_STEP_BUILDER)) sb.append(DELTA_DB_STEP_BUILDER + ": ").append(stats.get(DELTA_DB_STEP_BUILDER)).append(" ms").append("\n");
         if (stats.containsKey(CACHE_LOAD_TIME)) sb.append(CACHE_LOAD_TIME + ": ").append(stats.get(CACHE_LOAD_TIME)).append(" ms").append("\n");
+        if (stats.containsKey(CELL_GROUP_CONSISTENCY_CHECK_TIME)) sb.append(CELL_GROUP_CONSISTENCY_CHECK_TIME + ": ").append(stats.get(CELL_GROUP_CONSISTENCY_CHECK_TIME)).append(" ms").append("\n");
         if (stats.containsKey(DUPLICATE_TIME)) sb.append(DUPLICATE_TIME + ": ").append(stats.get(DUPLICATE_TIME)).append(" ms").append("\n");
         if (stats.containsKey(REMOVE_DUPLICATE_TIME)) sb.append(REMOVE_DUPLICATE_TIME + ": ").append(stats.get(REMOVE_DUPLICATE_TIME)).append(" ms").append("\n");
         if (stats.containsKey(COMPUTE_SIMILARITY_TIME)) sb.append(COMPUTE_SIMILARITY_TIME + ": ").append(stats.get(COMPUTE_SIMILARITY_TIME)).append(" ms").append("\n");
@@ -125,6 +139,12 @@ public class ChaseStats {
         for (Dependency d : dependencyStats.keySet()) {
             sb.append(d.getId()).append(": ").append(dependencyStats.get(d)).append(" ms").append("\n");
         }
+        sb.append("-------------------------").append("\n");
+        sb.append("------ HASH STATS ------").append("\n");
+        if (stats.containsKey(HASHED_CELL_GROUPS)) sb.append(HASHED_CELL_GROUPS + ": ").append(stats.get(HASHED_CELL_GROUPS)).append("\n");
+        if (stats.containsKey(HASH_CELL_GROUP_TIME)) sb.append(HASH_CELL_GROUP_TIME + ": ").append(stats.get(HASH_CELL_GROUP_TIME)).append(" ms").append("\n");
+        if (stats.containsKey(HASHED_CELL_GROUP_CELLS)) sb.append(HASHED_CELL_GROUP_CELLS + ": ").append(stats.get(HASHED_CELL_GROUP_CELLS)).append("\n");
+        if (stats.containsKey(HASH_CELL_GROUP_CELL_TIME)) sb.append(HASH_CELL_GROUP_CELL_TIME + ": ").append(stats.get(HASH_CELL_GROUP_CELL_TIME)).append(" ms").append("\n");
         sb.append("-------------------------").append("\n");
         return sb.toString();
     }

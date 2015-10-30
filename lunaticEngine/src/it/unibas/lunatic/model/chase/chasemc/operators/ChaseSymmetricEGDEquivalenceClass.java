@@ -242,6 +242,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             if (logger.isDebugEnabled()) logger.debug("Generated step " + newStep.getId() + " for repair: " + repair);
             newChaseSteps.addChaseStep(newStep);
         }
+        this.cellChanger.flush(currentNode.getDeltaDB());
         if (repairs.isEmpty()) {
             newChaseSteps.setNoRepairsNeeded(true);
         }
@@ -251,7 +252,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
     private boolean purgeOverlappingContexts(Dependency egd, Repair repair, Set<AttributeRef> affectedAttributesSoFar) {
         //Needed also for FDs due to the presence of cellgroups that can span different eq. classes,
         //  but only if some earlier dependencies has generated a cell group for this attribute
-        if(affectedAttributesSoFar.isEmpty()){
+        if (affectedAttributesSoFar.isEmpty()) {
             return true;
         }
         if (logger.isDebugEnabled()) logger.debug("Checking independence of violation contexts for egd " + egd);

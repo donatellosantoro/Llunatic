@@ -47,7 +47,7 @@ public class ChaseTGDEquivalenceClass {
     private IOIDGenerator oidGenerator;
     private OccurrenceHandlerMC occurrenceHandler;
     private ChangeCell cellChanger;
-    
+
     private CorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
     private CheckSatisfactionAfterUpgradesTGD satisfactionChecker = new CheckSatisfactionAfterUpgradesTGD();
 
@@ -71,6 +71,7 @@ public class ChaseTGDEquivalenceClass {
         List<EquivalenceClassForTGD> equivalenceClasses = new ArrayList<EquivalenceClassForTGD>();
         Map<CellGroupCell, List<TGDEquivalenceClassCells>> cellGroupMap = new HashMap<CellGroupCell, List<TGDEquivalenceClassCells>>();
         List<IValue> lastUniversalValues = null;
+        long equivalenceClassStart = new Date().getTime();
         while (it.hasNext()) {
             Tuple tuple = it.next();
             List<IValue> universalValuesInConclusion = DependencyUtility.extractUniversalValuesInConclusion(tuple, tgd);
@@ -85,6 +86,8 @@ public class ChaseTGDEquivalenceClass {
             EquivalenceClassForTGD equivalenceClass = equivalenceClasses.get(equivalenceClasses.size() - 1);
             addTupleInEquivalenceClass(tuple, equivalenceClass, tgd, cellGroupMap);
         }
+        long equivalenceClasEnd = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.TGD_EQUIVALENCE_CLASS_TIME, equivalenceClasEnd - equivalenceClassStart);
         it.close();
         if (logger.isDebugEnabled()) logger.debug("Equivalence classes\n " + LunaticUtility.printCollection(equivalenceClasses));
         if (logger.isDebugEnabled()) logger.debug("CellGroup Map\n " + LunaticUtility.printMap(cellGroupMap));
@@ -191,6 +194,7 @@ public class ChaseTGDEquivalenceClass {
     }
 
     private List<TGDEquivalenceClassCells> generateUpdates(Map<CellGroupCell, List<TGDEquivalenceClassCells>> cellMap, IDatabase deltaDB, String step, Dependency tgd, Scenario scenario) {
+        long start = new Date().getTime();
         Set<List<TGDEquivalenceClassCells>> analizedSets = new HashSet<List<TGDEquivalenceClassCells>>();
         List<TGDEquivalenceClassCells> candidateUpdates = new ArrayList<TGDEquivalenceClassCells>();
         Set<TupleOID> tuplesToRemoveDueToSAU = new HashSet<TupleOID>();
@@ -220,6 +224,8 @@ public class ChaseTGDEquivalenceClass {
             }
             result.add(candidate);
         }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.TGD_GENERATE_UPDATE_TIME, end - start);
         return result;
     }
 
@@ -234,8 +240,6 @@ public class ChaseTGDEquivalenceClass {
         return result;
     }
 
-
-
     private void addNewCells(TGDEquivalenceClassCells mergedCellsToInsert) {
         CellGroup cellGroup = mergedCellsToInsert.getCellGroup();
         for (CellGroupCell newCell : mergedCellsToInsert.getNewCells()) {
@@ -245,9 +249,13 @@ public class ChaseTGDEquivalenceClass {
     }
 
     private void applyChanges(List<TGDEquivalenceClassCells> updates, IDatabase deltaDB, String id, Scenario scenario) {
+        long equivalenceClassStart = new Date().getTime();
         for (TGDEquivalenceClassCells update : updates) {
             this.cellChanger.changeCells(update.getCellGroup(), deltaDB, id, scenario);
         }
+        this.cellChanger.flush(deltaDB);
+        long equivalenceClasEnd = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.TGD_REPAIR_TIME, equivalenceClasEnd - equivalenceClassStart);
     }
 
     private IValue generateNullValueForVariable(FormulaVariable existentialVariable, Map<AttributeRef, IValueGenerator> targetGenerators, Tuple tuple) {
@@ -278,7 +286,7 @@ public class ChaseTGDEquivalenceClass {
         for (TupleOID candidateTupleOID : tuplesInCandidate) {
             if (tuplesToRemoveDueToSAU.contains(candidateTupleOID)) {
                 return true;
-            }            
+            }
         }
         return false;
     }

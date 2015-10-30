@@ -1,6 +1,6 @@
 package it.unibas.lunatic.persistence.relational;
 
-import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForTGD;
@@ -32,22 +32,14 @@ import speedy.model.database.dbms.DBMSTable;
 import speedy.model.database.dbms.DBMSVirtualDB;
 import speedy.model.database.mainmemory.MainMemoryVirtualDB;
 import speedy.model.database.mainmemory.MainMemoryVirtualTable;
-import speedy.model.database.operators.IRunQuery;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 
 public class ExportChaseStepResultsCSV {
 
-    private IBuildDatabaseForChaseStep databaseBuilder;
-    private IRunQuery queryRunner;
     private String CSV_SEPARATOR = ",";
     private String tablePrefix = "#";
     private int counter = 0;
-
-    public ExportChaseStepResultsCSV(IBuildDatabaseForChaseStep databaseBuilder, IRunQuery queryRunner) {
-        this.databaseBuilder = databaseBuilder;
-        this.queryRunner = queryRunner;
-    }
 
     public List<String> exportResult(DeltaChaseStep result, String folder, boolean materializeFKJoins) throws DAOException {
         counter = 0;
@@ -68,7 +60,7 @@ public class ExportChaseStepResultsCSV {
             }
             counter++;
             String resultFile = folder + "Solution" + (counter < 10 ? "0" + counter : counter) + ".csv";
-            IDatabase database = databaseBuilder.extractDatabaseWithDistinct(step.getId(), step.getDeltaDB(), step.getOriginalDB());
+            IDatabase database = getDatabaseBuilder(step.getScenario()).extractDatabaseWithDistinct(step.getId(), step.getDeltaDB(), step.getOriginalDB());
 //            IDatabase database = databaseBuilder.extractDatabase(step.getId(), step.getDeltaDB(), step.getOriginalDB());
             if (materializeFKJoins) {
                 materializeFKJoins(database, step);
@@ -83,7 +75,7 @@ public class ExportChaseStepResultsCSV {
     }
 
     public void exportDatabase(DeltaChaseStep step, String stepId, String file) throws DAOException {
-        IDatabase database = databaseBuilder.extractDatabaseWithDistinct(stepId, step.getDeltaDB(), step.getOriginalDB());
+        IDatabase database = getDatabaseBuilder(step.getScenario()).extractDatabaseWithDistinct(stepId, step.getDeltaDB(), step.getOriginalDB());
 //        IDatabase database = databaseBuilder.extractDatabase(stepId, step.getDeltaDB(), step.getOriginalDB());
         exportDatabase(database, file);
     }
@@ -239,5 +231,9 @@ public class ExportChaseStepResultsCSV {
         }
         LunaticUtility.removeChars("_".length(), sb);
         return sb.toString();
+    }
+    
+    private IBuildDatabaseForChaseStep getDatabaseBuilder(Scenario scenario){
+        return OperatorFactory.getInstance().getDatabaseBuilder(scenario);
     }
 }

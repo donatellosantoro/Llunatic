@@ -322,6 +322,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
             if (logger.isDebugEnabled()) logger.debug(newStep.getDeltaDB().printInstances());
             newChaseSteps.addChaseStep(newStep);
         }
+        this.cellChanger.flush(currentNode.getDeltaDB());
         if (repairs.isEmpty()) {
             newChaseSteps.setNoRepairsNeeded(true);
         }

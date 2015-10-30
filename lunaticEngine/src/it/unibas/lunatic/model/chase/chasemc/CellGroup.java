@@ -2,7 +2,9 @@ package it.unibas.lunatic.model.chase.chasemc;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -191,6 +193,7 @@ public class CellGroup implements Cloneable, Serializable {
 
     @Override
     public int hashCode() {
+//        long start = new Date().getTime(); //TODO: Comment
         int hash = 7;
         hash = 23 * hash + (this.value != null ? this.value.hashCode() : 0);
         hash = 23 * hash + (this.occurrences != null ? this.occurrences.hashCode() : 0);
@@ -198,6 +201,9 @@ public class CellGroup implements Cloneable, Serializable {
         hash = 23 * hash + (this.userCells != null ? this.userCells.hashCode() : 0);
 //        hash = 23 * hash + (this.invalidCell != null ? this.invalidCell.hashCode() : 0);
         hash = 23 * hash + (this.invalidCell != null ? LunaticConstants.TYPE_INVALID.hashCode() : 0);
+//        long end = new Date().getTime();
+//        ChaseStats.getInstance().addStat(ChaseStats.HASH_CELL_GROUP_TIME, end - start);
+//        ChaseStats.getInstance().addStat(ChaseStats.HASHED_CELL_GROUPS, 1);
         return hash;
     }
 

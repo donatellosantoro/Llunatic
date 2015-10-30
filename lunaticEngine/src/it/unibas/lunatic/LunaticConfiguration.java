@@ -22,6 +22,7 @@ public class LunaticConfiguration {
     private boolean discardDuplicateTuples = false;
     private double numberCellsWeightForRanking = 0.7;
     private boolean useHashForSkolem = true;
+    private boolean useBatchInsert = true;
 //
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
     private final String deChaser = LunaticConstants.PROXY_MC_CHASER;
@@ -199,6 +200,14 @@ public class LunaticConfiguration {
         this.useHashForSkolem = useHashForSkolem;
     }
 
+    public boolean isUseBatchInsert() {
+        return useBatchInsert;
+    }
+
+    public void setUseBatchInsert(boolean useBatchInsert) {
+        this.useBatchInsert = useBatchInsert;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
@@ -214,6 +223,7 @@ public class LunaticConfiguration {
                 + "\n\t UseSymmetricOptimization: " + useSymmetricOptimization
                 + "\n\t NumberCellsWeightForRanking: " + numberCellsWeightForRanking
                 + "\n\t DiscardDuplicateTuples: " + discardDuplicateTuples
+                + "\n\t UseBatchInsert: " + useBatchInsert
                 + "\n\t Cache type: " + cacheType
                 + "\n\t DeChaser: " + deChaser;
     }

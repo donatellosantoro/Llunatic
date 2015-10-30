@@ -6,8 +6,10 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -117,6 +119,7 @@ public class CellGroupUtility {
     }
 
     public static void checkCellGroupConsistency(Repair repair) throws ChaseException {
+        long start = new Date().getTime();
         List<CellGroup> cellGroupsToCheck = new ArrayList<CellGroup>();
         for (ChangeDescription changeDescription : repair.getChangeDescriptions()) {
             cellGroupsToCheck.add(changeDescription.getCellGroup());
@@ -127,5 +130,7 @@ public class CellGroupUtility {
             logger.error("Incorrect repair:\n" + repair);
             throw ex;
         }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.CELL_GROUP_CONSISTENCY_CHECK_TIME, end-start);
     }
 }

@@ -16,16 +16,14 @@ import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.DependencyStratum;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.operators.IBatchInsert;
 import speedy.model.algebra.operators.IDelete;
 import speedy.model.algebra.operators.IInsertTuple;
-import speedy.model.database.AttributeRef;
 import speedy.model.database.IDatabase;
 import speedy.model.database.operators.IRunQuery;
 
@@ -41,9 +39,9 @@ public class ChaseDeltaExtEGDs {
     private final OccurrenceHandlerMC occurrenceHandler;
 
     public ChaseDeltaExtEGDs(IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
-            IInsertTuple insertOperator, IDelete deleteOperator, OccurrenceHandlerMC occurrenceHandler, CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker) {
+            IInsertTuple insertOperator, IBatchInsert batchInsertOperator, OccurrenceHandlerMC occurrenceHandler, CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker) {
         this.databaseBuilder = stepBuilder;
-        this.cellChanger = new ChangeCell(insertOperator, deleteOperator, occurrenceHandler);
+        this.cellChanger = new ChangeCell(insertOperator, batchInsertOperator, occurrenceHandler);
         this.duplicateChecker = new CheckDuplicates();
         this.symmetricEGDChaser = new ChaseSymmetricEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
         this.egdChaser = new ChaseEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);

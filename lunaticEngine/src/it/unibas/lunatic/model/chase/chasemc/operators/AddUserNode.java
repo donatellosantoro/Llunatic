@@ -35,6 +35,7 @@ public class AddUserNode {
         po.setCellGroupValue(newCellGroup, scenario);
         ChangeDescription changeSet = new ChangeDescription(newCellGroup, LunaticConstants.CHASE_USER);
         cellChanger.changeCells(changeSet.getCellGroup(), userNode.getDeltaDB(), userNode.getId(), scenario);
+        cellChanger.flush(userNode.getDeltaDB());
         return newCellGroup;
     }
 }
