@@ -128,7 +128,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
             return;
         }
         long start = new Date().getTime();
-        if (LunaticConfiguration.isPrintSteps()) System.out.println("\t******Loading cache for step: " + stepId + " (current step: " + currentCachedStepId + ")");
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("\t  ----Loading cache for step: " + stepId + " (current step: " + currentCachedStepId + ")");
 //        if (previousCachedStepIds.contains(stepId)) {
 //            if (logger.isDebugEnabled()) logger.debug("Reloading an old cached step... " + stepId);
 ////            throw new IllegalArgumentException("Unable to reload a previous cached step.\n\tRequired Step: " + stepId + "\n\tCurrent cached step: " + currentCachedStepId + "\n\t" + previousCachedStepIds);

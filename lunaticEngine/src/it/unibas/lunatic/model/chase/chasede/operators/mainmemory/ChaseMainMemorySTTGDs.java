@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
+import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
@@ -26,6 +27,10 @@ public class ChaseMainMemorySTTGDs implements IChaseSTTGDs {
         if (!scenario.isMainMemory()) {
             throw new ChaseException("Unable to chase scenario: data sources are not in main-memory");
         }
+        if (scenario.getSTTgds().isEmpty()) {
+            return;
+        }
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("****Chasing scenario for s-t tgds...");
         long start = new Date().getTime();
         IDatabase target = scenario.getTarget();
         if (logger.isDebugEnabled()) logger.debug("Chasing st tgds on scenario: " + scenario);

@@ -70,7 +70,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
             chaseNode(newStep, scenario, chaseState, tgdTreeMap, tgdQuerySatisfactionMap);
             return;
         }
-        if (LunaticConfiguration.isPrintSteps()) System.out.println("******Chasing node for tgds: " + node.getId());
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("  ****Chasing node " + node.getId() + " for tgds...");
         if (logger.isDebugEnabled()) logger.debug("Chasing ext tgds:\n" + LunaticUtility.printCollection(scenario.getExtTGDs()) + "\non tree: " + node);
         int iterations = 0;
         while (true) {

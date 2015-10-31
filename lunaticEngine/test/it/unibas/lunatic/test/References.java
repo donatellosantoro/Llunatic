@@ -19,6 +19,8 @@ public class References {
     public static final String RS_tc_dbms = "de/RS/RS-tc-mcscenario-dbms.xml";
     public static final String RS_join = "de/RS/RS-join-mcscenario.xml";
     public static final String RS_join_dbms = "de/RS/RS-join-mcscenario-dbms.xml";
+    public static final String RS_st_exttgd_egd = "de/RS/RS-st-exttgd-egd-mcscenario.xml";
+    public static final String RS_st_exttgd_egd_dbms = "de/RS/RS-st-exttgd-egd-mcscenario-dbms.xml";
     
     public static final String bookPublisher = "de/bookPublisher/bookPublisher-mcscenario.xml";
     public static final String bookPublisher_plain = "de/bookPublisher/bookPublisher-mcscenario-plain.xml";

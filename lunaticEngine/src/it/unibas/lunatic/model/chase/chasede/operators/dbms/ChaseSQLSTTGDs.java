@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 
+import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.sql.GenerateTargetInsert;
@@ -37,6 +38,7 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
         if (scenario.getSTTgds().isEmpty()) {
             return;
         }
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("****Chasing scenario for s-t tgds...");
         StringBuilder result = new StringBuilder();
         result.append("BEGIN TRANSACTION;\n");
         result.append("SET CONSTRAINTS ALL DEFERRED;\n\n");
