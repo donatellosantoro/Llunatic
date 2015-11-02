@@ -228,7 +228,9 @@ public class DependencyUtility {
     }
 
     public static String valueWithOnlyChars(Object value) {
-        return value.toString().replaceAll("[^A-Za-z0-9]", "").toLowerCase();
+        String valueString= value.toString().replaceAll("[^A-Za-z0-9]", "").toLowerCase();
+        if (valueString.length() > 35) valueString = valueString.substring(0, 35);
+        return valueString;
     }
 
     public static Dependency findDependency(String dependencyId, List<Dependency> dependencies) {
