@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ public class MainMemoryUpdateCell implements IUpdateCell {
 
     private static Logger logger = LoggerFactory.getLogger(MainMemoryUpdateCell.class);
 
-    public void execute(CellRef cellRef, IValue value, IDatabase database) {
+    public void execute(CellRef cellRef, IValue value, IDatabase database, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Changing cell " + cellRef + " with new value " + value + " in database " + database);
         INode instanceRoot = ((MainMemoryDB)database).getDataSource().getInstances().get(0);
         for (INode set : instanceRoot.getChildren()) {

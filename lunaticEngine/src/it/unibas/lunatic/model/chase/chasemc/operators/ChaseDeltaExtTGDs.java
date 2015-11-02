@@ -86,9 +86,9 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 if (logger.isDebugEnabled()) logger.debug("---- Candidate new step: " + newStep.getId() + "- Chasing tgd: " + eTgd);
                 IAlgebraOperator tgdQuery = tgdTreeMap.get(eTgd);
                 if (logger.isTraceEnabled()) logger.debug("----TGD Query: " + tgdQuery);
-                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), eTgd);
+                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), eTgd, scenario);
 //                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()); //TODO Optimize deds workers
-                if (logger.isTraceEnabled()) logger.trace("Database for step: " + databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()).printInstances() + "\nDeltaDB: " + newStep.getDeltaDB().printInstances());
+                if (logger.isTraceEnabled()) logger.trace("Database for step: " + databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), scenario).printInstances() + "\nDeltaDB: " + newStep.getDeltaDB().printInstances());
                 long start = new Date().getTime();
                 boolean insertedTuples = dependencyChaser.chaseDependency(newStep, eTgd, tgdQuery, scenario, chaseState, databaseForStep);
                 long end = new Date().getTime();
@@ -117,7 +117,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
     }
 
     @Override
-    public void initializeOIDs(IDatabase targetDB) {
-        this.oidGenerator.initializeOIDs(targetDB);
+    public void initializeOIDs(IDatabase targetDB, Scenario scenario) {
+        this.oidGenerator.initializeOIDs(targetDB, scenario);
     }
 }

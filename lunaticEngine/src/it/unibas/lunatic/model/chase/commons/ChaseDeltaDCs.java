@@ -47,7 +47,7 @@ public class ChaseDeltaDCs {
             return;
         }
         if (logger.isTraceEnabled()) logger.trace("Chasing dcs on scenario: " + scenario);
-        IDatabase databaseForStep = databaseBuilder.extractDatabase(node.getId(), node.getDeltaDB(), node.getOriginalDB());
+        IDatabase databaseForStep = databaseBuilder.extractDatabase(node.getId(), node.getDeltaDB(), node.getOriginalDB(), scenario);
         for (Dependency dc : scenario.getDCs()) {
             if (chaseState.isCancelled()) {
                 ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");

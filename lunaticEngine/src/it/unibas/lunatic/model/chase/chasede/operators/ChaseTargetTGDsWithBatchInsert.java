@@ -69,7 +69,7 @@ public class ChaseTargetTGDsWithBatchInsert implements IChaseDeltaExtTGDs {
         DeltaChaseStep newStep = new DeltaChaseStep(scenario, node, localId, LunaticConstants.CHASE_STEP_TGD);
         while (true) {
             boolean insertedTuples = false;
-            IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB());
+            IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), scenario);
             for (Dependency eTgd : scenario.getExtTGDs()) {
                 if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
                 if (logger.isDebugEnabled()) logger.debug("----Chasing tgd: " + eTgd);
@@ -93,7 +93,8 @@ public class ChaseTargetTGDsWithBatchInsert implements IChaseDeltaExtTGDs {
         }
     }
 
-    public void initializeOIDs(IDatabase targetDB) {
-        insertTuples.initializeOIDs(targetDB);
+    @Override
+    public void initializeOIDs(IDatabase targetDB, Scenario scenario) {
+        insertTuples.initializeOIDs(targetDB, scenario);
     }
 }

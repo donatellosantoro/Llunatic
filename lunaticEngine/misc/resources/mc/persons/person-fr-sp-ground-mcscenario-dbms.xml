@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:person</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+
+create table md (
+  oid serial,
+  surname varchar(50),
+  name varchar(50),
+  ssn varchar(50)
+);
+
+insert into md (surname, name, ssn) values ('Red', 'Frank', '555');
+]]>
+    </init-db>
+  </source>
+  <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:person</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table person (
+  oid serial,
+  ssn varchar(50),
+  surname varchar(50),
+  name varchar(50),
+  address varchar(50)
+);
+
+insert into person(ssn, surname, name, address) values (123, 'Smith', 'John', 'a1');
+insert into person(ssn, surname, name, address) values (123, 'Smith-x', 'Josh', 'a2');
+insert into person(ssn, surname, name, address) values (321, 'White', 'Frankx', 'a3');
+insert into person(ssn, surname, name, address) values (321, 'Red', 'Frank', 'a4');
+insert into person(ssn, surname, name, address) values (321, 'White', 'Frank', 'a5');
+insert into person(ssn, surname, name, address) values (321, 'White', 'Frank', 'a6');
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+er1: md(surname: $surname1, name: $name1, ssn: $ssn1), 
+person(ssn: $ssn2, surname: $surname2, name: $name2, address: $address2),
+$name1 == $name2, $surname1 == $surname2 -> $ssn1 == $ssn2.
+
+e0: person(ssn: $ssn1, surname: $surname1, name: $name1, address: $address1), 
+person(ssn: $ssn2, surname: $surname2, name: $name2, address: $address2),
+$ssn1 == $ssn2 -> $surname1 == $surname2.
+
+e1: person(ssn: $ssn1, surname: $surname1, name: $name1, address: $address1), 
+ person(ssn: $ssn2, surname: $surname2, name: $name2, address: $address2),
+$surname1 == $surname2 -> $name1 == $name2.
+]]>
+  </dependencies>
+  <authoritativeSources>
+      <source>md</source>
+  </authoritativeSources>
+  <partialOrder>
+    <type>Frequency</type>
+  </partialOrder>
+  <costManager>
+    <type>Similarity</type>
+    <doPermutations>false</doPermutations>
+    <similarityThreshold>0.5</similarityThreshold>
+    <requestMajority>false</requestMajority>
+  </costManager>
+</scenario>

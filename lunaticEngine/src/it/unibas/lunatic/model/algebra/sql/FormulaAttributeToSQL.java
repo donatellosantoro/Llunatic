@@ -8,7 +8,7 @@ import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
-import it.unibas.lunatic.persistence.relational.DBMSUtility;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class FormulaAttributeToSQL {
         FormulaVariableOccurrence sourceOccurrence = universalVariable.getPremiseRelationalOccurrences().get(0);
 //        return dependency.getId() + "." + sourceOccurrence.getAttributeRef().toScriptString();
         AttributeRef attributeRef = sourceOccurrence.getAttributeRef();
-        String attributeRefToSQL = DBMSUtility.attributeRefToSQL(attributeRef);
+        String attributeRefToSQL = LunaticDBMSUtility.attributeRefToSQL(attributeRef);
         Attribute attribute = LunaticUtility.getAttribute(attributeRef, scenario.getSource());
         if (attribute.getType().equals(Types.INTEGER)) {
             attributeRefToSQL = "CAST(" + attributeRefToSQL + " as text)";
@@ -73,7 +73,7 @@ public class FormulaAttributeToSQL {
         for (FormulaVariable formulaVariable : universalVariablesInConclusion) {
             FormulaVariableOccurrence sourceOccurrence = formulaVariable.getPremiseRelationalOccurrences().get(0);
 //            String attributeString = dependency.getId() + "." + sourceOccurrence.getAttributeRef().toScriptString();
-            String attributeString = DBMSUtility.attributeRefToSQL(sourceOccurrence.getAttributeRef());
+            String attributeString = LunaticDBMSUtility.attributeRefToSQL(sourceOccurrence.getAttributeRef());
             append.addChild(new StringSkolemPart(attributeString));
         }
         generatorForVariable = new SkolemFunctionGenerator(root);

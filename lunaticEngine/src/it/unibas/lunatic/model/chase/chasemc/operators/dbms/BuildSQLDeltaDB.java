@@ -11,7 +11,7 @@ import speedy.model.database.AttributeRef;
 import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSTable;
-import it.unibas.lunatic.persistence.relational.DBMSUtility;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
+import speedy.utility.DBMSUtility;
 
 public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
 
@@ -30,22 +31,22 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         AccessConfiguration accessConfiguration = ((DBMSDB) database).getAccessConfiguration().clone();
         accessConfiguration.setSchemaName(LunaticConstants.WORK_SCHEMA);
         DBMSDB deltaDB = new DBMSDB(accessConfiguration);
-        DBMSUtility.createWorkSchema(accessConfiguration);
+        LunaticDBMSUtility.createWorkSchema(accessConfiguration, scenario);
         StringBuilder script = new StringBuilder();
-        script.append(createOccurrencesAndProvenancesTable(accessConfiguration));
+        script.append(createOccurrencesAndProvenancesTable(accessConfiguration, scenario));
         List<AttributeRef> affectedAttributes = findAllAffectedAttributes(scenario);
-        script.append(createDeltaRelationsSchema(database, accessConfiguration, affectedAttributes));
-        script.append(insertIntoDeltaRelations(database, accessConfiguration, rootName, affectedAttributes));
+        script.append(createDeltaRelationsSchema(database, accessConfiguration, affectedAttributes, scenario));
+        script.append(insertIntoDeltaRelations(database, accessConfiguration, rootName, affectedAttributes, scenario));
         QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true, false);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_BUILDER, end - start);
         return deltaDB;
     }
 
-    private String createOccurrencesAndProvenancesTable(AccessConfiguration accessConfiguration) {
+    private String createOccurrencesAndProvenancesTable(AccessConfiguration accessConfiguration, Scenario scenario) {
         StringBuilder script = new StringBuilder();
         script.append("----- Generating occurrences tables -----\n");
-        script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(LunaticConstants.CELLGROUP_TABLE).append("(").append("\n");
+        script.append("CREATE TABLE ").append(DBMSUtility.getSchemaNameAndDot(accessConfiguration)).append(LunaticConstants.CELLGROUP_TABLE).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.CELL_OID).append(" bigint,").append("\n");
@@ -58,8 +59,8 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         return script.toString();
     }
 
-    private String createDeltaRelationsSchema(IDatabase database, AccessConfiguration accessConfiguration, List<AttributeRef> affectedAttributes) {
-        String deltaDBSchema = accessConfiguration.getSchemaName();
+    private String createDeltaRelationsSchema(IDatabase database, AccessConfiguration accessConfiguration, List<AttributeRef> affectedAttributes, Scenario scenario) {
+        String deltaDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario);
         StringBuilder script = new StringBuilder();
         script.append("----- Generating Delta Relations Schema -----\n");
         for (String tableName : database.getTableNames()) {
@@ -87,7 +88,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         script.append("CREATE TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
-        script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
+        script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.CELL_ORIGINAL_VALUE).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text").append("\n");
         script.append(") WITH OIDS;").append("\n\n");
@@ -105,7 +106,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         script.append("CREATE TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
         for (Attribute attribute : tableNonAffectedAttributes) {
-            script.append(SpeedyConstants.INDENT).append(attribute.getName()).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attribute.getType())).append(",\n");
+            script.append(SpeedyConstants.INDENT).append(attribute.getName()).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attribute.getType())).append(",\n");
         }
         LunaticUtility.removeChars(",\n".length(), script);
         script.append("\n").append(") WITH OIDS;").append("\n\n");
@@ -113,9 +114,9 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         return script.toString();
     }
 
-    private String insertIntoDeltaRelations(IDatabase database, AccessConfiguration accessConfiguration, String rootStepId, List<AttributeRef> affectedAttributes) {
-        String originalDBSchema = ((DBMSDB) database).getAccessConfiguration().getSchemaName();
-        String deltaDBSchema = accessConfiguration.getSchemaName();
+    private String insertIntoDeltaRelations(IDatabase database, AccessConfiguration accessConfiguration, String rootStepId, List<AttributeRef> affectedAttributes, Scenario scenario) {
+        String originalDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(((DBMSDB) database).getAccessConfiguration(), scenario);
+        String deltaDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario);
         StringBuilder script = new StringBuilder();
         script.append("----- Insert into Delta Relations -----\n");
         for (String tableName : database.getTableNames()) {

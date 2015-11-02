@@ -10,5 +10,5 @@ public interface IInsertTuplesForTargetTGDs {
 
     boolean execute(IAlgebraOperator sourceQuery, DeltaChaseStep currentNode, Dependency tgd, Scenario scenario, IDatabase databaseForStep);
 
-    void initializeOIDs(IDatabase database);
+    void initializeOIDs(IDatabase database, Scenario scenario);
 }

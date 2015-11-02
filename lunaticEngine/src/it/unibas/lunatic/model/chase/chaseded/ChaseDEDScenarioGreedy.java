@@ -28,13 +28,13 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
     //
     private IChaseSTTGDs stChaser;
     private IDEChaser deChaser;
-    private IDatabaseManager databaseManager;
+    private IDEDDatabaseManager databaseManager;
     //
     private ImmutableChaseState immutableChaseState = ImmutableChaseState.getInstance();
     private NormalizeConclusionsInTGDs dependencyNormalizer = new NormalizeConclusionsInTGDs();
     private FindTargetGenerators generatorFinder = new FindTargetGenerators();
 
-    public ChaseDEDScenarioGreedy(IChaseSTTGDs stChaser, IDEChaser deChaser, IDatabaseManager databaseManager) {
+    public ChaseDEDScenarioGreedy(IChaseSTTGDs stChaser, IDEChaser deChaser, IDEDDatabaseManager databaseManager) {
         this.stChaser = stChaser;
         this.deChaser = deChaser;
         this.databaseManager = databaseManager;
@@ -103,7 +103,7 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
     private IDatabase doChase(Scenario scenario, GreedyDEDScenario dedScenario, IChaseState chaseState) {
         if (logger.isDebugEnabled()) logger.debug("Chasing DED Scenario " + dedScenario);
         // Generating a new standard Scenario starting from the DED one
-        Scenario deScenario = new Scenario(scenario.getFileName());
+        Scenario deScenario = new Scenario(scenario.getFileName(), null);
         deScenario.setSource(scenario.getSource());
         deScenario.setTarget(scenario.getTarget());
         deScenario.setConfiguration(scenario.getConfiguration());

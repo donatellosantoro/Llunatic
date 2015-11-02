@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.dbms;
 
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfDBOIDs;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
@@ -13,7 +14,7 @@ import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSVirtualDB;
 import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.expressions.Expression;
-import it.unibas.lunatic.persistence.relational.DBMSUtility;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,17 +58,17 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
     }
 
     @Override
-    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB) {
-        return extractDatabase(stepId, deltaDB, originalDB, false);
+    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, Scenario scenario) {
+        return extractDatabase(stepId, deltaDB, originalDB, false, scenario);
     }
 
     @Override
-    public IDatabase extractDatabaseWithDistinct(String stepId, IDatabase deltaDB, IDatabase originalDB) {
+    public IDatabase extractDatabaseWithDistinct(String stepId, IDatabase deltaDB, IDatabase originalDB, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Extracting database with distinct for step " + stepId);
-        return extractDatabase(stepId, deltaDB, originalDB, true);
+        return extractDatabase(stepId, deltaDB, originalDB, true, scenario);
     }
 
-    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, boolean distinct) {
+    private IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, boolean distinct, Scenario scenario) {
         long start = new Date().getTime();
         if (logger.isDebugEnabled()) logger.debug("Generating database for step " + stepId);
         //Materialize join
@@ -76,7 +77,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
             attributeMap.put(tableName, buildAttributeRefs(originalDB.getTable(tableName)));
         }
         StringBuilder script = new StringBuilder();
-        Map<String, String> tableViews = extractDatabase("\"" + stepId + "\"", "", deltaDB, originalDB, attributeMap, true, distinct);
+        Map<String, String> tableViews = extractDatabase("\"" + stepId + "\"", "", deltaDB, originalDB, attributeMap, true, distinct, scenario);
         for (String tableName : tableViews.keySet()) {
             String viewScript = tableViews.get(tableName);
             script.append(viewScript).append("\n");
@@ -97,7 +98,8 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         return virtualDB;
     }
 
-    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, Dependency dependency) {
+    @Override
+    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, Dependency dependency, Scenario scenario) {
         long start = new Date().getTime();
         if (logger.isDebugEnabled()) logger.debug("Generating database for step " + stepId + " and depedency " + dependency);
         //Materialize join
@@ -116,7 +118,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         }
         StringBuilder script = new StringBuilder();
 //        script.append("ANALYZE;\n");
-        Map<String, String> tableViews = extractDatabase("\"" + stepId + "\"", dependency.getId(), deltaDB, originalDB, attributeMap, true, false);
+        Map<String, String> tableViews = extractDatabase("\"" + stepId + "\"", dependency.getId(), deltaDB, originalDB, attributeMap, true, false, scenario);
         for (String tableName : tableViews.keySet()) {
             String viewScript = tableViews.get(tableName);
             script.append(viewScript).append("\n");
@@ -137,8 +139,8 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         return virtualDB;
     }
 
-    private Map<String, String> extractDatabase(String stepId, String dependencyId, IDatabase deltaDB, IDatabase originalDB, Map<String, List<AttributeRef>> tablesAndAttributesToExtract, boolean materialize, boolean distinct) {
-        String deltaDBSchemaName = ((DBMSDB) deltaDB).getAccessConfiguration().getSchemaName();
+    private Map<String, String> extractDatabase(String stepId, String dependencyId, IDatabase deltaDB, IDatabase originalDB, Map<String, List<AttributeRef>> tablesAndAttributesToExtract, boolean materialize, boolean distinct, Scenario scenario) {
+        String deltaDBSchemaName = LunaticDBMSUtility.getSchemaWithSuffix(((DBMSDB) deltaDB).getAccessConfiguration(), scenario);
         Set<String> tableNames = tablesAndAttributesToExtract.keySet();
         Map<String, String> tableViews = new HashMap<String, String>();
         for (String tableName : tableNames) {
@@ -146,7 +148,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
             List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>(tablesAndAttributesToExtract.get(tableName));
             List<AttributeRef> nonAffectedAttributes = new ArrayList<AttributeRef>();
             List<AttributeRef> deltaTableAttributes = new ArrayList<AttributeRef>();
-            IAlgebraOperator initialTable = generateInitialTable(tableName, affectedAttributes, nonAffectedAttributes, deltaDB, deltaTableAttributes, stepId, materialize);
+            IAlgebraOperator initialTable = generateInitialTable(tableName, affectedAttributes, nonAffectedAttributes, deltaDB, deltaTableAttributes, stepId, materialize, scenario);
             AttributeRef oidAttributeRef = findOidAttribute(initialTable, deltaDB);
             IAlgebraOperator algebraRoot;
             if (affectedAttributes.isEmpty()) {
@@ -199,7 +201,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         throw new IllegalArgumentException("Unable to find oid attribute in " + initialTable);
     }
 
-    private IAlgebraOperator generateInitialTable(String tableName, List<AttributeRef> affectedAttributes, List<AttributeRef> nonAffectedAttributes, IDatabase deltaDB, List<AttributeRef> deltaTableAttributes, String stepId, boolean materialize) {
+    private IAlgebraOperator generateInitialTable(String tableName, List<AttributeRef> affectedAttributes, List<AttributeRef> nonAffectedAttributes, IDatabase deltaDB, List<AttributeRef> deltaTableAttributes, String stepId, boolean materialize, Scenario scenario) {
         for (Iterator<AttributeRef> it = affectedAttributes.iterator(); it.hasNext();) {
             AttributeRef attributeRef = it.next();
             if (isNotAffected(attributeRef, deltaDB)) {
@@ -207,7 +209,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
                 nonAffectedAttributes.add(attributeRef);
             }
         }
-        String deltaDBSchemaName = ((DBMSDB) deltaDB).getAccessConfiguration().getSchemaName();
+        String deltaDBSchemaName = LunaticDBMSUtility.getSchemaWithSuffix(((DBMSDB) deltaDB).getAccessConfiguration(), scenario);
         IAlgebraOperator initialTable;
         if (!nonAffectedAttributes.isEmpty()) {
             String tableNameForNonAffected = tableName + LunaticConstants.NA_TABLE_SUFFIX;
@@ -267,8 +269,8 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         }
         IAlgebraOperator resultOperator;
         if (materialize) {
-            String tableName = "tmp_" + DBMSUtility.attributeRefToAliasSQL(attribute) + "_" + cleanStepId;
-            String tableAlias = DBMSUtility.attributeRefToAliasSQL(attribute);
+            String tableName = "tmp_" + LunaticDBMSUtility.attributeRefToAliasSQL(attribute) + "_" + cleanStepId;
+            String tableAlias = LunaticDBMSUtility.attributeRefToAliasSQL(attribute);
             CreateTableAs createTable = new CreateTableAs(tableName, tableAlias, deltaDBSchemaName, false);
             createTable.addChild(project);
             resultOperator = createTable;

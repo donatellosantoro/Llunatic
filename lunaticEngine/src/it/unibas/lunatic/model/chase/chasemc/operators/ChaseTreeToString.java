@@ -145,7 +145,7 @@ public class ChaseTreeToString {
         }
         IDatabase deltaDB = ((DeltaChaseStep) step).getDeltaDB();
         IDatabase originalDB = ((DeltaChaseStep) step).getOriginalDB();
-        IDatabase database = databaseBuilder.extractDatabase(step.getId(), deltaDB, originalDB);
+        IDatabase database = databaseBuilder.extractDatabase(step.getId(), deltaDB, originalDB, step.getScenario());
         result.append(database.printInstances(sort));
         if (longFormat) {
 //            result.append((step.getCellGroupStats() != null ? step.getCellGroupStats().toString() : ""));

@@ -6,6 +6,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class GenerateTrigger {
 
     private String generateTrigger(Scenario scenario) {
         DBMSDB target = ((DBMSDB) scenario.getTarget());
-        String targetSchema = target.getAccessConfiguration().getSchemaName();
+        String targetSchema = LunaticDBMSUtility.getSchemaWithSuffix(target.getAccessConfiguration(), scenario);
         List<AttributeRef> attributeRefsWithSkolem = findAttributeRefsWithSkolem(scenario.getSTTgds());
         StringBuilder result = new StringBuilder();
         Map<String, List<String>> tableWithSkolem = groupAttributeByTable(attributeRefsWithSkolem);
@@ -162,9 +163,7 @@ public class GenerateTrigger {
     }
 
     private String getSchema(Scenario scenario) {
-        return LunaticConstants.WORK_SCHEMA;
-//        DBMSDB target = (DBMSDB)scenario.getTarget();
-//        return target.getAccessConfiguration().getSchemaName();
+        return LunaticDBMSUtility.getWorkSchema(scenario);
     }
 
 }

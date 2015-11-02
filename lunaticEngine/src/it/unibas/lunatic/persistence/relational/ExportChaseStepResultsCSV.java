@@ -34,6 +34,7 @@ import speedy.model.database.mainmemory.MainMemoryVirtualDB;
 import speedy.model.database.mainmemory.MainMemoryVirtualTable;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
+import speedy.utility.DBMSUtility;
 
 public class ExportChaseStepResultsCSV {
 
@@ -60,7 +61,7 @@ public class ExportChaseStepResultsCSV {
             }
             counter++;
             String resultFile = folder + "Solution" + (counter < 10 ? "0" + counter : counter) + ".csv";
-            IDatabase database = getDatabaseBuilder(step.getScenario()).extractDatabaseWithDistinct(step.getId(), step.getDeltaDB(), step.getOriginalDB());
+            IDatabase database = getDatabaseBuilder(step.getScenario()).extractDatabaseWithDistinct(step.getId(), step.getDeltaDB(), step.getOriginalDB(), step.getScenario());
 //            IDatabase database = databaseBuilder.extractDatabase(step.getId(), step.getDeltaDB(), step.getOriginalDB());
             if (materializeFKJoins) {
                 materializeFKJoins(database, step);
@@ -75,7 +76,7 @@ public class ExportChaseStepResultsCSV {
     }
 
     public void exportDatabase(DeltaChaseStep step, String stepId, String file) throws DAOException {
-        IDatabase database = getDatabaseBuilder(step.getScenario()).extractDatabaseWithDistinct(stepId, step.getDeltaDB(), step.getOriginalDB());
+        IDatabase database = getDatabaseBuilder(step.getScenario()).extractDatabaseWithDistinct(stepId, step.getDeltaDB(), step.getOriginalDB(), step.getScenario());
 //        IDatabase database = databaseBuilder.extractDatabase(stepId, step.getDeltaDB(), step.getOriginalDB());
         exportDatabase(database, file);
     }
@@ -153,7 +154,6 @@ public class ExportChaseStepResultsCSV {
 //        }
 //        return result;
 //    }
-
     private String cleanAttributeName(String attributeName) {
         if (!attributeName.contains("_")) {
             return attributeName;
@@ -185,18 +185,18 @@ public class ExportChaseStepResultsCSV {
         for (Dependency dependency : scenario.getExtTGDs()) {
             IAlgebraOperator satisfactionQuery = treeBuilderForTGD.buildCheckSatisfactionAlgebraTreesForTGD(dependency, scenario, false);
             String tableName = getJoinTableName(dependency);
-            materializeJoin(tableName, satisfactionQuery, database);
+            materializeJoin(tableName, satisfactionQuery, database, scenario);
             DBMSVirtualDB virtualDB = (DBMSVirtualDB) database;
             DBMSTable joinTable = new DBMSTable(tableName, ((DBMSDB) step.getDeltaDB()).getAccessConfiguration());
             virtualDB.addTable(joinTable);
         }
     }
 
-    private void materializeJoin(String tableName, IAlgebraOperator satisfactionQuery, IDatabase databaseForStep) {
+    private void materializeJoin(String tableName, IAlgebraOperator satisfactionQuery, IDatabase databaseForStep, Scenario scenario) {
         AccessConfiguration accessConfiguration = ((DBMSVirtualDB) databaseForStep).getAccessConfiguration();
         StringBuilder script = new StringBuilder();
-        script.append("DROP TABLE IF EXISTS ").append(accessConfiguration.getSchemaName()).append(".").append(tableName).append(";\n");
-        script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(tableName).append(" WITH OIDS AS (\n");
+        script.append("DROP TABLE IF EXISTS ").append(DBMSUtility.getSchemaNameAndDot(accessConfiguration)).append(tableName).append(";\n");
+        script.append("CREATE TABLE ").append(DBMSUtility.getSchemaNameAndDot(accessConfiguration)).append(tableName).append(" WITH OIDS AS (\n");
         script.append(queryBuilder.treeToSQL(satisfactionQuery, null, databaseForStep, ""));
         script.append(");\n");
         QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true, false);
@@ -232,8 +232,8 @@ public class ExportChaseStepResultsCSV {
         LunaticUtility.removeChars("_".length(), sb);
         return sb.toString();
     }
-    
-    private IBuildDatabaseForChaseStep getDatabaseBuilder(Scenario scenario){
+
+    private IBuildDatabaseForChaseStep getDatabaseBuilder(Scenario scenario) {
         return OperatorFactory.getInstance().getDatabaseBuilder(scenario);
     }
 }

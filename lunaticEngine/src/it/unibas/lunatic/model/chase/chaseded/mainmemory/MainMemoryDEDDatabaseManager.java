@@ -1,10 +1,10 @@
 package it.unibas.lunatic.model.chase.chaseded.mainmemory;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chaseded.IDatabaseManager;
+import it.unibas.lunatic.model.chase.chaseded.IDEDDatabaseManager;
 import speedy.model.database.IDatabase;
 
-public class MainMemoryDatabaseManager implements IDatabaseManager {
+public class MainMemoryDEDDatabaseManager implements IDEDDatabaseManager {
 
     public IDatabase cloneTarget(Scenario scenario) {
         return scenario.getTarget().clone();

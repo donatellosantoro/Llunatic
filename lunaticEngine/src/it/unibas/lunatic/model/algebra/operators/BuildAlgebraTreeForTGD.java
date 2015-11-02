@@ -5,7 +5,7 @@ import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
-import it.unibas.lunatic.persistence.relational.DBMSUtility;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public class BuildAlgebraTreeForTGD {
         if (logger.isDebugEnabled()) logger.debug("Premise query:\n" + premiseRoot);
         if (scenario.isDBMS() && usePreviousViolationTable) {
             IAlgebraOperator violationRoot = buildTreeForViolationTable(extTGD, scenario);
-            IAlgebraOperator violationJoin = addJoinBetweenPremiseAndViolations(premiseRoot, violationRoot, extTGD);
+            IAlgebraOperator violationJoin = addJoinBetweenPremiseAndViolations(premiseRoot, violationRoot, extTGD, scenario);
             premiseRoot = violationJoin;
         }
         IAlgebraOperator conclusionRoot = treeBuilder.buildTreeForConclusion(extTGD, scenario);
@@ -112,19 +112,19 @@ public class BuildAlgebraTreeForTGD {
 
     private IAlgebraOperator buildTreeForViolationTable(Dependency extTGD, Scenario scenario) {
         RelationalAtom relationalAtom = (RelationalAtom) extTGD.getConclusion().getAtoms().get(0);
-        Scan scan = new Scan(new TableAlias(ChaseUtility.getTmpTableForTGDViolations(extTGD, relationalAtom.getTableName(), false)));
+        Scan scan = new Scan(new TableAlias(ChaseUtility.getTmpTableForTGDViolations(extTGD, relationalAtom.getTableName(), false, scenario)));
         if (logger.isDebugEnabled()) logger.debug("Scan for violation table: " + scan);
         return scan;
     }
 
-    private IAlgebraOperator addJoinBetweenPremiseAndViolations(IAlgebraOperator premise, IAlgebraOperator conclusion, Dependency extTGD) {
+    private IAlgebraOperator addJoinBetweenPremiseAndViolations(IAlgebraOperator premise, IAlgebraOperator conclusion, Dependency extTGD, Scenario scenario) {
         List<DifferenceEquality> differenceEqualities = findUniversalVariablesEqualities(extTGD);
         List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>();
         List<AttributeRef> rightAttributes = new ArrayList<AttributeRef>();
         for (DifferenceEquality equality : differenceEqualities) {
             leftAttributes.add(equality.leftAttribute);
-            String tableName = ChaseUtility.getTmpTableForTGDViolations(extTGD, equality.rightAttribute.getTableName(), false);
-            String attributeName = DBMSUtility.attributeRefToSQL(equality.rightAttribute);
+            String tableName = ChaseUtility.getTmpTableForTGDViolations(extTGD, equality.rightAttribute.getTableName(), false, scenario);
+            String attributeName = LunaticDBMSUtility.attributeRefToSQL(equality.rightAttribute);
             AttributeRef violationAttribute = new AttributeRef(tableName, attributeName);
             if (logger.isDebugEnabled()) logger.debug("Violation attribute: " + violationAttribute);
             rightAttributes.add(violationAttribute);

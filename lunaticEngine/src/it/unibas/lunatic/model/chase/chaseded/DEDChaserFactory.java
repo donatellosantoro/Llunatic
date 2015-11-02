@@ -11,7 +11,7 @@ public class DEDChaserFactory {
     public static IDEDChaser getChaser(Scenario scenario) {
         IChaseSTTGDs stChaser = OperatorFactory.getInstance().getSTChaser(scenario);
         IDEChaser deChaser = DEChaserFactory.getChaser(scenario);
-        IDatabaseManager databaseManager = OperatorFactory.getInstance().getDatabaseManager(scenario);
+        IDEDDatabaseManager databaseManager = OperatorFactory.getInstance().getDEDDatabaseManager(scenario);
         return new ChaseDEDScenarioGreedy(stChaser, deChaser, databaseManager);
     }
 }

@@ -2,6 +2,7 @@ package it.unibas.lunatic.model.chase.commons;
 
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
@@ -18,6 +19,7 @@ import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import speedy.model.expressions.Expression;
 import java.util.ArrayList;
@@ -230,6 +232,14 @@ public class ChaseUtility {
         return root;
     }
 
+    public static DeltaChaseStep getFirstLeaf(DeltaChaseStep result) {
+        DeltaChaseStep currentNode = getRoot(result);
+        while(!currentNode.getChildren().isEmpty()){
+            currentNode = currentNode.getChildren().get(0);
+        }
+        return currentNode;
+    }
+
     public static String getDeltaRelationName(String tableName, String attributeName) {
         return tableName + LunaticConstants.DELTA_TABLE_SEPARATOR + attributeName;
     }
@@ -293,11 +303,11 @@ public class ChaseUtility {
         return eTgd.getId();
     }
 
-    public static String getTmpTableForTGDViolations(Dependency tgd, String table, boolean appendSchema) {
+    public static String getTmpTableForTGDViolations(Dependency tgd, String table, boolean appendSchema, Scenario scenario) {
 //        String tableName = tgd.getId() + "_" + table;
         String tableName = "violation_" + tgd.getId();
         if (appendSchema) {
-            tableName = LunaticConstants.WORK_SCHEMA + "." + tableName;
+            tableName = LunaticDBMSUtility.getWorkSchema(scenario) + "." + tableName;
         }
         return tableName;
     }

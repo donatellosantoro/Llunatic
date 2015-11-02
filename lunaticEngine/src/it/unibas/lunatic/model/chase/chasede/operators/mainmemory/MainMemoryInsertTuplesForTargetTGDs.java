@@ -121,7 +121,7 @@ public class MainMemoryInsertTuplesForTargetTGDs implements IInsertTuplesForTarg
     }
 
     @Override
-    public void initializeOIDs(IDatabase database) {
-        oidGenerator.initializeOIDs(database);
+    public void initializeOIDs(IDatabase database, Scenario scenario) {
+        oidGenerator.initializeOIDs(database, scenario);
     }
 }

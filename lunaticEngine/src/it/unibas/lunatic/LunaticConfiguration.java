@@ -2,7 +2,8 @@ package it.unibas.lunatic;
 
 public class LunaticConfiguration {
 
-    private static boolean printSteps = true;
+//    private static boolean printSteps = true;
+    private static boolean printSteps = false;
     private boolean debugMode = false;
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;

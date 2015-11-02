@@ -1,25 +1,26 @@
 package it.unibas.lunatic.model.chase.chaseded.dbms;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chaseded.IDatabaseManager;
+import it.unibas.lunatic.model.chase.chaseded.IDEDDatabaseManager;
 import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
-import it.unibas.lunatic.persistence.relational.DBMSUtility;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 
-public class SQLDatabaseManager implements IDatabaseManager {
+public class SQLDEDDatabaseManager implements IDEDDatabaseManager {
 
     private static final String CLONE_SUFFIX = "_clone";
 
     public IDatabase cloneTarget(Scenario scenario) {
         DBMSDB target = (DBMSDB) scenario.getTarget();
         AccessConfiguration targetConfiguration = target.getAccessConfiguration();
-        String originalTargetSchemaName = targetConfiguration.getSchemaName();
+        String originalTargetSchemaName = LunaticDBMSUtility.getSchemaWithSuffix(targetConfiguration, scenario);
         String cloneTargetSchemaName = originalTargetSchemaName + CLONE_SUFFIX;
         cloneSchema(originalTargetSchemaName, cloneTargetSchemaName, targetConfiguration);
-        AccessConfiguration workConfiguration = DBMSUtility.getWorkAccessConfiguration(targetConfiguration);
-        String originalWorkSchema = workConfiguration.getSchemaName();
+        AccessConfiguration workConfiguration = getWorkAccessConfiguration(targetConfiguration);
+        String originalWorkSchema = LunaticDBMSUtility.getSchemaWithSuffix(workConfiguration, scenario);
         String cloneWorkSchema = originalWorkSchema + CLONE_SUFFIX;
         cloneSchema(originalWorkSchema, cloneWorkSchema, workConfiguration);
         AccessConfiguration cloneAccessConfiguration = targetConfiguration.clone();
@@ -33,12 +34,12 @@ public class SQLDatabaseManager implements IDatabaseManager {
         DBMSDB target = (DBMSDB) scenario.getTarget();
         AccessConfiguration targetConfiguration = target.getAccessConfiguration();
         AccessConfiguration clonedTargetConfiguration = ((DBMSDB) clonedDatabase).getAccessConfiguration();
-        String originalTargetSchemaName = targetConfiguration.getSchemaName();
+        String originalTargetSchemaName = LunaticDBMSUtility.getSchemaWithSuffix(targetConfiguration, scenario);
         String cloneTargetSchemaName = originalTargetSchemaName + CLONE_SUFFIX;
         removeSchema(originalTargetSchemaName, clonedTargetConfiguration);
         cloneSchema(cloneTargetSchemaName, originalTargetSchemaName, clonedTargetConfiguration);
-        AccessConfiguration workConfiguration = DBMSUtility.getWorkAccessConfiguration(targetConfiguration);
-        String originalWorkSchema = workConfiguration.getSchemaName();
+        AccessConfiguration workConfiguration = getWorkAccessConfiguration(targetConfiguration);
+        String originalWorkSchema = LunaticDBMSUtility.getSchemaWithSuffix(workConfiguration, scenario);
         String cloneWorkSchema = originalWorkSchema + CLONE_SUFFIX;
         removeSchema(originalWorkSchema, clonedTargetConfiguration);
         cloneSchema(cloneWorkSchema, originalWorkSchema, clonedTargetConfiguration);
@@ -47,11 +48,11 @@ public class SQLDatabaseManager implements IDatabaseManager {
     public void removeClone(IDatabase clonedDatabase, Scenario scenario) {
         DBMSDB target = (DBMSDB) scenario.getTarget();
         AccessConfiguration targetConfiguration = target.getAccessConfiguration();
-        String originalTargetSchemaName = targetConfiguration.getSchemaName();
+        String originalTargetSchemaName = LunaticDBMSUtility.getSchemaWithSuffix(targetConfiguration, scenario);
         String cloneTargetSchemaName = originalTargetSchemaName + CLONE_SUFFIX;
         removeSchema(cloneTargetSchemaName, targetConfiguration);
-        AccessConfiguration workConfiguration = DBMSUtility.getWorkAccessConfiguration(targetConfiguration);
-        String originalWorkSchema = workConfiguration.getSchemaName();
+        AccessConfiguration workConfiguration = getWorkAccessConfiguration(targetConfiguration);
+        String originalWorkSchema = LunaticDBMSUtility.getSchemaWithSuffix(workConfiguration, scenario);
         String cloneWorkSchema = originalWorkSchema + CLONE_SUFFIX;
         removeSchema(cloneWorkSchema, targetConfiguration);
     }
@@ -67,8 +68,8 @@ public class SQLDatabaseManager implements IDatabaseManager {
         String function = "drop schema " + schema + " cascade;";
         QueryManager.executeScript(function, ac, true, true, false, false);
     }
-    
-    private String getCloneFunction(){
+
+    private String getCloneFunction() {
         StringBuilder function = new StringBuilder();
         function.append("CREATE OR REPLACE FUNCTION clone_schema(source_schema text, dest_schema text) RETURNS void AS").append("\n");
         function.append("$BODY$").append("\n");
@@ -88,5 +89,11 @@ public class SQLDatabaseManager implements IDatabaseManager {
         function.append("$BODY$").append("\n");
         function.append("LANGUAGE plpgsql VOLATILE;").append("\n");
         return function.toString();
+    }
+
+    private AccessConfiguration getWorkAccessConfiguration(AccessConfiguration accessConfiguration) {
+        AccessConfiguration workSchema = accessConfiguration.clone();
+        workSchema.setSchemaName(LunaticConstants.WORK_SCHEMA);
+        return workSchema;
     }
 }

@@ -77,13 +77,16 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
             while (true) {
                 long equivalenceClassStart = new Date().getTime();
                 EquivalenceClassForSymmetricEGD equivalenceClass = readNextEquivalenceClass(it, egd, currentNode.getDeltaDB(), currentNode.getId(), chaseState, scenario);
-                long equivalenceClasEnd = new Date().getTime();
-                ChaseStats.getInstance().addStat(ChaseStats.EGD_EQUIVALENCE_CLASS_TIME, equivalenceClasEnd - equivalenceClassStart);
+                long equivalenceClassEnd = new Date().getTime();
+                ChaseStats.getInstance().addStat(ChaseStats.EGD_EQUIVALENCE_CLASS_TIME, equivalenceClassEnd - equivalenceClassStart);
                 if (equivalenceClass == null) {
                     break;
                 }
                 ICostManager costManager = CostManagerFactory.getCostManager(egd, scenario);
+                long choosingRepairStart = new Date().getTime();
                 List<Repair> repairsForEquivalenceClass = costManager.chooseRepairStrategy(new EquivalenceClassForEGDProxy(equivalenceClass), currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
+                long choosingRepairEnd = new Date().getTime();
+                ChaseStats.getInstance().addStat(ChaseStats.EGD_CHOOSING_REPAIR_TIME, choosingRepairEnd - choosingRepairStart);
                 if (logger.isDebugEnabled()) logger.debug("Repairs for equivalence class: " + LunaticUtility.printCollection(repairsForEquivalenceClass));
                 repairsForDependency = ChaseUtility.accumulateRepairs(repairsForDependency, repairsForEquivalenceClass);
                 if (noMoreTuples(it)) {

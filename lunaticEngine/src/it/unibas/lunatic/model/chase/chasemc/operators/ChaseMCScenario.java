@@ -103,7 +103,7 @@ public class ChaseMCScenario {
         Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap = treeBuilderForTGD.buildAlgebraTreesForTGDSatisfaction(scenario.getExtTGDs(), scenario);
         Map<Dependency, IAlgebraOperator> dQueryMap = treeBuilderForTGD.buildAlgebraTreesForDTGD(scenario.getDCs(), scenario);
         IDatabase targetDB = scenario.getTarget();
-        extTgdChaser.initializeOIDs(targetDB);
+        extTgdChaser.initializeOIDs(targetDB, scenario);
         boolean userInteractionRequired = false;
         int iterations = 0;
         while (!userInteractionRequired) {

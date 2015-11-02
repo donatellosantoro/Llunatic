@@ -1,6 +1,8 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.dbms;
 
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSTable;
 import java.sql.ResultSet;
@@ -11,6 +13,7 @@ import speedy.SpeedyConstants;
 import speedy.exceptions.DBMSException;
 import speedy.model.database.mainmemory.datasource.OID;
 import speedy.persistence.relational.QueryManager;
+import speedy.utility.DBMSUtility;
 
 public class SQLOIDGenerator implements IOIDGenerator {
 
@@ -25,11 +28,11 @@ public class SQLOIDGenerator implements IOIDGenerator {
     }
 
     @Override
-    public void initializeOIDs(IDatabase database) {
+    public void initializeOIDs(IDatabase database, Scenario scenario) {
         oidMap = new HashMap<String, Long>();
         for (String tableName : database.getTableNames()) {
             DBMSTable table = (DBMSTable) database.getTable(tableName);
-            Long maxOID = getMaxOID(table);
+            Long maxOID = getMaxOID(table, scenario);
             oidMap.put(table.getName(), maxOID);
         }
     }
@@ -54,9 +57,9 @@ public class SQLOIDGenerator implements IOIDGenerator {
         oidMap.put(tableName, nextOID);
     }
 
-    private Long getMaxOID(DBMSTable table) {
+    private Long getMaxOID(DBMSTable table, Scenario scenario) {
         Long maxOID = 0L;
-        String query = "SELECT max(" + SpeedyConstants.OID + ") FROM " + table.getAccessConfiguration().getSchemaName() + "." + table.getName();
+        String query = "SELECT max(" + SpeedyConstants.OID + ") FROM " + DBMSUtility.getSchemaNameAndDot(table.getAccessConfiguration()) + table.getName();
         ResultSet rs = QueryManager.executeQuery(query, table.getAccessConfiguration());
         try {
             if (rs.next()) {

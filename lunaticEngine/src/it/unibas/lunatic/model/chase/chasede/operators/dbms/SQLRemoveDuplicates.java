@@ -1,6 +1,8 @@
 package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasede.operators.IRemoveDuplicates;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import speedy.model.database.IDatabase;
 import speedy.model.database.ITable;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.persistence.relational.QueryManager;
+import speedy.utility.DBMSUtility;
 
 public class SQLRemoveDuplicates implements IRemoveDuplicates {
 
@@ -18,14 +21,15 @@ public class SQLRemoveDuplicates implements IRemoveDuplicates {
 //    private static String SUFF = "_distinct";
 
     @Override
-    public void removeDuplicatesModuloOID(IDatabase database) {
-        DBMSDB dbmsDB = (DBMSDB)database;
+    public void removeDuplicatesModuloOID(IDatabase database, Scenario scenario) {
+        DBMSDB dbmsDB = (DBMSDB) database;
         StringBuilder result = new StringBuilder();
         result.append("BEGIN TRANSACTION;\n");
         result.append("SET CONSTRAINTS ALL DEFERRED;\n\n");
         for (String tableName : dbmsDB.getTableNames()) {
             ITable table = dbmsDB.getTable(tableName);
-            result.append(removeDuplicatesFromTable(tableName, table.getAttributes(), dbmsDB.getAccessConfiguration().getSchemaName()));
+            String schemaName = DBMSUtility.getSchemaNameAndDot(dbmsDB.getAccessConfiguration());
+            result.append(removeDuplicatesFromTable(tableName, table.getAttributes(), schemaName));
         }
         result.append("\nCOMMIT;\n");
         if (logger.isDebugEnabled()) logger.debug("----Script for STTGDs: " + result);
@@ -34,7 +38,7 @@ public class SQLRemoveDuplicates implements IRemoveDuplicates {
 
     private String removeDuplicatesFromTable(String tableName, List<Attribute> attributes, String schema) {
         StringBuilder result = new StringBuilder();
-        result.append("DELETE FROM ").append(schema).append(".").append(tableName).append(" WHERE oid NOT IN (\n");
+        result.append("DELETE FROM ").append(schema).append(tableName).append(" WHERE oid NOT IN (\n");
         result.append(" SELECT min(oid) FROM ").append(schema).append(".").append(tableName);
         result.append(" GROUP BY ");
         for (Attribute attribute : attributes) {
@@ -47,7 +51,7 @@ public class SQLRemoveDuplicates implements IRemoveDuplicates {
         result.append(");\n");
         return result.toString();
     }
-    
+
 //    private String removeDuplicatesFromTable(String tableName, List<Attribute> attributes, String schema){
 //        StringBuilder result = new StringBuilder();
 //        result.append("CREATE TABLE ").append(schema).append(".").append(tableName).append(SUFF).append(" WITH OIDS AS\n");

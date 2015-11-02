@@ -14,11 +14,14 @@ import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.similarity.SimilarityConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.database.IValue;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -51,7 +54,10 @@ public class SimilarityToPreferredValueSymmetricCostManager implements ICostMana
         }
         List<CellGroup> forwardCellGroups = CostManagerUtility.extractForwardCellGroups(tuples);
         SimilarityConfiguration similarityConfiguration = CostManagerUtility.findSimilarityConfigurationForCellGroups(forwardCellGroups, scenario.getCostManagerConfiguration());
+        long startFindPreferredValue = new Date().getTime();
         IValue preferredValue = CostManagerUtility.findPreferredValue(forwardCellGroups, scenario);
+        long endFindPreferredValue = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.EGD_FIND_PREFERRED_VALUE_TIME, endFindPreferredValue - startFindPreferredValue);
         if (isDebug(equivalenceClass)) logger.info("Preferred values: " + preferredValue);
         logger.info("Preferred values: " + preferredValue);
         Repair repair;
@@ -75,7 +81,7 @@ public class SimilarityToPreferredValueSymmetricCostManager implements ICostMana
 
     private Repair generateRepairForConstantPreferredValue(IValue preferredValue, EquivalenceClassForSymmetricEGD equivalenceClass, SimilarityConfiguration similarityConfiguration, Scenario scenario) {
         Set<IValue> forwardValues = CostManagerUtility.findForwardValues(preferredValue, equivalenceClass.getAllConclusionValues(), similarityConfiguration);
-        List<EGDEquivalenceClassTuple> forwardTuples = extractForwardTuples(forwardValues, equivalenceClass);
+        Set<EGDEquivalenceClassTuple> forwardTuples = extractForwardTuples(forwardValues, equivalenceClass);
         boolean debug = isDebug(equivalenceClass);
         if (debug) logger.info("Forward values: " + forwardValues);
         if (logger.isDebugEnabled()) logger.debug("Forward values: " + forwardValues);
@@ -123,8 +129,8 @@ public class SimilarityToPreferredValueSymmetricCostManager implements ICostMana
         return result;
     }
 
-    private List<EGDEquivalenceClassTuple> extractForwardTuples(Set<IValue> forwardValues, EquivalenceClassForSymmetricEGD equivalenceClass) {
-        List<EGDEquivalenceClassTuple> result = new ArrayList<EGDEquivalenceClassTuple>();
+    private Set<EGDEquivalenceClassTuple> extractForwardTuples(Set<IValue> forwardValues, EquivalenceClassForSymmetricEGD equivalenceClass) {
+        Set<EGDEquivalenceClassTuple> result = new HashSet<EGDEquivalenceClassTuple>();
         for (EGDEquivalenceClassTuple tuple : equivalenceClass.getAllTupleCells()) {
             if (forwardValues.contains(tuple.getConclusionGroup().getValue())) {
                 result.add(tuple);
@@ -133,7 +139,7 @@ public class SimilarityToPreferredValueSymmetricCostManager implements ICostMana
         return result;
     }
 
-    private void handleTuple(EGDEquivalenceClassTuple tuple, List<EGDEquivalenceClassTuple> forwardTuples, Map<CellGroup, Set<EGDEquivalenceClassTuple>> backwardCellGroupsMap, EquivalenceClassForSymmetricEGD equivalenceClass) {
+    private void handleTuple(EGDEquivalenceClassTuple tuple, Collection<EGDEquivalenceClassTuple> forwardTuples, Map<CellGroup, Set<EGDEquivalenceClassTuple>> backwardCellGroupsMap, EquivalenceClassForSymmetricEGD equivalenceClass) {
         if (forwardTuples.contains(tuple)) {
             return;
         }
@@ -152,7 +158,7 @@ public class SimilarityToPreferredValueSymmetricCostManager implements ICostMana
         }
     }
 
-    private List<CellGroup> extractPossibleBackwardCellGroups(EGDEquivalenceClassTuple tuple, List<EGDEquivalenceClassTuple> forwardTuples, EquivalenceClassForSymmetricEGD equivalenceClass) {
+    private List<CellGroup> extractPossibleBackwardCellGroups(EGDEquivalenceClassTuple tuple, Collection<EGDEquivalenceClassTuple> forwardTuples, EquivalenceClassForSymmetricEGD equivalenceClass) {
         boolean debug = isDebug(equivalenceClass);
         List<CellGroup> result = new ArrayList<CellGroup>();
         for (CellGroup witnessCellGroup : tuple.getBackwardCellGroups()) {
@@ -169,7 +175,7 @@ public class SimilarityToPreferredValueSymmetricCostManager implements ICostMana
     }
 
     //Changing backward this cell group will also change a forward tuple, and therefore a conflict remains (was suspicious)
-    private boolean hasOccurrencesInForwardTuples(CellGroup witnessCellGroup, List<EGDEquivalenceClassTuple> forwardTuples) {
+    private boolean hasOccurrencesInForwardTuples(CellGroup witnessCellGroup, Collection<EGDEquivalenceClassTuple> forwardTuples) {
         if (logger.isDebugEnabled()) logger.debug("Checking if cell group " + witnessCellGroup + " has occurrences in forward tuples\n\t" + SpeedyUtility.printCollection(forwardTuples, "\t"));
         for (CellGroupCell occurrence : witnessCellGroup.getOccurrences()) {
             for (EGDEquivalenceClassTuple tuple : forwardTuples) {

@@ -198,7 +198,7 @@ public class CostManagerUtility {
         return repair;
     }
 
-    public static ChangeDescription generateChangeDescriptionForSymmetricForwardRepair(List<EGDEquivalenceClassTuple> forwardTupleGroups, Scenario scenario) {
+    public static ChangeDescription generateChangeDescriptionForSymmetricForwardRepair(Collection<EGDEquivalenceClassTuple> forwardTupleGroups, Scenario scenario) {
         List<CellGroup> cellGroups = extractForwardCellGroups(forwardTupleGroups);
         // give preference to the script partial order, that may have additional rules to solve the violation
         CellGroup lub = getLUB(cellGroups, scenario);
@@ -206,7 +206,7 @@ public class CostManagerUtility {
         return changeSet;
     }
 
-    public static List<CellGroup> extractForwardCellGroups(List<EGDEquivalenceClassTuple> allTupleCells) {
+    public static List<CellGroup> extractForwardCellGroups(Collection<EGDEquivalenceClassTuple> allTupleCells) {
         List<CellGroup> cellGroups = new ArrayList<CellGroup>();
         for (EGDEquivalenceClassTuple tupleCells : allTupleCells) {
             cellGroups.add(tupleCells.getConclusionGroup().clone());
@@ -351,7 +351,7 @@ public class CostManagerUtility {
         return false;
     }
 
-    public static Repair generateSymmetricRepairWithBackwards(List<EGDEquivalenceClassTuple> forwardTuples, Collection<EGDEquivalenceClassTuple> backwardTuples, List<CellGroup> backwardCellGroups, Scenario scenario) {
+    public static Repair generateSymmetricRepairWithBackwards(Collection<EGDEquivalenceClassTuple> forwardTuples, Collection<EGDEquivalenceClassTuple> backwardTuples, List<CellGroup> backwardCellGroups, Scenario scenario) {
         Repair repair = new Repair();
         if (forwardTuples.size() > 1 && haveDifferentConclusionValues(forwardTuples)) {
 //        if (forwardTupleGroups.size() > 1) {
@@ -369,8 +369,8 @@ public class CostManagerUtility {
         return repair;
     }
 
-    private static boolean haveDifferentConclusionValues(List<EGDEquivalenceClassTuple> forwardTupleGroups) {
-        IValue firstValue = forwardTupleGroups.get(0).getConclusionGroup().getValue();
+    private static boolean haveDifferentConclusionValues(Collection<EGDEquivalenceClassTuple> forwardTupleGroups) {
+        IValue firstValue = forwardTupleGroups.iterator().next().getConclusionGroup().getValue();
         for (EGDEquivalenceClassTuple forwardTupleGroup : forwardTupleGroups) {
             IValue otherValue = forwardTupleGroup.getConclusionGroup().getValue();
             if (!firstValue.equals(otherValue)) {

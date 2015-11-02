@@ -23,6 +23,7 @@ public class Scenario {
     private String absolutePath;
     private IDatabase source;
     private IDatabase target;
+    private String suffix;
     private List<Dependency> stTgds = new ArrayList<Dependency>();
     private List<Dependency> extTgds = new ArrayList<Dependency>();
     private List<Dependency> dcs = new ArrayList<Dependency>();
@@ -40,8 +41,9 @@ public class Scenario {
     private LunaticConfiguration configuration = new LunaticConfiguration();
     private DependencyStratification stratification;
 
-    public Scenario(String fileName) {
+    public Scenario(String fileName, String suffix) {
         this.fileName = fileName;
+        this.suffix = suffix;
     }
 
     public String getAbsolutePath() {
@@ -82,6 +84,14 @@ public class Scenario {
 
     public void setTarget(IDatabase target) {
         this.target = target;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public boolean hasSuffix() {
+        return suffix != null && !suffix.trim().isEmpty();
     }
 
     public List<Dependency> getSTTgds() {

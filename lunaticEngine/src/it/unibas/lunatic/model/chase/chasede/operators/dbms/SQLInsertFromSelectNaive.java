@@ -9,7 +9,7 @@ import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
-import it.unibas.lunatic.persistence.relational.DBMSUtility;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import java.util.HashMap;
 import java.util.Map;
 import speedy.SpeedyConstants;
@@ -18,6 +18,7 @@ import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
 import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.persistence.relational.QueryManager;
+import speedy.utility.DBMSUtility;
 
 public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
 
@@ -43,11 +44,11 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
 //    }
     private String generateInsertScript(Dependency dependency, String selectQuery, DBMSDB target, Scenario scenario) {
         StringBuilder result = new StringBuilder();
-        String targetSchemaName = (target).getAccessConfiguration().getSchemaName();
+        String targetSchemaName = DBMSUtility.getSchemaNameAndDot(target.getAccessConfiguration());
         for (IFormulaAtom atom : dependency.getConclusion().getAtoms()) {
             RelationalAtom relationalAtom = (RelationalAtom) atom;
             String tableToInsert = relationalAtom.getTableName();
-            result.append("INSERT INTO ").append(targetSchemaName).append(".").append(tableToInsert).append("\n");
+            result.append("INSERT INTO ").append(targetSchemaName).append(tableToInsert).append("\n");
             result.append(generateSelectForInsert(relationalAtom, dependency, selectQuery, scenario));
             result.append(";\n\n");
         }
@@ -67,7 +68,7 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
         result.append("\n").append(SpeedyConstants.INDENT);
         result.append(" FROM (");
         result.append("\n");
-        result.append(selectQuery).append(") AS ").append("Q").append(DBMSUtility.cleanRelationName(stTgd.getId()));
+        result.append(selectQuery).append(") AS ").append("Q").append(LunaticDBMSUtility.cleanRelationName(stTgd.getId()));
         return result.toString();
     }
 }

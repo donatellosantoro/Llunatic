@@ -59,7 +59,7 @@ public class CheckUnsatisfiedDependencies {
         Map<Dependency, IAlgebraOperator> tgdTreeMap = treeBuilderForTGD.buildAlgebraTreesForTGDViolationsCheck(scenario.getExtTGDs(), scenario);
         List<Dependency> unsatisfiedDepdendencies = new ArrayList<Dependency>();
         for (Dependency dependency : dependencies) {
-            IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency);
+            IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency, scenario);
 //            IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB());
             if (isTGDSatisfied(dependency, currentNode, tgdTreeMap, databaseForStep, scenario)) {
                 if (logger.isDebugEnabled()) logger.debug("Dependency " + dependency.getId() + " is satisfied, skipping...");
@@ -87,7 +87,7 @@ public class CheckUnsatisfiedDependencies {
     public void checkEGDSatisfactionWithQuery(DeltaChaseStep currentNode, Scenario scenario) {
         logger.debug("Checking solution with query...");
         for (Dependency egd : currentNode.getSatisfiedEGDs()) {
-            IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), egd);
+            IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), egd, scenario);
             boolean satisfied = isEGDSatisfiedQuery(egd, currentNode, databaseForStep, scenario);
             if (!satisfied) {
                 if (scenario.isDBMS()) {
@@ -105,7 +105,7 @@ public class CheckUnsatisfiedDependencies {
         if (logger.isDebugEnabled()) logger.debug("Searching satisfied dependencies among " + LunaticUtility.printDependencyIds(dependencies));
         List<Dependency> unsatisfiedDepdendencies = new ArrayList<Dependency>();
         for (Dependency dependency : dependencies) {
-            IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency);
+            IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), dependency, scenario);
             if (isEGDSatisfiedQuery(dependency, currentNode, databaseForStep, scenario)) {
                 if (logger.isDebugEnabled()) logger.debug("Dependency " + dependency.getId() + " is satisfied, skipping...");
                 continue;

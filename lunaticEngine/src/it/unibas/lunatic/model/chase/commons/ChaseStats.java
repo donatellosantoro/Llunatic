@@ -13,6 +13,8 @@ public class ChaseStats {
     public static final String EGD_VIOLATION_QUERY_TIME = "EGD Violation Query Time";
     public static final String TGD_VIOLATION_QUERY_TIME = "TGD Violation Query Time";
     public static final String EGD_EQUIVALENCE_CLASS_TIME = "EGD Equivalence Class Time";
+    public static final String EGD_CHOOSING_REPAIR_TIME = "EGD Choosing Repair Time";
+    public static final String EGD_FIND_PREFERRED_VALUE_TIME = "EGD Find Preferred Value Time";
     public static final String EGD_REPAIR_TIME = "EGD Repairing Time";
     public static final String TGD_EQUIVALENCE_CLASS_TIME = "TGD Equivalence Class Time";
     public static final String TGD_GENERATE_UPDATE_TIME = "TGD Generate Update Time";
@@ -44,6 +46,12 @@ public class ChaseStats {
     public static final String HASH_CELL_GROUP_TIME = "Hash cellgroup time";
     public static final String HASHED_CELL_GROUP_CELLS = "#Hashed cellgroup-cell";
     public static final String HASH_CELL_GROUP_CELL_TIME = "Hash cell group cell time";
+    
+    public static final String TEMP_1 = "TEMP_1";
+    public static final String TEMP_2 = "TEMP_2";
+    public static final String TEMP_3 = "TEMP_3";
+    public static final String TEMP_4 = "TEMP_4";
+    public static final String TEMP_5 = "TEMP_5";
     /////
     private static Logger logger = LoggerFactory.getLogger(ChaseStats.class);
     private static ChaseStats singleton = new ChaseStats();
@@ -119,6 +127,7 @@ public class ChaseStats {
         if (stats.containsKey(EGD_TIME)) sb.append(EGD_TIME + ": ").append(stats.get(EGD_TIME)).append(" ms").append("\n");
         if (stats.containsKey(EGD_VIOLATION_QUERY_TIME)) sb.append(EGD_VIOLATION_QUERY_TIME + ": ").append(stats.get(EGD_VIOLATION_QUERY_TIME)).append(" ms").append("\n");
         if (stats.containsKey(EGD_EQUIVALENCE_CLASS_TIME)) sb.append(EGD_EQUIVALENCE_CLASS_TIME + ": ").append(stats.get(EGD_EQUIVALENCE_CLASS_TIME)).append(" ms").append("\n");
+        if (stats.containsKey(EGD_CHOOSING_REPAIR_TIME)) sb.append(EGD_CHOOSING_REPAIR_TIME + ": ").append(stats.get(EGD_CHOOSING_REPAIR_TIME)).append(" ms").append("\n");
         if (stats.containsKey(EGD_REPAIR_TIME)) sb.append(EGD_REPAIR_TIME + ": ").append(stats.get(EGD_REPAIR_TIME)).append(" ms").append("\n");
         if (stats.containsKey(TGD_VIOLATION_QUERY_TIME)) sb.append(TGD_VIOLATION_QUERY_TIME + ": ").append(stats.get(TGD_VIOLATION_QUERY_TIME)).append(" ms").append("\n");
         if (stats.containsKey(TGD_EQUIVALENCE_CLASS_TIME)) sb.append(TGD_EQUIVALENCE_CLASS_TIME + ": ").append(stats.get(TGD_EQUIVALENCE_CLASS_TIME)).append(" ms").append("\n");
@@ -146,6 +155,12 @@ public class ChaseStats {
         if (stats.containsKey(HASHED_CELL_GROUP_CELLS)) sb.append(HASHED_CELL_GROUP_CELLS + ": ").append(stats.get(HASHED_CELL_GROUP_CELLS)).append("\n");
         if (stats.containsKey(HASH_CELL_GROUP_CELL_TIME)) sb.append(HASH_CELL_GROUP_CELL_TIME + ": ").append(stats.get(HASH_CELL_GROUP_CELL_TIME)).append(" ms").append("\n");
         sb.append("-------------------------").append("\n");
+        sb.append("------ OTHER ------").append("\n");
+        if (stats.containsKey(TEMP_1)) sb.append(TEMP_1 + ": ").append(stats.get(TEMP_1)).append(" ms").append("\n");
+        if (stats.containsKey(TEMP_2)) sb.append(TEMP_2 + ": ").append(stats.get(TEMP_2)).append(" ms").append("\n");
+        if (stats.containsKey(TEMP_3)) sb.append(TEMP_3 + ": ").append(stats.get(TEMP_3)).append(" ms").append("\n");
+        if (stats.containsKey(TEMP_4)) sb.append(TEMP_4 + ": ").append(stats.get(TEMP_4)).append(" ms").append("\n");
+        if (stats.containsKey(TEMP_5)) sb.append(TEMP_5 + ": ").append(stats.get(TEMP_5)).append(" ms").append("\n");
         return sb.toString();
     }
 

@@ -4,6 +4,7 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import speedy.model.database.Attribute;
 import speedy.model.database.TableAlias;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSTable;
+import speedy.utility.DBMSUtility;
 
 public class GenerateTargetInsert {
 
@@ -59,16 +61,16 @@ public class GenerateTargetInsert {
             result.append(", ");
         }
         LunaticUtility.removeChars(", ".length(), result);
-        result.append(" FROM ").append(LunaticConstants.WORK_SCHEMA).append(".").append(stTgd.getId());
+        result.append(" FROM ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(".").append(stTgd.getId());
         return result.toString();
     }
 
     private String generateScriptFromMap(Scenario scenario, Map<String, List<String>> insertMap) {
         StringBuilder result = new StringBuilder();
         DBMSDB target = (DBMSDB) scenario.getTarget();
-        String targetSchemaName = target.getAccessConfiguration().getSchemaName();
+        String targetSchemaName = DBMSUtility.getSchemaNameAndDot(target.getAccessConfiguration());
         for (String tableToInsert : insertMap.keySet()) {
-            result.append("INSERT INTO ").append(targetSchemaName).append(".").append(tableToInsert);
+            result.append("INSERT INTO ").append(targetSchemaName).append(tableToInsert);
             result.append(getTableAttributes(target, tableToInsert));
             result.append("\n");
             List<String> selects = insertMap.get(tableToInsert);

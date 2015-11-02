@@ -12,9 +12,9 @@ import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLUpdateCell;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.ChaseMainMemorySTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertTuplesForTargetTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryUpdateCell;
-import it.unibas.lunatic.model.chase.chaseded.IDatabaseManager;
-import it.unibas.lunatic.model.chase.chaseded.dbms.SQLDatabaseManager;
-import it.unibas.lunatic.model.chase.chaseded.mainmemory.MainMemoryDatabaseManager;
+import it.unibas.lunatic.model.chase.chaseded.IDEDDatabaseManager;
+import it.unibas.lunatic.model.chase.chaseded.dbms.SQLDEDDatabaseManager;
+import it.unibas.lunatic.model.chase.chaseded.mainmemory.MainMemoryDEDDatabaseManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.AddUserNode;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChangeCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs;
@@ -26,6 +26,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseSte
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChangeCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
+import it.unibas.lunatic.model.chase.chasemc.operators.IExportSolution;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
@@ -35,6 +36,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedyJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.ICacheManager;
+import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLExportSolution;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryOIDGenerator;
@@ -52,8 +54,11 @@ import speedy.model.algebra.operators.mainmemory.MainMemoryInsertTuple;
 import speedy.model.algebra.operators.sql.SQLBatchInsert;
 import speedy.model.algebra.operators.sql.SQLDelete;
 import speedy.model.algebra.operators.sql.SQLInsertTuple;
+import speedy.model.database.operators.IDatabaseManager;
 import speedy.model.database.operators.IRunQuery;
+import speedy.model.database.operators.dbms.SQLDatabaseManager;
 import speedy.model.database.operators.dbms.SQLRunQuery;
+import speedy.model.database.operators.mainmemory.MainMemoryDatabaseManager;
 import speedy.model.database.operators.mainmemory.MainMemoryRunQuery;
 
 public class OperatorFactory {
@@ -87,6 +92,11 @@ public class OperatorFactory {
     //
     private IDatabaseManager mainMemoryDatabaseManager = new MainMemoryDatabaseManager();
     private IDatabaseManager sqlDatabaseManager = new SQLDatabaseManager();
+    //
+    private IDEDDatabaseManager mainMemoryDEDDatabaseManager = new MainMemoryDEDDatabaseManager();
+    private IDEDDatabaseManager sqlDEDDatabaseManager = new SQLDEDDatabaseManager();
+    //
+    private IExportSolution sqlSolutionExporter = new SQLExportSolution();
     //
     private Map<Scenario, IOccurrenceHandler> occurrenceHandlerMap = new HashMap<Scenario, IOccurrenceHandler>();
 
@@ -173,6 +183,16 @@ public class OperatorFactory {
         return sqlDatabaseManager;
     }
 
+    public IDEDDatabaseManager getDEDDatabaseManager(Scenario scenario) {
+        if (!scenario.isDEDScenario()) {
+            throw new IllegalArgumentException("DED DatabaseManager is for DED scenarios only");
+        }
+        if (scenario.isMainMemory()) {
+            return mainMemoryDEDDatabaseManager;
+        }
+        return sqlDEDDatabaseManager;
+    }
+
     public IOccurrenceHandler getOccurrenceHandler(Scenario scenario) {
         IOccurrenceHandler occurrenceHandler = occurrenceHandlerMap.get(scenario);
         if (occurrenceHandler != null) {
@@ -238,5 +258,12 @@ public class OperatorFactory {
             return new MainMemoryInsertTuplesForTargetTGDs(getInsertTuple(scenario), getQueryRunner(scenario), getOccurrenceHandler(scenario), getOIDGenerator(scenario));
         }
         return new SQLInsertTuplesForTargetTGDs(getOIDGenerator(scenario));
+    }
+    
+    public IExportSolution getSolutionExporter(Scenario scenario){
+        if(scenario.isMainMemory()){
+            throw new IllegalArgumentException("Not supported yet");
+        }
+        return sqlSolutionExporter;
     }
 }

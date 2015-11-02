@@ -73,18 +73,22 @@ public class DAOMCScenario {
     private String fileScenario;
 
     public Scenario loadScenario(String fileScenario) throws DAOException {
+        return loadScenario(fileScenario, null);
+    }
+
+    public Scenario loadScenario(String fileScenario, String suffix) throws DAOException {
         this.fileScenario = fileScenario;
         try {
-            Scenario scenario = new Scenario(fileScenario);
+            Scenario scenario = new Scenario(fileScenario, suffix);
             Document document = daoUtility.buildDOM(fileScenario);
             Element rootElement = document.getRootElement();
             //SOURCE
             Element sourceElement = rootElement.getChild("source");
-            IDatabase sourceDatabase = loadDatabase(sourceElement);
+            IDatabase sourceDatabase = loadDatabase(sourceElement, null); //Source schema doesn't need suffix
             scenario.setSource(sourceDatabase);
             //TARGET
             Element targetElement = rootElement.getChild("target");
-            IDatabase targetDatabase = loadDatabase(targetElement);
+            IDatabase targetDatabase = loadDatabase(targetElement, suffix);
             scenario.setTarget(targetDatabase);
             //AUTHORITATIVE SOURCES
             Element authoritativeSourcesElement = rootElement.getChild("authoritativeSources");
@@ -133,7 +137,7 @@ public class DAOMCScenario {
         }
     }
 
-    private IDatabase loadDatabase(Element databaseElement) throws DAOException {
+    private IDatabase loadDatabase(Element databaseElement, String suffix) throws DAOException {
         if (databaseElement == null || databaseElement.getChildren().isEmpty()) {
             return new EmptyDB();
         }
@@ -171,6 +175,9 @@ public class DAOMCScenario {
             accessConfiguration.setDriver(dbmsElement.getChildText("driver").trim());
             accessConfiguration.setUri(dbmsElement.getChildText("uri").trim());
             accessConfiguration.setSchemaName(dbmsElement.getChildText("schema").trim());
+            if (suffix != null && !suffix.trim().isEmpty()) {
+                accessConfiguration.setSchemaSuffix(suffix.trim());
+            }
             accessConfiguration.setLogin(dbmsElement.getChildText("login").trim());
             accessConfiguration.setPassword(dbmsElement.getChildText("password").trim());
             Element initDbElement = databaseElement.getChild("init-db");

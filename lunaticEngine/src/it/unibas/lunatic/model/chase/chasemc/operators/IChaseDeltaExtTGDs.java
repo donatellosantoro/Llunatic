@@ -12,6 +12,6 @@ public interface IChaseDeltaExtTGDs {
 
     boolean doChase(DeltaChaseStep treeRoot, Scenario scenario, IChaseState chaseState, Map<Dependency, IAlgebraOperator> tgdTreeMap, Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap);
 
-    public void initializeOIDs(IDatabase targetDB);
+    public void initializeOIDs(IDatabase targetDB, Scenario scenario);
 
 }

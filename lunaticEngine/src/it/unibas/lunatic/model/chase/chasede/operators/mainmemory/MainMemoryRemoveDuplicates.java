@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasede.operators.IRemoveDuplicates;
 import speedy.model.database.IDatabase;
 import java.util.Collections;
@@ -12,7 +13,7 @@ import speedy.utility.comparator.StringComparator;
 @SuppressWarnings("unchecked")
 public class MainMemoryRemoveDuplicates implements IRemoveDuplicates {
 
-    public void removeDuplicatesModuloOID(IDatabase database) {
+    public void removeDuplicatesModuloOID(IDatabase database, Scenario scenario) {
         MainMemoryDB mainMemoryDB = (MainMemoryDB) database;
         INode instance = mainMemoryDB.getDataSource().getInstances().get(0);
         for (String table : mainMemoryDB.getTableNames()) {

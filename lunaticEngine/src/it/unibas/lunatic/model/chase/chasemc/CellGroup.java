@@ -199,7 +199,6 @@ public class CellGroup implements Cloneable, Serializable {
         hash = 23 * hash + (this.occurrences != null ? this.occurrences.hashCode() : 0);
         hash = 23 * hash + (this.justifications != null ? this.justifications.hashCode() : 0);
         hash = 23 * hash + (this.userCells != null ? this.userCells.hashCode() : 0);
-//        hash = 23 * hash + (this.invalidCell != null ? this.invalidCell.hashCode() : 0);
         hash = 23 * hash + (this.invalidCell != null ? LunaticConstants.TYPE_INVALID.hashCode() : 0);
 //        long end = new Date().getTime();
 //        ChaseStats.getInstance().addStat(ChaseStats.HASH_CELL_GROUP_TIME, end - start);

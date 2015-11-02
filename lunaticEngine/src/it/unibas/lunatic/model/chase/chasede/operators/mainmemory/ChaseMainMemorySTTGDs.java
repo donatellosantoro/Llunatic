@@ -41,7 +41,7 @@ public class ChaseMainMemorySTTGDs implements IChaseSTTGDs {
             MainMemoryInsertFromSelectNaive insert = new MainMemoryInsertFromSelectNaive();
             insert.execute(stTgd, treeRoot, (MainMemoryDB) scenario.getSource(), (MainMemoryDB) target, scenario);
         }
-        duplicateRemover.removeDuplicatesModuloOID((MainMemoryDB) target);
+        duplicateRemover.removeDuplicatesModuloOID((MainMemoryDB) target, scenario);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.STTGD_TIME, end - start);
         if (logger.isDebugEnabled()) logger.debug("----Result of chasing st tgds: " + target);

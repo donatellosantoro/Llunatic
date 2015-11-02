@@ -6,11 +6,9 @@ import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSTable;
 import it.unibas.lunatic.model.dependency.AllConstantsInFormula;
 import it.unibas.lunatic.model.dependency.ConstantInFormula;
-import it.unibas.lunatic.persistence.relational.DBMSUtility;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
-import java.sql.DatabaseMetaData;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
@@ -33,13 +31,13 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         if (dbmsSourceDB.getTableNames().contains(tableNameForPremise)) {
             return;
         }
-        executeCreateStatement(constantsInFormula, dbmsSourceDB, true);
+        executeCreateStatement(constantsInFormula, dbmsSourceDB, true, scenario);
         if (autoritative) scenario.getAuthoritativeSources().add(tableNameForPremise);
         String tableNameForConclusion = constantsInFormula.getTableNameForConclusionConstants();
         if (dbmsSourceDB.getTableNames().contains(tableNameForConclusion)) {
             return;
         }
-        executeCreateStatement(constantsInFormula, dbmsSourceDB, false);
+        executeCreateStatement(constantsInFormula, dbmsSourceDB, false, scenario);
         if (autoritative) scenario.getAuthoritativeSources().add(tableNameForConclusion);
     }
 
@@ -47,14 +45,14 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         AccessConfiguration sourceAccessConfiguration = ((DBMSDB) scenario.getTarget()).getAccessConfiguration().clone();
         sourceAccessConfiguration.setSchemaName("source");
         StringBuilder createSchemaStatement = new StringBuilder();
-        createSchemaStatement.append("DROP SCHEMA IF EXISTS ").append(sourceAccessConfiguration.getSchemaName()).append(" CASCADE;\n\n");
-        createSchemaStatement.append("CREATE SCHEMA ").append(sourceAccessConfiguration.getSchemaName()).append(";\n\n");
+        createSchemaStatement.append("DROP SCHEMA IF EXISTS ").append(LunaticDBMSUtility.getSchemaWithSuffix(sourceAccessConfiguration, scenario)).append(" CASCADE;\n\n");
+        createSchemaStatement.append("CREATE SCHEMA ").append(LunaticDBMSUtility.getSchemaWithSuffix(sourceAccessConfiguration, scenario)).append(";\n\n");
         QueryManager.executeScript(createSchemaStatement.toString(), sourceAccessConfiguration, true, true, false, false);
         return new DBMSDB(sourceAccessConfiguration);
     }
 
-    private void executeCreateStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB, boolean premise) {
-        String createStatement = generateCreateStatement(constantsInFormula, dbmsSourceDB, premise);
+    private void executeCreateStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB, boolean premise, Scenario scenario) {
+        String createStatement = generateCreateStatement(constantsInFormula, dbmsSourceDB, premise, scenario);
         String insertStatement = generateInsertStatement(constantsInFormula, dbmsSourceDB, premise);
         String statement = createStatement + insertStatement;
         QueryManager.executeScript(statement, dbmsSourceDB.getAccessConfiguration(), true, true, true, false);
@@ -67,7 +65,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         dbmsSourceDB.addTable(newConstantTable);
     }
 
-    private String generateCreateStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB, boolean premise) {
+    private String generateCreateStatement(AllConstantsInFormula constantsInFormula, DBMSDB dbmsSourceDB, boolean premise, Scenario scenario) {
         AccessConfiguration accessConfiguration = dbmsSourceDB.getAccessConfiguration();
         StringBuilder script = new StringBuilder();
         script.append("----- Generating constant table -----\n");
@@ -77,12 +75,12 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         } else {
             tableName = constantsInFormula.getTableNameForConclusionConstants();
         }
-        script.append("CREATE TABLE ").append(accessConfiguration.getSchemaName()).append(".").append(tableName).append("(").append("\n");
+        script.append("CREATE TABLE ").append(LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario)).append(".").append(tableName).append("(").append("\n");
         for (ConstantInFormula constant : constantsInFormula.getConstants(premise)) {
-            String attributeName = DependencyUtility.buildAttributeNameForConstant(constant.getConstantValue()) ;  
+            String attributeName = DependencyUtility.buildAttributeNameForConstant(constant.getConstantValue());
             String type = constant.getType();
 //            String type = LunaticUtility.findType(constantValue);
-            String dbmsType = DBMSUtility.convertDataSourceTypeToDBType(type);
+            String dbmsType = LunaticDBMSUtility.convertDataSourceTypeToDBType(type);
             script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(dbmsType).append(",").append("\n");
         }
         LunaticUtility.removeChars(", ".length(), script);
@@ -101,9 +99,9 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         } else {
             tableName = constantsInFormula.getTableNameForConclusionConstants();
         }
-        script.append("INSERT INTO ").append(accessConfiguration.getSchemaName()).append(".").append(tableName).append(" VALUES(").append("\n");
+        script.append("INSERT INTO ").append(accessConfiguration.getSchemaAndSuffix()).append(".").append(tableName).append(" VALUES(").append("\n");
         for (ConstantInFormula constant : constantsInFormula.getConstants(premise)) {
-            String attributeName = DependencyUtility.buildAttributeNameForConstant(constant.getConstantValue()) ;  
+            String attributeName = DependencyUtility.buildAttributeNameForConstant(constant.getConstantValue());
             String type = constant.getType();
 //            String type = LunaticUtility.findType(constantValue);
             String valueString = constant.getConstantValue().toString();

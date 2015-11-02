@@ -46,7 +46,7 @@ public class ChaseDEScenarioProxy implements IDEChaser {
             throw new ChaseFailedException("Chase fails. No solutions...");
         }
         IBuildDatabaseForChaseStep databaseBuilder = OperatorFactory.getInstance().getDatabaseBuilder(scenario);
-        IDatabase result = databaseBuilder.extractDatabaseWithDistinct(solution.getId(), solution.getDeltaDB(), solution.getOriginalDB());
+        IDatabase result = databaseBuilder.extractDatabaseWithDistinct(solution.getId(), solution.getDeltaDB(), solution.getOriginalDB(), scenario);
         if (logger.isDebugEnabled()) logger.debug("----Result of chase: " + result);
         return result;
     }

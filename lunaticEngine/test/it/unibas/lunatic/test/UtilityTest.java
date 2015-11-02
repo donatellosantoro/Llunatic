@@ -2,7 +2,7 @@ package it.unibas.lunatic.test;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.persistence.DAOMCScenario;
-import it.unibas.lunatic.persistence.relational.DBMSUtility;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.test.comparator.repairs.DAOException;
 import java.io.File;
 import java.net.URISyntaxException;
@@ -28,16 +28,24 @@ public class UtilityTest {
     }
 
     public static Scenario loadScenarioFromAbsolutePath(String fileScenario) {
-        return loadScenarioFromAbsolutePath(fileScenario, false);
+        return loadScenarioFromAbsolutePath(fileScenario, null, false);
     }
 
     public static Scenario loadScenarioFromResources(String fileScenario, boolean recreateDB) {
+        return loadScenarioFromResources(fileScenario, null, recreateDB);
+    }
+
+    public static Scenario loadScenarioFromResources(String fileScenario, String suffix) {
+        return loadScenarioFromResources(fileScenario, suffix, false);
+    }
+
+    public static Scenario loadScenarioFromResources(String fileScenario, String suffix, boolean recreateDB) {
         try {
             fileScenario = RESOURCES_FOLDER + fileScenario;
             URL scenarioURL = UtilityTest.class.getResource(fileScenario);
             Assert.assertNotNull("Load scenario " + fileScenario, scenarioURL);
             fileScenario = new File(scenarioURL.toURI()).getAbsolutePath();
-            return loadScenario(fileScenario, recreateDB);
+            return loadScenario(fileScenario, suffix, recreateDB);
         } catch (URISyntaxException ex) {
             ex.printStackTrace();
             Assert.fail(ex.getLocalizedMessage());
@@ -45,23 +53,23 @@ public class UtilityTest {
         }
     }
 
-    public static Scenario loadScenarioFromAbsolutePath(String fileScenario, boolean recreateDB) {
-        return loadScenario(fileScenario, recreateDB);
+    public static Scenario loadScenarioFromAbsolutePath(String fileScenario, String suffix, boolean recreateDB) {
+        return loadScenario(fileScenario, suffix, recreateDB);
     }
 
-    private static Scenario loadScenario(String fileScenario, boolean recreateDB) {
+    private static Scenario loadScenario(String fileScenario, String suffix, boolean recreateDB) {
         if (logger.isDebugEnabled()) logger.debug("Loading scenario: " + fileScenario);
         Assert.assertNotNull(fileScenario);
         try {
             if (recreateDB) {
-                deleteDB(loadTargetAccessConfiguration(fileScenario));
+                deleteDB(loadTargetAccessConfiguration(fileScenario, suffix));
             }
         } catch (Exception ex) {
             logger.warn("Unable to drop database.\n" + ex.getLocalizedMessage()); //Fail if DBMS error and continue if not exists
         }
         try {
             DAOMCScenario daoScenario = new DAOMCScenario();
-            Scenario scenario = daoScenario.loadScenario(fileScenario);
+            Scenario scenario = daoScenario.loadScenario(fileScenario, suffix);
             scenario.setAbsolutePath(fileScenario);
             return scenario;
         } catch (Exception ex) {
@@ -74,7 +82,7 @@ public class UtilityTest {
     public static void deleteDB(AccessConfiguration accessConfiguration) {
         String script = "DROP DATABASE " + accessConfiguration.getDatabaseName() + ";\n";
         if (logger.isDebugEnabled()) logger.debug("Executing script " + script);
-        QueryManager.executeScript(script, DBMSUtility.getTempAccessConfiguration(accessConfiguration), true, true, true, false);
+        QueryManager.executeScript(script, LunaticDBMSUtility.getTempAccessConfiguration(accessConfiguration), true, true, true, false);
     }
 
     public static String getAbsoluteFileName(String fileName) {
@@ -92,7 +100,7 @@ public class UtilityTest {
         return table.getSize();
     }
 
-    private static AccessConfiguration loadTargetAccessConfiguration(String fileScenario) {
+    private static AccessConfiguration loadTargetAccessConfiguration(String fileScenario, String suffix) {
         Document document = daoUtility.buildDOM(fileScenario);
         Element rootElement = document.getRootElement();
         Element databaseElement = rootElement.getChild("target");
@@ -104,6 +112,9 @@ public class UtilityTest {
         accessConfiguration.setDriver(dbmsElement.getChildText("driver").trim());
         accessConfiguration.setUri(dbmsElement.getChildText("uri").trim());
         accessConfiguration.setSchemaName(dbmsElement.getChildText("schema").trim());
+        if (suffix != null && !suffix.trim().isEmpty()) {
+            accessConfiguration.setSchemaSuffix(suffix.trim());
+        }
         accessConfiguration.setLogin(dbmsElement.getChildText("login").trim());
         accessConfiguration.setPassword(dbmsElement.getChildText("password").trim());
         return accessConfiguration;

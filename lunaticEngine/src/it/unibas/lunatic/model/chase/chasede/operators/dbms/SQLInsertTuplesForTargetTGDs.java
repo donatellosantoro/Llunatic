@@ -18,7 +18,7 @@ import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
-import it.unibas.lunatic.persistence.relational.DBMSUtility;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.sql.ResultSet;
@@ -53,6 +53,7 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
         this.oidGenerator = oidGenerator;
     }
 
+    @Override
     public boolean execute(IAlgebraOperator violationQuery, DeltaChaseStep currentNode, Dependency tgd, Scenario scenario, IDatabase databaseForStep) {
         if (!scenario.isDBMS()) {
             throw new DBMSException("Unable to generate SQL: data sources are not on a dbms");
@@ -75,7 +76,7 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
 
     private String materializeViolationValues(Dependency tgd, IAlgebraOperator violationQuery, IDatabase databaseForStep, IDatabase deltaDB, Scenario scenario) {
         StringBuilder query = new StringBuilder();
-        String tmpTable = ChaseUtility.getTmpTableForTGDViolations(tgd, null, true);
+        String tmpTable = ChaseUtility.getTmpTableForTGDViolations(tgd, null, true, scenario);
         query.append("DROP TABLE IF EXISTS ").append(tmpTable).append(";\n");
         query.append("CREATE TABLE ").append(tmpTable).append(" WITH OIDS AS (\n");
         query.append("SELECT ");
@@ -95,9 +96,9 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
                     query.append(sqlSkolemGenerator.toString());
                 } else {
                     FormulaVariable universalVariable = LunaticUtility.findVariableInList(occurrence, tgd.getPremise().getLocalVariables());
-                    query.append(DBMSUtility.attributeRefToSQL(universalVariable.getPremiseRelationalOccurrences().get(0).getAttributeRef()));
+                    query.append(LunaticDBMSUtility.attributeRefToSQL(universalVariable.getPremiseRelationalOccurrences().get(0).getAttributeRef()));
                 }
-                query.append(" AS ").append(DBMSUtility.attributeRefToSQL(attributeRef));
+                query.append(" AS ").append(LunaticDBMSUtility.attributeRefToSQL(attributeRef));
                 query.append(", ");
             }
         }
@@ -107,7 +108,7 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
         query.append(queryBuilder.treeToSQL(violationQuery, scenario.getSource(), databaseForStep, SpeedyConstants.INDENT));
         query.append(") AS tmp\n");
         query.append(");\n");
-        deltaDB.addTable(new DBMSTable(ChaseUtility.getTmpTableForTGDViolations(tgd, null, false), ((DBMSDB) deltaDB).getAccessConfiguration()));
+        deltaDB.addTable(new DBMSTable(ChaseUtility.getTmpTableForTGDViolations(tgd, null, false, scenario), ((DBMSDB) deltaDB).getAccessConfiguration()));
         if (logger.isDebugEnabled()) logger.debug("----Violation query: " + violationQuery);
         if (logger.isDebugEnabled()) logger.debug("Materialization query for TGD " + tgd.getId() + "\n" + query);
         return query.toString();
@@ -119,9 +120,9 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
         StringBuilder result = new StringBuilder();
         result.append(lastOID);
         result.append(" + ROW_NUMBER() OVER (ORDER BY ");
-        result.append(DBMSUtility.attributeRefToSQL(violationQuery.getAttributes(scenario.getSource(), scenario.getTarget()).get(0)));
+        result.append(LunaticDBMSUtility.attributeRefToSQL(violationQuery.getAttributes(scenario.getSource(), scenario.getTarget()).get(0)));
         result.append(") as ");
-        result.append(DBMSUtility.attributeRefToSQL(new AttributeRef(targetTableToInsert, SpeedyConstants.TID)));
+        result.append(LunaticDBMSUtility.attributeRefToSQL(new AttributeRef(targetTableToInsert, SpeedyConstants.TID)));
         result.append(",");
         return result.toString();
     }
@@ -135,7 +136,7 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
         List<FormulaVariable> universalVariablesInConclusion = DependencyUtility.findUniversalVariablesInConclusion(dependency);
         for (FormulaVariable formulaVariable : universalVariablesInConclusion) {
             FormulaVariableOccurrence sourceOccurrence = formulaVariable.getPremiseRelationalOccurrences().get(0);
-            String attributeString = DBMSUtility.attributeRefToSQL(sourceOccurrence.getAttributeRef());
+            String attributeString = LunaticDBMSUtility.attributeRefToSQL(sourceOccurrence.getAttributeRef());
             append.addChild(new StringSkolemPart(attributeString));
         }
         SkolemFunctionGenerator generatorForVariable = new SkolemFunctionGenerator(root);
@@ -147,7 +148,7 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
         for (IFormulaAtom atom : tgd.getConclusion().getPositiveFormula().getAtoms()) {
             RelationalAtom relationalAtom = (RelationalAtom) atom;
             TableAlias table = relationalAtom.getTableAlias();
-            String tmpTable = ChaseUtility.getTmpTableForTGDViolations(tgd, table.getTableName(), true);
+            String tmpTable = ChaseUtility.getTmpTableForTGDViolations(tgd, table.getTableName(), true, scenario);
             String query = "SELECT count(*) as count FROM " + tmpTable;
             DBMSDB target = (DBMSDB) scenario.getTarget();
             AccessConfiguration accessConfiguration = (target).getAccessConfiguration();
@@ -178,19 +179,20 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
                 }
                 AttributeRef attributeRef = new AttributeRef(relationalAtom.getTableAlias(), attribute.getName());
                 String deltaTableName = ChaseUtility.getDeltaRelationName(table.getName(), attribute.getName());
-                String tmpTable = ChaseUtility.getTmpTableForTGDViolations(tgd, table.getName(), true);
-                script.append("INSERT INTO ").append(LunaticConstants.WORK_SCHEMA + ".").append(deltaTableName).append(" ");
+                String tmpTable = ChaseUtility.getTmpTableForTGDViolations(tgd, table.getName(), true, scenario);
+                script.append("INSERT INTO ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(".").append(deltaTableName).append(" ");
                 script.append("SELECT '").append(stepId).append("', ");
-                script.append(DBMSUtility.attributeRefToSQL(new AttributeRef(relationalAtom.getTableAlias(), SpeedyConstants.TID))).append(", ");
-//                script.append(DBMSUtility.attributeRefToSQL(attributeRef)).append(", '").append(LunaticConstants.GEN_GROUP_ID).append("'\n");
-                script.append(DBMSUtility.attributeRefToSQL(attributeRef)).append(", NULL\n");
+                script.append(LunaticDBMSUtility.attributeRefToSQL(new AttributeRef(relationalAtom.getTableAlias(), SpeedyConstants.TID))).append(", ");
+//                script.append(LunaticDBMSUtility.attributeRefToSQL(attributeRef)).append(", '").append(LunaticConstants.GEN_GROUP_ID).append("'\n");
+                script.append(LunaticDBMSUtility.attributeRefToSQL(attributeRef)).append(", NULL\n");
                 script.append(SpeedyConstants.INDENT).append("FROM ").append(tmpTable).append(";\n");
             }
         }
         return script.toString();
     }
 
-    public void initializeOIDs(IDatabase database) {
-        oidGenerator.initializeOIDs(database);
+    @Override
+    public void initializeOIDs(IDatabase database, Scenario scenario) {
+        oidGenerator.initializeOIDs(database, scenario);
     }
 }

@@ -2,6 +2,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators.mainmemory;
 
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfDBOIDs;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
@@ -52,16 +53,16 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
     }
 
     @Override
-    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB) {
+    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, Scenario scenario) {
         return extractDatabase(stepId, deltaDB, originalDB, false);
     }
 
     @Override
-    public IDatabase extractDatabaseWithDistinct(String stepId, IDatabase deltaDB, IDatabase originalDB) {
+    public IDatabase extractDatabaseWithDistinct(String stepId, IDatabase deltaDB, IDatabase originalDB, Scenario scenario) {
         return extractDatabase(stepId, deltaDB, originalDB, true);
     }
 
-    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, boolean distinct) {
+    private IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, boolean distinct) {
         long start = new Date().getTime();
         if (logger.isDebugEnabled()) logger.debug("Extracting database for step " + stepId + " on deltaDB:\n" + deltaDB.printInstances());
         Map<String, List<AttributeRef>> attributeMap = new HashMap<String, List<AttributeRef>>();
@@ -78,7 +79,8 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
         return result;
     }
 
-    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, Dependency dependency) {
+    @Override
+    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, Dependency dependency, Scenario scenario) {
         long start = new Date().getTime();
         if (logger.isDebugEnabled()) logger.debug("Extracting database for step " + stepId + " and dependency:\n" + dependency.toLongString() + "\non deltaDB:\n" + deltaDB.printInstances());
         Map<String, List<AttributeRef>> attributeMap = new HashMap<String, List<AttributeRef>>();

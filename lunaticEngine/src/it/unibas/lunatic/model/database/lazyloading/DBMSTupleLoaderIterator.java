@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.database.lazyloading;
 
-import it.unibas.lunatic.persistence.relational.DBMSUtility;
+import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -59,7 +59,7 @@ public class DBMSTupleLoaderIterator implements  Iterator<ITupleLoader>{
             } else {
                 resultSet.next();
             }
-            DBMSTupleLoader tupleLoader = DBMSUtility.createTupleLoader(resultSet, tableName, virtualTableName, accessConfiguration);
+            DBMSTupleLoader tupleLoader = LunaticDBMSUtility.createTupleLoader(resultSet, tableName, virtualTableName, accessConfiguration);
             return tupleLoader;
         } catch (SQLException ex) {
             throw new DBMSException("Exception in running result set:" + ex);
