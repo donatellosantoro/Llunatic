@@ -160,7 +160,7 @@ public class AnalyzeDependencies {
             List<String> sourceAtoms = DependencyUtility.findSourceAtoms(egd, scenario);
             for (String tableName : sourceAtoms) {
                 if (!scenario.getAuthoritativeSources().contains(tableName)) {
-                    System.out.println("**** WARNING: egd " + egd.getId() + " contain a source non-authoritative atom:\n" + egd);
+                    logger.warn("**** WARNING: egd " + egd.getId() + " contain a source non-authoritative atom:\n" + egd);
 //                    throw new IllegalArgumentException("**** WARNING: egd " + egd.getId() + " contain a source non-authoritative atom:\n" + egd);
                 }
             }

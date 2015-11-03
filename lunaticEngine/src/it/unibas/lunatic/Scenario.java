@@ -292,6 +292,7 @@ public class Scenario {
             if (partialOrder != null) result.append("Partial order:\n\t").append(this.partialOrder).append("\n");
             if (!orderingAttributes.isEmpty()) result.append("Ordering attributes:\n").append(LunaticUtility.printCollection(orderingAttributes)).append("\n");
         }
+        if (hasSuffix()) result.append("Suffix: ").append(suffix).append("\n");
         if (isMainMemory()) {
             result.append("Source:\n").append(this.source).append("\n");
             result.append("Target:\n").append(this.target).append("\n");
