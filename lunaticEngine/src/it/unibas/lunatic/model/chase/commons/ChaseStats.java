@@ -1,8 +1,13 @@
 package it.unibas.lunatic.model.chase.commons;
 
 import it.unibas.lunatic.model.dependency.Dependency;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +51,9 @@ public class ChaseStats {
     public static final String HASH_CELL_GROUP_TIME = "Hash cellgroup time";
     public static final String HASHED_CELL_GROUP_CELLS = "#Hashed cellgroup-cell";
     public static final String HASH_CELL_GROUP_CELL_TIME = "Hash cell group cell time";
-    
+    /////
+    public static final String CHECK_CONS_CELL_GROUPS = "Check consistency of cell groups time";
+    /////
     public static final String TEMP_1 = "TEMP_1";
     public static final String TEMP_2 = "TEMP_2";
     public static final String TEMP_3 = "TEMP_3";
@@ -110,39 +117,41 @@ public class ChaseStats {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("------ SCENARIO STATS ------").append("\n");
-        if (stats.containsKey(NUMBER_OF_STTGDS)) sb.append(NUMBER_OF_STTGDS + ": ").append(stats.get(NUMBER_OF_STTGDS)).append("\n");
-        if (stats.containsKey(NUMBER_OF_EXTGDS)) sb.append(NUMBER_OF_EXTGDS + ": ").append(stats.get(NUMBER_OF_EXTGDS)).append("\n");
-        if (stats.containsKey(NUMBER_OF_EXTEGDS)) sb.append(NUMBER_OF_EXTEGDS + ": ").append(stats.get(NUMBER_OF_EXTEGDS)).append("\n");
-        if (stats.containsKey(NUMBER_OF_EGDS)) sb.append(NUMBER_OF_EGDS + ": ").append(stats.get(NUMBER_OF_EGDS)).append("\n");
-        if (stats.containsKey(NUMBER_OF_DCS)) sb.append(NUMBER_OF_DCS + ": ").append(stats.get(NUMBER_OF_DCS)).append("\n");
-        if (stats.containsKey(NUMBER_OF_DED_STTGDS)) sb.append(NUMBER_OF_DED_STTGDS + ": ").append(stats.get(NUMBER_OF_DED_STTGDS)).append("\n");
-        if (stats.containsKey(NUMBER_OF_DED_EXTGDS)) sb.append(NUMBER_OF_DED_EXTGDS + ": ").append(stats.get(NUMBER_OF_DED_EXTGDS)).append("\n");
-        if (stats.containsKey(NUMBER_OF_DED_EGDS)) sb.append(NUMBER_OF_DED_EGDS + ": ").append(stats.get(NUMBER_OF_DED_EGDS)).append("\n");
-        if (stats.containsKey(NUMBER_OF_GREEDY_SCENARIOS)) sb.append(NUMBER_OF_GREEDY_SCENARIOS + ": ").append(stats.get(NUMBER_OF_GREEDY_SCENARIOS)).append("\n");
-        if (stats.containsKey(NUMBER_OF_EXECUTED_GREEDY_SCENARIOS)) sb.append(NUMBER_OF_EXECUTED_GREEDY_SCENARIOS + ": ").append(stats.get(NUMBER_OF_EXECUTED_GREEDY_SCENARIOS)).append("\n");
-        if (stats.containsKey(NUMBER_OF_FAILED_GREEDY_SCENARIOS)) sb.append(NUMBER_OF_FAILED_GREEDY_SCENARIOS + ": ").append(stats.get(NUMBER_OF_FAILED_GREEDY_SCENARIOS)).append("\n");
+        Set<String> printedStats = new HashSet<String>();
+        appendStat(NUMBER_OF_STTGDS, "", sb, printedStats);
+        appendStat(NUMBER_OF_STTGDS, "", sb, printedStats);
+        appendStat(NUMBER_OF_EXTGDS, "", sb, printedStats);
+        appendStat(NUMBER_OF_EXTEGDS, "", sb, printedStats);
+        appendStat(NUMBER_OF_EGDS, "", sb, printedStats);
+        appendStat(NUMBER_OF_DCS, "", sb, printedStats);
+        appendStat(NUMBER_OF_DED_STTGDS, "", sb, printedStats);
+        appendStat(NUMBER_OF_DED_EXTGDS, "", sb, printedStats);
+        appendStat(NUMBER_OF_DED_EGDS, "", sb, printedStats);
+        appendStat(NUMBER_OF_GREEDY_SCENARIOS, "", sb, printedStats);
+        appendStat(NUMBER_OF_EXECUTED_GREEDY_SCENARIOS, "", sb, printedStats);
+        appendStat(NUMBER_OF_FAILED_GREEDY_SCENARIOS, "", sb, printedStats);
         sb.append("------ CHASE STATS ------").append("\n");
-        if (stats.containsKey(TOTAL_TIME)) sb.append(TOTAL_TIME + ": ").append(stats.get(TOTAL_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(STTGD_TIME)) sb.append(STTGD_TIME + ": ").append(stats.get(STTGD_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(EGD_TIME)) sb.append(EGD_TIME + ": ").append(stats.get(EGD_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(EGD_VIOLATION_QUERY_TIME)) sb.append(EGD_VIOLATION_QUERY_TIME + ": ").append(stats.get(EGD_VIOLATION_QUERY_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(EGD_EQUIVALENCE_CLASS_TIME)) sb.append(EGD_EQUIVALENCE_CLASS_TIME + ": ").append(stats.get(EGD_EQUIVALENCE_CLASS_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(EGD_CHOOSING_REPAIR_TIME)) sb.append(EGD_CHOOSING_REPAIR_TIME + ": ").append(stats.get(EGD_CHOOSING_REPAIR_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(EGD_REPAIR_TIME)) sb.append(EGD_REPAIR_TIME + ": ").append(stats.get(EGD_REPAIR_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(TGD_VIOLATION_QUERY_TIME)) sb.append(TGD_VIOLATION_QUERY_TIME + ": ").append(stats.get(TGD_VIOLATION_QUERY_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(TGD_EQUIVALENCE_CLASS_TIME)) sb.append(TGD_EQUIVALENCE_CLASS_TIME + ": ").append(stats.get(TGD_EQUIVALENCE_CLASS_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(TGD_GENERATE_UPDATE_TIME)) sb.append(TGD_GENERATE_UPDATE_TIME + ": ").append(stats.get(TGD_GENERATE_UPDATE_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(TGD_REPAIR_TIME)) sb.append(TGD_REPAIR_TIME + ": ").append(stats.get(TGD_REPAIR_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(TGD_TIME)) sb.append(TGD_TIME + ": ").append(stats.get(TGD_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(DTGD_TIME)) sb.append(DTGD_TIME + ": ").append(stats.get(DTGD_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(DELTA_DB_BUILDER)) sb.append(DELTA_DB_BUILDER + ": ").append(stats.get(DELTA_DB_BUILDER)).append(" ms").append("\n");
-        if (stats.containsKey(DELTA_DB_STEP_BUILDER)) sb.append(DELTA_DB_STEP_BUILDER + ": ").append(stats.get(DELTA_DB_STEP_BUILDER)).append(" ms").append("\n");
-        if (stats.containsKey(CACHE_LOAD_TIME)) sb.append(CACHE_LOAD_TIME + ": ").append(stats.get(CACHE_LOAD_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(CELL_GROUP_CONSISTENCY_CHECK_TIME)) sb.append(CELL_GROUP_CONSISTENCY_CHECK_TIME + ": ").append(stats.get(CELL_GROUP_CONSISTENCY_CHECK_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(DUPLICATE_TIME)) sb.append(DUPLICATE_TIME + ": ").append(stats.get(DUPLICATE_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(REMOVE_DUPLICATE_TIME)) sb.append(REMOVE_DUPLICATE_TIME + ": ").append(stats.get(REMOVE_DUPLICATE_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(COMPUTE_SIMILARITY_TIME)) sb.append(COMPUTE_SIMILARITY_TIME + ": ").append(stats.get(COMPUTE_SIMILARITY_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(CHECK_REDUNDANCY_TIME)) sb.append(CHECK_REDUNDANCY_TIME + ": ").append(stats.get(CHECK_REDUNDANCY_TIME)).append(" ms").append("\n");
+        appendStat(TOTAL_TIME, "ms", sb, printedStats);
+        appendStat(STTGD_TIME, "ms", sb, printedStats);
+        appendStat(EGD_TIME, "ms", sb, printedStats);
+        appendStat(EGD_VIOLATION_QUERY_TIME, "ms", sb, printedStats);
+        appendStat(EGD_EQUIVALENCE_CLASS_TIME, "ms", sb, printedStats);
+        appendStat(EGD_CHOOSING_REPAIR_TIME, "ms", sb, printedStats);
+        appendStat(EGD_REPAIR_TIME, "ms", sb, printedStats);
+        appendStat(TGD_VIOLATION_QUERY_TIME, "ms", sb, printedStats);
+        appendStat(TGD_EQUIVALENCE_CLASS_TIME, "ms", sb, printedStats);
+        appendStat(TGD_GENERATE_UPDATE_TIME, "ms", sb, printedStats);
+        appendStat(TGD_REPAIR_TIME, "ms", sb, printedStats);
+        appendStat(TGD_TIME, "ms", sb, printedStats);
+        appendStat(DTGD_TIME, "ms", sb, printedStats);
+        appendStat(DELTA_DB_BUILDER, "ms", sb, printedStats);
+        appendStat(DELTA_DB_STEP_BUILDER, "ms", sb, printedStats);
+        appendStat(CACHE_LOAD_TIME, "ms", sb, printedStats);
+        appendStat(CELL_GROUP_CONSISTENCY_CHECK_TIME, "ms", sb, printedStats);
+        appendStat(DUPLICATE_TIME, "ms", sb, printedStats);
+        appendStat(REMOVE_DUPLICATE_TIME, "ms", sb, printedStats);
+        appendStat(COMPUTE_SIMILARITY_TIME, "ms", sb, printedStats);
+        appendStat(CHECK_REDUNDANCY_TIME, "ms", sb, printedStats);
         sb.append("-------------------------").append("\n");
         sb.append("------ CHASE STATS ------").append("\n");
         for (Dependency d : dependencyStats.keySet()) {
@@ -150,18 +159,35 @@ public class ChaseStats {
         }
         sb.append("-------------------------").append("\n");
         sb.append("------ HASH STATS ------").append("\n");
-        if (stats.containsKey(HASHED_CELL_GROUPS)) sb.append(HASHED_CELL_GROUPS + ": ").append(stats.get(HASHED_CELL_GROUPS)).append("\n");
-        if (stats.containsKey(HASH_CELL_GROUP_TIME)) sb.append(HASH_CELL_GROUP_TIME + ": ").append(stats.get(HASH_CELL_GROUP_TIME)).append(" ms").append("\n");
-        if (stats.containsKey(HASHED_CELL_GROUP_CELLS)) sb.append(HASHED_CELL_GROUP_CELLS + ": ").append(stats.get(HASHED_CELL_GROUP_CELLS)).append("\n");
-        if (stats.containsKey(HASH_CELL_GROUP_CELL_TIME)) sb.append(HASH_CELL_GROUP_CELL_TIME + ": ").append(stats.get(HASH_CELL_GROUP_CELL_TIME)).append(" ms").append("\n");
+        appendStat(HASHED_CELL_GROUPS, "", sb, printedStats);
+        appendStat(HASH_CELL_GROUP_TIME, "ms", sb, printedStats);
+        appendStat(HASHED_CELL_GROUP_CELLS, "", sb, printedStats);
+        appendStat(HASH_CELL_GROUP_CELL_TIME, "ms", sb, printedStats);
         sb.append("-------------------------").append("\n");
         sb.append("------ OTHER ------").append("\n");
-        if (stats.containsKey(TEMP_1)) sb.append(TEMP_1 + ": ").append(stats.get(TEMP_1)).append(" ms").append("\n");
-        if (stats.containsKey(TEMP_2)) sb.append(TEMP_2 + ": ").append(stats.get(TEMP_2)).append(" ms").append("\n");
-        if (stats.containsKey(TEMP_3)) sb.append(TEMP_3 + ": ").append(stats.get(TEMP_3)).append(" ms").append("\n");
-        if (stats.containsKey(TEMP_4)) sb.append(TEMP_4 + ": ").append(stats.get(TEMP_4)).append(" ms").append("\n");
-        if (stats.containsKey(TEMP_5)) sb.append(TEMP_5 + ": ").append(stats.get(TEMP_5)).append(" ms").append("\n");
+//        appendStat(TEMP_1, "ms", sb, printedStats);
+//        appendStat(TEMP_2, "ms", sb, printedStats);
+//        appendStat(TEMP_3, "ms", sb, printedStats);
+//        appendStat(TEMP_4, "ms", sb, printedStats);
+//        appendStat(TEMP_5, "ms", sb, printedStats);
+        appendOtherStats(printedStats, sb);
         return sb.toString();
+    }
+
+    private void appendStat(String key, String suffix, StringBuilder sb, Set<String> printedStats) {
+        if (stats.containsKey(key)) {
+            sb.append(key).append(": ").append(stats.get(key)).append(" ").append(suffix).append("\n");
+            printedStats.add(key);
+        }
+    }
+
+    private void appendOtherStats(Set<String> printedStats, StringBuilder sb) {
+        List<String> otherStats = new ArrayList<String>(this.stats.keySet());
+        otherStats.removeAll(printedStats);
+        Collections.sort(otherStats);
+        for (String key : otherStats) {
+            appendStat(key, "", sb, printedStats);
+        }
     }
 
 }
