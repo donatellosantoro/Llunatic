@@ -5,6 +5,8 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IExportSolution;
+import java.util.HashSet;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.dbms.DBMSDB;
@@ -23,7 +25,8 @@ public class SQLExportSolution implements IExportSolution {
     public void export(DeltaChaseStep step, String suffix, Scenario scenario) {
         initializeOperators(scenario);
         AccessConfiguration deltaAccessConfiguration = ((DBMSDB) step.getDeltaDB()).getAccessConfiguration();
-        AccessConfiguration newAccessConfiguration = createNewSchema((DBMSDB) scenario.getTarget(), suffix);
+        AccessConfiguration newAccessConfiguration = getNewSchemaName((DBMSDB) scenario.getTarget(), suffix);
+        DBMSUtility.createSchema(newAccessConfiguration);
         DBMSVirtualDB database = (DBMSVirtualDB) databaseBuilder.extractDatabase(step.getId(), step.getDeltaDB(), step.getOriginalDB(), scenario);
         StringBuilder script = new StringBuilder();
         for (String tableName : database.getTableNames()) {
@@ -37,11 +40,47 @@ public class SQLExportSolution implements IExportSolution {
         QueryManager.executeScript(script.toString(), newAccessConfiguration, true, true, true, false);
     }
 
-    private AccessConfiguration createNewSchema(DBMSDB target, String suffix) {
+    @Override
+    public void overrideWorkSchema(DeltaChaseStep step, String suffix, Scenario scenario, boolean cleanPreviousSteps) {
+        initializeOperators(scenario);
+        AccessConfiguration previousTargetAccessConfiguration = ((DBMSDB) scenario.getTarget()).getAccessConfiguration();
+        AccessConfiguration deltaAccessConfiguration = ((DBMSDB) step.getDeltaDB()).getAccessConfiguration();
+        AccessConfiguration newAccessConfiguration = getNewSchemaName((DBMSDB) scenario.getTarget(), suffix);
+        DBMSVirtualDB database = (DBMSVirtualDB) databaseBuilder.extractDatabase(step.getId(), step.getDeltaDB(), step.getOriginalDB(), scenario);
+        Set<String> tablesToKeep = findTablesToKeep(database);
+        if (logger.isDebugEnabled()) logger.debug("Tables to keep: " + tablesToKeep);
+        StringBuilder script = new StringBuilder();
+        for (String tableName : DBMSUtility.loadTableNames(deltaAccessConfiguration)) {
+            if (logger.isDebugEnabled()) logger.debug("Analyzing table " + tableName);
+            if (tablesToKeep.contains(tableName)) {
+                String newTableName = tableName.replaceAll(database.getSuffix(), "");
+                if (logger.isDebugEnabled()) logger.debug("Renaming table " + tableName + " into " + newTableName);
+                script.append("ALTER TABLE ").append(DBMSUtility.getSchemaNameAndDot(deltaAccessConfiguration)).append(tableName);
+                script.append(" RENAME TO ").append(newTableName).append(";\n");
+            } else {
+                script.append("DROP TABLE ").append(DBMSUtility.getSchemaNameAndDot(deltaAccessConfiguration)).append(tableName).append(" CASCADE;\n");
+            }
+        }
+        script.append("ALTER SCHEMA ").append(deltaAccessConfiguration.getSchemaAndSuffix()).append(" RENAME TO ").append(newAccessConfiguration.getSchemaAndSuffix()).append(";\n");
+        if (cleanPreviousSteps && previousTargetAccessConfiguration.hasSuffix()) {
+            script.append("DROP SCHEMA ").append(previousTargetAccessConfiguration.getSchemaAndSuffix()).append(" CASCADE;");
+        }
+        if (logger.isDebugEnabled()) logger.debug("Script for exporting database:\n" + script);
+        QueryManager.executeScript(script.toString(), deltaAccessConfiguration, true, true, true, false);
+    }
+
+    private AccessConfiguration getNewSchemaName(DBMSDB target, String suffix) {
         AccessConfiguration newSchema = target.getAccessConfiguration().clone();
         newSchema.setSchemaSuffix(suffix);
-        DBMSUtility.createSchema(newSchema);
         return newSchema;
+    }
+
+    private Set<String> findTablesToKeep(DBMSVirtualDB database) {
+        Set<String> result = new HashSet<String>();
+        for (String tableName : database.getTableNames()) {
+            result.add(tableName + database.getSuffix());
+        }
+        return result;
     }
 
     private void initializeOperators(Scenario scenario) {
