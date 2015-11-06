@@ -15,8 +15,8 @@ import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguratio
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
-import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.dependency.Dependency;
+import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.utility.combinatorial.GenericMultiCombinationsGenerator;
 import it.unibas.lunatic.utility.combinatorial.GenericPowersetGenerator;
 import java.util.ArrayList;
@@ -44,10 +44,10 @@ public class StandardSymmetricCostManager implements ICostManager {
         if (canDoBackward(chaseTreeRoot, equivalenceClass.getEGD(), scenario.getCostManagerConfiguration())) {
             List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass, scenario);
             for (Repair repair : backwardRepairs) {
-                if (result.contains(repair)) {
-                    throw new ChaseException("Result already contains repair " + repair + "\nResult: " + result);
-                }
-                result.add(repair);
+//                if (result.contains(repair)) {
+//                    throw new ChaseException("Result already contains repair " + repair + "\nResult: " + result);
+//                }
+                LunaticUtility.addIfNotContained(result, repair);
             }
         }
         return result;

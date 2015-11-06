@@ -11,6 +11,8 @@ import it.unibas.lunatic.gui.table.OutlineTableHelper;
 import it.unibas.lunatic.gui.window.ScenarioChangeListener;
 import java.awt.BorderLayout;
 import javax.swing.JComponent;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -26,6 +28,7 @@ import org.openide.windows.TopComponent;
 @NbBundle.Messages("CTL_Occurrences=Occurrences")
 public class OccurrencesPanel extends MultiViewExplorerTopComponent implements ScenarioChangeListener.Target {
 
+    private Log logger = LogFactory.getLog(getClass());
     private OutlineTableHelper tableHelper = new OutlineTableHelper();
     private ITableColumnGenerator columnGenerator = OccurrenceTupleNode.getColumnGenerator();
     private final CellGroupDetails details;
@@ -34,7 +37,7 @@ public class OccurrencesPanel extends MultiViewExplorerTopComponent implements S
         this.details = details;
         initComponents();
         setName(R.Window.CELL_GROUP_OCCURRENCES);
-        setDisplayName(Bundle.CTL_Occurrences());
+        setDisplayName(0);
         outlineView2.getOutline().setRootVisible(false);
         tableHelper.hideNodesColumn(outlineView2);
         columnGenerator.createTableColumns(outlineView2);
@@ -48,8 +51,15 @@ public class OccurrencesPanel extends MultiViewExplorerTopComponent implements S
     @Override
     public void setRootContext(Node node) {
         StepCellGroupNode stepCellGroupNode = (StepCellGroupNode) node;
-        details.setCellGroupValue(stepCellGroupNode.getValue());
+        setDisplayName(stepCellGroupNode.getCellGroup().getOccurrences().size());
+        details.setCellGroupValue(stepCellGroupNode.getCellGroup());
         explorer.setRootContext(new OccurrenceRootNode(stepCellGroupNode));
+    }
+
+    private void setDisplayName(int size) {
+        String value = Bundle.CTL_Occurrences();
+//        String value = Bundle.CTL_Occurrences() + " (" + size + ")";
+        setDisplayName(value);
     }
 
     @Override
@@ -91,7 +101,7 @@ public class OccurrencesPanel extends MultiViewExplorerTopComponent implements S
         String version = p.getProperty("version");
         // TODO read your settings according to their version
     }
-    
+
     private ScenarioChangeListener scenarioChangeListener = new ScenarioChangeListener();
 
     @Override

@@ -54,10 +54,10 @@ public class StandardCostManager implements ICostManager {
         if (canDoBackward(chaseTreeRoot, equivalenceClass.getEGD(), scenario.getCostManagerConfiguration())) {
             List<Repair> backwardRepairs = generateBackwardRepairs(equivalenceClass, scenario, chaseTreeRoot.getDeltaDB(), stepId);
             for (Repair repair : backwardRepairs) {
-                if (result.contains(repair)) {
-//                    if (logger.isDebugEnabled()) logger.debug("Result already contains repair " + repair + "\nResult: " + result);
-                    throw new IllegalArgumentException("Result already contains repair " + repair + "\nResult: " + result);
-                }
+//                if (result.contains(repair)) {
+////                    if (logger.isDebugEnabled()) logger.debug("Result already contains repair " + repair + "\nResult: " + result);
+//                    throw new IllegalArgumentException("Result already contains repair " + repair + "\nResult: " + result);
+//                }
                 LunaticUtility.addIfNotContained(result, repair);
             }
         }

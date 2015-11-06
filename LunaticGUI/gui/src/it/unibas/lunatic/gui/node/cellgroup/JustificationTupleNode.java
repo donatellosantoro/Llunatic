@@ -17,12 +17,14 @@ public class JustificationTupleNode extends AbstractNode {
 
     private final Cell cell;
     private final StepCellGroupNode stepCellGroup;
+    private String auth;
     private Action[] actions = new Action[]{Actions.forID("Window", R.ActionId.SHOW_PROVENANCE_TUPLE)};
 
     public JustificationTupleNode(Cell key, StepCellGroupNode node) {
         super(Children.LEAF);
         this.cell = key;
         this.stepCellGroup = node;
+        this.auth = getAuth();
     }
 
     @Override
@@ -41,6 +43,10 @@ public class JustificationTupleNode extends AbstractNode {
 
     public ChaseStepNode getChaseStepNode() {
         return stepCellGroup.getChaseStepNode();
+    }
+
+    private String getAuth() {
+        return (cell.isAuthoritative() ? "Yes" : "No");
     }
 
     @Override
@@ -96,6 +102,18 @@ public class JustificationTupleNode extends AbstractNode {
                 return true;
             }
         });
+        set.put(new StringProperty("authoritative") {
+            @Override
+            public String getValue() throws IllegalAccessException, InvocationTargetException {
+                return getAuth();
+            }
+
+            //TODO: implement inplace editor
+            @Override
+            public boolean canWrite() {
+                return true;
+            }
+        });
         return sheet;
     }
     private static ITableColumnGenerator columnGenerator;
@@ -115,6 +133,7 @@ public class JustificationTupleNode extends AbstractNode {
             outlineView.addPropertyColumn("table", "table");
             outlineView.addPropertyColumn("attribute", "attribute");
             outlineView.addPropertyColumn("value", "value");
+            outlineView.addPropertyColumn("authoritative", "authoritative");
         }
     }
 }

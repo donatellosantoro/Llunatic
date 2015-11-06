@@ -9,8 +9,8 @@ import speedy.model.database.mainmemory.MainMemoryDB;
 
 public class DbExtractor {
 
-    private BuildMainMemoryDBForChaseStep mainMemoryBuilder = new BuildMainMemoryDBForChaseStep();
-    private BuildSQLDBForChaseStep sqlBuilder = new BuildSQLDBForChaseStep();
+    private BuildMainMemoryDBForChaseStep mainMemoryBuilder = new BuildMainMemoryDBForChaseStep(false);
+    private BuildSQLDBForChaseStep sqlBuilder = new BuildSQLDBForChaseStep(false);
 
     public IDatabase extractDb(DeltaChaseStep step) {
         IDatabase database = null;
@@ -18,10 +18,10 @@ public class DbExtractor {
             IDatabase deltaDB = step.getDeltaDB();
             IDatabase originalDB = step.getOriginalDB();
             if (deltaDB instanceof MainMemoryDB) {
-                database = mainMemoryBuilder.extractDatabase(step.getId(), deltaDB, originalDB);
+                database = mainMemoryBuilder.extractDatabase(step.getId(), deltaDB, originalDB, step.getScenario());
             }
             if (deltaDB instanceof DBMSDB) {
-                database = sqlBuilder.extractDatabase(step.getId(), deltaDB, originalDB);
+                database = sqlBuilder.extractDatabase(step.getId(), deltaDB, originalDB, step.getScenario());
             }
         }
         return database;

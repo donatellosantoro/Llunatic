@@ -39,7 +39,6 @@ public class OccurrenceTupleFactory extends ChildFactory<CellGroupCell> {
 
     @Override
     protected Node createNodeForKey(CellGroupCell cellGroupCell) {
-//        IValue original = cgHelper.getValueExtractor(scenario).getOriginalValue(cellRef, chaseStep.getDeltaDB());
         IValue original = cellGroupCell.getOriginalValue();
         CellRef cellRef = new CellRef(cellGroupCell);
         OccurrenceTupleNode occurrence = new OccurrenceTupleNode(cellGroupNode.getChaseStepNode(), cellRef, original);

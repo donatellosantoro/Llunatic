@@ -11,7 +11,7 @@ public class ExpandedView extends BeanTreeView implements TreeModelListener {
     private Log logger = LogFactory.getLog(getClass());
     
     public ExpandedView() {
-        logger.warn("Mock implementation");
+//        logger.warn("Mock implementation");
         tree.getModel().addTreeModelListener(this);
     }
     

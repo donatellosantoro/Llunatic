@@ -40,6 +40,12 @@
                 <pathelement location="${lib.dir}/slf4j-api-${slf4j.ver}.jar" /> 
                 <pathelement location="${lib.dir}/logback-core-${logback.ver}.jar" />
                 <pathelement location="${lib.dir}/logback-classic-${logback.ver}.jar" />
+                <pathelement location="${lib.dir}/commons-csv-${commons-csv.ver}.jar" />
+                <pathelement location="${lib.dir}/commons-lang-${commons-lang.ver}.jar" />
+                <pathelement location="${lib.dir}/commons-logging-${commons-logging.ver}.jar" />
+                <pathelement location="${lib.dir}/mybatis-3.1.1.jar" />
+                <pathelement location="${lib.dir}/spicyBenchmark-0.1.jar" />
+                <pathelement location="${lib.dir}/spicyEngine-1.0.jar" />
             </path>    
         </copy>      
     </target>

@@ -11,5 +11,4 @@ public class ChaseAncestorsRootNode extends AbstractNode {
         super(Children.create(new ChaseStepAncestorFactory(step, s), false));
     }
 
-    
 }

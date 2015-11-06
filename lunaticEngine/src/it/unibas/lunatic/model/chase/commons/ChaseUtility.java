@@ -234,7 +234,7 @@ public class ChaseUtility {
 
     public static DeltaChaseStep getFirstLeaf(DeltaChaseStep result) {
         DeltaChaseStep currentNode = getRoot(result);
-        while(!currentNode.getChildren().isEmpty()){
+        while (!currentNode.getChildren().isEmpty()) {
             currentNode = currentNode.getChildren().get(0);
         }
         return currentNode;
@@ -447,6 +447,10 @@ public class ChaseUtility {
             }
             cellsForAttribute.add(new CellRef(occurrence));
         }
+    }
+
+    public static boolean hasChaseStats(Scenario scenario) {
+        return !scenario.getExtEGDs().isEmpty() && scenario.getConfiguration().isRemoveDuplicates();
     }
 
 }

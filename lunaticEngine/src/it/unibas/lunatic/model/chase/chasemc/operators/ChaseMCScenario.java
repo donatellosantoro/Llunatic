@@ -41,6 +41,8 @@ public class ChaseMCScenario {
     private final CheckRedundancy redundancyChecker = new CheckRedundancy();
     private final CheckSolution solutionChecker;
     private final RankSolutions solutionRanker = new RankSolutions();
+    private final PrintRankedSolutions solutionPrinter = new PrintRankedSolutions();
+    private final ChaseTreeSize resultSizer = new ChaseTreeSize();
 
     public ChaseMCScenario(IChaseSTTGDs stChaser, IChaseDeltaExtTGDs extTgdChaser,
             IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
@@ -70,16 +72,17 @@ public class ChaseMCScenario {
             if (logger.isDebugEnabled()) logger.debug("DeltaDB: " + deltaDB);
             DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);
             DeltaChaseStep result = doChase(root, scenario, chaseState);
+            long end = new Date().getTime();
+            ChaseStats.getInstance().addStat(ChaseStats.TOTAL_TIME, end - start);
             chaseTree.setRoot(result);
-            if (hasChaseStats(scenario)) {
+            if (ChaseUtility.hasChaseStats(scenario)) {
                 solutionRanker.rankSolutions(chaseTree);
             }
+            printResult(chaseTree);
             return chaseTree;
         } catch (ChaseFailedException e) {
             throw e;
         } finally {
-            long end = new Date().getTime();
-            ChaseStats.getInstance().addStat(ChaseStats.TOTAL_TIME, end - start);
             if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
         }
     }
@@ -89,7 +92,7 @@ public class ChaseMCScenario {
         redundancyChecker.checkDuplicateOIDs(scenario);
     }
 
-    private DeltaChaseStep doChase(DeltaChaseStep root, Scenario scenario, IChaseState chaseState) {
+    public DeltaChaseStep doChase(DeltaChaseStep root, Scenario scenario, IChaseState chaseState) {
         if (scenario.isDEDScenario()) {
             throw new ChaseException("ChaseMCScenario cannot handle scenarios with deds");
         }
@@ -126,7 +129,7 @@ public class ChaseMCScenario {
             }
             if (iterations > ITERATION_LIMIT) {
                 StringBuilder errorMessage = new StringBuilder("Reached iteration limit " + ITERATION_LIMIT + " with no solution...");
-                if (logger.isDebugEnabled()) errorMessage.append("\nScenario: ").append(scenario).append("\nChase tree:\n" + root).append("\nDelta db:\n" + root.getDeltaDB());
+                if (logger.isDebugEnabled()) errorMessage.append("\nScenario: ").append(scenario).append("\nChase tree:\n" + root).append("\nDelta db:\n").append(root.getDeltaDB());
                 throw new ChaseException(errorMessage.toString());
             }
         }
@@ -151,7 +154,16 @@ public class ChaseMCScenario {
         return doChase(step, scenario, ImmutableChaseState.getInstance());
     }
 
-    private boolean hasChaseStats(Scenario scenario) {
-        return !scenario.getExtEGDs().isEmpty() && scenario.getConfiguration().isRemoveDuplicates();
+    private void printResult(ChaseTree chaseTree) {
+        if (!LunaticConfiguration.isPrintSteps()) {
+            return;
+        }
+        System.out.println("");
+        System.out.println("Number of solutions: " + resultSizer.getPotentialSolutions(chaseTree.getRoot()));
+        System.out.println("Number of duplicates: " + resultSizer.getDuplicates(chaseTree.getRoot()));
+        if (chaseTree.getRankedSolutions() != null && !chaseTree.getRankedSolutions().isEmpty()) {
+            System.out.println(solutionPrinter.toString(chaseTree));
+        }
+        System.out.println("*** Chase complete in " + ChaseStats.getInstance().getStat(ChaseStats.TOTAL_TIME) + " ms");
     }
 }

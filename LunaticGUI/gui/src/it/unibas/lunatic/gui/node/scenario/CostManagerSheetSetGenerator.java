@@ -1,17 +1,16 @@
 package it.unibas.lunatic.gui.node.scenario;
 
 import it.unibas.lunatic.gui.model.LoadedScenario;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 @NbBundle.Messages({
-    "PSET_costManagerProperties=Cost manager properties",
+    "PSET_costManagerProperties=Cost manager configuration",
     "PROP_chaseBackward=Chase backward",
     "PROP_permutationsAllowed=Permutations allowed",
     "PROP_dependencyLimit=Dependency limit",
@@ -26,11 +25,11 @@ public class CostManagerSheetSetGenerator {
         Sheet.Set set = new Sheet.Set();
         set.setName(setName);
         set.setDisplayName(Bundle.PSET_costManagerProperties());
-        final ICostManager costManager = loadedScenario.getScenario().getCostManager();
+        final CostManagerConfiguration costManager = loadedScenario.getScenario().getCostManagerConfiguration();
         set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.CHASE_BACKWARD, Boolean.class, Bundle.PROP_chaseBackward(), Bundle.PROP_chaseBackward()) {
             @Override
             public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
-                return costManager.isDoBackward();
+                return costManager.isDoBackwardForAllDependencies();
             }
 
             @Override

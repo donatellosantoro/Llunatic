@@ -26,6 +26,7 @@ public class R {
         public static final String SHOW_TABLE = "it.unibas.lunatic.gui.action.ShowTable";
         public static final String SHOW_OCCURRENCE_TUPLE = "it.unibas.lunatic.gui.action.ShowOccurrenceTuple";
         public static final String SHOW_PROVENANCE_TUPLE = "it.unibas.lunatic.gui.action.ShowProvenanceTuple";
+        public static final String SHOW_USER_CELL_TUPLE = "it.unibas.lunatic.gui.action.ShowUserCellTuple";
         public static final String SHOW_DEPS = "it.unibas.lunatic.gui.action.ShowDependencies";
         public static final String SHOW_STEP_DEPS = "it.unibas.lunatic.gui.action.ShowStepDependencies";
         public static final String SHOW_DEP_VISUAL = "it.unibas.lunatic.gui.action.ShowDepVisual";
@@ -47,6 +48,7 @@ public class R {
         public static final String DE_CHASE_RESULT = "DeChaseResultTopComponent";
         public static final String CHASE_RESULT = "ChaseResultTopComponent";
         public static final String MC_CHASE_RESULT = "McChaseResultTopComponent";
+        public static final String MC_CHASE_RESULT_RANKED_SOLUTIONS = "MCChaseResultRankedSolutionsTopComponent";
         public static final String SCENARIO = "ScenarioTopComponent";
         public static final String TABLE = "DbTableTopComponent";
         public static final String PAGED_TABLE = "PagedDbTableTopComponent";
@@ -55,6 +57,7 @@ public class R {
         public static final String CELL_GROUP_DETAILS = "CellGroupTopComponent";
         public static final String CELL_GROUP_OCCURRENCES = "CellGroupOccurrences";
         public static final String CELL_GROUP_PROVENANCES = "CellGroupProvenances";
+        public static final String CELL_GROUP_USER_CELLS = "CellGroupUserCells";
         public static final String CELL_GROUP_ADDITIONAL_CELLS = "CellGroupAdditionalCells";
         public static final String CELL_GROUP_EXPLORER = "CellGroupExplorerTopComponent";
         public static final String VISUAL_DEPENDENCIES = "VisualDepsTopComponent";

@@ -11,7 +11,7 @@ public class DeResultNode extends AbstractNode {
     public DeResultNode(DeChaseResult chaseResult) {
         super(Children.create(new DeChaseResultChildFactory(chaseResult), false));
         this.chase = chaseResult;
-        setDisplayName(chase.getLoadedScenario().getDataObject().getName());
+        setDisplayName("Chase tree");
         setIconBaseWithExtension("it/unibas/lunatic/icons/datasource.png");
     }
 

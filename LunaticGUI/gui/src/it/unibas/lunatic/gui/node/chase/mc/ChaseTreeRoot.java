@@ -10,10 +10,10 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
 import org.openide.util.NbBundle;
 
-public class ChaseTreeRoot extends AbstractNode{
+public class ChaseTreeRoot extends AbstractNode {
 
     private ChaseTreeSize chaseTreeSize = new ChaseTreeSize();
-    private McChaseResult result;    
+    private McChaseResult result;
 
     @NbBundle.Messages({
         "PROP_AllNodes=Number of nodes",
@@ -24,10 +24,10 @@ public class ChaseTreeRoot extends AbstractNode{
         "PROP_Invalid=Invalids"
     })
     public ChaseTreeRoot(McChaseResult chaseResult) {
-        super(Children.create(new ChaseStepChildFactory(chaseResult.getResult(), chaseResult.getLoadedScenario().getScenario()), false));
+        super(Children.create(new ChaseStepChildFactory(chaseResult.getResult().getRoot(), chaseResult.getLoadedScenario().getScenario()), false));
         this.result = chaseResult;
-        setDisplayName(result.getLoadedScenario().getDataObject().getName());
-        setIconBaseWithExtension("it/unibas/lunatic/icons/datasource.png");
+        setDisplayName("Chase tree (" + result.getLoadedScenario().getDataObject().getName() + ")");
+        setIconBaseWithExtension("it/unibas/lunatic/icons/chase_tree.png");
     }
 
     public McChaseResult getResult() {
@@ -37,7 +37,7 @@ public class ChaseTreeRoot extends AbstractNode{
     @Override
     protected Sheet createSheet() {
         Sheet sheet = super.createSheet();
-        Sheet.Set resultSet = createSheetSet(result.getResult());
+        Sheet.Set resultSet = createSheetSet(result.getResult().getRoot());
         sheet.put(resultSet);
         return sheet;
     }

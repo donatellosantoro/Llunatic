@@ -14,7 +14,8 @@ public class CellGroupMultiViewManager {
 
     private TopComponent multiView;
     private OccurrencesPanel occurrencesPanel;
-    private ProvenancesPanel provenancesPanel;
+    private JustificationsPanel provenancesPanel;
+    private UserCellsPanel userCellsPanel;
     private AdditionalCellsPanel additionalCellsPanel;
     private MultiViewDescription[] views;
     private static CellGroupMultiViewManager instance;
@@ -28,11 +29,13 @@ public class CellGroupMultiViewManager {
 
     public CellGroupMultiViewManager() {
         occurrencesPanel = new OccurrencesPanel(new CellGroupDetails());
-        provenancesPanel = new ProvenancesPanel(new CellGroupDetails());
+        provenancesPanel = new JustificationsPanel(new CellGroupDetails());
+        userCellsPanel = new UserCellsPanel(new CellGroupDetails());
         additionalCellsPanel = new AdditionalCellsPanel(new CellGroupDetails());
         views = new MultiViewDescription[]{
             occurrencesPanel.getMultiViewDescription(),
             provenancesPanel.getMultiViewDescription(),
+            userCellsPanel.getMultiViewDescription(),
             additionalCellsPanel.getMultiViewDescription()
         };
         multiView = MultiViewFactory.createMultiView(views, occurrencesPanel.getMultiViewDescription());

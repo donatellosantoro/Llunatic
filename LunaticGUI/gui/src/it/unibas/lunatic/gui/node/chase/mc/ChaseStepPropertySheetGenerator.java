@@ -6,6 +6,7 @@ import it.unibas.lunatic.gui.node.utils.StringProperty;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import speedy.model.database.AttributeRef;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DecimalFormat;
 import java.util.MissingResourceException;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
@@ -14,6 +15,9 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages({
     "PROP_CellGroup=Cell group",
     "PROP_ChaseMode=Chase mode",
+    "PROP_Score=Score",
+    "PROP_ChangedCells=Changed cells",
+    "PROP_LlunCellGroups=Llun cell groups",
     "PROP_IsInvalid=Invalid",
     "PROP_IsLeaf=Leaf",
     "PROP_NodeType=Node type",
@@ -30,6 +34,8 @@ import org.openide.util.NbBundle;
     LunaticConstants.CHASE_USER + "=user",
     LunaticConstants.CHASE_STEP_TGD + "=tgd",})
 public class ChaseStepPropertySheetGenerator {
+
+    private DecimalFormat df = new DecimalFormat("##.0");
 
     public void populateSheet(Sheet sheet, ChaseStepNode chaseStep) {
         Sheet.Set resultSet = createSheetSet(chaseStep);
@@ -65,6 +71,24 @@ public class ChaseStepPropertySheetGenerator {
             @Override
             public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
                 return step.isGround();
+            }
+        });
+        set.put(new PropertySupport.ReadOnly<String>(PROP_SCORE, String.class, Bundle.PROP_Score(), Bundle.PROP_Score()) {
+            @Override
+            public String getValue() throws IllegalAccessException, InvocationTargetException {
+                return df.format(step.getScore());
+            }
+        });
+        set.put(new PropertySupport.ReadOnly<Integer>(PROP_CHANGED_CELLS, Integer.class, Bundle.PROP_ChangedCells(), Bundle.PROP_Score()) {
+            @Override
+            public Integer getValue() throws IllegalAccessException, InvocationTargetException {
+                return step.getCellGroupStats().changedCells;
+            }
+        });
+        set.put(new PropertySupport.ReadOnly<Integer>(PROP_LLUN_CELL_GROUPS, Integer.class, Bundle.PROP_LlunCellGroups(), Bundle.PROP_Score()) {
+            @Override
+            public Integer getValue() throws IllegalAccessException, InvocationTargetException {
+                return step.getCellGroupStats().llunCellGroups;
             }
         });
         set.put(new PropertySupport.ReadOnly<Boolean>(PROP_EDITED_BY_USER, Boolean.class, Bundle.PROP_EditedByUser(), Bundle.PROP_EditedByUser()) {
@@ -126,7 +150,7 @@ public class ChaseStepPropertySheetGenerator {
         final DeltaChaseStep chaseStep = chaseStepNode.getChaseStep();
         Sheet.Set set = new Sheet.Set();
         set.setDisplayName(Bundle.PSET_AttributeSet());
-        for (final AttributeRef ar : chaseStep.getAffectedAttributes()) {
+        for (final AttributeRef ar : chaseStep.getAffectedAttributesInNode()) {
             set.put(new StringProperty(ar.getTableAlias().toString()) {
                 @Override
                 public String getValue() throws IllegalAccessException, InvocationTargetException {

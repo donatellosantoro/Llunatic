@@ -1,8 +1,10 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
@@ -229,7 +231,13 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
         for (int i = 0; i < repairs.size(); i++) {
             Repair repair = repairs.get(i);
             boolean consistentRepair = purgeOverlappingContexts(egd, repair, currentNode.getAffectedAttributesInAncestors());
-            CellGroupUtility.checkCellGroupConsistency(repair);
+            try {
+                CellGroupUtility.checkCellGroupConsistency(repair);
+            } catch (ChaseException ex) { //TODO++
+                IExportSolution solutionExporter = OperatorFactory.getInstance().getSolutionExporter(scenario);
+                solutionExporter.export(currentNode, "error", scenario);
+                throw ex;
+            }
             String egdId = egd.getId();
             String localId = ChaseUtility.generateChaseStepIdForEGDs(egdId, i, repair);
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, currentNode, localId, egd, repair, repair.getChaseModes());

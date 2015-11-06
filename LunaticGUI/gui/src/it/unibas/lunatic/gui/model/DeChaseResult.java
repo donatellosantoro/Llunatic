@@ -1,6 +1,8 @@
 package it.unibas.lunatic.gui.model;
 
 import it.unibas.lunatic.gui.R;
+import java.util.Arrays;
+import java.util.List;
 import speedy.model.database.IDatabase;
 
 public class DeChaseResult implements IChaseResult {
@@ -23,8 +25,8 @@ public class DeChaseResult implements IChaseResult {
     }
 
     @Override
-    public String getWindowName() {
-        return R.Window.DE_CHASE_RESULT;
+    public List<String> getWindowsToOpen() {
+        return Arrays.asList(new String[]{R.Window.DE_CHASE_RESULT});
     }
 
     @Override

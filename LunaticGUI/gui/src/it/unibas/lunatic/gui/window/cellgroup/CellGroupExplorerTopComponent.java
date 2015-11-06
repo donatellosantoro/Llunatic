@@ -23,7 +23,7 @@ import org.openide.util.NbBundle.Messages;
         autostore = false)
 @TopComponent.Description(
         preferredID = R.Window.CELL_GROUP_EXPLORER,
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "navigator", openAtStartup = false)
 @Messages({
     "CellGroups=Cell groups",
@@ -151,7 +151,8 @@ public final class CellGroupExplorerTopComponent extends ExplorerTopComponent {
     public void componentOpened() {
         cellGroupLoader.register(this);
         mySelectionListener.register();
-        windowCloseListener.register(this, R.Window.MC_CHASE_RESULT);
+//        windowCloseListener.register(this, R.Window.MC_CHASE_RESULT);
+//        windowCloseListener.register(this, R.Window.MC_CHASE_RESULT_RANKED_SOLUTIONS);
     }
     
     @Override

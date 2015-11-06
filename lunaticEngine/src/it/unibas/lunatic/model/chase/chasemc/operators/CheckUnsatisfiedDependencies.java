@@ -13,6 +13,7 @@ import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
+import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +23,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.Limit;
 import speedy.model.algebra.operators.ITupleIterator;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
@@ -117,6 +119,25 @@ public class CheckUnsatisfiedDependencies {
     }
 
     public boolean isEGDSatisfiedQuery(Dependency egd, DeltaChaseStep currentNode, IDatabase databaseForStep, Scenario scenario) {
+        if (DependencyUtility.hasSourceSymbols(egd)) {
+            return isEGDWithSourceAtomsSatisfiedQuery(egd, currentNode, databaseForStep, scenario);
+        }
+        return isEGDWithoutSourceAtomsSatisfiedQuery(egd, currentNode, databaseForStep, scenario);
+    }
+
+    private boolean isEGDWithoutSourceAtomsSatisfiedQuery(Dependency egd, DeltaChaseStep currentNode, IDatabase databaseForStep, Scenario scenario) {
+        if (logger.isDebugEnabled()) logger.debug("Checking satisfaction for egd " + egd.getId() + " in node " + currentNode.toShortStringWithSort());
+        IAlgebraOperator violationQuery = treeBuilderForEGD.buildTreeForExtEGDPremise(egd, true, scenario);
+        Limit limit1 = new Limit(1);
+        limit1.addChild(violationQuery);
+        if (logger.isDebugEnabled()) logger.debug("Violation query\n" + limit1);
+        ITupleIterator it = queryRunner.run(limit1, scenario.getSource(), databaseForStep);
+        boolean hasResults = it.hasNext();
+        it.close();
+        return !hasResults;
+    }
+
+    private boolean isEGDWithSourceAtomsSatisfiedQuery(Dependency egd, DeltaChaseStep currentNode, IDatabase databaseForStep, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Checking satisfaction for egd " + egd.getId() + " in node " + currentNode.toShortStringWithSort());
         IAlgebraOperator violationQuery = treeBuilderForEGD.buildTreeForExtEGDPremise(egd, false, scenario);
         if (logger.isDebugEnabled()) logger.debug("Violation query\n" + violationQuery);

@@ -24,9 +24,9 @@ public class CostManagerEditor extends PropertyEditorSupport implements ExProper
     @SuppressWarnings("unchecked")
     public InplaceEditor getInplaceEditor() {
         if (ed == null) {
-            Collection<ICostManager> costManager = costManagerProvider.getAll();
+            Collection<String> costManager = costManagerProvider.getAll();
 //            JComboBox comboBox = new JComboBox<ICostManager>(costManager.toArray(new ICostManager[costManager.size()]));
-            JComboBox comboBox = new JComboBox(costManager.toArray(new ICostManager[costManager.size()]));
+            JComboBox comboBox = new JComboBox(costManager.toArray(new String[costManager.size()]));
             comboBox.setEditable(false);
             ed = new InplaceComboBoxEditor(comboBox);
         }

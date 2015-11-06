@@ -72,7 +72,7 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
         IDatabase result = extractDatabase(stepId, deltaDB, originalDB, attributeMap, distinct);
         if (logger.isDebugEnabled()) logger.debug("Extracted database\n" + result);
         long end = new Date().getTime();
-        ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_STEP_BUILDER, end - start);
+        ChaseStats.getInstance().addStat(ChaseStats.STEP_DB_BUILDER, end - start);
         if (checkOIDsInTables) {
             oidChecker.checkDatabase(result);
         }
@@ -101,7 +101,7 @@ public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep
         IDatabase result = extractDatabase(stepId, deltaDB, originalDB, attributeMap, false);
         if (logger.isDebugEnabled()) logger.debug("Extracted database for dependency\n" + dependency + "\n" + result);
         long end = new Date().getTime();
-        ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_STEP_BUILDER, end - start);
+        ChaseStats.getInstance().addStat(ChaseStats.STEP_DB_BUILDER, end - start);
         if (checkOIDsInTables) {
             oidChecker.checkDatabase(result);
         }

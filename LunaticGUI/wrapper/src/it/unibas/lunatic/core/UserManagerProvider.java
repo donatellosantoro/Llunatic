@@ -34,11 +34,11 @@ public class UserManagerProvider {
     }
 
     public AfterLLUNForkUserManager getAfterLLUNForkUserManager(Scenario scenario) {
-        return new AfterLLUNForkUserManager(operatorFactory.getOccurrenceHandlerMC(scenario));
+        return new AfterLLUNForkUserManager(operatorFactory.getOccurrenceHandler(scenario));
     }
 
     public AfterLLUNUserManager getAfterLLUNUserManager(Scenario scenario) {
-        return new AfterLLUNUserManager(operatorFactory.getOccurrenceHandlerMC(scenario));
+        return new AfterLLUNUserManager(operatorFactory.getOccurrenceHandler(scenario));
     }
 
     public InteractiveUserManager getInteractiveUserManager() {

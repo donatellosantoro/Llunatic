@@ -91,7 +91,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         }
         DBMSVirtualDB virtualDB = new DBMSVirtualDB((DBMSDB) originalDB, ((DBMSDB) deltaDB), "__" + cleanStepId, accessConfiguration);
         long end = new Date().getTime();
-        ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_STEP_BUILDER, end - start);
+        ChaseStats.getInstance().addStat(ChaseStats.STEP_DB_BUILDER, end - start);
         if (checkOIDsInTables) {
             oidChecker.checkDatabase(virtualDB);
         }
@@ -132,7 +132,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         }
         DBMSVirtualDB virtualDB = new DBMSVirtualDB((DBMSDB) originalDB, ((DBMSDB) deltaDB), "_" + dependency.getId() + "_" + cleanStepId, accessConfiguration);
         long end = new Date().getTime();
-        ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_STEP_BUILDER, end - start);
+        ChaseStats.getInstance().addStat(ChaseStats.STEP_DB_BUILDER, end - start);
         if (checkOIDsInTables) {
             oidChecker.checkDatabase(virtualDB);
         }

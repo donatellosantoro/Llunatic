@@ -5,20 +5,30 @@ import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.IChaseResult;
 import it.unibas.lunatic.gui.model.LoadedScenario;
 import it.unibas.lunatic.gui.model.McChaseResult;
-import it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario;
+import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
+import it.unibas.lunatic.model.chase.chasemc.operators.RankSolutions;
+import it.unibas.lunatic.model.chase.commons.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 
 public class InteractiveChase implements IChaseOperator {
 
+    private final RankSolutions solutionRanker = new RankSolutions();
+
     @Override
     public IChaseResult chase(LoadedScenario loadedScenario) {
         assert loadedScenario.getScenario().isMCScenario();
-        McChaseResult prevoiusStep = loadedScenario.get(R.BeanProperty.CHASE_RESULT, McChaseResult.class);
+        ChaseTree chaseTree = loadedScenario.get(R.BeanProperty.CHASE_RESULT, McChaseResult.class).getResult();
         IChaseState chaseState = loadedScenario.get(R.BeanProperty.CHASE_STATE, IChaseState.class);
         Scenario scenario = loadedScenario.getScenario();
-        ChaseMCScenario chaser = scenario.getCostManager().getChaser(scenario);
-        DeltaChaseStep result = chaser.doChase(prevoiusStep.getResult(), scenario, chaseState);
-        return new McChaseResult(loadedScenario, result);
+        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        DeltaChaseStep newRoot = chaser.doChase(chaseTree.getRoot(), scenario, chaseState);
+        chaseTree.setRoot(newRoot);
+        if (ChaseUtility.hasChaseStats(scenario)) {
+            solutionRanker.rankSolutions(chaseTree);
+        }
+        return new McChaseResult(loadedScenario, chaseTree);
     }
 }

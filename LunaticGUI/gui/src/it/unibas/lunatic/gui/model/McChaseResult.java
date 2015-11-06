@@ -2,19 +2,21 @@ package it.unibas.lunatic.gui.model;
 
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseTreeRoot;
-import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
+import java.util.Arrays;
+import java.util.List;
 
 public class McChaseResult implements IChaseResult {
 
     private final LoadedScenario scenario;
-    private final DeltaChaseStep result;
+    private final ChaseTree result;
 
-    public McChaseResult(LoadedScenario scenario, DeltaChaseStep result) {
+    public McChaseResult(LoadedScenario scenario, ChaseTree result) {
         this.scenario = scenario;
         this.result = result;
     }
 
-    public DeltaChaseStep getResult() {
+    public ChaseTree getResult() {
         return result;
     }
 
@@ -24,15 +26,15 @@ public class McChaseResult implements IChaseResult {
     }
 
     @Override
-    public String getWindowName() {
-        return R.Window.MC_CHASE_RESULT;
+    public List<String> getWindowsToOpen() {
+        return Arrays.asList(new String[]{R.Window.MC_CHASE_RESULT, R.Window.MC_CHASE_RESULT_RANKED_SOLUTIONS});
     }
 
     @Override
     public boolean IsDataExchange() {
         return false;
     }
-    
+
     private ChaseTreeRoot treeNode;
 
     public ChaseTreeRoot getNode() {

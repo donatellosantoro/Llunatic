@@ -13,6 +13,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionRegistration;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(
@@ -52,10 +53,11 @@ public final class ActionSaveChaseStep implements ActionListener {
                 daoChaseStep.persist(context.getScenario(), context.getChaseStep(), filename);
                 status.setStatusText(Bundle.MSG_FileSaved());
             }
-        } catch (Exception e) {
-            status.setStatusText(Bundle.MSG_FileNotSaved().concat(e.getMessage()));
-            logger.warn(e);
-            if (logger.isDebugEnabled()) e.printStackTrace();
+        } catch (Exception ex) {
+            status.setStatusText(Bundle.MSG_FileNotSaved().concat(ex.getMessage()));
+            logger.warn(ex);
+            if (logger.isDebugEnabled()) ex.printStackTrace();
+            Exceptions.printStackTrace(ex);
         }
 
     }

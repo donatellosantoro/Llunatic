@@ -33,7 +33,7 @@ public class ChaseStepChildFactory extends ChildFactory<DeltaChaseStep> {
         if (!key.isRoot()) {
             IDatabase db = dbHelper.extractDb(key);
             nodes.add(new DbNode(scenario, db, key, false));
-        }        
+        }
         for (DeltaChaseStep child : key.getChildren()) {
             nodes.add(new ChaseStepNode(child, scenario));
         }

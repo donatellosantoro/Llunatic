@@ -9,7 +9,7 @@ public class FlatChaseTreeRoot extends AbstractNode {
     private McChaseResult result;
 
     public FlatChaseTreeRoot(McChaseResult chaseResult) {
-        super(Children.create(new FlatChaseTreeFactory(chaseResult.getResult(), chaseResult.getLoadedScenario().getScenario()), false));
+        super(Children.create(new FlatChaseTreeFactory(chaseResult.getResult().getRoot(), chaseResult.getLoadedScenario().getScenario()), false));
         this.result = chaseResult;
         setDisplayName(result.getLoadedScenario().getDataObject().getName());
         setIconBaseWithExtension("it/unibas/lunatic/icons/datasource.png");

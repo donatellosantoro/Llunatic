@@ -18,7 +18,7 @@ public class PrintRankedSolutions {
     }
 
     private String printRankedSolutions(ChaseTree chaseTree, boolean longString) {
-        if(!chaseTree.getScenario().getConfiguration().isRemoveDuplicates()){
+        if (!chaseTree.getScenario().getConfiguration().isRemoveDuplicates()) {
             return "*** Ranking not available. Please enable removeDuplicates in configuration *** ";
         }
         StringBuilder sb = new StringBuilder();

@@ -72,7 +72,8 @@ public class EGDEquivalenceClassTuple {
 
     @Override
     public int hashCode() {
-        return 13 * getConclusionGroup().hashCode() + 7 * getBackwardTupleOIDs().hashCode();
+        return 13 * getConclusionTupleOIDs().hashCode() + 7 * getBackwardTupleOIDs().hashCode();
+//        return 13 * getConclusionGroup().hashCode() + 7 * getBackwardTupleOIDs().hashCode();
 //        return toString().hashCode();
     }
 

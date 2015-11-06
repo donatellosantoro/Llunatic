@@ -23,6 +23,9 @@ public class ChaseStepNode extends AbstractNode implements IChaseTreeNode {
     public static final String PROP_SOLUTION_STEP = "solution";
     public static final String PROP_GROUND_SOLUTION_STEP = "groundSolution";
     public static final String PROP_EDITED_BY_USER = "user";
+    public static final String PROP_SCORE = "score";
+    public static final String PROP_CHANGED_CELLS = "changedCells";
+    public static final String PROP_LLUN_CELL_GROUPS = "llunCellGroups";
     private ChaseTreeSupport treeSupport = ChaseTreeSupport.getInstance();
     private DeltaChaseStep chaseStep;
     private WeakReference<StepCellGroups> cellGroups;
@@ -188,4 +191,5 @@ public class ChaseStepNode extends AbstractNode implements IChaseTreeNode {
     public boolean hasBeenEvaluated() {
         return !chaseStep.isLeaf();
     }
+
 }

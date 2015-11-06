@@ -3,15 +3,14 @@ package it.unibas.lunatic.gui.window.cellgroup;
 import it.unibas.lunatic.gui.MultiViewExplorerTopComponent;
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.LoadedScenario;
-import it.unibas.lunatic.gui.node.cellgroup.JustificationRootNode;
-import it.unibas.lunatic.gui.node.cellgroup.JustificationTupleNode;
 import it.unibas.lunatic.gui.node.cellgroup.StepCellGroupNode;
+import it.unibas.lunatic.gui.node.cellgroup.UserCellRootNode;
+import it.unibas.lunatic.gui.node.cellgroup.UserCellTupleNode;
 import it.unibas.lunatic.gui.node.utils.ITableColumnGenerator;
 import it.unibas.lunatic.gui.table.OutlineTableHelper;
 import it.unibas.lunatic.gui.window.ScenarioChangeListener;
 import java.awt.BorderLayout;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -21,21 +20,21 @@ import org.openide.windows.TopComponent;
  * @author Tony
  */
 @TopComponent.Description(
-        preferredID = R.Window.CELL_GROUP_PROVENANCES,
+        preferredID = R.Window.CELL_GROUP_USER_CELLS,
         //iconBase="SET/PATH/TO/ICON/HERE", 
         persistenceType = TopComponent.PERSISTENCE_NEVER)
-@NbBundle.Messages("CTL_Provenances=Provenances")
-public class ProvenancesPanel extends MultiViewExplorerTopComponent implements ScenarioChangeListener.Target {
+@NbBundle.Messages("CTL_UserCells=UserCells")
+public class UserCellsPanel extends MultiViewExplorerTopComponent implements ScenarioChangeListener.Target {
 
     private OutlineTableHelper tableHelper = new OutlineTableHelper();
-    private ITableColumnGenerator columnGenerator = JustificationTupleNode.getColumnGenerator();
+    private ITableColumnGenerator columnGenerator = UserCellTupleNode.getColumnGenerator();
     private final CellGroupDetails details;
 
-    public ProvenancesPanel(CellGroupDetails details) {
+    public UserCellsPanel(CellGroupDetails details) {
         initComponents();
         this.details = details;
-        setName(R.Window.CELL_GROUP_PROVENANCES);
-        setDisplayName(Bundle.CTL_Provenances());
+        setName(R.Window.CELL_GROUP_USER_CELLS);
+        setDisplayName(0);
         outlineView2.getOutline().setRootVisible(false);
         tableHelper.hideNodesColumn(outlineView2);
         columnGenerator.createTableColumns(outlineView2);
@@ -67,8 +66,14 @@ public class ProvenancesPanel extends MultiViewExplorerTopComponent implements S
     @Override
     public void setRootContext(Node node) {
         StepCellGroupNode stepCellGroupNode = (StepCellGroupNode) node;
-        details.setCellGroupValue(stepCellGroupNode.getValue());
-        explorer.setRootContext(new JustificationRootNode(stepCellGroupNode));
+//        setDisplayName(stepCellGroupNode.getCellGroup().getUserCells().size());
+        details.setCellGroupValue(stepCellGroupNode.getCellGroup());
+        explorer.setRootContext(new UserCellRootNode(stepCellGroupNode));
+    }
+
+    private void setDisplayName(int size) {
+//        setDisplayName(Bundle.CTL_UserCells() + " (" + size + ")");
+        setDisplayName(Bundle.CTL_UserCells());
     }
 
     @Override

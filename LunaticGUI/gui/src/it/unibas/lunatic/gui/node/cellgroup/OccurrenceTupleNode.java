@@ -14,6 +14,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Sheet;
 import org.openide.util.NbBundle;
+import speedy.model.database.ConstantValue;
 
 @NbBundle.Messages({
     "COL_OriginalValue=original value",
@@ -55,10 +56,6 @@ public class OccurrenceTupleNode extends AbstractNode {
 
     public CellRef getOccurrence() {
         return cellref;
-    }
-
-    public IValue getOriginalValue() {
-        return originalValue;
     }
 
     public IValue getPreviousValue() {

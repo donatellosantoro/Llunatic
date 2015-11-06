@@ -1,35 +1,31 @@
 package it.unibas.lunatic.gui.node.chase.mc.stack;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import java.util.List;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
-public class FlatChaseTreeFactory extends ChildFactory<DeltaChaseStep> {
+public class RankedSolutionsTreeFactory extends ChildFactory<DeltaChaseStep> {
 
-    private DeltaChaseStep root;
+    private ChaseTree chaseTree;
     private final Scenario scenario;
 
-    public FlatChaseTreeFactory(DeltaChaseStep root, Scenario s) {
-        this.root = root;
+    public RankedSolutionsTreeFactory(ChaseTree chaseTree, Scenario s) {
+        this.chaseTree = chaseTree;
         this.scenario = s;
     }
 
     @Override
     protected boolean createKeys(List<DeltaChaseStep> toPopulate) {
-        createKeys(root, toPopulate);
-        return true;
-    }
-
-    private void createKeys(DeltaChaseStep step, List<DeltaChaseStep> toPopulate) {
-        if (step.isLeaf()) {
-            toPopulate.add(step);
-        } else {
-            for (DeltaChaseStep child : step.getChildren()) {
-                createKeys(child, toPopulate);
-            }
+        if (chaseTree.getRankedSolutions() == null) {
+            return true;
         }
+        for (DeltaChaseStep rankedSolution : chaseTree.getRankedSolutions()) {
+            toPopulate.add(rankedSolution);
+        }
+        return true;
     }
 
     @Override

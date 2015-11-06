@@ -6,6 +6,8 @@ import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,16 +36,21 @@ public class CheckConsistencyOfCellGroups {
     }
 
     public void checkConsistencyOfCellGroups(List<CellGroup> cellGroups) throws ChaseException {
+        long start = new Date().getTime();
         Map<CellRef, CellGroup> cellGroupMap = new HashMap<CellRef, CellGroup>();
         for (CellGroup cellGroup : cellGroups) {
             for (CellGroupCell occurrence : cellGroup.getOccurrences()) {
                 CellRef occurrenceCellRef = new CellRef(occurrence);
                 if (cellGroupMap.containsKey(occurrenceCellRef)) {
-                    throw new ChaseException("Cell " + occurrenceCellRef + " appears multiple times in cell groups: \n\t" + cellGroupMap.get(occurrenceCellRef) + "\n\t" + cellGroup);
+                    String error = "Cell " + occurrenceCellRef + " appears multiple times in cell groups: \n\t" + cellGroupMap.get(occurrenceCellRef) + "\n\t" + cellGroup;
+                    logger.error(error);
+                    throw new ChaseException(error);
                 }
                 cellGroupMap.put(occurrenceCellRef, cellGroup);
             }
         }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.CHECK_CONS_CELL_GROUPS, end - start);
     }
 
     private void initializeOperators(Scenario scenario) {

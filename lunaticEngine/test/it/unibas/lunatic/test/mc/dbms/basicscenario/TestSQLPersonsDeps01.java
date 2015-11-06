@@ -50,6 +50,7 @@ public class TestSQLPersonsDeps01 extends CheckExpectedSolutionsTest {
         checkExpectedSolutions("expected-" + scenarioName, result);
     }
 //
+
     public void test01NonSymmetric() throws Exception { //FD Single column
         String scenarioName = "persons-deps-01";
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_deps_01_dbms, true);

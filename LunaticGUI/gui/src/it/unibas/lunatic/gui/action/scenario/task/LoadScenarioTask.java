@@ -20,6 +20,7 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -51,10 +52,11 @@ public class LoadScenarioTask extends SwingWorker<LoadedScenario, Object> {
                 loadedScenario.put(R.BeanProperty.PARTIAL_ORDER_SCRIPT, partialOrderScript);
             }
             return loadedScenario;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            logger.trace(e);
-            status.setStatusText(Bundle.MSG_LoadError().concat(e.getLocalizedMessage()));
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+            logger.trace(ex);
+            status.setStatusText(Bundle.MSG_LoadError().concat(ex.getLocalizedMessage()));
+            Exceptions.printStackTrace(ex);
         }
         return null;
     }
@@ -83,7 +85,7 @@ public class LoadScenarioTask extends SwingWorker<LoadedScenario, Object> {
 
     public void enableScenarioChangeListener(LoadedScenario ls) {
         ScenarioFileChangeListener scenarioChangeListener = new ScenarioFileChangeListener(ls.getDataObject());
-        ls.getDataObject().getPrimaryFile().addFileChangeListener(FileUtil.weakFileChangeListener(scenarioChangeListener,ls.getDataObject()));
+        ls.getDataObject().getPrimaryFile().addFileChangeListener(FileUtil.weakFileChangeListener(scenarioChangeListener, ls.getDataObject()));
         ls.setScenarioChangeListener(scenarioChangeListener);
     }
 

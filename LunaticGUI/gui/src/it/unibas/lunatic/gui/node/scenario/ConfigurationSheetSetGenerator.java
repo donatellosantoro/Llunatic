@@ -6,7 +6,6 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.gui.model.LoadedScenario;
 import it.unibas.lunatic.gui.node.scenario.editor.CostManagerEditor;
 import it.unibas.lunatic.gui.node.utils.StringProperty;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.IUserManager;
 import java.beans.PropertyEditor;
@@ -23,16 +22,16 @@ import org.openide.util.NbBundle;
     "PROP_userManager=User manager",
     "PROP_dependencies=N. of dependencies",
     "PROP_removeDuplicates=Remove duplicates",
-    "PROP_iterationLimit=Iteration limit",
     "PROP_noLimit=none",
-    "PROP_debugMode=Debug mode",
     "PROP_checkGroundSolutions=Check ground solutions",
     "PROP_checkSolutions=Check solutions",
     "PROP_checkSolutionsQuery=Check solutions query",
     "PROP_removeSuspiciousSolutions=Remove suspicious solutions",
     "PROP_checkAllNodesForEGDSatisfaction=Check all nodes for EGD satisfaction",
-    "PROP_useCellGroupsForTGDs=Use cell groups for TGDs",
-    "PROP_useLimit=Use limit"
+    "PROP_useCellGroupsForTGDs=Use cell groups for TGDs"
+//    "PROP_iterationLimit=Iteration limit",
+//    "PROP_debugMode=Debug mode",
+//    "PROP_useLimit=Use limit"
 })
 public class ConfigurationSheetSetGenerator {
 
@@ -50,20 +49,20 @@ public class ConfigurationSheetSetGenerator {
                 return partialOrder.getClass().getSimpleName();
             }
         });
-        set.put(new PropertySupport.ReadWrite<ICostManager>(ScenarioNode.COST_MANAGER, ICostManager.class, Bundle.PROP_costManager(), Bundle.PROP_costManager()) {
+        set.put(new PropertySupport.ReadWrite<String>(ScenarioNode.COST_MANAGER, String.class, Bundle.PROP_costManager(), Bundle.PROP_costManager()) {
             @Override
             public PropertyEditor getPropertyEditor() {
                 return new CostManagerEditor();
             }
 
             @Override
-            public ICostManager getValue() throws IllegalAccessException, InvocationTargetException {
-                return scenario.getCostManager();
+            public String getValue() throws IllegalAccessException, InvocationTargetException {
+                return scenario.getCostManagerConfiguration().getType();
             }
 
             @Override
-            public void setValue(ICostManager val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                scenario.setCostManager(val);
+            public void setValue(String val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+                scenario.getCostManagerConfiguration().setType(val);
                 scenarioNode.updateCostManagerSet();
             }
         });
@@ -91,15 +90,15 @@ public class ConfigurationSheetSetGenerator {
             }
         });
         final LunaticConfiguration config = loadedScenario.getScenario().getConfiguration();
-        set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.DEBUG_MODE, Boolean.class, Bundle.PROP_debugMode(), Bundle.PROP_debugMode()) {
+        set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.REMOVE_DUPLICATES, Boolean.class, Bundle.PROP_removeDuplicates(), Bundle.PROP_removeDuplicates()) {
             @Override
             public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
-                return config.isDebugMode();
+                return config.isRemoveDuplicates();
             }
 
             @Override
             public void setValue(Boolean val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                config.setDebugMode(val);
+                config.setRemoveDuplicates(val);
             }
         });
         set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.CHECK_GROUND_SOLUTIONS, Boolean.class, Bundle.PROP_checkGroundSolutions(), Bundle.PROP_checkGroundSolutions()) {
@@ -135,17 +134,6 @@ public class ConfigurationSheetSetGenerator {
                 config.setCheckSolutionsQuery(val);
             }
         });
-        set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.REMOVE_SUSPICIOUS_SOLUTIONS, Boolean.class, Bundle.PROP_removeSuspiciousSolutions(), Bundle.PROP_removeSuspiciousSolutions()) {
-            @Override
-            public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
-                return config.isRemoveSuspiciousSolutions();
-            }
-
-            @Override
-            public void setValue(Boolean val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                config.setRemoveSuspiciousSolutions(val);
-            }
-        });
         set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.CHECK_ALL_NODES_FOR_EGD_SATISFACTION, Boolean.class, Bundle.PROP_checkAllNodesForEGDSatisfaction(), Bundle.PROP_checkAllNodesForEGDSatisfaction()) {
             @Override
             public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
@@ -157,42 +145,42 @@ public class ConfigurationSheetSetGenerator {
                 config.setCheckAllNodesForEGDSatisfaction(val);
             }
         });
-        set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.REMOVE_DUPLICATES, Boolean.class, Bundle.PROP_removeDuplicates(), Bundle.PROP_removeDuplicates()) {
-            @Override
-            public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
-                return config.isRemoveDuplicates();
-            }
-
-            @Override
-            public void setValue(Boolean val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                config.setRemoveDuplicates(val);
-            }
-        });
-        set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.USE_LIMIT, Boolean.class, Bundle.PROP_useLimit(), Bundle.PROP_useLimit()) {
-            @Override
-            public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
-                return config.isUseLimit1ForEGDs();
-            }
-
-            @Override
-            public void setValue(Boolean val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                config.setUseLimit1ForEGDs(val);
-            }
-        });
-        set.put(new PropertySupport.ReadWrite<Integer>(ScenarioNode.ITERATION_LIMIT, Integer.class, Bundle.PROP_iterationLimit(), Bundle.PROP_iterationLimit()) {
-            @Override
-            public Integer getValue() throws IllegalAccessException, InvocationTargetException {
-                if (config.getIterationLimit() == null) {
-                    return -1;
-                }
-                return config.getIterationLimit();
-            }
-
-            @Override
-            public void setValue(Integer val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                config.setIterationLimit(val);
-            }
-        });
+//        set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.DEBUG_MODE, Boolean.class, Bundle.PROP_debugMode(), Bundle.PROP_debugMode()) {
+//            @Override
+//            public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
+//                return config.isDebugMode();
+//            }
+//
+//            @Override
+//            public void setValue(Boolean val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+//                config.setDebugMode(val);
+//            }
+//        });
+//        set.put(new PropertySupport.ReadWrite<Boolean>(ScenarioNode.USE_LIMIT, Boolean.class, Bundle.PROP_useLimit(), Bundle.PROP_useLimit()) {
+//            @Override
+//            public Boolean getValue() throws IllegalAccessException, InvocationTargetException {
+//                return config.isUseLimit1ForEGDs();
+//            }
+//
+//            @Override
+//            public void setValue(Boolean val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+//                config.setUseLimit1ForEGDs(val);
+//            }
+//        });
+//        set.put(new PropertySupport.ReadWrite<Integer>(ScenarioNode.ITERATION_LIMIT, Integer.class, Bundle.PROP_iterationLimit(), Bundle.PROP_iterationLimit()) {
+//            @Override
+//            public Integer getValue() throws IllegalAccessException, InvocationTargetException {
+//                if (config.getIterationLimit() == null) {
+//                    return -1;
+//                }
+//                return config.getIterationLimit();
+//            }
+//
+//            @Override
+//            public void setValue(Integer val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+//                config.setIterationLimit(val);
+//            }
+//        });
         return set;
     }
 }

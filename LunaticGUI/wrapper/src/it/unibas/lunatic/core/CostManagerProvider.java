@@ -1,8 +1,6 @@
 package it.unibas.lunatic.core;
 
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.SimilarityToMostFrequentCostManager;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager;
+import it.unibas.lunatic.LunaticConstants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,18 +16,12 @@ public class CostManagerProvider {
         return instance;
     }
 
-    public SimilarityToMostFrequentCostManager getSimilarityToMostFrequentCostManager() {
-        return new SimilarityToMostFrequentCostManager();
-    }
-
-    public StandardCostManager getStandardCostManager() {
-        return new StandardCostManager();
-    }
-
-    public Collection<ICostManager> getAll() {
-        List<ICostManager> list = new ArrayList<ICostManager>();
-        list.add(getStandardCostManager());
-        list.add(getSimilarityToMostFrequentCostManager());
+    public Collection<String> getAll() {
+        List<String> list = new ArrayList<String>();
+        list.add(LunaticConstants.COST_MANAGER_STANDARD);
+        list.add(LunaticConstants.COST_MANAGER_SIMILARITY);
+        list.add(LunaticConstants.COST_MANAGER_SAMPLING);
+        list.add(LunaticConstants.COST_MANAGER_GREEDY);
         return list;
     }
 }

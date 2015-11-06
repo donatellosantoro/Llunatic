@@ -3,11 +3,15 @@ package it.unibas.lunatic.gui.window.cellgroup;
 import it.unibas.lunatic.gui.MultiViewExplorerTopComponent;
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.LoadedScenario;
-import it.unibas.lunatic.gui.node.cellgroup.AdditionalCellsRootNode;
+import it.unibas.lunatic.gui.node.cellgroup.JustificationRootNode;
+import it.unibas.lunatic.gui.node.cellgroup.JustificationTupleNode;
 import it.unibas.lunatic.gui.node.cellgroup.StepCellGroupNode;
+import it.unibas.lunatic.gui.node.utils.ITableColumnGenerator;
+import it.unibas.lunatic.gui.table.OutlineTableHelper;
 import it.unibas.lunatic.gui.window.ScenarioChangeListener;
 import java.awt.BorderLayout;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -17,25 +21,29 @@ import org.openide.windows.TopComponent;
  * @author Tony
  */
 @TopComponent.Description(
-        preferredID = R.Window.CELL_GROUP_ADDITIONAL_CELLS,
+        preferredID = R.Window.CELL_GROUP_PROVENANCES,
         //iconBase="SET/PATH/TO/ICON/HERE", 
         persistenceType = TopComponent.PERSISTENCE_NEVER)
-@NbBundle.Messages("CTL_AdditionalCells=Additional cells")
-public class AdditionalCellsPanel extends MultiViewExplorerTopComponent implements ScenarioChangeListener.Target {
+@NbBundle.Messages("CTL_Provenances=Justifications")
+public class JustificationsPanel extends MultiViewExplorerTopComponent implements ScenarioChangeListener.Target {
 
-    private CellGroupDetails details;
+    private OutlineTableHelper tableHelper = new OutlineTableHelper();
+    private ITableColumnGenerator columnGenerator = JustificationTupleNode.getColumnGenerator();
+    private final CellGroupDetails details;
 
-    public AdditionalCellsPanel(CellGroupDetails details) {
+    public JustificationsPanel(CellGroupDetails details) {
         initComponents();
-        setName(R.Window.CELL_GROUP_ADDITIONAL_CELLS);
-        setDisplayName(0);
-        view.setRootVisible(false);
-        associateExplorerLookup();
         this.details = details;
+        setName(R.Window.CELL_GROUP_PROVENANCES);
+        setDisplayName(0);
+        outlineView2.getOutline().setRootVisible(false);
+        tableHelper.hideNodesColumn(outlineView2);
+        columnGenerator.createTableColumns(outlineView2);
+        outlineView2.getOutline().setFullyNonEditable(true);
+        associateExplorerLookup();
         add(details, BorderLayout.PAGE_START);
         listener.register(this);
     }
-
     private CellGroupSelectionListener listener = new CellGroupSelectionListener();
 
     /**
@@ -47,26 +55,26 @@ public class AdditionalCellsPanel extends MultiViewExplorerTopComponent implemen
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        view = new org.openide.explorer.view.BeanTreeView();
+        outlineView2 = new org.openide.explorer.view.OutlineView();
 
         setLayout(new java.awt.BorderLayout());
-        add(view, java.awt.BorderLayout.CENTER);
+        add(outlineView2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.openide.explorer.view.BeanTreeView view;
+    private org.openide.explorer.view.OutlineView outlineView2;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void setRootContext(Node node) {
         StepCellGroupNode stepCellGroupNode = (StepCellGroupNode) node;
-//        setDisplayName(stepCellGroupNode.getCellGroup().getAdditionalCells().size());
+//        setDisplayName(stepCellGroupNode.getCellGroup().getJustifications().size());
         details.setCellGroupValue(stepCellGroupNode.getCellGroup());
-        explorer.setRootContext(new AdditionalCellsRootNode(stepCellGroupNode));
+        explorer.setRootContext(new JustificationRootNode(stepCellGroupNode));
     }
 
     private void setDisplayName(int size) {
-//        setDisplayName(Bundle.CTL_AdditionalCells() + " (" + size + ")");
-        setDisplayName(Bundle.CTL_AdditionalCells());
+//        setDisplayName(Bundle.CTL_Provenances() + " (" + size + ")");
+        setDisplayName(Bundle.CTL_Provenances());
     }
 
     @Override
@@ -90,7 +98,6 @@ public class AdditionalCellsPanel extends MultiViewExplorerTopComponent implemen
         String version = p.getProperty("version");
         // TODO read your settings according to their version
     }
-
     private ScenarioChangeListener scenarioChangeListener = new ScenarioChangeListener();
 
     @Override

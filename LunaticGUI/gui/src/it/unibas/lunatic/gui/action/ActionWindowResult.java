@@ -39,7 +39,10 @@ public final class ActionWindowResult extends ContextAwareActionProxy<IChaseResu
     public void actionPerformed(ActionEvent e) {
         IChaseResult cs = getBean();
         assert cs != null : "Chase result not found in app map";
-        view.show(cs.getWindowName());
+        for (String windowName : cs.getWindowsToOpen()) {
+            view.show(windowName);
+        }
+        view.show(cs.getWindowsToOpen().get(0));
     }
 
     @Override

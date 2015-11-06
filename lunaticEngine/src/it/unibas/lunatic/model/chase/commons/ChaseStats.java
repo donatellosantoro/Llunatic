@@ -28,7 +28,7 @@ public class ChaseStats {
     public static final String STTGD_TIME = "ST-TGD Time";
     public static final String DTGD_TIME = "Denial TGD Time";
     public static final String DELTA_DB_BUILDER = "Building Delta DB";
-    public static final String DELTA_DB_STEP_BUILDER = "Building Delta DB for Chase Step";
+    public static final String STEP_DB_BUILDER = "Building DB for Chase Step";
     public static final String REMOVE_DUPLICATE_TIME = "Removing Duplicate Time";
     public static final String DUPLICATE_TIME = "Finding Duplicate Time";
     public static final String COMPUTE_SIMILARITY_TIME = "Compute Similarity Time";
@@ -85,9 +85,6 @@ public class ChaseStats {
     }
 
     public void addStat(String statName, long newTime) {
-//        if (!logger.isDebugEnabled()) {
-//            return;
-//        }
         long previousTime = 0;
         if (stats.containsKey(statName)) {
             previousTime = stats.get(statName);
@@ -145,7 +142,7 @@ public class ChaseStats {
         appendStat(TGD_TIME, "ms", sb, printedStats);
         appendStat(DTGD_TIME, "ms", sb, printedStats);
         appendStat(DELTA_DB_BUILDER, "ms", sb, printedStats);
-        appendStat(DELTA_DB_STEP_BUILDER, "ms", sb, printedStats);
+        appendStat(STEP_DB_BUILDER, "ms", sb, printedStats);
         appendStat(CACHE_LOAD_TIME, "ms", sb, printedStats);
         appendStat(CELL_GROUP_CONSISTENCY_CHECK_TIME, "ms", sb, printedStats);
         appendStat(DUPLICATE_TIME, "ms", sb, printedStats);
