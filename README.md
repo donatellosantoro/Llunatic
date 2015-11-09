@@ -1,4 +1,4 @@
-![image](http://www.db.unibas.it/projects/llunatic/images/background_center.png)
+-> ![image](http://www.db.unibas.it/projects/llunatic/images/background_center.png) <-
 
 Llunatic
 ========
