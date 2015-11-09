@@ -1,4 +1,6 @@
--> ![image](http://www.db.unibas.it/projects/llunatic/images/background_center.png) <-
+<p align="center">
+  <img src="http://www.db.unibas.it/projects/llunatic/images/background_center.png"/>
+</p>
 
 Llunatic
 ========
