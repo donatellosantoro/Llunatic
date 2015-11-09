@@ -10,6 +10,7 @@ public interface IModel {
 
     boolean remove(String s, Object o);
 
+    @SuppressWarnings("rawtypes")
     public void notifyChange(String key, Class beanClass);
 
     String getName();

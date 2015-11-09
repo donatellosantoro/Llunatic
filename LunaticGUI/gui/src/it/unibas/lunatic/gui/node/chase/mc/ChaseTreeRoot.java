@@ -24,7 +24,7 @@ public class ChaseTreeRoot extends AbstractNode {
         "PROP_Invalid=Invalids"
     })
     public ChaseTreeRoot(McChaseResult chaseResult) {
-        super(Children.create(new ChaseStepChildFactory(chaseResult.getResult().getRoot(), chaseResult.getLoadedScenario().getScenario()), false));
+        super(Children.create(new ChaseStepChildFactory(null, chaseResult.getResult().getRoot(), chaseResult.getLoadedScenario().getScenario()), false));
         this.result = chaseResult;
         setDisplayName("Chase tree (" + result.getLoadedScenario().getDataObject().getName() + ")");
         setIconBaseWithExtension("it/unibas/lunatic/icons/chase_tree.png");

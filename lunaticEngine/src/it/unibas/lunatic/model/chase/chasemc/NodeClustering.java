@@ -11,7 +11,7 @@ public class NodeClustering {
     private Map<CellGroupStats, List<DeltaChaseStep>> stepMap = new HashMap<CellGroupStats, List<DeltaChaseStep>>();
 
     public void addChaseStep(DeltaChaseStep step) {
-        if (step.getCellGroupStats() == null) {
+        if (step.getCellGroupStats() == null || step.isUserNode()) {
             return;
         }
         List<DeltaChaseStep> cluster = this.stepMap.get(step.getCellGroupStats());

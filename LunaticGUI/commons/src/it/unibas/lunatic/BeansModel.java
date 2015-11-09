@@ -34,6 +34,7 @@ public abstract class BeansModel implements IModel {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void notifyChange(String key, Class beanClass) {
         impl.notifyChange(key, beanClass);
     }

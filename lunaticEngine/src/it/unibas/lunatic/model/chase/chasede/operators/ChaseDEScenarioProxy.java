@@ -48,6 +48,8 @@ public class ChaseDEScenarioProxy implements IDEChaser {
         IBuildDatabaseForChaseStep databaseBuilder = OperatorFactory.getInstance().getDatabaseBuilder(scenario);
         IDatabase result = databaseBuilder.extractDatabaseWithDistinct(solution.getId(), solution.getDeltaDB(), solution.getOriginalDB(), scenario);
         if (logger.isDebugEnabled()) logger.debug("----Result of chase: " + result);
+        scenario.setExtEGDs(new ArrayList<Dependency>());
+        scenario.setEGDs(egds);
         return result;
     }
 

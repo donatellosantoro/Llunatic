@@ -153,21 +153,35 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
         IAlgebraOperator query = CellGroupTableUtility.buildQueryToExtractCellGroupCellsForStep(stepId);
         if (logger.isDebugEnabled()) logger.debug("QueryToExtractCellGroupIds:\n " + query);
 //        if (isDebug(stepId)) logger.warn(new AlgebraTreeToSQL().treeToSQL(query, null, deltaDB, ""));
+        List<CellGroupCell> temporaryCellBuffer = new ArrayList<CellGroupCell>();
         ITupleIterator it = queryRunner.run(query, null, deltaDB);
         while (it.hasNext()) {
             Tuple tuple = it.next();
             CellGroupCell cellGroupCell = buildCellGroupCell(tuple, scenario);
             IValue cellGroupId = cellGroupCell.getLastSavedCellGroupId();
             CellGroup cellGroup = loadCellGroupFromId(cellGroupId, stepId, deltaDB, scenario);
-            if (cellGroup == null) { //No cached version
+            if (cellGroup == null && cellGroupCell.getType().equals(LunaticConstants.TYPE_OCCURRENCE)) { //No cached version
                 cellGroup = new CellGroup(cellGroupId, false);
                 putCellGroup(cellGroup, stepId, deltaDB, scenario);
             }
-            addCellGroupCellIntoCellGroup(cellGroupCell, cellGroup);
+            if (cellGroup != null) {
+                addCellGroupCellIntoCellGroup(cellGroupCell, cellGroup);
+                if (logger.isDebugEnabled()) logger.debug("Added cellgroup cell " + cellGroupCell + " into cg:\n" + cellGroup.toLongString());
+            } else {
+                //We cannot initialize cellGroups based on Justifications, Invalids or User Cells because they do not need to belong to a single cell group
+                temporaryCellBuffer.add(cellGroupCell);
+            }
             if (cellGroupCell.getType().equals(LunaticConstants.TYPE_OCCURRENCE) && cellGroupId instanceof ConstantValue) {
                 putClusterId(new CellRef(cellGroupCell), cellGroupId, stepId, deltaDB, scenario);
             }
-            if (logger.isDebugEnabled()) logger.debug("Added cellgroup cell " + cellGroupCell + " into cg:\n" + cellGroup.toLongString());
+        }
+        for (CellGroupCell cellGroupCell : temporaryCellBuffer) {
+            IValue cellGroupId = cellGroupCell.getLastSavedCellGroupId();
+            CellGroup cellGroup = loadCellGroupFromId(cellGroupId, stepId, deltaDB, scenario);
+            if (cellGroup == null) {
+                continue;
+            }
+            addCellGroupCellIntoCellGroup(cellGroupCell, cellGroup);
         }
         it.close();
 //        if (isDebug(stepId)) throw new IllegalArgumentException();

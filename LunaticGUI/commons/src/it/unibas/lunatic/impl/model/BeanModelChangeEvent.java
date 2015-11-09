@@ -3,6 +3,7 @@ package it.unibas.lunatic.impl.model;
 import it.unibas.lunatic.IModel;
 import java.util.EventObject;
 
+@SuppressWarnings("rawtypes")
 public class BeanModelChangeEvent extends EventObject {
 
     private final String beanName;

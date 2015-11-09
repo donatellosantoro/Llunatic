@@ -4,6 +4,7 @@ import it.unibas.lunatic.IApplication;
 import it.unibas.lunatic.impl.EventBusApplication;
 import java.util.EventObject;
 
+@SuppressWarnings("rawtypes")
 public class AppModelChangeEvent extends EventObject {
 
     private final String beanName;

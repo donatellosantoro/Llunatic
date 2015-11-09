@@ -1,7 +1,6 @@
 package it.unibas.lunatic.gui.action.scenario;
 
 import it.unibas.lunatic.ContextAwareActionProxy;
-import it.unibas.lunatic.IApplication;
 import it.unibas.lunatic.IModel;
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.LoadedScenario;
@@ -10,7 +9,6 @@ import javax.swing.Action;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(

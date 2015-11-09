@@ -31,6 +31,8 @@
                 <package>it.unibas.lunatic.model.chase.chaseded.mainmemory</package>
                 <package>it.unibas.lunatic.model.chase.chasemc</package>
                 <package>it.unibas.lunatic.model.chase.chasemc.costmanager</package>
+                <package>it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric</package>
+                <package>it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric</package>
                 <package>it.unibas.lunatic.model.chase.chasemc.operators</package>
                 <package>it.unibas.lunatic.model.chase.chasemc.operators.cache</package>
                 <package>it.unibas.lunatic.model.chase.chasemc.operators.dbms</package>
@@ -54,6 +56,67 @@
                 <package>it.unibas.lunatic.utility</package>
                 <package>it.unibas.lunatic.utility.combinatorial</package>
                 <package>it.unibas.lunatic.utility.graph</package>
+                <package>org.apache.commons.jcs</package>
+                <package>org.apache.commons.jcs.access</package>
+                <package>org.apache.commons.jcs.access.behavior</package>
+                <package>org.apache.commons.jcs.access.exception</package>
+                <package>org.apache.commons.jcs.admin</package>
+                <package>org.apache.commons.jcs.admin.servlet</package>
+                <package>org.apache.commons.jcs.auxiliary</package>
+                <package>org.apache.commons.jcs.auxiliary.disk</package>
+                <package>org.apache.commons.jcs.auxiliary.disk.behavior</package>
+                <package>org.apache.commons.jcs.auxiliary.disk.block</package>
+                <package>org.apache.commons.jcs.auxiliary.disk.indexed</package>
+                <package>org.apache.commons.jcs.auxiliary.disk.jdbc</package>
+                <package>org.apache.commons.jcs.auxiliary.disk.jdbc.hsql</package>
+                <package>org.apache.commons.jcs.auxiliary.disk.jdbc.mysql</package>
+                <package>org.apache.commons.jcs.auxiliary.disk.jdbc.mysql.util</package>
+                <package>org.apache.commons.jcs.auxiliary.lateral</package>
+                <package>org.apache.commons.jcs.auxiliary.lateral.behavior</package>
+                <package>org.apache.commons.jcs.auxiliary.lateral.socket.tcp</package>
+                <package>org.apache.commons.jcs.auxiliary.lateral.socket.tcp.behavior</package>
+                <package>org.apache.commons.jcs.auxiliary.remote</package>
+                <package>org.apache.commons.jcs.auxiliary.remote.behavior</package>
+                <package>org.apache.commons.jcs.auxiliary.remote.http.behavior</package>
+                <package>org.apache.commons.jcs.auxiliary.remote.http.client</package>
+                <package>org.apache.commons.jcs.auxiliary.remote.http.client.behavior</package>
+                <package>org.apache.commons.jcs.auxiliary.remote.http.server</package>
+                <package>org.apache.commons.jcs.auxiliary.remote.server</package>
+                <package>org.apache.commons.jcs.auxiliary.remote.server.behavior</package>
+                <package>org.apache.commons.jcs.auxiliary.remote.util</package>
+                <package>org.apache.commons.jcs.auxiliary.remote.value</package>
+                <package>org.apache.commons.jcs.engine</package>
+                <package>org.apache.commons.jcs.engine.behavior</package>
+                <package>org.apache.commons.jcs.engine.control</package>
+                <package>org.apache.commons.jcs.engine.control.event</package>
+                <package>org.apache.commons.jcs.engine.control.event.behavior</package>
+                <package>org.apache.commons.jcs.engine.control.group</package>
+                <package>org.apache.commons.jcs.engine.logging</package>
+                <package>org.apache.commons.jcs.engine.logging.behavior</package>
+                <package>org.apache.commons.jcs.engine.match</package>
+                <package>org.apache.commons.jcs.engine.match.behavior</package>
+                <package>org.apache.commons.jcs.engine.memory</package>
+                <package>org.apache.commons.jcs.engine.memory.behavior</package>
+                <package>org.apache.commons.jcs.engine.memory.fifo</package>
+                <package>org.apache.commons.jcs.engine.memory.lru</package>
+                <package>org.apache.commons.jcs.engine.memory.mru</package>
+                <package>org.apache.commons.jcs.engine.memory.shrinking</package>
+                <package>org.apache.commons.jcs.engine.memory.util</package>
+                <package>org.apache.commons.jcs.engine.stats</package>
+                <package>org.apache.commons.jcs.engine.stats.behavior</package>
+                <package>org.apache.commons.jcs.io</package>
+                <package>org.apache.commons.jcs.utils.access</package>
+                <package>org.apache.commons.jcs.utils.config</package>
+                <package>org.apache.commons.jcs.utils.discovery</package>
+                <package>org.apache.commons.jcs.utils.discovery.behavior</package>
+                <package>org.apache.commons.jcs.utils.net</package>
+                <package>org.apache.commons.jcs.utils.props</package>
+                <package>org.apache.commons.jcs.utils.serialization</package>
+                <package>org.apache.commons.jcs.utils.servlet</package>
+                <package>org.apache.commons.jcs.utils.struct</package>
+                <package>org.apache.commons.jcs.utils.threadpool</package>
+                <package>org.apache.commons.jcs.utils.timing</package>
+                <package>org.apache.commons.jcs.utils.zip</package>
                 <package>speedy</package>
                 <package>speedy.exceptions</package>
                 <package>speedy.model.algebra</package>
@@ -94,7 +157,7 @@
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/spicyEngine-1.0.jar</runtime-relative-path>
-                <binary-origin>/Users/donatello/Projects/Llunatic/LunaticGUI/wrapper/release/modules/ext/spicyEngine-1.0.jar</binary-origin>
+                <binary-origin>release/modules/ext/spicyEngine-1.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/logback-core-1.1.2.jar</runtime-relative-path>
@@ -114,7 +177,7 @@
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-csv-1.1.jar</runtime-relative-path>
-                <binary-origin>/Users/donatello/Projects/Llunatic/LunaticGUI/wrapper/release/modules/ext/commons-csv-1.1.jar</binary-origin>
+                <binary-origin>release/modules/ext/commons-csv-1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/mchange-commons-java-0.2.3.4.jar</runtime-relative-path>
@@ -122,7 +185,7 @@
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/mybatis-3.1.1.jar</runtime-relative-path>
-                <binary-origin>/Users/donatello/Projects/Llunatic/LunaticGUI/wrapper/release/modules/ext/mybatis-3.1.1.jar</binary-origin>
+                <binary-origin>release/modules/ext/mybatis-3.1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jgrapht-jdk1.6.jar</runtime-relative-path>
@@ -138,7 +201,7 @@
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-logging-1.1.jar</runtime-relative-path>
-                <binary-origin>/Users/donatello/Projects/Llunatic/LunaticGUI/wrapper/release/modules/ext/commons-logging-1.1.jar</binary-origin>
+                <binary-origin>release/modules/ext/commons-logging-1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/simmetrics-1.6.2.jar</runtime-relative-path>
@@ -146,7 +209,7 @@
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-lang-2.6.jar</runtime-relative-path>
-                <binary-origin>/Users/donatello/Projects/Llunatic/LunaticGUI/wrapper/release/modules/ext/commons-lang-2.6.jar</binary-origin>
+                <binary-origin>release/modules/ext/commons-lang-2.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/antlr-3.1.1-runtime.jar</runtime-relative-path>
@@ -166,7 +229,7 @@
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/spicyBenchmark-0.1.jar</runtime-relative-path>
-                <binary-origin>/Users/donatello/Projects/Llunatic/LunaticGUI/wrapper/release/modules/ext/spicyBenchmark-0.1.jar</binary-origin>
+                <binary-origin>release/modules/ext/spicyBenchmark-0.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jep-2.4.1.jar</runtime-relative-path>
@@ -185,8 +248,8 @@
                 <binary-origin>release/modules/ext/jgraph.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jcs-1.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jcs-1.3.jar</binary-origin>
+                <runtime-relative-path>ext/commons-jcs-core-2.0-beta-1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-jcs-core-2.0-beta-1.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

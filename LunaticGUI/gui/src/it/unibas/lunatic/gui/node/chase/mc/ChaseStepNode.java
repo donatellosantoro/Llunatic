@@ -35,7 +35,8 @@ public class ChaseStepNode extends AbstractNode implements IChaseTreeNode {
     private StepDepRootNode stepDependenciesNode;
 
     public ChaseStepNode(DeltaChaseStep key, Scenario scenario) {
-        this(key, scenario, Children.create(new ChaseStepChildFactory(key, scenario), false));
+        this(key, scenario, Children.LEAF);
+        this.setChildren(Children.create(new ChaseStepChildFactory(this, key, scenario), false));
     }
 
     protected ChaseStepNode(DeltaChaseStep key, Scenario scenario, Children children) {

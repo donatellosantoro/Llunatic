@@ -35,6 +35,7 @@ public class ObservableModel extends Observable implements IModelImpl {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void notifyChange(String key, Class beanClass) {
         model.notifyChange(key, beanClass);
     }
@@ -56,6 +57,7 @@ public class ObservableModel extends Observable implements IModelImpl {
         }
 
         @Override
+        @SuppressWarnings("rawtypes")
         public void notifyChange(String key, Class type) {
             setChanged();
             notifyObservers(key);

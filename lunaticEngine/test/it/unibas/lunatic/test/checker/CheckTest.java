@@ -10,7 +10,7 @@ import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguratio
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfCellGroups;
 import it.unibas.lunatic.model.chase.chasemc.operators.PrintRankedSolutions;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
-import it.unibas.lunatic.test.GenerateModifiedCells;
+import it.unibas.lunatic.persistence.relational.GenerateModifiedCells;
 import it.unibas.lunatic.test.comparator.repairs.PrecisionAndRecall;
 import java.util.List;
 import junit.framework.Assert;
@@ -33,7 +33,7 @@ public class CheckTest extends TestCase {
     protected CheckConsistencyOfCellGroups validSolutionChecker = new CheckConsistencyOfCellGroups();
 
     protected GenerateModifiedCells getModifiedCellGenerator(Scenario scenario) {
-        return new GenerateModifiedCells(OperatorFactory.getInstance().getQueryRunner(scenario));
+        return new GenerateModifiedCells(OperatorFactory.getInstance().getOccurrenceHandler(scenario));
     }
 
     @Override

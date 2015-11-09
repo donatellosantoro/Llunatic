@@ -12,13 +12,15 @@ import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 public class AddUserNode {
 
     private IChangeCell cellChanger;
+    private IOccurrenceHandler occurrenceHandler;
 
-    public AddUserNode(IChangeCell cellChanger) {
+    public AddUserNode(IChangeCell cellChanger, IOccurrenceHandler occurrenceHandler) {
         this.cellChanger = cellChanger;
+        this.occurrenceHandler = occurrenceHandler;
     }
 
     public DeltaChaseStep addUserNode(DeltaChaseStep father, Scenario scenario) {
-        DeltaChaseStep newStep = new DeltaChaseStep(scenario, father, LunaticConstants.CHASE_USER, LunaticConstants.CHASE_USER);
+        DeltaChaseStep newStep = new DeltaChaseStep(scenario, father, LunaticConstants.CHASE_EDIT_USER, LunaticConstants.CHASE_EDIT_USER);
         newStep.setEditedByUser(true);
         father.addChild(newStep);
         return newStep;
@@ -36,6 +38,9 @@ public class AddUserNode {
         ChangeDescription changeSet = new ChangeDescription(newCellGroup, LunaticConstants.CHASE_USER);
         cellChanger.changeCells(changeSet.getCellGroup(), userNode.getDeltaDB(), userNode.getId(), scenario);
         cellChanger.flush(userNode.getDeltaDB());
+        if (scenario.getConfiguration().isRemoveDuplicates()) {
+            this.occurrenceHandler.generateCellGroupStats(userNode);
+        }
         return newCellGroup;
     }
 }

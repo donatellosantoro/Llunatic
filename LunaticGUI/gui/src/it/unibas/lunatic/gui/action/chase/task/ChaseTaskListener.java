@@ -6,6 +6,7 @@ import it.unibas.lunatic.gui.IViewManager;
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.IChaseResult;
 import it.unibas.lunatic.gui.model.LoadedScenario;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -24,7 +25,7 @@ import org.openide.windows.IOProvider;
 
 @NbBundle.Messages({
     "MSG_ChaseScenario=Scenario chase in progress",
-    "MSG_ChaseSuccessful=Chase successful",
+    "MSG_ChaseSuccessful=Chase complete",
     "MSG_ChaseFailed=Chase failed",
     "MSG_ChaseStopping=stopping ",
     "MSG_ChaseCancelled=Chase cancelled",
@@ -55,7 +56,12 @@ public class ChaseTaskListener implements ITaskListener<ChaseTask> {
                 IChaseResult result = task.get();
                 LoadedScenario scenario = task.getScenario();
                 scenario.put(R.BeanProperty.CHASE_RESULT, result);
-                status.setStatusText(Bundle.MSG_ChaseSuccessful());
+                String statusText = Bundle.MSG_ChaseSuccessful();
+                Long exTime = ChaseStats.getInstance().getStat(ChaseStats.TOTAL_TIME);
+                if (exTime != null && exTime > 0) {
+                    statusText += " in " + exTime + " ms";
+                }
+                status.setStatusText(statusText);
                 for (String windowName : result.getWindowsToOpen()) {
                     view.show(windowName);
                 }

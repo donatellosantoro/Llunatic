@@ -8,9 +8,15 @@ import it.unibas.lunatic.gui.action.chase.task.ChaseTask;
 import it.unibas.lunatic.gui.action.chase.task.InteractiveChase;
 import it.unibas.lunatic.gui.model.IChaseResult;
 import it.unibas.lunatic.gui.model.LoadedScenario;
+import it.unibas.lunatic.gui.model.McChaseResult;
+import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.usermanager.StandardUserManager;
+import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.ChaseState;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.Action;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -58,14 +64,55 @@ public final class ActionChaseContinue extends ContextAwareActionProxy<ChaseStat
     @Override
     public void onChange(IModel model, ChaseState chaseState) {
         LoadedScenario scenario = (LoadedScenario) model;
-        if (scenario != null
-                && scenario.get(R.BeanProperty.CHASE_STATE, ChaseState.class) == null
-                && scenario.getScenario().isMCScenario()
-                && scenario.get(R.BeanProperty.CHASE_RESULT, IChaseResult.class) != null
-                && scenario.getScenario().getUserManager() != null) {
-            setEnabled(true);
-        } else {
-            setEnabled(false);
-        }
+        boolean isInteractive = isInteractive(scenario);
+        setEnabled(isInteractive);
     }
+
+    private boolean isInteractive(LoadedScenario loadedScenario) {
+        if (loadedScenario == null || !loadedScenario.getScenario().isMCScenario()) {
+            if (logger.isDebugEnabled()) logger.debug("## MCScenario not loaded [Interactive FALSE]");
+            return false;
+        }
+        if (loadedScenario.get(R.BeanProperty.CHASE_STATE, ChaseState.class) != null) {
+            if (logger.isDebugEnabled()) logger.debug("## Scenario is running [Interactive FALSE]");
+            return false;
+        }
+        if (loadedScenario.get(R.BeanProperty.CHASE_RESULT, IChaseResult.class) == null) {
+            if (logger.isDebugEnabled()) logger.debug("## Scenario not yet executed [Interactive FALSE]");
+            return false;
+        }
+        if (loadedScenario.getScenario().getUserManager() != null && !(loadedScenario.getScenario().getUserManager() instanceof StandardUserManager)) {
+            if (logger.isDebugEnabled()) logger.debug("## Scenario has user manager [Interactive TRUE]");
+            return true;
+        }
+        ChaseTree chaseTree = loadedScenario.get(R.BeanProperty.CHASE_RESULT, McChaseResult.class).getResult();
+        return leaveAreUserNodes(chaseTree.getRoot());
+    }
+
+    private boolean leaveAreUserNodes(DeltaChaseStep root) {
+        if (root == null) {
+            return false;
+        }
+        List<DeltaChaseStep> leaves = ChaseUtility.getAllLeaves(root);
+        if (logger.isDebugEnabled()) logger.debug("## Leaves: " + leaves.size());
+        for (DeltaChaseStep leave : leaves) {
+            if (leave.isEditedByUser()) {
+                if (logger.isDebugEnabled()) logger.debug("## Scenario has user node [Interactive TRUE]");
+                return true;
+            }
+        }
+        if (logger.isDebugEnabled()) logger.debug("## Scenario has no user node [Interactive FALSE]");
+        return false;
+    }
+//    @Override
+//    public void onChange(IModel model, ChaseState chaseState) {
+//        LoadedScenario scenario = (LoadedScenario) model;
+//        if (scenario != null
+//                && scenario.get(R.BeanProperty.CHASE_STATE, ChaseState.class) == null
+//                && scenario.getScenario().isMCScenario()
+//                && scenario.get(R.BeanProperty.CHASE_RESULT, IChaseResult.class) != null
+//                && scenario.getScenario().getUserManager() != null) {
+//            setEnabled(true);
+//        }
+//    }
 }

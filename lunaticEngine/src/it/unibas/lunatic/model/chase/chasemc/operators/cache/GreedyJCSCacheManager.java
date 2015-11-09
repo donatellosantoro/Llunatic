@@ -2,11 +2,11 @@ package it.unibas.lunatic.model.chase.chasemc.operators.cache;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import static it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager.GROUPID;
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.jcs.JCS;
-import org.apache.jcs.access.exception.CacheException;
+import org.apache.commons.jcs.JCS;
+import org.apache.commons.jcs.access.CacheAccess;
+import org.apache.commons.jcs.access.exception.CacheException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.CellRef;
@@ -18,8 +18,8 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
 
     private static Logger logger = LoggerFactory.getLogger(GreedyJCSCacheManager.class);
 
-    private final JCS cellGroupCache;
-    private final JCS clusterIdCache;
+    private final CacheAccess<String, CellGroup> cellGroupCache;
+    private final CacheAccess<String, IValue> clusterIdCache;
     private Set<String> cachedStepIds = new HashSet<String>();
 
     public GreedyJCSCacheManager(IRunQuery queryRunner) {
@@ -37,7 +37,7 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
     public CellGroup loadCellGroupFromId(IValue value, String stepId, IDatabase deltaDB, Scenario scenario) {
         loadCacheForStep(stepId, deltaDB, scenario);
         String key = buildKey(value, stepId);
-        CellGroup cellGroup = (CellGroup) cellGroupCache.getFromGroup(key, GROUPID);
+        CellGroup cellGroup = (CellGroup) cellGroupCache.get(key);
         return cellGroup;
     }
 
@@ -46,7 +46,7 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
         try {
             loadCacheForStep(stepId, deltaDB, scenario);
             String key = buildKey(cellGroup.getId(), stepId);
-            cellGroupCache.putInGroup(key, GROUPID, cellGroup);
+            cellGroupCache.put(key, cellGroup);
         } catch (CacheException ex) {
             logger.error("Unable to add objects to cache. " + ex.getLocalizedMessage());
             throw new IllegalStateException("Unable to add objects to cache. " + ex.getLocalizedMessage());
@@ -56,7 +56,7 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
     @Override
     public void removeCellGroup(IValue value, String stepId) {
         String key = buildKey(value, stepId);
-        this.cellGroupCache.remove(key, GROUPID);
+        this.cellGroupCache.remove(key);
     }
 
     @Override
@@ -121,11 +121,11 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
     @Override
     @SuppressWarnings("unchecked")
     public Set<String> getKeySet() {
-        return cellGroupCache.getGroupKeys(GROUPID);
+        return cellGroupCache.getCacheControl().getKeySet();
     }
 
     @Override
     public CellGroup getCellGroup(String key) {
-        return (CellGroup) this.cellGroupCache.getFromGroup(key, GROUPID);
+        return (CellGroup) this.cellGroupCache.get(key);
     }
 }

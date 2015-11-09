@@ -28,8 +28,9 @@ public class JavaUtilLoggingConfig {
         rootLogger.setLevel(Level.SEVERE);
         rootLogger.addHandler(defaultHandler);
         logManager.addLogger(rootLogger);
-        Logger.getLogger("org.apache.jcs").setLevel(Level.SEVERE);
+        Logger.getLogger("org.apache.commons").setLevel(Level.SEVERE);
         Logger.getLogger("com.mchange").setLevel(Level.SEVERE);
         Logger.getLogger("com.sun").setLevel(Level.SEVERE);
+        LogManager.getLogManager().reset();
     }
 }

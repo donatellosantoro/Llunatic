@@ -8,6 +8,7 @@ import it.unibas.lunatic.gui.model.McChaseResult;
 import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
+import it.unibas.lunatic.model.chase.chasemc.operators.PrintRankedSolutions;
 import it.unibas.lunatic.model.chase.chasemc.operators.RankSolutions;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.ChaserFactory;
@@ -16,6 +17,7 @@ import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 public class InteractiveChase implements IChaseOperator {
 
     private final RankSolutions solutionRanker = new RankSolutions();
+    private final PrintRankedSolutions solutionPrinter = new PrintRankedSolutions();
 
     @Override
     public IChaseResult chase(LoadedScenario loadedScenario) {
@@ -28,6 +30,7 @@ public class InteractiveChase implements IChaseOperator {
         chaseTree.setRoot(newRoot);
         if (ChaseUtility.hasChaseStats(scenario)) {
             solutionRanker.rankSolutions(chaseTree);
+            System.out.println(solutionPrinter.toString(chaseTree));
         }
         return new McChaseResult(loadedScenario, chaseTree);
     }

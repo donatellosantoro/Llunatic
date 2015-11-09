@@ -25,6 +25,9 @@ public class CheckDuplicates {
             if (logger.isDebugEnabled()) logger.debug("No cellGroup stats, returning...");
             return;
         }
+        if (chaseStep.isUserNode()) {
+            return;
+        }
         if (logger.isDebugEnabled()) logger.debug("Adding node to clusters...");
         ChaseTree chaseTree = chaseStep.getChaseTree();
         NodeClustering clusters = chaseTree.getClusters();
@@ -33,7 +36,7 @@ public class CheckDuplicates {
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.DUPLICATE_TIME, end - start);
     }
-    
+
     public boolean isDuplicate(DeltaChaseStep chaseStep, ChaseTree chaseTree) {
         if (logger.isDebugEnabled()) logger.debug("Checking if " + chaseStep.getId() + " is duplicate...");
         if (logger.isDebugEnabled()) logger.debug("Cluster: " + LunaticUtility.printNodeIds(chaseStep.getDuplicateNodes()));

@@ -8,21 +8,21 @@
    
     <property file="../../common.properties" />
     
-    <target name="-lunatic-engine-no-test" description="compila lunatic saltando i test">
+    <target name="-lunatic-engine-no-test">
         <ant dir="../${lunaticEngine.dir}" inheritAll="false" target="light-jar" />  
     </target>
     
-    <target name="build-init" depends="harness.build-init,-lunatic-engine-no-test" description="copia il jar nel modulo wrapper saltando i test">
+    <target name="build-init" depends="harness.build-init,-lunatic-engine-no-test">
         <property name="lib.dir" value="../../lib" />
         <copy tofile="./release/modules/ext/lunatic-engine.jar">
             <fileset dir="../${lunaticEngine.dir}/dist">
-                <include name="lunatic*.jar" />
+                <include name="lunaticEngine-${lunaticEngine.ver}.jar" />
             </fileset>
         </copy>
         <copy toDir="./release/modules/ext" flatten="true" verbose="true">
             <path>
                 <pathelement location="${lib.dir}/speedy-${speedy.ver}.jar" />
-                <pathelement location="${lib.dir}/jcs-1.3.jar" />
+                <pathelement location="${lib.dir}/commons-jcs-core-${commons-jcs.ver}.jar" />  
                 <pathelement location="${lib.dir}/concurrent.jar" />
                 <pathelement location="${lib.dir}/postgresql-9.1-903.jdbc3.jar" />
                 <pathelement location="${lib.dir}/jdom.jar" />

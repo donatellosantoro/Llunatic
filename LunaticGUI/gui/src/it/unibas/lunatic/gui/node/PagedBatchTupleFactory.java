@@ -37,6 +37,7 @@ public class PagedBatchTupleFactory extends Children.Keys<Tuple> implements ITup
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void addNotify() {
         logger.debug("Initialized");
         super.add(new Node[]{waitNode});
@@ -97,6 +98,7 @@ public class PagedBatchTupleFactory extends Children.Keys<Tuple> implements ITup
     class KeyCreator implements Runnable {
 
         @Override
+        @SuppressWarnings("deprecation")
         public void run() {
             ArrayList<Tuple> keys = new ArrayList<Tuple>();
             ITable table = tableNode.getTable();

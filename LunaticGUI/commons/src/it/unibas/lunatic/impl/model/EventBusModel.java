@@ -15,6 +15,7 @@ public class EventBusModel extends AbstractModel {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void notifyChange(String bean, Class beanClass) {
         EventObject ev = new BeanModelChangeEvent(this, name, bean, beanClass);
         logger.trace(ev.toString());

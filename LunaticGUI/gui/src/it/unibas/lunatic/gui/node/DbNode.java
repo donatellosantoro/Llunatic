@@ -1,6 +1,7 @@
 package it.unibas.lunatic.gui.node;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import speedy.model.database.IDatabase;
 
@@ -11,11 +12,13 @@ public class DbNode extends AbstractNode implements IChaseNode {
 
     private IDatabase db;
     private DeltaChaseStep chaseStep;
+    private ChaseStepNode chaseStepNode;
     private Scenario scenario;
 
-    public DbNode(Scenario scenario, IDatabase db, DeltaChaseStep chaseStep, boolean showId) {
-        this(scenario, db, chaseStep.getId(), Children.create(new DbChildFactory(db, chaseStep, scenario), true), showId);
+    public DbNode(Scenario scenario, IDatabase db, DeltaChaseStep chaseStep, ChaseStepNode chaseStepNode, boolean showId) {
+        this(scenario, db, chaseStep.getId(), Children.create(new DbChildFactory(db, chaseStepNode, chaseStep, scenario), true), showId);
         this.chaseStep = chaseStep;
+        this.chaseStepNode = chaseStepNode;
     }
 
     public DbNode(Scenario scenario, IDatabase db, String qualifier, boolean showId) {
@@ -50,6 +53,14 @@ public class DbNode extends AbstractNode implements IChaseNode {
     @Override
     public boolean isMcResultNode() {
         return chaseStep != null;
+    }
+
+    public boolean hasChaseStepNode() {
+        return chaseStepNode != null;
+    }
+
+    public ChaseStepNode getChaseStepNode() {
+        return chaseStepNode;
     }
 
     public IDatabase getDb() {

@@ -20,6 +20,7 @@ public class LunaticConstants {
     public static final String CHASE_FORWARD = "f";
     public static final String CHASE_BACKWARD = "b";
     public static final String CHASE_USER = "u";
+    public static final String CHASE_EDIT_USER = "edit";
     public static final String CHASE_STEP_ROOT = "r";
     public static final String CHASE_STEP_TGD = "t";
 

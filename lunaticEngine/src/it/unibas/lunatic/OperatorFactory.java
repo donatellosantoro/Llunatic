@@ -41,6 +41,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemor
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryOIDGenerator;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
+import it.unibas.lunatic.persistence.relational.GenerateModifiedCells;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -246,7 +247,7 @@ public class OperatorFactory {
     }
 
     public AddUserNode getUserNodeCreator(Scenario scenario) {
-        return new AddUserNode(getCellChanger(scenario));
+        return new AddUserNode(getCellChanger(scenario), getOccurrenceHandler(scenario));
     }
 
     public ChaseTreeToString getChaseTreeToString(Scenario scenario) {
@@ -259,11 +260,15 @@ public class OperatorFactory {
         }
         return new SQLInsertTuplesForTargetTGDs(getOIDGenerator(scenario));
     }
-    
-    public IExportSolution getSolutionExporter(Scenario scenario){
-        if(scenario.isMainMemory()){
+
+    public IExportSolution getSolutionExporter(Scenario scenario) {
+        if (scenario.isMainMemory()) {
             throw new IllegalArgumentException("Not supported yet");
         }
         return sqlSolutionExporter;
+    }
+    
+    public GenerateModifiedCells getGenerateModifiedCells(Scenario scenario){
+        return new GenerateModifiedCells(getOccurrenceHandler(scenario));
     }
 }

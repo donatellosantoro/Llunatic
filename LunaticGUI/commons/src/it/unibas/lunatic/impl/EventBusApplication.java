@@ -20,6 +20,7 @@ public class EventBusApplication extends EventBusModel implements IApplicationIm
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void notifyChange(String key, Class beanClass) {
         EventObject ev = new AppModelChangeEvent(this, key, beanClass);
         logger.trace(ev.toString());

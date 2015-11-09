@@ -196,7 +196,7 @@ public class OccurrenceHandlerMC implements IOccurrenceHandler {
                 saveCellGroupCell(deltaDB, cellGroup.getId(), additionalCell, stepId, scenario);
             }
         }
-        if (logger.isDebugEnabled()) logger.debug("DeltaDB\n" + deltaDB.printInstances());
+        if (logger.isTraceEnabled()) logger.trace("DeltaDB\n" + deltaDB.printInstances());
     }
 
     @Override

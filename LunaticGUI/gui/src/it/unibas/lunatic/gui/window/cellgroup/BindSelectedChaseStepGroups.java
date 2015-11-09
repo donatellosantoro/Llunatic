@@ -10,13 +10,12 @@ import it.unibas.lunatic.gui.node.cellgroup.filters.ICellGroupCategoryFilter;
 import it.unibas.lunatic.gui.node.cellgroup.filters.ICellGroupValueFilter;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import java.util.Collection;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openide.util.NbBundle;
 
 @NbBundle.Messages({
     "TITLE_allCellGroups=Step cell groups - ",
-    "TITLE_editCellGroups=Edit cell groups - "
+    "TITLE_editCellGroups=Edit cell groups - ",
+    "TITLE_noChaseStepSelected=No Chase Step Selected"
 })
 public class BindSelectedChaseStepGroups extends AbstractSelectionListener<ChaseStepNode> {
 //implements NodeListener {
@@ -39,6 +38,11 @@ public class BindSelectedChaseStepGroups extends AbstractSelectionListener<Chase
     }
 
     private void updateComponent(ChaseStepNode node) {
+        if (node == null) {
+            window.removeRootContext();
+            window.setDisplayName(Bundle.TITLE_noChaseStepSelected());
+            return;
+        }
         DeltaChaseStep chaseStep = node.getChaseStep();
         if (chaseStep.isEditedByUser()) {
             window.setRootContext(new UserStepCellGroupsRootNode(node, valueFilter));
@@ -73,50 +77,4 @@ public class BindSelectedChaseStepGroups extends AbstractSelectionListener<Chase
         this.window = tc;
         super.registerBean(ChaseStepNode.class);
     }
-//    @Override
-//    public void propertyChange(PropertyChangeEvent evt) {
-//        if (evt.getPropertyName().equals(ChaseStepNode.PROP_INVALID_STEP)) {
-//            Boolean invalid = (Boolean) evt.getNewValue();
-//            if (invalid) {
-//                clean();
-//                window.close();
-//            }
-//        }
-//    }
-//
-//    private void clean() {
-//        removeNodeListener();
-//        window.removeRootContext();
-//    }
-//
-//    private void addNodeListener(ChaseStepNode chaseStepNode) {
-//        removeNodeListener();
-//        chaseStepNode.addNodeListener(this);
-//        node = chaseStepNode;
-//    }
-//
-//    private void removeNodeListener() {
-//        if (node != null) {
-//            node.removeNodeListener(this);
-//        }
-//    }
-//
-//    @Override
-//    public void nodeDestroyed(NodeEvent ev) {
-//        clean();
-//        window.close();
-//    }
-//
-//
-//    @Override
-//    public void childrenAdded(NodeMemberEvent ev) {
-//    }
-//
-//    @Override
-//    public void childrenRemoved(NodeMemberEvent ev) {
-//    }
-//
-//    @Override
-//    public void childrenReordered(NodeReorderEvent ev) {
-//    }
 }

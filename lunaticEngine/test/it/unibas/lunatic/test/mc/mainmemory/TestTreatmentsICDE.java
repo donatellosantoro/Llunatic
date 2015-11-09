@@ -4,19 +4,15 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.commons.ChaserFactory;
-import it.unibas.lunatic.test.GenerateModifiedCells;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import speedy.model.database.operators.mainmemory.MainMemoryRunQuery;
 
 public class TestTreatmentsICDE extends CheckTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestTreatmentsICDE.class);
-
-    protected GenerateModifiedCells modifiedCellsGenerator = new GenerateModifiedCells(new MainMemoryRunQuery());
 
     public void testScenarioICDE() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.treatments_icde);
@@ -37,5 +33,3 @@ public class TestTreatmentsICDE extends CheckTest {
 //        if (logger.isDebugEnabled()) logger.debug("Delta db:\n" + result.getDeltaDB().printInstances());
     }
 }
-
-

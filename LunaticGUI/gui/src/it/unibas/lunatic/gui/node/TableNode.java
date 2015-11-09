@@ -3,6 +3,7 @@ package it.unibas.lunatic.gui.node;
 import speedy.SpeedyConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.gui.R;
+import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import speedy.model.database.Attribute;
 import speedy.model.database.IDatabase;
@@ -13,6 +14,7 @@ import javax.swing.Action;
 import org.openide.awt.Actions;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.Sheet;
 
 public class TableNode extends AbstractNode implements IChaseNode {
 
@@ -20,12 +22,15 @@ public class TableNode extends AbstractNode implements IChaseNode {
     private IDatabase db;
     private ITable table;
     private DeltaChaseStep chaseStep;
+    private ChaseStepNode chaseStepNode;
     private Action[] actions = new Action[]{Actions.forID("Window", R.ActionId.SHOW_TABLE)};
+    private TableNodeSheetSetGenerator sheetGenerator = new TableNodeSheetSetGenerator();
     private List<String> columns;
 
-    public TableNode(ITable table, IDatabase db, DeltaChaseStep cs, Scenario scenario) {
+    public TableNode(ITable table, IDatabase db, ChaseStepNode chaseStepNode, DeltaChaseStep cs, Scenario scenario) {
         this(scenario, db, table, Children.LEAF);
         this.chaseStep = cs;
+        this.chaseStepNode = chaseStepNode;
     }
 
     public TableNode(ITable table, IDatabase db, Scenario scenario) {
@@ -72,7 +77,7 @@ public class TableNode extends AbstractNode implements IChaseNode {
 
     @Override
     public Action getPreferredAction() {
-        return actions[0];
+        return getActions(true)[0];
     }
 
     @Override
@@ -91,5 +96,20 @@ public class TableNode extends AbstractNode implements IChaseNode {
 
     public String getDbDisplayName() {
         return DbNode.getTargetDbName(scenario, db);
+    }
+
+    @Override
+    protected Sheet createSheet() {
+        Sheet sheet = super.createSheet();
+        sheet.put(sheetGenerator.createSheetSet(this));
+        return sheet;
+    }
+
+    public boolean hasChaseStepNode() {
+        return chaseStepNode != null;
+    }
+
+    public ChaseStepNode getChaseStepNode() {
+        return chaseStepNode;
     }
 }

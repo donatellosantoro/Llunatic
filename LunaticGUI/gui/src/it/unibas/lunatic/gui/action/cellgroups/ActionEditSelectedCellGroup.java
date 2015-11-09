@@ -5,6 +5,7 @@ import it.unibas.lunatic.ContextAwareActionProxy;
 import it.unibas.lunatic.IModel;
 import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.core.CellGroupHelper;
+import it.unibas.lunatic.core.DbExtractor;
 import it.unibas.lunatic.gui.node.TableNode;
 import it.unibas.lunatic.gui.node.cellgroup.StepCellGroupNode;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
@@ -40,6 +41,7 @@ public final class ActionEditSelectedCellGroup extends ContextAwareActionProxy<S
     private CellGroupHelper cgHelper = CellGroupHelper.getInstance();
     private TableWindowManager tableWindowManager = TableWindowManager.getInstance();
     private TableFinder tableFinder = new TableFinder();
+    private DbExtractor dbHelper = new DbExtractor();
 
     public ActionEditSelectedCellGroup() {
         putValue(NAME, Bundle.CTL_ActionEditSelectedCellGroup());
@@ -62,6 +64,7 @@ public final class ActionEditSelectedCellGroup extends ContextAwareActionProxy<S
                     StepCellGroupNode editableCellGroupNode = getBean();
                     CellGroup cellGroup = editor.addChange(editableCellGroupNode.getChaseStep(), editableCellGroupNode.getCellGroup(), new ConstantValue(value), editableCellGroupNode.getChaseStep().getScenario());
                     editableCellGroupNode.setUserCellGroup(cellGroup);
+                    dbHelper.extractDb(userNode.getChaseStep());
                     logger.debug("Edited cellGroup: " + editableCellGroupNode.toString());
                     getModel().notifyChange(R.BeanProperty.SELECTED_CELL_GROUP_NODE, editableCellGroupNode.getClass());
                     updateOpenedTables(userNode);

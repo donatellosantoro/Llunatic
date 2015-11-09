@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import speedy.model.database.IValue;
 import speedy.model.database.operators.IRunQuery;
+import speedy.utility.SpeedyUtility;
 
 public class CellGroupHelper {
 
@@ -34,9 +35,13 @@ public class CellGroupHelper {
 
     public StepCellGroups retrieveStepCellGroups(Scenario scenario, DeltaChaseStep step) {
         List<CellGroup> cellGroups = getValueOccurrenceHandlerMCExtractor(scenario).loadAllCellGroupsForDebugging(step.getDeltaDB(), step.getId(), scenario);
-        logger.debug("############### cellGroups " +  cellGroups.toString());
+        logger.debug("############### cellGroups " + cellGroups.toString());
         List<CellGroup> changedCellGroups = getValueOccurrenceHandlerMCExtractor(scenario).loadAllCellGroupsInStepForDebugging(step.getDeltaDB(), step.getId(), scenario);
-        logger.debug("############### changedCellGroups " +  changedCellGroups.toString());
+        logger.debug("############### changedCellGroups " + changedCellGroups.toString());
+        if (step.isEditedByUser()) {
+            System.out.println("##### CellGroups in step " + step.getId() + "\n" + SpeedyUtility.printCollection(cellGroups) + "\n#####");
+            System.out.println("##### Changed CellGroups in step " + step.getId() + "\n" + SpeedyUtility.printCollection(changedCellGroups) + "\n#####");
+        }
         return new StepCellGroups(cellGroups, changedCellGroups);
     }
 

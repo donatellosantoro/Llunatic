@@ -3,13 +3,16 @@ package it.unibas.lunatic.model.chase.chasemc.operators.cache;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
+import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfCellGroups;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.jcs.JCS;
-import org.apache.jcs.access.exception.CacheException;
+import org.apache.commons.jcs.JCS;
+import org.apache.commons.jcs.access.CacheAccess;
+import org.apache.commons.jcs.access.exception.CacheException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.CellRef;
@@ -22,9 +25,8 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
 
     private static Logger logger = LoggerFactory.getLogger(GreedySingleStepJCSCacheManager.class);
 
-    public static final String GROUPID = "standard";
-    private final JCS cellGroupCache;
-    private final JCS clusterIdCache;
+    private final CacheAccess<String, CellGroup> cellGroupCache;
+    private final CacheAccess<String, IValue> clusterIdCache;
     private Set<String> previousCachedStepIds = new HashSet<String>();
     private String currentCachedStepId;
 
@@ -44,12 +46,28 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
         loadCacheForStep(stepId, deltaDB, scenario);
         if (logger.isDebugEnabled()) logger.debug("Cache in step " + stepId + "\n" + printCache());
         String key = buildKey(value, stepId);
-        CellGroup cellGroup = (CellGroup) cellGroupCache.getFromGroup(key, GROUPID);
+        CellGroup cellGroup = (CellGroup) cellGroupCache.get(key);
+        if (cellGroup != null && isDebugCellGroup(cellGroup)) {
+            logger.warn("Loaded cell group in step " + stepId + "\n" + cellGroup + "\nCache:" + printCache());
+            new CheckConsistencyOfCellGroups().checkConsistencyOfCellGroups(Arrays.asList(new CellGroup[]{cellGroup}));
+        }
         if (logger.isDebugEnabled()) logger.debug("Returning " + cellGroup);
         if (isDebug(value, stepId)) {
             logger.warn("Loaded cell group in step " + stepId + "\n" + cellGroup + "\nCache:" + printCache());
         }
         return cellGroup;
+    }
+
+    private boolean isDebugCellGroup(CellGroup cellGroup) {
+        return false;
+//        for (CellGroupCell cell : cellGroup.getAllCells()) {
+//            if (cell.getTupleOID().toString().equals("291971")
+//                    && cell.getAttributeRef().getTableName().equals("hospital")
+//                    && cell.getAttributeRef().getName().equals("city")) {
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     private boolean isDebug(IValue value, String stepId) {
@@ -62,7 +80,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
         try {
             loadCacheForStep(stepId, deltaDB, scenario);
             String key = buildKey(cellGroup.getId(), stepId);
-            cellGroupCache.putInGroup(key, GROUPID, cellGroup);
+            cellGroupCache.put(key, cellGroup);
             if (isDebug(cellGroup.getValue(), stepId)) {
                 logger.warn("Put cell group in step " + stepId + "\n" + cellGroup + "\nCache:" + printCache());
             }
@@ -74,7 +92,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
 
     public void removeCellGroup(IValue value, String stepId) {
         String key = buildKey(value, stepId);
-        this.cellGroupCache.remove(key, GROUPID);
+        this.cellGroupCache.remove(key);
     }
 
     public IValue getClusterId(CellRef cellRef, String stepId, IDatabase deltaDB, Scenario scenario) {
@@ -151,12 +169,12 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
     @Override
     @SuppressWarnings("unchecked")
     public Set<String> getKeySet() {
-        return cellGroupCache.getGroupKeys(GROUPID);
+        return cellGroupCache.getCacheControl().getKeySet();
     }
 
     @Override
     public CellGroup getCellGroup(String key) {
-        return (CellGroup) this.cellGroupCache.getFromGroup(key, GROUPID);
+        return (CellGroup) this.cellGroupCache.get(key);
     }
 
     private String printCache() {
@@ -166,6 +184,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
         }
         return sb.toString();
     }
+
 }
 
 class CellRefStringComparator implements Comparator<CellRef> {

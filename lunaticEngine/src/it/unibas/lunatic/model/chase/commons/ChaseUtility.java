@@ -240,6 +240,23 @@ public class ChaseUtility {
         return currentNode;
     }
 
+    public static List<DeltaChaseStep> getAllLeaves(DeltaChaseStep chaseStep) {
+        List<DeltaChaseStep> result = new ArrayList<DeltaChaseStep>();
+        DeltaChaseStep root = getRoot(chaseStep);
+        addLeaves(root, result);
+        return result;
+    }
+
+    private static void addLeaves(DeltaChaseStep node, List<DeltaChaseStep> result) {
+        if(node.getChildren().isEmpty()){
+            result.add(node);
+            return;
+        }
+        for (DeltaChaseStep children : node.getChildren()) {
+            addLeaves(children, result);
+        }
+    }
+
     public static String getDeltaRelationName(String tableName, String attributeName) {
         return tableName + LunaticConstants.DELTA_TABLE_SEPARATOR + attributeName;
     }
