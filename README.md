@@ -1,6 +1,7 @@
+![image](http://www.db.unibas.it/projects/llunatic/images/background_center.png)
+
 Llunatic
 ========
-
 Llunatic is a general purpose chase-engine that can be used both for data-repairing and data-exchange applications. Notable features of the system are:
 
 - It has been designed to guarantee very good scalability on large databases, up to millions of tuples.
