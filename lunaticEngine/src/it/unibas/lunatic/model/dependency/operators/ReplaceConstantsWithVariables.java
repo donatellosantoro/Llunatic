@@ -47,9 +47,9 @@ public class ReplaceConstantsWithVariables {
         }
         addJoinAttribute(constantsInFormula);
         addAtomsAndVariables(dependency, constantsInFormula);
-        createTable(constantsInFormula, scenario, true);
         if (logger.isDebugEnabled()) logger.debug("Constant Table: " + constantsInFormula.toString());
         if (logger.isDebugEnabled()) logger.debug("After constant removal: " + dependency.toLongString());
+        createTable(constantsInFormula, scenario, true);
 //        for (FormulaVariable variable : dependency.getPremise().getLocalVariables()) {
 //            logger.info(variable.toLongString());
 //        }
@@ -140,10 +140,10 @@ public class ReplaceConstantsWithVariables {
     }
 
     private void addJoinAttribute(AllConstantsInFormula constantsInFormula) {
-        ConstantInFormula premiseConstant = new ConstantInFormula("j", Types.STRING, true);
-        constantsInFormula.getConstantMap().put(getKey("j", true), premiseConstant);
-        ConstantInFormula conclusionConstant = new ConstantInFormula("j", Types.STRING, false);
-        constantsInFormula.getConstantMap().put(getKey("j", false), conclusionConstant);
+        ConstantInFormula premiseConstant = new ConstantInFormula("joinv", Types.STRING, true);
+        constantsInFormula.getConstantMap().put(getKey("joinv", true), premiseConstant);
+        ConstantInFormula conclusionConstant = new ConstantInFormula("joinv", Types.STRING, false);
+        constantsInFormula.getConstantMap().put(getKey("joinv", false), conclusionConstant);
         conclusionConstant.setFormulaVariable(premiseConstant.getFormulaVariable());
     }
 

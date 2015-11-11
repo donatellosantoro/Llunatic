@@ -1,4 +1,4 @@
-package it.unibas.lunatic.test.mc.mainmemory;
+package it.unibas.lunatic.test.mc.dbms.basicscenario;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
@@ -10,9 +10,9 @@ import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestSynthetic11 extends CheckExpectedSolutionsTest {
+public class TestSQLSynthetic11 extends CheckExpectedSolutionsTest {
 
-    private static Logger logger = LoggerFactory.getLogger(TestSynthetic11.class);
+    private static Logger logger = LoggerFactory.getLogger(TestSQLSynthetic11.class);
 
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_11_dbms);
