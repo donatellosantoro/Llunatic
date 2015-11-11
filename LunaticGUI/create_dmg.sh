@@ -1,5 +1,5 @@
 #!/bin/sh
-mkdir dist/lunatic/
-mv dist/lunatic.app dist/lunatic/
+mkdir dist/llunatic/
+mv dist/llunatic.app dist/llunatic/
 
-hdiutil create -volname lunatic-mac -srcfolder dist/lunatic -ov -format UDZO dist/lunatic-mac.dmg
+hdiutil create -volname llunatic-mac -srcfolder dist/llunatic -ov -format UDZO dist/llunatic-mac.dmg
