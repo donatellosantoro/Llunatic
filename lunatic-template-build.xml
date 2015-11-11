@@ -207,12 +207,10 @@
                 Build
       *************************************************** -->
     <target name="run" depends="compile" description="esegue l'applicazione">
-        <java classname="${main.class}" fork="false">
+        <java classname="${main.class}" fork="yes" maxmemory="${run.maxmemory}">
             <classpath refid="compile.classpath" />
             <jvmarg value="-Djava.util.logging.config.class=it.unibas.lunatic.utility.JavaUtilLoggingConfig"/>
-            <assertions>
-                <enable />
-            </assertions>
+            <arg value="${arg0}"/>
         </java>
     </target>
     
