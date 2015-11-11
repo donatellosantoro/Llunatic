@@ -1,0 +1,22 @@
+Q: Come modificare la memoria della gui quando l'applicazione viene eseguita dall'IDE?
+A: Modificare il file NETBEANS_HOME\harness\run.xml impostando il valore "-J-Xmx1024m" alla proprieta' "run.args".
+
+Esempio: <property name="run.args" value="-J-Xmx1024m"/>
+-----------------------------------------------------------------------------------------------
+
+Q: Come modificare la memoria della distribuzione?
+A: Modificare il file NETBEANS_HOME\harness\etc\app.conf aggiungendo l'opzione "-J-Xmx1024m"
+
+Esempio: default_options="-J-Xms24m -J-Xmx1024m"
+-----------------------------------------------------------------------------------------------
+
+Q: Come modificare l'intervallo di update nell'esecuzione dell'ide? 
+A: aggingere in NETBEANS_HOME\harness\run.xml l'opzione -J-Dplugin.manager.check.interval=EVERY_DAY (oppure la cadenza voluta)
+-----------------------------------------------------------------------------------------------------------
+Q: Come modificare l'intervallo di update nella distribuzione? 
+A: aggingere in NETBEANS_HOME\harness\etc\app.conf l'opzione -J-Dplugin.manager.check.interval=EVERY_DAY (oppure la cadenza voluta)
+-----------------------------------------------------------------------------------------------------------
+
+Q: Come cambiare il numero di versione?
+A: Modificare il file branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties
+   Modificare il file branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
