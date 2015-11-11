@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source/>
+  <target> 
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:synthetic_11</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table t(
+  oid serial,
+  ssn varchar(50),
+  fname varchar(50),
+  minit varchar(50),
+  lname varchar(50),
+  stnum varchar(50),
+  stadd varchar(50),
+  apt varchar(50),
+  city varchar(50),
+  state varchar(50),
+  zip varchar(50)
+);
+
+insert into t(ssn,fname,minit,lname,stnum,stadd,apt,city,state,zip) values ('731164764','Adrianne','B','Burneson','','PO Box 2638','','Vienna','VA','22184');
+insert into t(ssn,fname,minit,lname,stnum,stadd,apt,city,state,zip) values ('211802526','Kehr','','Hak','864','Duston Ln','5w1','Kettle Falls','WA','99141');
+insert into t(ssn,fname,minit,lname,stnum,stadd,apt,city,state,zip) values ('144283668','Serkland','P','Casasos','389','Knutz Road','6x5','Burr Oak','IA','52131');
+insert into t(ssn,fname,minit,lname,stnum,stadd,apt,city,state,zip) values ('586816602','Knost','J','Abelardxxx','','PO Box 2440','','Flat','AK','99584');
+insert into t(ssn,fname,minit,lname,stnum,stadd,apt,city,state,zip) values ('488252871','Shena','C','Lanning','613','Leiweke St','0p0','Lignum','VA','22726');
+insert into t(ssn,fname,minit,lname,stnum,stadd,apt,city,state,zip) values ('484015225','Hsiaochiu','R','Banse','311','Spanogle Ave','0w0','Havana','AR','72842');
+insert into t(ssn,fname,minit,lname,stnum,stadd,apt,city,state,zip) values ('687351100','Deerdre','','Varkel','659','Kellen Street','6i1','Bland','MO','65014');
+insert into t(ssn,fname,minit,lname,stnum,stadd,apt,city,state,zip) values ('470425801','Hamamoto','J','Ahtye','703','Bernette Parkway','7g8','Appleton','WI','54914');
+
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+t(ssn: $s1, fname: $f1, minit: $m1, lname: $l1, stnum: $s2, stadd: $s3, apt: $a1, city: $c1, state: $s4, zip: $z1), 
+$a1 == "null", $m1 == "J", $s1 == "586816602" -> $l1 == "Abelard". 
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+
