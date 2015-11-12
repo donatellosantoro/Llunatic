@@ -190,8 +190,8 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
 class CellRefStringComparator implements Comparator<CellRef> {
 
     public int compare(CellRef t1, CellRef t2) {
-        Integer oid1 = Integer.parseInt(t1.getTupleOID().toString());
-        Integer oid2 = Integer.parseInt(t1.getTupleOID().toString());
+        Long oid1 =  Long.parseLong(t1.getTupleOID().toString());
+        Long oid2 =  Long.parseLong(t1.getTupleOID().toString());
         if (oid1.equals(oid2)) {
             return t1.toString().compareTo(t2.toString());
         }
