@@ -2,6 +2,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.exceptions.ChaseFailedException;
@@ -18,12 +19,15 @@ import it.unibas.lunatic.model.chase.commons.control.ImmutableChaseState;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies;
+import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.IInsertTuple;
+import speedy.model.database.ITable;
 import speedy.model.database.operators.IRunQuery;
 
 public class ChaseMCScenario {
@@ -43,6 +47,7 @@ public class ChaseMCScenario {
     private final RankSolutions solutionRanker = new RankSolutions();
     private final PrintRankedSolutions solutionPrinter = new PrintRankedSolutions();
     private final ChaseTreeSize resultSizer = new ChaseTreeSize();
+    private final ExportChaseStepResultsCSV resultExporter = new ExportChaseStepResultsCSV();
 
     public ChaseMCScenario(IChaseSTTGDs stChaser, IChaseDeltaExtTGDs extTgdChaser,
             IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
@@ -79,6 +84,9 @@ public class ChaseMCScenario {
                 solutionRanker.rankSolutions(chaseTree);
             }
             printResult(chaseTree);
+            if (scenario.getConfiguration().isExportSolutions()) {
+                resultExporter.exportSolutionsInSeparateFiles(chaseTree, scenario);
+            }
             return chaseTree;
         } catch (ChaseFailedException e) {
             throw e;

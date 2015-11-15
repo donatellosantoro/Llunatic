@@ -36,11 +36,11 @@ public class Main {
             System.out.println(scenario);
             System.out.println("*** Chasing scenario...");
             long start = new Date().getTime();
-            if(scenario.isDEDScenario()){
+            if (scenario.isDEDScenario()) {
                 chaseDEDScenario(scenario);
             } else if (scenario.isDEScenario()) {
                 chaseDEScenario(scenario);
-            } else if(scenario.isMCScenario()){
+            } else if (scenario.isMCScenario()) {
                 chaseMCScenario(scenario);
             } else {
                 throw new IllegalArgumentException("Scenario non supported!");

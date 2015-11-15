@@ -23,6 +23,9 @@ public class LunaticConfiguration {
     private double numberCellsWeightForRanking = 0.7;
     private boolean useHashForSkolem = true;
     private boolean useBatchInsert = true;
+    private boolean exportSolutions = false;
+    private String exportSolutionsPath;
+    private String exportSolutionsType;
 //
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
     private final String deChaser = LunaticConstants.PROXY_MC_CHASER;
@@ -216,6 +219,30 @@ public class LunaticConfiguration {
         this.useBatchInsert = useBatchInsert;
     }
 
+    public boolean isExportSolutions() {
+        return exportSolutions;
+    }
+
+    public void setExportSolutions(boolean exportSolutions) {
+        this.exportSolutions = exportSolutions;
+    }
+
+    public String getExportSolutionsPath() {
+        return exportSolutionsPath;
+    }
+
+    public void setExportSolutionsPath(String exportSolutionsPath) {
+        this.exportSolutionsPath = exportSolutionsPath;
+    }
+
+    public String getExportSolutionsType() {
+        return exportSolutionsType;
+    }
+
+    public void setExportSolutionsType(String exportSolutionsType) {
+        this.exportSolutionsType = exportSolutionsType;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
@@ -232,6 +259,9 @@ public class LunaticConfiguration {
                 + "\n\t NumberCellsWeightForRanking: " + numberCellsWeightForRanking
                 + "\n\t DiscardDuplicateTuples: " + discardDuplicateTuples
                 + "\n\t UseBatchInsert: " + useBatchInsert
+                + "\n\t ExportSolutions: " + exportSolutions
+                + "\n\t ExportSolutionsPath: " + exportSolutionsPath
+                + "\n\t ExportSolutionsType: " + exportSolutionsType
                 + "\n\t Cache type: " + cacheType
                 + "\n\t DeChaser: " + deChaser;
     }

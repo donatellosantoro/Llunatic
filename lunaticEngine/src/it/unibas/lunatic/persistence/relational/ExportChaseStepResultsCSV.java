@@ -4,8 +4,10 @@ import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForTGD;
+import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
@@ -54,6 +56,23 @@ public class ExportChaseStepResultsCSV {
         return resultFiles;
     }
 
+    public void exportSolutionsInSeparateFiles(ChaseTree chaseTree, Scenario scenario) {
+        List<DeltaChaseStep> leaves = ChaseUtility.getAllLeaves(chaseTree.getRoot());
+        int solutionIndex = 0;
+        for (DeltaChaseStep step : leaves) {
+            if (step.isInvalid() || step.isDuplicate()) {
+                continue;
+            }
+            String path = scenario.getConfiguration().getExportSolutionsPath() + "/Solution_" + solutionIndex++ + "/";
+            System.out.println("Exporting solution " + solutionIndex + " into " + path);
+            IDatabase database = OperatorFactory.getInstance().getDatabaseBuilder(scenario).extractDatabaseWithDistinct(step.getId(), step.getDeltaDB(), step.getOriginalDB(), step.getScenario());
+            for (String tableName : database.getTableNames()) {
+                ITable table = database.getTable(tableName);
+                exportTable(table, path);
+            }
+        }
+    }
+
     private void exportSolutions(DeltaChaseStep step, String folder, List<String> results, boolean materializeFKJoins) {
         if (step.isLeaf()) {
             if (step.isDuplicate() || step.isInvalid()) {
@@ -89,7 +108,8 @@ public class ExportChaseStepResultsCSV {
             writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8")));
             for (String tableName : database.getTableNames()) {
                 ITable table = database.getTable(tableName);
-                writeTable(writer, table, database);
+                writer.println(tablePrefix + table.getName());
+                writeTable(writer, table);
             }
         } catch (Exception ex) {
             throw new DAOException("Unable to export database " + ex);
@@ -100,8 +120,24 @@ public class ExportChaseStepResultsCSV {
         }
     }
 
-    private void writeTable(PrintWriter writer, ITable table, IDatabase database) {
-        writer.println(tablePrefix + table.getName());
+    public void exportTable(ITable table, String folder) {
+        String file = folder + "/" + table.getName() + ".csv";
+        File outputFile = new File(file);
+        outputFile.getParentFile().mkdirs();
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8")));
+            writeTable(writer, table);
+        } catch (Exception ex) {
+            throw new DAOException("Unable to export database " + ex);
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
+    }
+
+    private void writeTable(PrintWriter writer, ITable table) {
         StringBuilder line = new StringBuilder();
         for (Attribute attribute : table.getAttributes()) {
             if (excludeAttribute(attribute.getName())) {
