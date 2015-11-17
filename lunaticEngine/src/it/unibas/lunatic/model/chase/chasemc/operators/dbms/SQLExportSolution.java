@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSVirtualDB;
 import speedy.model.database.dbms.DBMSVirtualTable;
@@ -43,17 +44,24 @@ public class SQLExportSolution implements IExportSolution {
     @Override
     public void overrideWorkSchema(DeltaChaseStep step, String suffix, Scenario scenario, boolean cleanPreviousSteps) {
         initializeOperators(scenario);
+        DBMSVirtualDB database = (DBMSVirtualDB) databaseBuilder.extractDatabase(step.getId(), step.getDeltaDB(), step.getOriginalDB(), scenario);
+        this.overrideWorkSchema(database, step, suffix, scenario, cleanPreviousSteps);
+    }
+
+    @Override
+    public void overrideWorkSchema(IDatabase database, DeltaChaseStep step, String suffix, Scenario scenario, boolean cleanPreviousSteps) {
+        initializeOperators(scenario);
+        DBMSVirtualDB virtualDB = (DBMSVirtualDB) database;
         AccessConfiguration previousTargetAccessConfiguration = ((DBMSDB) scenario.getTarget()).getAccessConfiguration();
         AccessConfiguration deltaAccessConfiguration = ((DBMSDB) step.getDeltaDB()).getAccessConfiguration();
         AccessConfiguration newAccessConfiguration = getNewSchemaName((DBMSDB) scenario.getTarget(), suffix);
-        DBMSVirtualDB database = (DBMSVirtualDB) databaseBuilder.extractDatabase(step.getId(), step.getDeltaDB(), step.getOriginalDB(), scenario);
-        Set<String> tablesToKeep = findTablesToKeep(database);
+        Set<String> tablesToKeep = findTablesToKeep(virtualDB);
         if (logger.isDebugEnabled()) logger.debug("Tables to keep: " + tablesToKeep);
         StringBuilder script = new StringBuilder();
         for (String tableName : DBMSUtility.loadTableNames(deltaAccessConfiguration)) {
             if (logger.isDebugEnabled()) logger.debug("Analyzing table " + tableName);
             if (tablesToKeep.contains(tableName)) {
-                String newTableName = tableName.replaceAll(database.getSuffix(), "");
+                String newTableName = tableName.replaceAll(virtualDB.getSuffix(), "");
                 if (logger.isDebugEnabled()) logger.debug("Renaming table " + tableName + " into " + newTableName);
                 script.append("ALTER TABLE ").append(DBMSUtility.getSchemaNameAndDot(deltaAccessConfiguration)).append(tableName);
                 script.append(" RENAME TO ").append(newTableName).append(";\n");

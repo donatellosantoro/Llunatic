@@ -2,7 +2,6 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.exceptions.ChaseFailedException;
@@ -21,13 +20,11 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies;
 import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.IInsertTuple;
-import speedy.model.database.ITable;
 import speedy.model.database.operators.IRunQuery;
 
 public class ChaseMCScenario {

@@ -65,7 +65,7 @@ public class ExportChaseStepResultsCSV {
             }
             String path = scenario.getConfiguration().getExportSolutionsPath() + "/Solution_" + solutionIndex++ + "/";
             System.out.println("Exporting solution " + solutionIndex + " into " + path);
-            IDatabase database = OperatorFactory.getInstance().getDatabaseBuilder(scenario).extractDatabaseWithDistinct(step.getId(), step.getDeltaDB(), step.getOriginalDB(), step.getScenario());
+            IDatabase database = OperatorFactory.getInstance().getDatabaseBuilder(scenario).extractDatabase(step.getId(), step.getDeltaDB(), step.getOriginalDB(), step.getScenario());
             for (String tableName : database.getTableNames()) {
                 ITable table = database.getTable(tableName);
                 exportTable(table, path);
