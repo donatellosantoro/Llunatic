@@ -15,7 +15,7 @@ public abstract class MultiViewExplorerTopComponent extends ExplorerTopComponent
 
     protected MultiViewElementCallback callback;
     private Element multiView = new Element();
-    private Description description = new Description();
+    private MultiViewDescription description = new MultiViewDescriptionImpl();
 
     public MultiViewDescription getMultiViewDescription() {
         return description;
@@ -27,7 +27,7 @@ public abstract class MultiViewExplorerTopComponent extends ExplorerTopComponent
 
     public abstract JComponent getToolBar();
 
-    private class Description implements MultiViewDescription {
+    private class MultiViewDescriptionImpl implements MultiViewDescription {
 
         @Override
         public int getPersistenceType() {

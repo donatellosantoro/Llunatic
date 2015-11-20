@@ -24,7 +24,7 @@ import org.openide.util.NbBundle.Messages;
 @TopComponent.Description(
         preferredID = R.Window.VISUAL_DEPENDENCIES,
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "editor", openAtStartup = false)
+@TopComponent.Registration(mode = "editorBottom", openAtStartup = false)
 @ActionID(category = "Window", id = R.ActionId.SHOW_DEP_VISUAL)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_VisualDepsAction",

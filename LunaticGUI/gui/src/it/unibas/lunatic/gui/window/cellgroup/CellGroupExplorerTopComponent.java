@@ -15,9 +15,6 @@ import org.openide.nodes.Node;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
-/**
- * Top component which displays something.
- */
 @ConvertAsProperties(
         dtd = "-//it.unibas.lunatic.gui.window//CellGroupExplorer//EN",
         autostore = false)
@@ -31,7 +28,7 @@ import org.openide.util.NbBundle.Messages;
     "HINT_CellGroupExplorerTopComponent=This is a CellGroupExplorer window"
 })
 public final class CellGroupExplorerTopComponent extends ExplorerTopComponent {
-    
+
     public CellGroupExplorerTopComponent() {
         initComponents();
         setName(Bundle.CTL_CellGroupExplorerTopComponent());
@@ -146,7 +143,7 @@ public final class CellGroupExplorerTopComponent extends ExplorerTopComponent {
     private StepCellGroupSelectionListener mySelectionListener = new StepCellGroupSelectionListener();
     private TopComponentListener windowCloseListener = new TopComponentListener();
     private BindSelectedChaseStepGroups cellGroupLoader = new BindSelectedChaseStepGroups();
-    
+
     @Override
     public void componentOpened() {
         cellGroupLoader.register(this);
@@ -154,44 +151,44 @@ public final class CellGroupExplorerTopComponent extends ExplorerTopComponent {
 //        windowCloseListener.register(this, R.Window.MC_CHASE_RESULT);
 //        windowCloseListener.register(this, R.Window.MC_CHASE_RESULT_RANKED_SOLUTIONS);
     }
-    
+
     @Override
     public void componentClosed() {
         cellGroupLoader.remove();
         mySelectionListener.register();
         windowCloseListener.remove();
     }
-    
+
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
         p.setProperty("version", "1.4");
         // TODO store your settings
     }
-    
+
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
     }
-    
+
     @Override
     public void setRootContext(Node node) {
         explorer.setRootContext(node);
     }
-    
+
     @Override
     public void removeRootContext() {
         explorer.setRootContext(Node.EMPTY);
     }
-    
+
     public void setCategoryFilter(ICellGroupCategoryFilter categoryFilter) {
         cellGroupLoader.setCategoryFilter(categoryFilter);
     }
-    
+
     public void setValueFilter(ICellGroupValueFilter valueFilter) {
         cellGroupLoader.setValueFilter(valueFilter);
     }
-    
+
     public void filter() {
         cellGroupLoader.filter();
     }

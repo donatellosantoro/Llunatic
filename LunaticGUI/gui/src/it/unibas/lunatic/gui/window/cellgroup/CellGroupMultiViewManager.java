@@ -48,4 +48,5 @@ public class CellGroupMultiViewManager {
         multiView.requestActive();
         return multiView;
     }
+
 }

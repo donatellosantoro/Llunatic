@@ -20,7 +20,7 @@ import org.openide.util.NbBundle.Messages;
         preferredID = R.Window.ORDERING_ATTRIBUTES_TABLE,
         //iconBase="SET/PATH/TO/ICON/HERE", 
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "editor", openAtStartup = false)
+@TopComponent.Registration(mode = "properties", openAtStartup = false)
 @Messages({
     "COL_Attribute=attribute",
     "CTL_OrderingAttributesAction=Ordering attributes",

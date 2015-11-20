@@ -19,7 +19,7 @@ import org.openide.util.NbBundle.Messages;
         preferredID = R.Window.SCENARIO,
         //iconBase="SET/PATH/TO/ICON/HERE", 
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "project", openAtStartup = true)
+@TopComponent.Registration(mode = "commonpalette", openAtStartup = true)
 @ActionID(category = "Window", id = "it.unibas.lunatic.gui.ScenarioTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(

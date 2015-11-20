@@ -20,3 +20,18 @@ A: aggingere in NETBEANS_HOME\harness\etc\app.conf l'opzione -J-Dplugin.manager.
 Q: Come cambiare il numero di versione?
 A: Modificare il file branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties
    Modificare il file branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
+
+-----------------------------------------------------------------------------------------------------------
+Q: Come impostare la posizione dei topcomponent
+A: E' possibile farlo in due modi: 
+@TopComponent.Registration(mode = "explorer", openAtStartup = true) -> consigliato
+oppure editando XMLLayer (utile per spostare i TopComponent predefiniti, tipo favorites, properties output)
+
+Le zone di default sono (bottomSlidingSide, commonpalette, editor, explorer, leftSlidingSide, navigator, output, properties, rightSlidingSide, topSlidingSide)
+In XMLLayers è possibile configurare le dimensioni e posizioni di ogni zona (es editor.wsmode)
+Inoltre le zone vengono mostrate come folder, e in ognuna c'è un riferimento al topComponent (modificando l'annotazione il riferimento viene automaticamente spostato)
+
+-----------------------------------------------------------------------------------------------------------
+NOTE
+-----------------------------------------------------------------------------------------------------------
+Utilizzare xerces-2.8.0.jar (la stessa versione di NetBeans)

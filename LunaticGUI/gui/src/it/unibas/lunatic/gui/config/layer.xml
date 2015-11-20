@@ -17,38 +17,36 @@
     </folder>
     <folder name="Windows2">
         <folder name="Modes">
-            <folder name="bottomSlidingMode">
-                <file name="ScenarioDepsTopComponent.wstcref" url="ScenarioDepsTopComponentWstcref_1.xml"/>
-                <file name="StepDepsTopComponent.wstcref" url="StepDepsTopComponentWstcref_1.xml"/>
-                <file name="output.wstcref" url="outputWstcref.xml"/>
+            <file name="editorBottom.wsmode" url="editorBottomWsmode_1.xml"/>
+            <folder name="project"/>
+            <folder name="topSlidingSide">
+                
             </folder>
-            <file name="bottomSlidingSide.wsmode" url="bottomSlidingSideWsmode.xml"/>
-            <folder name="editor">
-                <file name="CellGroupTopComponent.wstcref" url="CellGroupTopComponentWstcref_1.xml"/>
+            <folder name="explorer">
+                
             </folder>
-            <file name="editor.wsmode" url="editorWsmode.xml"/>
-            <file name="explorer.wsmode" url="explorerWsmode.xml"/>
+            <folder name="commonpalette"/>
+            <folder name="output">
+                
+            </folder>
+            <folder name="rightSlidingSide"/>
+            <folder name="bottomSlidingSide">
+                <file name="ScenarioDepsTopComponent.wstcref" url="ScenarioDepsTopComponentWstcref_2.xml"/>
+                <file name="StepDepsTopComponent.wstcref" url="fleftSlidingSideStepDepsTopComponentWstcref_2.xml"/>
+                <file name="output.wstcref" url="outputWsmode_1.xml"/>
+            </folder>
+            <folder name="editor"/>
             <folder name="leftSlidingSide">
                 <file name="favorites.wstcref" url="favoritesWstcref.xml"/>
             </folder>
-            <file name="leftSlidingSide.wsmode" url="leftSlidingSideWsmode.xml"/>
-            <file name="navigator.wsmode" url="navigatorWsmode.xml"/>
-            <file name="output.wsmode" url="outputWsmode.xml"/>
-            <folder name="preview">
-                <file name="ScenarioDepsTopComponent.wstcref_hidden"/>
-                <file name="StepDepsTopComponent.wstcref_hidden"/>
+            <folder name="navigator">
+                <file name="MultiView-CellGroupOccurrences|CellGroupProvenances|CellGroupUserCells|CellGroupAdditionalCells|.wstcref" url="CellGroupTopComponentWstcref_2.xml"/>
             </folder>
-            <file name="preview.wsmode" url="previewWsmode.xml"/>
-            <folder name="project">
-                <file name="ScenarioTopComponent.wstcref" url="ScenarioTopComponentWstcref_1.xml"/>
-            </folder>
-            <file name="project.wsmode" url="projectWsmode.xml"/>
+            <folder name="preview"/>
             <folder name="properties">
-                <file name="properties.wstcref" url="propertiesWstcref.xml"/>
+                <file name="properties.wstcref" url="propertiesWstcref_5.xml"/>
             </folder>
-            <file name="properties.wsmode" url="propertiesWsmode.xml"/>
-            <file name="rightSlidingSide.wsmode" url="rightSlidingSideWsmode.xml"/>
-            <file name="topSlidingSide.wsmode" url="topSlidingSideWsmode.xml"/>
+            <folder name="editorBottom"/>
         </folder>
     </folder>
 </filesystem>

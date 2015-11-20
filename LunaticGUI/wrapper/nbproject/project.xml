@@ -171,10 +171,10 @@
                 <runtime-relative-path>ext/js-engine.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/js-engine.jar</binary-origin>
             </class-path-extension>
-            <class-path-extension>
+<!--            <class-path-extension>
                 <runtime-relative-path>ext/xercesImpl.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/xercesImpl.jar</binary-origin>
-            </class-path-extension>
+            </class-path-extension>-->
             <class-path-extension>
                 <runtime-relative-path>ext/commons-csv-1.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-csv-1.1.jar</binary-origin>
