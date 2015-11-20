@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
-OpenIDE-Module: it.unibas.lunatic.gui/1
+OpenIDE-Module: it.unibas.lunatic.gui
 OpenIDE-Module-Implementation-Version: 1307092010
 OpenIDE-Module-Layer: it/unibas/lunatic/gui/config/layer.xml
 OpenIDE-Module-Localizing-Bundle: it/unibas/lunatic/gui/Bundle.properties
 OpenIDE-Module-Requires: org.openide.windows.WindowManager
 AutoUpdate-Essential-Module: true
+OpenIDE-Module-Specification-Version: 1.2

@@ -35,3 +35,5 @@ Inoltre le zone vengono mostrate come folder, e in ognuna c'è un riferimento al
 NOTE
 -----------------------------------------------------------------------------------------------------------
 Utilizzare xerces-2.8.0.jar (la stessa versione di NetBeans)
+
+Per aggiornare i moduli utilizzare sempre un diverso minor version (Es 1.2 -> 1.3 ok, 1.2 -> 1.2.1 NO)
