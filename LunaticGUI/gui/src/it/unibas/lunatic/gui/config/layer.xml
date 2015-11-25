@@ -40,7 +40,6 @@
                 <file name="favorites.wstcref" url="favoritesWstcref.xml"/>
             </folder>
             <folder name="navigator">
-                <file name="MultiView-CellGroupOccurrences|CellGroupProvenances|CellGroupUserCells|CellGroupAdditionalCells|.wstcref" url="CellGroupTopComponentWstcref_2.xml"/>
             </folder>
             <folder name="preview"/>
             <folder name="properties">

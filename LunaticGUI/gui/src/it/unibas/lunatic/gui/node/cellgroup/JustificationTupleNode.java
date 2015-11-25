@@ -129,11 +129,7 @@ public class JustificationTupleNode extends AbstractNode {
 
         @Override
         public void createTableColumns(OutlineView outlineView) {
-            outlineView.addPropertyColumn("tid", "tid");
-            outlineView.addPropertyColumn("table", "table");
-            outlineView.addPropertyColumn("attribute", "attribute");
-            outlineView.addPropertyColumn("value", "value");
-            outlineView.addPropertyColumn("authoritative", "authoritative");
+            outlineView.setPropertyColumns("tid", "tid", "table", "table", "attribute", "attribute", "value", "value", "authoritative", "authoritative");
         }
     }
 }

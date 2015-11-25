@@ -6,6 +6,7 @@ import it.unibas.lunatic.gui.R;
 import it.unibas.lunatic.gui.model.LoadedScenario;
 import it.unibas.lunatic.gui.node.cellgroup.StepCellGroupNode;
 import it.unibas.lunatic.gui.window.cellgroup.CellGroupMultiViewManager;
+import it.unibas.lunatic.gui.window.db.TableWindowManager;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,7 +41,8 @@ public final class ActionShowCellGroupDetails implements ActionListener {
         CellGroup cg = cellGroupNode.getCellGroup();
         if (cg != null) {
             ls.put(R.BeanProperty.SELECTED_CELL_GROUP_NODE, cellGroupNode);
-            cellGroupMultiViewFactory.open();
+//            cellGroupMultiViewFactory.open();
+            view.show(R.Window.CELL_GROUP_DETAILS);
         }
     }
 }

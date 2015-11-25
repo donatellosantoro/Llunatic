@@ -11,7 +11,6 @@ import it.unibas.lunatic.gui.table.OutlineTableHelper;
 import it.unibas.lunatic.gui.window.ScenarioChangeListener;
 import java.awt.BorderLayout;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;

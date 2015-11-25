@@ -75,7 +75,7 @@ public class UserCellTupleNode extends AbstractNode {
 
         @Override
         public void createTableColumns(OutlineView outlineView) {
-            outlineView.addPropertyColumn("value", "value");
+            outlineView.setPropertyColumns("value", "value");
         }
     }
 }

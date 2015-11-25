@@ -21,7 +21,7 @@ import speedy.model.database.ConstantValue;
     "COL_PreviousValue=previous value"
 })
 public class OccurrenceTupleNode extends AbstractNode {
-
+    
     public static final String TID = "tid";
     public static final String TABLE = "table";
     public static final String ATTRIBUTE = "attribute";
@@ -32,64 +32,60 @@ public class OccurrenceTupleNode extends AbstractNode {
     private IValue previousValue;
     private Action[] actions = new Action[]{Actions.forID("Window", R.ActionId.SHOW_OCCURRENCE_TUPLE)};
     private final ChaseStepNode chaseStepNode;
-
+    
     public OccurrenceTupleNode(ChaseStepNode chaseStepNode, CellRef cellRef, IValue original) {
         super(Children.LEAF);
         this.cellref = cellRef;
         this.originalValue = original;
         this.chaseStepNode = chaseStepNode;
     }
-
+    
     public void setPreviousValue(IValue previousValue) {
         this.previousValue = previousValue;
     }
-
+    
     @Override
     public Action[] getActions(boolean context) {
         return actions;
     }
-
+    
     @Override
     public Action getPreferredAction() {
         return actions[0];
     }
-
+    
     public CellRef getOccurrence() {
         return cellref;
     }
-
+    
     public IValue getPreviousValue() {
         return previousValue;
     }
-
+    
     public ChaseStepNode getChaseStepNode() {
         return chaseStepNode;
     }
-
+    
     public String getTableName() {
         return cellref.getAttributeRef().getTableName();
     }
     private static ITableColumnGenerator columnGenerator;
-
+    
     public static ITableColumnGenerator getColumnGenerator() {
         if (columnGenerator == null) {
             columnGenerator = new ColumnGenerator();
         }
         return columnGenerator;
     }
-
+    
     private static class ColumnGenerator implements ITableColumnGenerator {
-
+        
         @Override
         public void createTableColumns(OutlineView outlineView) {
-            outlineView.addPropertyColumn(TID, TID);
-            outlineView.addPropertyColumn(TABLE, TABLE);
-            outlineView.addPropertyColumn(ATTRIBUTE, ATTRIBUTE);
-            outlineView.addPropertyColumn(PREVIOUS_VALUE, Bundle.COL_PreviousValue());
-            outlineView.addPropertyColumn(ORIGINAL_VALUE, Bundle.COL_OriginalValue());
+            outlineView.setPropertyColumns(TID, TID, TABLE, TABLE, ATTRIBUTE, ATTRIBUTE, PREVIOUS_VALUE, Bundle.COL_PreviousValue(), ORIGINAL_VALUE, Bundle.COL_OriginalValue());
         }
     }
-
+    
     @Override
     protected Sheet createSheet() {
         Sheet sheet = Sheet.createDefault();
@@ -146,7 +142,7 @@ public class OccurrenceTupleNode extends AbstractNode {
                 return true;
             }
         });
-
+        
         set.put(new StringProperty(ORIGINAL_VALUE, Bundle.COL_OriginalValue()) {
             @Override
             public String getValue() throws IllegalAccessException, InvocationTargetException {

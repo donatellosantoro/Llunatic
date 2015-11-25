@@ -98,7 +98,8 @@ public final class ActionShowCellGroupsFromTable implements ActionListener {
         @Override
         public void run() {
             ls.put(R.BeanProperty.SELECTED_CELL_GROUP_NODE, cInfo);
-            cellGroupMultiViewFactory.open();
+            view.show(R.Window.CELL_GROUP_DETAILS);
+//            cellGroupMultiViewFactory.open();
         }
     }
 }
