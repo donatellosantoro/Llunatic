@@ -23,34 +23,32 @@ public class CheckSolution {
     }
 
     public void markLeavesAsSolutions(DeltaChaseStep chaseStep, Scenario scenario) {
-        for (DeltaChaseStep child : chaseStep.getChildren()) {
-            if (child.isLeaf()) {
-                if (child.isDuplicate() || child.isInvalid() || child.isEditedByUser()) {
-                    continue;
-                }
-                child.setSolution(true);
-                if (scenario.getConfiguration().isCheckGroundSolutions()) {
-                    checkForGroundSolution(child, scenario);
-                }
-            } else {
-                markLeavesAsSolutions(child, scenario);
+        if (chaseStep.isLeaf()) {
+            if (chaseStep.isDuplicate() || chaseStep.isInvalid() || chaseStep.isEditedByUser()) {
+                return;
             }
+            chaseStep.setSolution(true);
+            if (scenario.getConfiguration().isCheckGroundSolutions()) {
+                checkForGroundSolution(chaseStep, scenario);
+            }
+        }
+        for (DeltaChaseStep child : chaseStep.getChildren()) {
+            markLeavesAsSolutions(child, scenario);
         }
     }
 
     public void checkSolutions(DeltaChaseStep chaseStep, Scenario scenario) {
-        for (DeltaChaseStep child : chaseStep.getChildren()) {
-            if (child.isLeaf()) {
-                if (child.isDuplicate() || child.isInvalid() || child.isEditedByUser() || child.isSolution()) {
-                    continue;
-                }
-                if (areStatisfiedEGDs(child, scenario) && areSatisfiedTGDs(child, scenario)) {
-                    child.setSolution(true);
-                    checkForGroundSolution(child, scenario);
-                }
-            } else {
-                checkSolutions(child, scenario);
+        if (chaseStep.isLeaf()) {
+            if (chaseStep.isDuplicate() || chaseStep.isInvalid() || chaseStep.isEditedByUser() || chaseStep.isSolution()) {
+                return;
             }
+            if (areStatisfiedEGDs(chaseStep, scenario) && areSatisfiedTGDs(chaseStep, scenario)) {
+                chaseStep.setSolution(true);
+                checkForGroundSolution(chaseStep, scenario);
+            }
+        }
+        for (DeltaChaseStep child : chaseStep.getChildren()) {
+            checkSolutions(child, scenario);
         }
     }
 

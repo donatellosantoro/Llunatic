@@ -53,72 +53,62 @@ public class ChaseTreeSize {
     }
 
     private void visitForAllLeaves(DeltaChaseStep step) {
+        if (isLeaf(step)) {
+            counter++;
+        }
         for (DeltaChaseStep child : step.getChildren()) {
-            if (isLeaf(child)) {
-                counter++;
-            } else {
-                visitForAllLeaves(child);
-            }
+            visitForAllLeaves(child);
         }
     }
 
     private void visitForPotentialSolutions(DeltaChaseStep step) {
-        for (DeltaChaseStep child : step.getChildren()) {
-            if (isLeaf(child)) {
-                if (!child.isDuplicate() && !child.isInvalid()) {
-                    counter++;
-                }
-            } else {
-                visitForPotentialSolutions(child);
+        if (isLeaf(step)) {
+            if (!step.isDuplicate() && !step.isInvalid()) {
+                counter++;
             }
+        }
+        for (DeltaChaseStep child : step.getChildren()) {
+            visitForPotentialSolutions(child);
         }
     }
 
     private void visitForDuplicates(DeltaChaseStep step) {
-        for (DeltaChaseStep child : step.getChildren()) {
-            if (isLeaf(child)) {
-                if (child.isDuplicate()) {
-                    counter++;
-                }
-            } else {
-                visitForDuplicates(child);
+        if (isLeaf(step)) {
+            if (step.isDuplicate()) {
+                counter++;
             }
+        }
+        for (DeltaChaseStep child : step.getChildren()) {
+            visitForDuplicates(child);
         }
     }
 
     private void visitForInvalids(DeltaChaseStep step) {
-        for (DeltaChaseStep child : step.getChildren()) {
-            if (isLeaf(child)) {
-                if (child.isInvalid()) {
-                    counter++;
-                }
-            } else {
-                visitForInvalids(child);
+        if (isLeaf(step)) {
+            if (step.isInvalid()) {
+                counter++;
             }
+        }
+        for (DeltaChaseStep child : step.getChildren()) {
+            visitForInvalids(child);
         }
     }
 
     private void visitForSolution(DeltaChaseStep step) {
+        if (step.isSolution()) {
+            counter++;
+        }
         for (DeltaChaseStep child : step.getChildren()) {
-            if (isLeaf(child)) {
-                if (child.isSolution()) {
-                    counter++;
-                }
-            } else {
-                visitForSolution(child);
-            }
+            visitForSolution(child);
         }
     }
 
     private void visitForGroundSolution(DeltaChaseStep step) {
+        if (step.isSolution() && step.isGround()) {
+            counter++;
+        }
         for (DeltaChaseStep child : step.getChildren()) {
-            if (isLeaf(child)) {
-                if (child.isSolution() && child.isGround()) {
-                    counter++;
-                }
-            } else {
-                visitForGroundSolution(child);
-            }
+            visitForGroundSolution(child);
         }
     }
 
