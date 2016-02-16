@@ -84,6 +84,9 @@ public class ChaseMCScenario {
             if (scenario.getConfiguration().isExportSolutions()) {
                 resultExporter.exportSolutionsInSeparateFiles(chaseTree, scenario);
             }
+            if (scenario.getConfiguration().isExportChanges()) {
+                resultExporter.exportChangesInSeparateFiles(chaseTree, scenario);
+            }
             return chaseTree;
         } catch (ChaseFailedException e) {
             throw e;

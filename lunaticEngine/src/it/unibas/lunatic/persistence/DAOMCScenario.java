@@ -470,9 +470,17 @@ public class DAOMCScenario {
         Element exportSolutionsTypeElement = configurationElement.getChild("exportSolutionsType");
         if (exportSolutionsTypeElement != null) {
             configuration.setExportSolutionsType(exportSolutionsTypeElement.getValue());
-            if(!configuration.getExportSolutionsType().equals("CSV")){
+            if (!configuration.getExportSolutionsType().equals("CSV")) {
                 throw new DAOException("Export type not supported");
             }
+        }
+        Element exportChangesElement = configurationElement.getChild("exportChanges");
+        if (exportChangesElement != null) {
+            configuration.setExportChanges(Boolean.parseBoolean(exportChangesElement.getValue()));
+        }
+        Element exportChangesPathElement = configurationElement.getChild("exportChangesPath");
+        if (exportChangesPathElement != null) {
+            configuration.setExportChangesPath(exportChangesPathElement.getValue());
         }
         return configuration;
     }

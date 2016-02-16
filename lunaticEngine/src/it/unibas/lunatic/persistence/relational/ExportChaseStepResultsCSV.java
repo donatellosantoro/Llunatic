@@ -73,6 +73,19 @@ public class ExportChaseStepResultsCSV {
         }
     }
 
+    public void exportChangesInSeparateFiles(ChaseTree chaseTree, Scenario scenario) {
+        List<DeltaChaseStep> leaves = ChaseUtility.getAllLeaves(chaseTree.getRoot());
+        int solutionIndex = 0;
+        for (DeltaChaseStep step : leaves) {
+            if (step.isInvalid() || step.isDuplicate()) {
+                continue;
+            }
+            String path = scenario.getConfiguration().getExportSolutionsPath() + "/Changes_" + solutionIndex++ +".csv";
+            System.out.println("Exporting changes " + solutionIndex + " into " + path);
+            OperatorFactory.getInstance().getGenerateModifiedCells(scenario).generate(step, path);
+        }
+    }
+
     private void exportSolutions(DeltaChaseStep step, String folder, List<String> results, boolean materializeFKJoins) {
         if (step.isLeaf()) {
             if (step.isDuplicate() || step.isInvalid()) {

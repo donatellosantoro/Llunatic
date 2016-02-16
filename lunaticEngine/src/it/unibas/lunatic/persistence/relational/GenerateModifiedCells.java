@@ -1,5 +1,6 @@
 package it.unibas.lunatic.persistence.relational;
 
+import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
@@ -9,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.AttributeRef;
@@ -26,9 +28,13 @@ public class GenerateModifiedCells {
         this.occurrenceHandler = occurrenceHandler;
     }
 
-    public void generate(DeltaChaseStep result, String fileName) throws IOException {
-        List<String> results = generate(result);
-        saveResults(results, fileName);
+    public void generate(DeltaChaseStep result, String fileName) throws DAOException {
+        try {
+            List<String> results = generate(result);
+            saveResults(results, fileName);
+        } catch (IOException ex) {
+            throw new DAOException();
+        }
     }
 
     public List<String> generate(DeltaChaseStep root) throws IOException {

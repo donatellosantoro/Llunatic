@@ -26,6 +26,8 @@ public class LunaticConfiguration {
     private boolean exportSolutions = false;
     private String exportSolutionsPath;
     private String exportSolutionsType;
+    private boolean exportChanges = false;
+    private String exportChangesPath;
 //
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
     private final String deChaser = LunaticConstants.PROXY_MC_CHASER;
@@ -243,12 +245,28 @@ public class LunaticConfiguration {
         this.exportSolutionsType = exportSolutionsType;
     }
 
+    public boolean isExportChanges() {
+        return exportChanges;
+    }
+
+    public void setExportChanges(boolean exportChanges) {
+        this.exportChanges = exportChanges;
+    }
+
+    public String getExportChangesPath() {
+        return exportChangesPath;
+    }
+
+    public void setExportChangesPath(String exportChangesPath) {
+        this.exportChangesPath = exportChangesPath;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
                 + "\n\t IterationLimit: " + iterationLimit
                 + "\n\t UseLimit1: " + useLimit1ForEGDs
-                + "\n\t UseCellGroupsForTGDs: " + deProxyMode
+                + "\n\t DEProxyMode: " + deProxyMode
                 + "\n\t CheckSolutions: " + checkSolutions
                 + "\n\t CheckSolutionsQuery: " + checkSolutionsQuery
                 + "\n\t CheckGroundSolutions: " + checkGroundSolutions
