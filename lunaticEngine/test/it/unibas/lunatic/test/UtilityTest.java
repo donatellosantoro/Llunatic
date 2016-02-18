@@ -1,9 +1,9 @@
 package it.unibas.lunatic.test;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
-import it.unibas.lunatic.test.comparator.repairs.DAOException;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;

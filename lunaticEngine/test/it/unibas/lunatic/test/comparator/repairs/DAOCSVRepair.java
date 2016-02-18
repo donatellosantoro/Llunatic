@@ -1,5 +1,7 @@
 package it.unibas.lunatic.test.comparator.repairs;
 
+import it.unibas.lunatic.exceptions.DAOException;
+import it.unibas.lunatic.persistence.DAOUtility;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class DAOCSVRepair {
             BufferedReader reader = utility.getBufferedReader(fileName);
             String line;
             while ((line = reader.readLine()) != null) {
-                if(line.startsWith("+++++++++++++++") || line.trim().isEmpty()){
+                if (line.startsWith("+++++++++++++++") || line.trim().isEmpty()) {
                     continue;
                 }
                 String[] tokens = line.split(SEPARATOR, -1);
@@ -47,7 +49,7 @@ public class DAOCSVRepair {
             String line;
             while ((line = reader.readLine()) != null && !line.isEmpty()) {
                 Map<String, Repair> repairs = new HashMap<String, Repair>();
-                while ((line = reader.readLine()) != null && !line.isEmpty()) {                    
+                while ((line = reader.readLine()) != null && !line.isEmpty()) {
                     String[] tokens = line.split(SEPARATOR, -1);
                     Repair repair = new Repair(tokens[0], tokens[1], tokens[2]);
                     repairs.put(repair.getCellId(), repair);

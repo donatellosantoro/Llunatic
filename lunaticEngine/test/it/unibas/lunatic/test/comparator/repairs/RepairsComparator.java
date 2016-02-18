@@ -1,5 +1,6 @@
 package it.unibas.lunatic.test.comparator.repairs;
 
+import it.unibas.lunatic.exceptions.DAOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
