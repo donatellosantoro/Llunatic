@@ -228,7 +228,7 @@ public class DependencyUtility {
     }
 
     public static String valueWithOnlyChars(Object value) {
-        String valueString= value.toString().replaceAll("[^A-Za-z0-9]", "").toLowerCase();
+        String valueString = value.toString().replaceAll("[^A-Za-z0-9]", "_").toLowerCase();
         if (valueString.length() > 35) valueString = valueString.substring(0, 35);
         return valueString;
     }
@@ -269,8 +269,8 @@ public class DependencyUtility {
         }
         return result;
     }
-    
-    public static boolean hasAuthoritativeAtoms(Dependency egd, Scenario scenario){
+
+    public static boolean hasAuthoritativeAtoms(Dependency egd, Scenario scenario) {
         return !findAuthoritativeAtoms(egd, scenario).isEmpty();
     }
 

@@ -129,9 +129,12 @@ public class ReplaceConstantsWithVariables {
 
     private void fixExpression(ComparisonAtom comparisonAtom, Object constantValue, FormulaVariable formulaVariable) {
         String expressionWithDelimiters = comparisonAtom.getExpression().toVariableDelimitedString();
-        String newExpressionString = expressionWithDelimiters.replaceAll("§" + constantValue + "#", formulaVariable.getId());
-        newExpressionString = newExpressionString.replaceAll("§", "");
-        newExpressionString = newExpressionString.replaceAll("#", "");
+//        String newExpressionString = expressionWithDelimiters.replaceAll("§" + constantValue + "#", formulaVariable.getId());
+        String newExpressionString = expressionWithDelimiters.replace("§" + constantValue + "#", formulaVariable.getId());
+//        newExpressionString = newExpressionString.replaceAll("§", "");
+        newExpressionString = newExpressionString.replace("§", "");
+//        newExpressionString = newExpressionString.replaceAll("#", "");
+        newExpressionString = newExpressionString.replace("#", "");
         Expression newExpression = new Expression(newExpressionString);
         comparisonAtom.setExpression(newExpression);
         for (FormulaVariable variableInAtom : comparisonAtom.getVariables()) {
