@@ -162,7 +162,7 @@ value	:	 '\$'var=IDENTIFIER { attribute.setValue(new FormulaVariableOccurrence(n
 
 OPERATOR:	 '==' | '!=' | '>' | '<' | '>=' | '<=';
 
-IDENTIFIER  :    (LETTER) (LETTER | DIGIT | '_')*;
+IDENTIFIER  :    (LETTER) (LETTER | DIGIT | '_' | '.' | '-' )*;
 
 //STRING  :  	 '"' (LETTER | DIGIT| '-' | '.' | ' ' | '_' | '*' | '/' )+ '"';
 STRING  :         '"' ~('\r' | '\n' | '"')* '"';

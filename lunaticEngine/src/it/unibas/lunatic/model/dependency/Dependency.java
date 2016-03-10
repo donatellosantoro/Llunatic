@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.model.chase.chasemc.BackwardAttribute;
 import it.unibas.lunatic.model.dependency.operators.CloneDependency;
 import it.unibas.lunatic.model.dependency.operators.DependencyToString;
 import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;

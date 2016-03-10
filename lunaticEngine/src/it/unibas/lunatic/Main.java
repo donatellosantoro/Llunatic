@@ -11,8 +11,12 @@ import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import speedy.model.database.IDatabase;
+import speedy.model.database.ITable;
 
 public class Main {
 
@@ -33,7 +37,9 @@ public class Main {
             DAOMCScenario daoScenario = new DAOMCScenario();
             Scenario scenario = daoScenario.loadScenario(fileScenario);
             System.out.println(" Scenario loaded!");
-            System.out.println(scenario);
+            if (!bigScenario(scenario)) {
+                System.out.println(scenario);
+            }
             System.out.println("*** Chasing scenario...");
             long start = new Date().getTime();
             if (scenario.isDEDScenario()) {
@@ -60,7 +66,7 @@ public class Main {
         IDEChaser chaser = DEChaserFactory.getChaser(scenario);
         IDatabase result = chaser.doChase(scenario);
         System.out.println("*** Chasing DE scenario successful...");
-        if (scenario.isMainMemory()) {
+        if (printDetails(scenario)) {
             System.out.println("--------------");
             System.out.println("Chase Result:");
             System.out.println(result);
@@ -79,7 +85,7 @@ public class Main {
         System.out.println("Time elapsed: " + sec + " sec");
         System.out.println("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         System.out.println("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
-        if (scenario.isMainMemory()) {
+        if (printDetails(scenario)) {
             System.out.println("--------------");
             System.out.println("Chase Result:");
             ChaseTreeSize sizer = new ChaseTreeSize();
@@ -96,11 +102,44 @@ public class Main {
     private static void chaseDEDScenario(Scenario scenario) {
         IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
         System.out.println("*** Chasing DED scenario successful...");
-        if (scenario.isMainMemory()) {
+        if (printDetails(scenario)) {
             System.out.println("--------------");
             System.out.println("Chase Result:");
             System.out.println(result);
         }
         System.out.println(ChaseStats.getInstance().toString());
+    }
+
+    private static boolean printDetails(Scenario scenario) {
+        return scenario.isMainMemory() && !bigScenario(scenario);
+    }
+
+    private static boolean bigScenario(Scenario scenario) {
+        if (scenario.getSource() != null && scenario.getSource().getTableNames().size() > 10) {
+            return true;
+        }
+        if (scenario.getTarget() != null && scenario.getTarget().getTableNames().size() > 10) {
+            return true;
+        }
+        if (scenario.getSTTgds().size() > 10
+                || scenario.getEGDs().size() > 10
+                || scenario.getExtEGDs().size() > 10
+                || scenario.getExtTGDs().size() > 10
+                || scenario.getDEDEGDs().size() > 10) {
+            return true;
+        }
+        for (String tableName : scenario.getSource().getTableNames()) {
+            ITable table = scenario.getSource().getTable(tableName);
+            if (table.getSize() > 100) {
+                return true;
+            }
+        }
+        for (String tableName : scenario.getTarget().getTableNames()) {
+            ITable table = scenario.getTarget().getTable(tableName);
+            if (table.getSize() > 100) {
+                return true;
+            }
+        }
+        return false;
     }
 }

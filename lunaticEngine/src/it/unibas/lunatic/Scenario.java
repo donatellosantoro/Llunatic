@@ -294,11 +294,11 @@ public class Scenario {
         }
         if (hasSuffix()) result.append("Suffix: ").append(suffix).append("\n");
         if (isMainMemory()) {
-            result.append("Source:\n").append(this.source).append("\n");
-            result.append("Target:\n").append(this.target).append("\n");
+            result.append("Source:\n").append(this.getSource()).append("\n");
+            result.append("Target:\n").append(this.getTarget()).append("\n");
         } else {
-            result.append("Source:\n").append(this.source.printSchema()).append("\n");
-            result.append("Target:\n").append(this.target.printSchema()).append("\n");
+            result.append("Source:\n").append(this.getSource().printSchema()).append("\n");
+            result.append("Target:\n").append(this.getTarget().printSchema()).append("\n");
         }
         if (!this.authoritativeSources.isEmpty()) {
             result.append("Authoritative sources: ").append(this.authoritativeSources).append("\n");

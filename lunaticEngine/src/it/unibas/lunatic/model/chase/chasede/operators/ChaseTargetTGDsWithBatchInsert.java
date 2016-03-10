@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasede.operators;
 
+import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
@@ -62,6 +63,7 @@ public class ChaseTargetTGDsWithBatchInsert implements IChaseDeltaExtTGDs {
             chaseNode(newStep, scenario, chaseState, tgdTreeMap);
             return;
         }
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("  ****Chasing node " + node.getId() + " for tgds...");
         if (logger.isDebugEnabled()) logger.debug("Chasing ext tgds on scenario: " + scenario);
         boolean modified = false;
         int iterations = 0;
@@ -72,6 +74,7 @@ public class ChaseTargetTGDsWithBatchInsert implements IChaseDeltaExtTGDs {
             IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), scenario);
             for (Dependency eTgd : scenario.getExtTGDs()) {
                 if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
+                if (LunaticConfiguration.isPrintSteps()) System.out.println("   ****Chasing tgd: " + eTgd.getId());
                 if (logger.isDebugEnabled()) logger.debug("----Chasing tgd: " + eTgd);
                 if (logger.isDebugEnabled()) logger.debug("----Current leaf: " + newStep);
                 IAlgebraOperator tgdQuery = tgdTreeMap.get(eTgd);
@@ -81,6 +84,7 @@ public class ChaseTargetTGDsWithBatchInsert implements IChaseDeltaExtTGDs {
             if (!insertedTuples) {
                 break;
             } else {
+                if (LunaticConfiguration.isPrintSteps()) System.out.println("***** There are new nodes, cycling the chase... Iteration " + iterations);
                 iterations++;
                 modified = true;
             }

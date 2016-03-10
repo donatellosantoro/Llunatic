@@ -53,7 +53,7 @@ fact:	       set=IDENTIFIER { currentFact = new ParserFact(set.getText()); } '('
 
 attrValue:	attr=IDENTIFIER ':' val=(NULL | STRING | NUMBER) { currentFact.addAttribute(new ParserAttribute(attr.getText(), val.getText()));  };
 
-IDENTIFIER  :   (LETTER) (LETTER | DIGIT | '_' | '.' )*;
+IDENTIFIER  :   (LETTER) (LETTER | DIGIT | '_' | '.' | '-' )*;
 
 STRING  :  	'"' (LETTER | DIGIT| '-' | '.' | '@' | ' ')+ '"';
 NUMBER	: 	('-')? DIGIT+ ('.' DIGIT+)?;

@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g 2015-10-20 16:02:17
+// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g 2016-03-10 10:39:46
 
 package it.unibas.lunatic.parser.output;
 
@@ -580,8 +580,8 @@ public class DependenciesLexer extends Lexer {
 		try {
 			int _type = IDENTIFIER;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:165:13: ( ( LETTER ) ( LETTER | DIGIT | '_' )* )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:165:18: ( LETTER ) ( LETTER | DIGIT | '_' )*
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:165:13: ( ( LETTER ) ( LETTER | DIGIT | '_' | '.' | '-' )* )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:165:18: ( LETTER ) ( LETTER | DIGIT | '_' | '.' | '-' )*
 			{
 			if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 				input.consume();
@@ -591,12 +591,12 @@ public class DependenciesLexer extends Lexer {
 				recover(mse);
 				throw mse;
 			}
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:165:27: ( LETTER | DIGIT | '_' )*
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:165:27: ( LETTER | DIGIT | '_' | '.' | '-' )*
 			loop2:
 			while (true) {
 				int alt2=2;
 				int LA2_0 = input.LA(1);
-				if ( ((LA2_0 >= '0' && LA2_0 <= '9')||(LA2_0 >= 'A' && LA2_0 <= 'Z')||LA2_0=='_'||(LA2_0 >= 'a' && LA2_0 <= 'z')) ) {
+				if ( ((LA2_0 >= '-' && LA2_0 <= '.')||(LA2_0 >= '0' && LA2_0 <= '9')||(LA2_0 >= 'A' && LA2_0 <= 'Z')||LA2_0=='_'||(LA2_0 >= 'a' && LA2_0 <= 'z')) ) {
 					alt2=1;
 				}
 
@@ -604,7 +604,7 @@ public class DependenciesLexer extends Lexer {
 				case 1 :
 					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:
 					{
-					if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
+					if ( (input.LA(1) >= '-' && input.LA(1) <= '.')||(input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 						input.consume();
 					}
 					else {
@@ -1224,26 +1224,29 @@ public class DependenciesLexer extends Lexer {
 
 	protected DFA11 dfa11 = new DFA11(this);
 	static final String DFA11_eotS =
-		"\10\uffff\3\21\3\uffff\1\21\13\uffff\14\21\2\uffff\4\21\4\uffff\3\21\2"+
-		"\uffff\5\21\3\uffff";
+		"\10\uffff\3\21\3\uffff\1\21\13\uffff\14\21\1\uffff\5\21\1\uffff\2\21\1"+
+		"\uffff\16\21\1\uffff\3\21\3\uffff\5\21\2\uffff";
 	static final String DFA11_eofS =
-		"\75\uffff";
+		"\114\uffff";
 	static final String DFA11_minS =
 		"\1\11\1\116\3\uffff\1\60\2\uffff\1\103\1\107\1\124\3\uffff\1\156\13\uffff"+
 		"\1\163\2\104\1\164\1\124\1\144\1\72\1\55\1\163\1\105\1\107\1\40\1\uffff"+
-		"\1\105\1\72\2\107\1\104\1\uffff\1\107\2\uffff\2\104\1\163\2\uffff\2\163"+
-		"\3\72\3\uffff";
+		"\1\105\1\72\2\107\1\104\1\uffff\1\107\1\124\1\uffff\2\104\1\163\1\104"+
+		"\1\164\1\124\2\163\1\72\1\163\1\124\1\107\2\72\1\uffff\1\72\1\107\1\104"+
+		"\3\uffff\1\104\2\163\2\72\2\uffff";
 	static final String DFA11_maxS =
 		"\1\174\1\146\3\uffff\1\76\2\uffff\1\105\1\170\1\124\3\uffff\1\156\13\uffff"+
 		"\1\163\2\104\1\164\1\124\1\144\1\72\1\55\1\163\1\124\1\107\1\40\1\uffff"+
-		"\1\123\1\72\2\107\1\104\1\uffff\1\170\2\uffff\2\104\1\163\2\uffff\2\163"+
-		"\3\72\3\uffff";
+		"\1\123\1\72\2\107\1\104\1\uffff\1\170\1\124\1\uffff\2\104\1\163\1\104"+
+		"\1\164\1\124\2\163\1\72\1\163\1\124\1\107\2\72\1\uffff\1\72\1\107\1\104"+
+		"\3\uffff\1\104\2\163\2\72\2\uffff";
 	static final String DFA11_acceptS =
 		"\2\uffff\1\2\1\3\1\4\1\uffff\1\6\1\7\3\uffff\1\20\1\21\1\22\1\uffff\1"+
 		"\24\1\25\1\26\1\27\1\30\1\32\1\33\1\34\1\1\1\31\1\5\14\uffff\1\10\5\uffff"+
-		"\1\23\1\uffff\1\13\1\14\3\uffff\1\11\1\12\5\uffff\1\17\1\15\1\16";
+		"\1\23\2\uffff\1\14\16\uffff\1\17\3\uffff\1\15\1\16\1\11\5\uffff\1\13\1"+
+		"\12";
 	static final String DFA11_specialS =
-		"\75\uffff}>";
+		"\114\uffff}>";
 	static final String[] DFA11_transitionS = {
 			"\2\24\1\uffff\2\24\22\uffff\1\24\1\20\1\22\1\1\1\14\3\uffff\1\2\1\3\2"+
 			"\uffff\1\4\1\5\1\6\1\25\12\23\1\7\1\uffff\3\20\2\uffff\3\21\1\10\1\11"+
@@ -1293,19 +1296,34 @@ public class DependenciesLexer extends Lexer {
 			"\1\62",
 			"",
 			"\1\63\60\uffff\1\64",
-			"",
-			"",
 			"\1\65",
+			"",
 			"\1\66",
 			"\1\67",
-			"",
-			"",
 			"\1\70",
 			"\1\71",
 			"\1\72",
 			"\1\73",
 			"\1\74",
+			"\1\75",
+			"\1\76",
+			"\1\77",
+			"\1\100",
+			"\1\101",
+			"\1\102",
+			"\1\103",
 			"",
+			"\1\104",
+			"\1\105",
+			"\1\106",
+			"",
+			"",
+			"",
+			"\1\107",
+			"\1\110",
+			"\1\111",
+			"\1\112",
+			"\1\113",
 			"",
 			""
 	};
