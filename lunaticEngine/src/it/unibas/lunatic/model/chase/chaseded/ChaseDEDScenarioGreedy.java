@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chaseded;
 
+import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
@@ -64,11 +65,14 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
         int executedGreedyScenarios = 0;
         for (GreedyDEDScenario dedScenario : dedScenarios) {
             if (logger.isDebugEnabled()) logger.debug("Executing DED Scenario " + dedScenario.getId());
+            if (LunaticConfiguration.isPrintSteps()) System.out.println("*** Executing DED Scenario " + dedScenario.getId());
+            if (LunaticConfiguration.isPrintSteps()) System.out.println(dedScenario.toString());
             executedGreedyScenarios++;
             try {
                 result = doChase(scenario, dedScenario, chaseState);
                 //Solution found
                 if (logger.isDebugEnabled()) logger.debug("DED Scenario " + dedScenario.getId() + " generates a solution!");
+                if (LunaticConfiguration.isPrintSteps()) System.out.println("*** DED Scenario " + dedScenario.getId() + " generates a solution!");
                 if (scenario.getConfiguration().isChaseDEDGreedyExecuteAllScenarios()) {
                     rollbackChase(originalTarget, scenario);
                     continue;
@@ -78,6 +82,7 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
             } catch (ChaseFailedException ex) {
                 if (logger.isDebugEnabled()) logger.debug("Chase fail: " + ex);
                 if (logger.isDebugEnabled()) logger.debug("DED Scenario " + dedScenario.getId() + " failed!");
+                if (LunaticConfiguration.isPrintSteps()) System.out.println("*** DED Scenario " + dedScenario.getId() + " failed!");
                 ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS, 1);
                 rollbackChase(originalTarget, scenario);
             } catch (Exception ex) {
