@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.dependency.operators;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.model.database.skolem.AppendSkolemPart;
 import it.unibas.lunatic.model.database.skolem.ISkolemPart;
 import it.unibas.lunatic.model.database.skolem.StringSkolemPart;

@@ -4,7 +4,7 @@ import it.unibas.lunatic.LunaticConstants;
 import java.util.List;
 import speedy.model.database.AttributeRef;
 
-public class ExtendedDependency {
+public class ExtendedEGD {
     
     private String id;
     private Dependency dependency;
@@ -13,13 +13,13 @@ public class ExtendedDependency {
     private List<AttributeRef> affectedAttributes;
     private List<AttributeRef> localAffectedAttributes;
 
-    public ExtendedDependency(String id, Dependency dependency, String chaseMode) {
+    public ExtendedEGD(String id, Dependency dependency, String chaseMode) {
         this.id = id;
         this.dependency = dependency;
         this.chaseMode = chaseMode;
     }
 
-    public ExtendedDependency(String id, Dependency dependency, String chaseMode, FormulaVariableOccurrence occurrence) {
+    public ExtendedEGD(String id, Dependency dependency, String chaseMode, FormulaVariableOccurrence occurrence) {
         this.id = id;
         this.dependency = dependency;
         this.chaseMode = chaseMode;
@@ -82,7 +82,7 @@ public class ExtendedDependency {
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
-        final ExtendedDependency other = (ExtendedDependency) obj;
+        final ExtendedEGD other = (ExtendedEGD) obj;
         if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) return false;
         if ((this.chaseMode == null) ? (other.chaseMode != null) : !this.chaseMode.equals(other.chaseMode)) return false;
         return true;

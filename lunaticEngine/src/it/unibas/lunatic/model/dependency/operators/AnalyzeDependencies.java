@@ -3,11 +3,9 @@ package it.unibas.lunatic.model.dependency.operators;
 import it.unibas.lunatic.Scenario;
 import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.model.dependency.ExtendedDependency;
+import it.unibas.lunatic.model.dependency.ExtendedEGD;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
-import it.unibas.lunatic.model.dependency.DependencyStratum;
-import it.unibas.lunatic.model.dependency.IFormulaAtom;
-import it.unibas.lunatic.model.dependency.RelationalAtom;
+import it.unibas.lunatic.model.dependency.EGDStratum;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
@@ -29,14 +27,17 @@ import org.slf4j.LoggerFactory;
 public class AnalyzeDependencies {
 
     private static final Logger logger = LoggerFactory.getLogger(AnalyzeDependencies.class);
+    private final CheckWeaklyAcyclicityInTGDs weaklyAcyclicityChecker = new CheckWeaklyAcyclicityInTGDs();
     private final BuildExtendedDependencies dependencyBuilder = new BuildExtendedDependencies();
     private final FindSymmetricAtoms symmetryFinder = new FindSymmetricAtoms();
     private final AssignAdditionalAttributes additionalAttributesAssigner = new AssignAdditionalAttributes();
+    private final BuildTGDStratification tgdStratificationBuilder = new BuildTGDStratification();
 
     public void prepareDependenciesAndGenerateStratification(Scenario scenario) {
         if (scenario.getStratification() != null) {
             return;
         }
+        weaklyAcyclicityChecker.check(scenario.getExtTGDs());
         findAllQueriedAttributesForEGDs(scenario.getExtEGDs());
         findAllQueriedAttributesForTGDs(scenario.getExtTGDs());
         DependencyStratification stratification = generateStratification(scenario);
@@ -45,6 +46,7 @@ public class AnalyzeDependencies {
         symmetryFinder.findSymmetricAtoms(scenario.getExtEGDs(), scenario);
         findAllAffectedAttributes(scenario.getExtEGDs());
         assignAdditionalAttributes(scenario.getExtEGDs(), scenario);
+        tgdStratificationBuilder.buildTGDStratification(scenario.getExtTGDs(), stratification);
         scenario.setStratification(stratification);
         checkAuthoritativeSources(scenario.getExtEGDs(), scenario);
     }
@@ -64,39 +66,39 @@ public class AnalyzeDependencies {
     }
 
     private DependencyStratification generateStratification(Scenario scenario) {
-        List<ExtendedDependency> extendedDependencies = dependencyBuilder.buildExtendedEGDs(scenario.getExtEGDs(), scenario);
-        DirectedGraph<ExtendedDependency, DefaultEdge> dependencyGraph = initDependencyGraph(extendedDependencies);
-        StrongConnectivityInspector<ExtendedDependency, DefaultEdge> strongConnectivityInspector = new StrongConnectivityInspector<ExtendedDependency, DefaultEdge>(dependencyGraph);
-        List<Set<ExtendedDependency>> stronglyConnectedComponents = strongConnectivityInspector.stronglyConnectedSets();
+        List<ExtendedEGD> extendedDependencies = dependencyBuilder.buildExtendedEGDs(scenario.getExtEGDs(), scenario);
+        DirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph = initDependencyGraph(extendedDependencies);
+        StrongConnectivityInspector<ExtendedEGD, DefaultEdge> strongConnectivityInspector = new StrongConnectivityInspector<ExtendedEGD, DefaultEdge>(dependencyGraph);
+        List<Set<ExtendedEGD>> stronglyConnectedComponents = strongConnectivityInspector.stronglyConnectedSets();
         DependencyStratification stratification = new DependencyStratification();
-        for (Set<ExtendedDependency> extendedDependencySet : stronglyConnectedComponents) {
+        for (Set<ExtendedEGD> extendedDependencySet : stronglyConnectedComponents) {
             Set<Dependency> dependencySet = buildDependencySet(extendedDependencySet);
-            DependencyStratum stratum = new DependencyStratum(dependencySet, extendedDependencySet);
+            EGDStratum stratum = new EGDStratum(dependencySet, extendedDependencySet);
             Collections.sort(stratum.getDependencies(), new DependencyComparator(scenario));
-            stratification.addStratum(stratum);
+            stratification.addEGDStratum(stratum);
         }
-        Collections.sort(stratification.getStrata(), new StratumComparator(dependencyGraph));
+        Collections.sort(stratification.getEGDStrata(), new EGDStratumComparator(dependencyGraph));
         int counter = 0;
-        for (DependencyStratum stratum : stratification.getStrata()) {
+        for (EGDStratum stratum : stratification.getEGDStrata()) {
             stratum.setId(++counter + "");
         }
         if (logger.isDebugEnabled()) logger.debug("Stratification: " + stratification);
         return stratification;
     }
 
-    private DirectedGraph<ExtendedDependency, DefaultEdge> initDependencyGraph(List<ExtendedDependency> dependencies) {
-        DirectedGraph<ExtendedDependency, DefaultEdge> dependencyGraph = new DefaultDirectedGraph<ExtendedDependency, DefaultEdge>(DefaultEdge.class);
-        for (ExtendedDependency dependency : dependencies) {
+    private DirectedGraph<ExtendedEGD, DefaultEdge> initDependencyGraph(List<ExtendedEGD> dependencies) {
+        DirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph = new DefaultDirectedGraph<ExtendedEGD, DefaultEdge>(DefaultEdge.class);
+        for (ExtendedEGD dependency : dependencies) {
             dependencyGraph.addVertex(dependency);
         }
-        Map<AttributeRef, List<ExtendedDependency>> queryAttributeMap = initQueryAttributeMap(dependencies);
-        for (ExtendedDependency dependency : dependencies) {
+        Map<AttributeRef, List<ExtendedEGD>> queryAttributeMap = initQueryAttributeMap(dependencies);
+        for (ExtendedEGD dependency : dependencies) {
             for (AttributeRef affectedAttribute : dependency.getAffectedAttributes()) {
-                List<ExtendedDependency> dependenciesThatQueryAttribute = queryAttributeMap.get(affectedAttribute);
+                List<ExtendedEGD> dependenciesThatQueryAttribute = queryAttributeMap.get(affectedAttribute);
                 if (dependenciesThatQueryAttribute == null) {
                     continue;
                 }
-                for (ExtendedDependency queryDepenency : dependenciesThatQueryAttribute) {
+                for (ExtendedEGD queryDepenency : dependenciesThatQueryAttribute) {
                     dependencyGraph.addEdge(dependency, queryDepenency);
                 }
             }
@@ -104,13 +106,13 @@ public class AnalyzeDependencies {
         return dependencyGraph;
     }
 
-    private Map<AttributeRef, List<ExtendedDependency>> initQueryAttributeMap(List<ExtendedDependency> dependencies) {
-        Map<AttributeRef, List<ExtendedDependency>> attributeMap = new HashMap<AttributeRef, List<ExtendedDependency>>();
-        for (ExtendedDependency dependency : dependencies) {
+    private Map<AttributeRef, List<ExtendedEGD>> initQueryAttributeMap(List<ExtendedEGD> dependencies) {
+        Map<AttributeRef, List<ExtendedEGD>> attributeMap = new HashMap<AttributeRef, List<ExtendedEGD>>();
+        for (ExtendedEGD dependency : dependencies) {
             for (AttributeRef queryAttributes : dependency.getQueriedAttributes()) {
-                List<ExtendedDependency> dependenciesForAttribute = attributeMap.get(queryAttributes);
+                List<ExtendedEGD> dependenciesForAttribute = attributeMap.get(queryAttributes);
                 if (dependenciesForAttribute == null) {
-                    dependenciesForAttribute = new ArrayList<ExtendedDependency>();
+                    dependenciesForAttribute = new ArrayList<ExtendedEGD>();
                     attributeMap.put(queryAttributes, dependenciesForAttribute);
                 }
                 dependenciesForAttribute.add(dependency);
@@ -119,9 +121,9 @@ public class AnalyzeDependencies {
         return attributeMap;
     }
 
-    private Set<Dependency> buildDependencySet(Set<ExtendedDependency> extendedDependencySet) {
+    private Set<Dependency> buildDependencySet(Set<ExtendedEGD> extendedDependencySet) {
         Set<Dependency> result = new HashSet<Dependency>();
-        for (ExtendedDependency extendedDependency : extendedDependencySet) {
+        for (ExtendedEGD extendedDependency : extendedDependencySet) {
             result.add(extendedDependency.getDependency());
         }
         return result;
@@ -129,7 +131,7 @@ public class AnalyzeDependencies {
 
     private void findAllAffectedAttributes(List<Dependency> extEGDs) {
         for (Dependency egd : extEGDs) {
-            for (ExtendedDependency extendedDependency : egd.getExtendedDependencies()) {
+            for (ExtendedEGD extendedDependency : egd.getExtendedDependencies()) {
                 List<AttributeRef> affectedAttributes = extendedDependency.getAffectedAttributes();
                 for (AttributeRef affectedAttribute : affectedAttributes) {
                     LunaticUtility.addIfNotContained(egd.getAffectedAttributes(), affectedAttribute);
@@ -147,10 +149,10 @@ public class AnalyzeDependencies {
     private void findDependenciesForAttributes(DependencyStratification stratification, List<Dependency> dependencies) {
         for (Dependency dependency : dependencies) {
             for (AttributeRef attribute : dependency.getQueriedAttributes()) {
-                stratification.addDependencyForAttribute(attribute, dependency);
+                stratification.addEGDDependencyForAttribute(attribute, dependency);
             }
             for (AttributeRef attribute : dependency.getAffectedAttributes()) {
-                stratification.addDependencyForAttribute(attribute, dependency);
+                stratification.addEGDDependencyForAttribute(attribute, dependency);
             }
         }
     }
@@ -169,15 +171,15 @@ public class AnalyzeDependencies {
 
 }
 
-class StratumComparator implements Comparator<DependencyStratum> {
+class EGDStratumComparator implements Comparator<EGDStratum> {
 
-    private ConnectivityInspector<ExtendedDependency, DefaultEdge> inspector;
+    private ConnectivityInspector<ExtendedEGD, DefaultEdge> inspector;
 
-    public StratumComparator(DirectedGraph<ExtendedDependency, DefaultEdge> dependencyGraph) {
-        this.inspector = new ConnectivityInspector<ExtendedDependency, DefaultEdge>(dependencyGraph);
+    public EGDStratumComparator(DirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph) {
+        this.inspector = new ConnectivityInspector<ExtendedEGD, DefaultEdge>(dependencyGraph);
     }
 
-    public int compare(DependencyStratum t1, DependencyStratum t2) {
+    public int compare(EGDStratum t1, EGDStratum t2) {
         if (existsPath(t1, t2)) {
             return -1;
         } else if (existsPath(t2, t1)) {
@@ -186,9 +188,9 @@ class StratumComparator implements Comparator<DependencyStratum> {
         return 0;
     }
 
-    private boolean existsPath(DependencyStratum t1, DependencyStratum t2) {
-        for (ExtendedDependency dependency1 : t1.getExtendedDependencies()) {
-            for (ExtendedDependency dependency2 : t2.getExtendedDependencies()) {
+    private boolean existsPath(EGDStratum t1, EGDStratum t2) {
+        for (ExtendedEGD dependency1 : t1.getExtendedDependencies()) {
+            for (ExtendedEGD dependency2 : t2.getExtendedDependencies()) {
                 if (inspector.pathExists(dependency1, dependency2)) {
                     return true;
                 }

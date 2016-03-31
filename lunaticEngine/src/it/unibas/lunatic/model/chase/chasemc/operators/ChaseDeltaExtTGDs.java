@@ -9,9 +9,14 @@ import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.dependency.DependencyStratification;
+import it.unibas.lunatic.model.dependency.TGDStratum;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
@@ -40,45 +45,54 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
         }
         long start = new Date().getTime();
         int size = treeRoot.getNumberOfNodes();
-        chaseTree(treeRoot, scenario, chaseState, tgdTreeMap, tgdQuerySatisfactionMap);
+        DependencyStratification stratification = scenario.getStratification();
+        for (TGDStratum stratum : stratification.getTGDStrata()) {
+            if (LunaticConfiguration.isPrintSteps()) System.out.println("---- Chasing tgd stratum: " + stratum.getId());
+            if (logger.isDebugEnabled()) logger.debug("------------------Chasing stratum: ----\n" + stratum);
+            chaseTree(treeRoot, scenario, chaseState, stratum.getTgds(), tgdTreeMap, tgdQuerySatisfactionMap);
+        }
         int newSize = treeRoot.getNumberOfNodes();
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.TGD_TIME, end - start);
         return (size != newSize);
     }
 
-    private void chaseTree(DeltaChaseStep treeRoot, Scenario scenario, IChaseState chaseState, Map<Dependency, IAlgebraOperator> tgdTreeMap, Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap) {
+    private void chaseTree(DeltaChaseStep treeRoot, Scenario scenario, IChaseState chaseState, List<Dependency> tgds, Map<Dependency, IAlgebraOperator> tgdTreeMap, Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap) {
         if (treeRoot.isInvalid()) {
             return;
         }
         if (treeRoot.isLeaf()) {
-            chaseNode((DeltaChaseStep) treeRoot, scenario, chaseState, tgdTreeMap, tgdQuerySatisfactionMap);
+            chaseNode((DeltaChaseStep) treeRoot, scenario, chaseState, tgds, tgdTreeMap, tgdQuerySatisfactionMap);
         } else {
             for (DeltaChaseStep child : treeRoot.getChildren()) {
-                chaseTree(child, scenario, chaseState, tgdTreeMap, tgdQuerySatisfactionMap);
+                chaseTree(child, scenario, chaseState, tgds, tgdTreeMap, tgdQuerySatisfactionMap);
             }
         }
     }
 
-    private void chaseNode(DeltaChaseStep node, Scenario scenario, IChaseState chaseState, Map<Dependency, IAlgebraOperator> tgdTreeMap, Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap) {
+    private void chaseNode(DeltaChaseStep node, Scenario scenario, IChaseState chaseState, List<Dependency> tgds, Map<Dependency, IAlgebraOperator> tgdTreeMap, Map<Dependency, IAlgebraOperator> tgdQuerySatisfactionMap) {
         if (node.isDuplicate() || node.isInvalid()) {
             return;
         }
         if (node.isEditedByUser()) {
             DeltaChaseStep newStep = new DeltaChaseStep(scenario, node, LunaticConstants.CHASE_USER, LunaticConstants.CHASE_USER);
             node.addChild(newStep);
-            chaseNode(newStep, scenario, chaseState, tgdTreeMap, tgdQuerySatisfactionMap);
+            chaseNode(newStep, scenario, chaseState, tgds, tgdTreeMap, tgdQuerySatisfactionMap);
             return;
         }
-        if (LunaticConfiguration.isPrintSteps()) System.out.println("  ****Chasing node " + node.getId() + " for tgds...");
-        if (logger.isDebugEnabled()) logger.debug("Chasing ext tgds:\n" + LunaticUtility.printCollection(scenario.getExtTGDs()) + "\non tree: " + node);
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("  ****Chasing node " + node.getId() + " for tgds " + tgds + "...");
+        if (logger.isDebugEnabled()) logger.debug("Chasing ext tgds:\n" + LunaticUtility.printCollection(tgds) + "\non tree: " + node);
         int iterations = 0;
+        Set<Dependency> unsatisfiedTGDs = new HashSet<Dependency>(tgds);
         while (true) {
             if (logger.isDebugEnabled()) logger.debug("======= Starting tgd chase cycle on step " + node.getId());
             boolean newNode = false;
-            for (Dependency eTgd : scenario.getExtTGDs()) {
+            for (Dependency eTgd : tgds) { //TGDs are sorted using input degree
                 if (chaseState.isCancelled()) {
                     ChaseUtility.stopChase(chaseState);
+                }
+                if (!unsatisfiedTGDs.contains(eTgd)) {
+                    continue;
                 }
                 long startTgd = new Date().getTime();
                 String localId = ChaseUtility.generateChaseStepIdForTGDs(eTgd);
@@ -92,9 +106,11 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 long start = new Date().getTime();
                 boolean insertedTuples = dependencyChaser.chaseDependency(newStep, eTgd, tgdQuery, scenario, chaseState, databaseForStep);
                 long end = new Date().getTime();
+                unsatisfiedTGDs.remove(eTgd);
                 if (LunaticConfiguration.isPrintSteps()) System.out.println("Dependency chasing Execution time: " + (end - start) + " ms");
                 ChaseStats.getInstance().addDepenendecyStat(eTgd, end - start);
                 if (insertedTuples) {
+                    unsatisfiedTGDs.addAll(scenario.getStratification().getAffectedTGDsMap().get(eTgd));
                     if (logger.isDebugEnabled()) logger.debug("Tuples have been inserted, adding new step to tree...");
                     node.addChild(newStep);
                     node = newStep;

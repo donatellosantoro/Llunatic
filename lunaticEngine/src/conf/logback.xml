@@ -17,7 +17,7 @@
         <appender-ref ref="stdout"/>
         <!--<appender-ref ref="file"/>-->
     </root>
-         <!--TEST-->     
+    <!--TEST-->     
     <!--<logger name="it.unibas.lunatic.test" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.QueryStatManager" level="DEBUG"/>-->
@@ -28,6 +28,8 @@
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chasemc.partialorder.AbstractPartialOrder" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseEGDEquivalenceClass" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseTGDEquivalenceClass" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.StandardCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.SimilarityToPreferredValueCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.symmetric.StandardSymmetricCostManager" level="DEBUG"/>-->
@@ -40,6 +42,10 @@
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.GenerateSymmetricPremise" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.NormalizeJoinsInEGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.BuildExtendedDependencies" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.BuildTGDStratification" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.CheckWeaklyAcyclicityInTGDs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies" level="DEBUG"/>-->
 
     <!--     ALGEBRA     -->
     <!--<logger name="speedy.model.algebra.Difference" level="DEBUG"/>-->
@@ -54,9 +60,13 @@
     <!--<logger name="speedy.model.algebra.operators.sql.AlgebraTreeToSQL" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.sql.GenerateTrigger" level="DEBUG"/>-->
     
+    <!--     MainMemory     -->
+    <!--<logger name="speedy.model.algebra.operators.mainmemory.MainMemoryInsertTuple" level="DEBUG"/>-->
+    
     <!--     DBMS     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLExportSolution" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.persistence.relational.GenerateSQLFromDependencies" level="DEBUG"/>-->
 
     <!--     CHASE DE     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs" level="DEBUG"/>-->
@@ -86,7 +96,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.ReplaceConstantsWithVariables" level="DEBUG"/>-->
     <!--     Cache     -->
-<!--    <logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.AbstractGreedyCacheManager" level="trace"/>
+    <!--    <logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.AbstractGreedyCacheManager" level="trace"/>
     <logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager" level="DEBUG"/>-->
     
 

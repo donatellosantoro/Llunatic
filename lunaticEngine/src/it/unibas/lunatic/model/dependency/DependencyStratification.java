@@ -4,45 +4,78 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import speedy.model.database.AttributeRef;
+import speedy.utility.SpeedyUtility;
 
 public class DependencyStratification {
 
-    private List<DependencyStratum> strata = new ArrayList<DependencyStratum>();
-    private Map<AttributeRef, List<Dependency>> attributeDependencyMap = new HashMap<AttributeRef, List<Dependency>>();
+    //EGDs
+    private List<EGDStratum> egdStrata = new ArrayList<EGDStratum>();
+    private Map<AttributeRef, List<Dependency>> attributeEGDMap = new HashMap<AttributeRef, List<Dependency>>();
+    //TGDs
+    private List<TGDStratum> tgdStrata = new ArrayList<TGDStratum>();
+    private Map<Dependency, Set<Dependency>> affectedTGDsMap;
 
-    public List<DependencyStratum> getStrata() {
-        return strata;
+    public List<EGDStratum> getEGDStrata() {
+        return egdStrata;
     }
 
-    public void addStratum(DependencyStratum stratum) {
-        this.strata.add(stratum);
+    public void addEGDStratum(EGDStratum stratum) {
+        this.egdStrata.add(stratum);
     }
 
-    public List<Dependency> getDependenciesForAttribute(AttributeRef attribute) {
-        return attributeDependencyMap.get(attribute);
+    public List<Dependency> getEGDDependenciesForAttribute(AttributeRef attribute) {
+        return attributeEGDMap.get(attribute);
     }
 
-    public void addDependencyForAttribute(AttributeRef attribute, Dependency value) {
-        List<Dependency> dependenciesForAttribute = this.attributeDependencyMap.get(attribute);
+    public void addEGDDependencyForAttribute(AttributeRef attribute, Dependency value) {
+        List<Dependency> dependenciesForAttribute = this.attributeEGDMap.get(attribute);
         if (dependenciesForAttribute == null) {
             dependenciesForAttribute = new ArrayList<Dependency>();
-            this.attributeDependencyMap.put(attribute, dependenciesForAttribute);
+            this.attributeEGDMap.put(attribute, dependenciesForAttribute);
         }
         dependenciesForAttribute.add(value);
+    }
+
+    public Map<Dependency, Set<Dependency>> getAffectedTGDsMap() {
+        return affectedTGDsMap;
+    }
+
+    public void setAffectedTGDsMap(Map<Dependency, Set<Dependency>> affectedTGDsMap) {
+        this.affectedTGDsMap = affectedTGDsMap;
+    }
+
+    public List<TGDStratum> getTGDStrata() {
+        return tgdStrata;
+    }
+
+    public void addTGDStratum(TGDStratum stratum) {
+        this.tgdStrata.add(stratum);
     }
 
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        if (strata.size() == 1) {
-            return strata.get(0).toString();
+        if (egdStrata.size() == 1) {
+            result.append(egdStrata.get(0).toString());
+        } else {
+            result.append("EGD Stratification (").append(egdStrata.size()).append(") {\n");
+            for (EGDStratum stratum : egdStrata) {
+                result.append(stratum).append("\n");
+            }
+            result.append("}\n");
         }
-        result.append("Dependency Stratification (").append(strata.size()).append(") {\n");
-        for (DependencyStratum stratum : strata) {
-            result.append(stratum).append("\n");
+        if (tgdStrata.size() == 1) {
+            result.append(tgdStrata.get(0).toString());
+        } else {
+            result.append("TGD Stratification (").append(tgdStrata.size()).append(") {\n");
+            for (TGDStratum stratum : tgdStrata) {
+                result.append(stratum).append("\n");
+            }
+            result.append("}\n");
         }
-        result.append("}");
+        result.append("Affected TGDs Map: \n").append(SpeedyUtility.printMap(affectedTGDsMap));
         return result.toString();
     }
 }

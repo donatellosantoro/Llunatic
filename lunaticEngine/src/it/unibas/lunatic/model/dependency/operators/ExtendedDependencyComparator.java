@@ -1,12 +1,12 @@
 package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.dependency.ExtendedDependency;
+import it.unibas.lunatic.model.dependency.ExtendedEGD;
 import java.util.Comparator;
 
-class ExtendedDependencyComparator implements Comparator<ExtendedDependency> {
+class ExtendedDependencyComparator implements Comparator<ExtendedEGD> {
 
-    public int compare(ExtendedDependency t1, ExtendedDependency t2) {
+    public int compare(ExtendedEGD t1, ExtendedEGD t2) {
         if (t1.getDependency().getId().compareTo(t2.getDependency().getId()) == 0) {
             if (t1.getChaseMode().equals(LunaticConstants.CHASE_FORWARD)) {
                 return -1;

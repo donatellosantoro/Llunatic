@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.IInsertTuple;
 import speedy.model.database.operators.IRunQuery;
+import speedy.utility.PrintUtility;
 
 public class ChaseMCScenario {
 
@@ -80,13 +81,13 @@ public class ChaseMCScenario {
             if (ChaseUtility.hasChaseStats(scenario)) {
                 solutionRanker.rankSolutions(chaseTree);
             }
-            printResult(chaseTree);
             if (scenario.getConfiguration().isExportSolutions()) {
                 resultExporter.exportSolutionsInSeparateFiles(chaseTree, scenario);
             }
             if (scenario.getConfiguration().isExportChanges()) {
                 resultExporter.exportChangesInSeparateFiles(chaseTree, scenario);
             }
+            printResult(chaseTree);
             return chaseTree;
         } catch (ChaseFailedException e) {
             throw e;
@@ -130,20 +131,21 @@ public class ChaseMCScenario {
                 dChaser.doChase(root, scenario, chaseState, dQueryMap);
             }
             if (egdResult.isNewNodes() && logger.isDebugEnabled()) logger.debug("Chase tree after egd enforcement:\n" + root);
-            if (!newTgdNodes && !egdResult.isNewNodes()) {
+//            if (!newTgdNodes && !egdResult.isNewNodes()) {
+            if (scenario.getExtEGDs().isEmpty() || !newTgdNodes && !egdResult.isNewNodes()) {
                 break;
             } else {
                 iterations++;
             }
             if (iterations > ITERATION_LIMIT) {
                 StringBuilder errorMessage = new StringBuilder("Reached iteration limit " + ITERATION_LIMIT + " with no solution...");
-                if (logger.isDebugEnabled()) errorMessage.append("\nScenario: ").append(scenario).append("\nChase tree:\n" + root).append("\nDelta db:\n").append(root.getDeltaDB());
+                if (logger.isDebugEnabled()) errorMessage.append("\nScenario: ").append(scenario).append("\nChase tree:\n").append(root).append("\nDelta db:\n").append(root.getDeltaDB());
                 throw new ChaseException(errorMessage.toString());
             }
         }
         if (!scenario.getConfiguration().isCheckSolutions() && !userInteractionRequired) {
             solutionChecker.markLeavesAsSolutions(root, scenario);
-        } else {
+        } else if (!userInteractionRequired) {
             if (LunaticConfiguration.isPrintSteps()) System.out.println("------ Checking solutions...");
             solutionChecker.checkSolutions(root, scenario);
         }
@@ -172,6 +174,17 @@ public class ChaseMCScenario {
         if (chaseTree.getRankedSolutions() != null && !chaseTree.getRankedSolutions().isEmpty()) {
             System.out.println(solutionPrinter.toString(chaseTree));
         }
-        System.out.println("*** Chase complete in " + ChaseStats.getInstance().getStat(ChaseStats.TOTAL_TIME) + " ms");
+        PrintUtility.printSuccess("*** Chase complete in " + ChaseStats.getInstance().getStat(ChaseStats.TOTAL_TIME) + " ms");
+        Long loadTime = ChaseStats.getInstance().getStat(ChaseStats.LOAD_TIME);
+        if (loadTime == null) {
+            loadTime = 0L;
+        }
+        PrintUtility.printInformation("*** Loading time: " + loadTime + " ms");
+        Long writeTime = ChaseStats.getInstance().getStat(ChaseStats.WRITE_TIME);
+        if (writeTime == null) {
+            writeTime = 0L;
+        }
+        PrintUtility.printInformation("*** Writing time: " + writeTime + " ms");
     }
+
 }

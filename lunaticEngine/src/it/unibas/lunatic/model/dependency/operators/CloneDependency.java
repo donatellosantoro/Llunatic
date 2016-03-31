@@ -2,7 +2,7 @@ package it.unibas.lunatic.model.dependency.operators;
 
 import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.model.dependency.ExtendedDependency;
+import it.unibas.lunatic.model.dependency.ExtendedEGD;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class CloneDependency {
         for (AttributeRef attributeRef : dependency.getAdditionalAttributes()) {
             clone.getAdditionalAttributes().add(new AttributeRef(attributeRef.getTableAlias(), attributeRef.getName()));
         }
-        clone.setExtendedDependencies(new ArrayList<ExtendedDependency>());
+        clone.setExtendedDependencies(new ArrayList<ExtendedEGD>());
         if (!dependency.getExtendedDependencies().isEmpty()) {
             throw new UnsupportedOperationException("ExtendedDependency clone is not supported");
         }

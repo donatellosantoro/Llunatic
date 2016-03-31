@@ -58,6 +58,7 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
         if (!scenario.isDBMS()) {
             throw new DBMSException("Unable to generate SQL: data sources are not on a dbms");
         }
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("   ****Executing tgd: " + tgd.getId() + "...");
         Map<AttributeRef, IValueGenerator> targetGenerators = tgd.getTargetGenerators();
         if (logger.isDebugEnabled()) logger.debug("----Executing insert. Tgd generator map: " + LunaticUtility.printMap(targetGenerators));
         StringBuilder script = new StringBuilder();
@@ -67,6 +68,7 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
         AccessConfiguration accessConfiguration = (target).getAccessConfiguration();
         QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true, false);
         int newTuples = countNewTuplesAndUpdateOIDGenerator(tgd, scenario);
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("   ****Tgd generates: " + newTuples + " new tuples");
         if (logger.isDebugEnabled()) logger.debug("New tuples " + newTuples);
         if (newTuples > 0) {
             if (LunaticConfiguration.isPrintSteps()) System.out.println("Cache for step " + currentNode.getId() + " is not valid anymore...");
@@ -92,7 +94,7 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
                 FormulaVariableOccurrence occurrence = (FormulaVariableOccurrence) attribute.getValue();
                 if (generator instanceof SkolemFunctionGenerator) {
                     FormulaVariable existentialVariable = LunaticUtility.findVariableInList(occurrence, tgd.getConclusion().getLocalVariables());
-                    IValueGenerator sqlSkolemGenerator = createSkolemGeneratorForSQL(existentialVariable, tgd);
+                    IValueGenerator sqlSkolemGenerator = createSkolemGeneratorForSQL(existentialVariable, tgd, scenario);
                     query.append(sqlSkolemGenerator.toString());
                 } else {
                     FormulaVariable universalVariable = LunaticUtility.findVariableInList(occurrence, tgd.getPremise().getLocalVariables());
@@ -127,11 +129,20 @@ public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs 
         return result.toString();
     }
 
-    private IValueGenerator createSkolemGeneratorForSQL(FormulaVariable variable, Dependency dependency) {
+    private IValueGenerator createSkolemGeneratorForSQL(FormulaVariable variable, Dependency dependency, Scenario scenario) {
+        boolean useHash = scenario.getConfiguration().isUseHashForSkolem();
         ISkolemPart root = new AppendSkolemPart();
         ISkolemPart name = new StringSkolemPart("'" + SpeedyConstants.SKOLEM_PREFIX + dependency.getId() + SpeedyConstants.SKOLEM_SEPARATOR + variable.getId());
         root.addChild(name);
-        AppendSkolemPart append = new AppendSkolemPart("(['||", "||'])'", "||']-['||");
+        String prefix = "(['||";
+        if (useHash) {
+            prefix += " left(md5(";
+        }
+        String suffix = "||'])'";
+        if (useHash) {
+            suffix = "),10) " + suffix;
+        }
+        AppendSkolemPart append = new AppendSkolemPart(prefix, suffix, "||']-['||");
         root.addChild(append);
         List<FormulaVariable> universalVariablesInConclusion = DependencyUtility.findUniversalVariablesInConclusion(dependency);
         for (FormulaVariable formulaVariable : universalVariablesInConclusion) {

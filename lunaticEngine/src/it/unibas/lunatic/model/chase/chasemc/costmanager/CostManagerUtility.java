@@ -384,7 +384,7 @@ public class CostManagerUtility {
         Set<Dependency> result = new HashSet<Dependency>();
         for (CellGroupCell occurrence : cellGroup.getOccurrences()) {
             AttributeRef attributeRef = occurrence.getAttributeRef();
-            result.addAll(scenario.getStratification().getDependenciesForAttribute(attributeRef));
+            result.addAll(scenario.getStratification().getEGDDependenciesForAttribute(attributeRef));
         }
         return result;
     }

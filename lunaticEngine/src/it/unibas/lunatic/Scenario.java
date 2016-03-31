@@ -312,31 +312,31 @@ public class Scenario {
         if (!this.stTgds.isEmpty()) {
             result.append("================ ST Tgds ===================\n");
             for (Dependency tgd : this.stTgds) {
-                result.append(tgd).append("\n");
+                result.append(tgd.toLogicalString()).append("\n");
             }
         }
         if (!this.extTgds.isEmpty()) {
             result.append("================ Extended Tgds ===================\n");
             for (Dependency tgd : this.extTgds) {
-                result.append(tgd).append("\n");
+                result.append(tgd.toLogicalString()).append("\n");
             }
         }
         if (!this.egds.isEmpty()) {
             result.append("================ Egds ===================\n");
             for (Dependency egd : this.egds) {
-                result.append(egd).append("\n");
+                result.append(egd.toLogicalString()).append("\n");
             }
         }
         if (!this.extEgds.isEmpty()) {
             result.append("================ Extended Egds ===================\n");
             for (Dependency egd : this.extEgds) {
-                result.append(egd).append("\n");
+                result.append(egd.toLogicalString()).append("\n");
             }
         }
         if (!this.dcs.isEmpty()) {
             result.append("================ Denial Constraints ===================\n");
             for (Dependency dc : this.dcs) {
-                result.append(dc).append("\n");
+                result.append(dc.toLogicalString()).append("\n");
             }
         }
         if (!this.dedstTgds.isEmpty()) {

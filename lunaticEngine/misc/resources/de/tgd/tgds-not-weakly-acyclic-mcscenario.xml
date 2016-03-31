@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <source>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+DeptEmp(dpt_id, mgr_name, eid)
+INSTANCE:
+DeptEmp(dpt_id: "CS" , mgr_name: "M", eid: "Mary")
+]]>
+        </generate>
+    </source>
+    <target>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+Dept(dpt_id, mgr_id, mgr_name)
+Emp(eid, dpt_id)
+]]>
+        </generate>
+    </target>
+    <dependencies>
+<![CDATA[
+STTGDs:
+DeptEmp(dpt_id: $d, mgr_name: $n, eid: $e) -> Dept(dpt_id: $d,mgr_id: $M,mgr_name: $n), Emp(eid: $e, dpt_id: $d).
+ExtTGDs:
+Dept(dpt_id: $d, mgr_id: $m, mgr_name: $n) -> Emp(eid: $m, dpt_id: $D).
+Emp(eid: $e, dpt_id: $d) -> Dept(dpt_id: $d, mgr_id: $M, mgr_name: $N).
+]]>
+    </dependencies>
+</scenario>

@@ -17,7 +17,7 @@ public class Dependency implements Cloneable {
     private IFormula conclusion;
     private String type;
     private List<AttributeRef> additionalAttributes = new ArrayList<AttributeRef>();
-    private List<ExtendedDependency> extendedDependencies = new ArrayList<ExtendedDependency>();
+    private List<ExtendedEGD> extendedDependencies = new ArrayList<ExtendedEGD>();
     private Map<AttributeRef, IValueGenerator> targetGenerators = new HashMap<AttributeRef, IValueGenerator>();
     private List<AttributeRef> queriedAttributes = new ArrayList<AttributeRef>();
     private List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
@@ -96,11 +96,11 @@ public class Dependency implements Cloneable {
         this.targetGenerators = targetGenerators;
     }
 
-    public List<ExtendedDependency> getExtendedDependencies() {
+    public List<ExtendedEGD> getExtendedDependencies() {
         return extendedDependencies;
     }
 
-    public void setExtendedDependencies(List<ExtendedDependency> extendedDependencies) {
+    public void setExtendedDependencies(List<ExtendedEGD> extendedDependencies) {
         this.extendedDependencies = extendedDependencies;
     }
 
@@ -194,12 +194,16 @@ public class Dependency implements Cloneable {
 
     @Override
     public String toString() {
+        return this.id;
+    }
+
+    public String toLogicalString() {
         return new DependencyToString().toLogicalString(this, "", false);
     }
 
     public String toLongString() {
         StringBuilder result = new StringBuilder();
-        result.append(this.toString());
+        result.append(this.toLogicalString());
         result.append("  Premise: ").append(this.getPremise().getPositiveFormula().toLongString()).append("\n");
         result.append("  Conclusion: ").append(this.getConclusion().getPositiveFormula().toLongString()).append("\n");
         result.append("  Type: ").append(type).append("\n");

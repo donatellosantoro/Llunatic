@@ -2,9 +2,10 @@ package it.unibas.lunatic;
 
 public class LunaticConfiguration {
 
-    private static boolean printSteps = true;
-//    private static boolean printSteps = false;
+//    private static boolean printSteps = true;
+    private static boolean printSteps = false;
     private boolean debugMode = false;
+    private boolean recreateDBOnStart = false;
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;
     private boolean deProxyMode = false; //MCProxy for DE chase
@@ -55,6 +56,14 @@ public class LunaticConfiguration {
 
     public void setDebugMode(boolean debugMode) {
         this.debugMode = debugMode;
+    }
+
+    public boolean isRecreateDBOnStart() {
+        return recreateDBOnStart;
+    }
+
+    public void setRecreateDBOnStart(boolean recreateDBOnStart) {
+        this.recreateDBOnStart = recreateDBOnStart;
     }
 
     public boolean isRemoveDuplicates() {
@@ -264,7 +273,9 @@ public class LunaticConfiguration {
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
+                + "\n\t PrintSteps: " + printSteps
                 + "\n\t IterationLimit: " + iterationLimit
+                + "\n\t RecreateDBOnStart: " + recreateDBOnStart
                 + "\n\t UseLimit1: " + useLimit1ForEGDs
                 + "\n\t DEProxyMode: " + deProxyMode
                 + "\n\t CheckSolutions: " + checkSolutions

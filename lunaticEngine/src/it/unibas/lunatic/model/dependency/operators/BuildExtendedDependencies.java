@@ -8,7 +8,7 @@ import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.model.dependency.ExtendedDependency;
+import it.unibas.lunatic.model.dependency.ExtendedEGD;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
@@ -31,15 +31,15 @@ public class BuildExtendedDependencies {
 
     private static final Logger logger = LoggerFactory.getLogger(BuildExtendedDependencies.class);
 
-    public List<ExtendedDependency> buildExtendedEGDs(List<Dependency> dependencies, Scenario scenario) {
+    public List<ExtendedEGD> buildExtendedEGDs(List<Dependency> dependencies, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Original dependencies: \n" + LunaticUtility.printCollection(dependencies));
-        List<ExtendedDependency> result = new ArrayList<ExtendedDependency>();
+        List<ExtendedEGD> result = new ArrayList<ExtendedEGD>();
         for (Dependency dependency : dependencies) {
             if (logger.isDebugEnabled()) logger.debug("Analyzing dependency: " + dependency);
             if (dependency.getConclusion().getAtoms().size() > 1) {
                 throw new IllegalArgumentException("The chase algorithm requires normalized depdendencies: " + dependency);
             }
-            List<ExtendedDependency> extendedDependencies = new ArrayList<ExtendedDependency>();
+            List<ExtendedEGD> extendedDependencies = new ArrayList<ExtendedEGD>();
             if (logger.isDebugEnabled()) logger.debug("Building forward egd...");
             extendedDependencies.add(buildForwardEGD(dependency));
             findBackwardAttributes(dependency);
@@ -62,9 +62,9 @@ public class BuildExtendedDependencies {
     ///////                    BUILD DEPENDENCIES
     ///////
     //////////////////////////////////////////////////////////////////////////////////
-    private ExtendedDependency buildForwardEGD(Dependency dependency) {
+    private ExtendedEGD buildForwardEGD(Dependency dependency) {
         String id = dependency.getId() + LunaticConstants.CHASE_FORWARD;
-        ExtendedDependency forward = new ExtendedDependency(id, dependency, LunaticConstants.CHASE_FORWARD);
+        ExtendedEGD forward = new ExtendedEGD(id, dependency, LunaticConstants.CHASE_FORWARD);
         return forward;
     }
 
@@ -86,13 +86,13 @@ public class BuildExtendedDependencies {
         dependency.setBackwardAttributes(result);
     }
 
-    private List<ExtendedDependency> buildBackwardEGDs(Dependency dependency) {
-        List<ExtendedDependency> result = new ArrayList<ExtendedDependency>();
+    private List<ExtendedEGD> buildBackwardEGDs(Dependency dependency) {
+        List<ExtendedEGD> result = new ArrayList<ExtendedEGD>();
         if (logger.isDebugEnabled()) logger.debug("Building backward dependencies for egd: " + dependency);
         int i = 0;
         for (FormulaVariableOccurrence backwardAttribute : dependency.getBackwardAttributes()) {
             String id = dependency.getId() + LunaticConstants.CHASE_BACKWARD + i++;
-            ExtendedDependency backward = new ExtendedDependency(id, dependency, LunaticConstants.CHASE_BACKWARD, backwardAttribute);
+            ExtendedEGD backward = new ExtendedEGD(id, dependency, LunaticConstants.CHASE_BACKWARD, backwardAttribute);
             result.add(backward);
         }
         if (logger.isDebugEnabled()) logger.debug("Result: " + result);
@@ -104,9 +104,9 @@ public class BuildExtendedDependencies {
     ///////                  FIND QUERY AND AFFECTED ATTRIBUTES
     ///////
     //////////////////////////////////////////////////////////////////////////////////
-    private void findQueriedAndLocalAffectedAttributes(Dependency dependency, List<ExtendedDependency> extendedDependencies) {
+    private void findQueriedAndLocalAffectedAttributes(Dependency dependency, List<ExtendedEGD> extendedDependencies) {
         List<AttributeRef> forwardAffectedAttributes = findAffectedAttributesForForwardDependency(dependency);
-        for (ExtendedDependency extendedDependency : extendedDependencies) {
+        for (ExtendedEGD extendedDependency : extendedDependencies) {
             if (extendedDependency.isBackward()) {
                 FormulaVariableOccurrence occurrence = extendedDependency.getOccurrence();
                 List<AttributeRef> affectedAttributes = Arrays.asList(new AttributeRef[]{ChaseUtility.unAlias(occurrence.getAttributeRef())});
@@ -156,29 +156,29 @@ public class BuildExtendedDependencies {
         }
     }
 
-    private void findAffectedAttributes(List<ExtendedDependency> dependencies) {
+    private void findAffectedAttributes(List<ExtendedEGD> dependencies) {
         // affected attributes must take into account also clustering of values, not only local affected attributes
         // eg: e1 -> AB, e2: -> A
-        Map<AttributeRef, List<ExtendedDependency>> attributeMap = initAttributeMap(dependencies);
-        UndirectedGraph<ExtendedDependency, DefaultEdge> dependencyGraph = initDependencyGraph(dependencies, attributeMap);
-        ConnectivityInspector<ExtendedDependency, DefaultEdge> inspector = new ConnectivityInspector<ExtendedDependency, DefaultEdge>(dependencyGraph);
-        List<Set<ExtendedDependency>> connectedComponents = inspector.connectedSets();
-        for (Set<ExtendedDependency> connectedComponent : connectedComponents) {
+        Map<AttributeRef, List<ExtendedEGD>> attributeMap = initAttributeMap(dependencies);
+        UndirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph = initDependencyGraph(dependencies, attributeMap);
+        ConnectivityInspector<ExtendedEGD, DefaultEdge> inspector = new ConnectivityInspector<ExtendedEGD, DefaultEdge>(dependencyGraph);
+        List<Set<ExtendedEGD>> connectedComponents = inspector.connectedSets();
+        for (Set<ExtendedEGD> connectedComponent : connectedComponents) {
             List<AttributeRef> affectedAttributesForComponent = extractAttributesForComponent(connectedComponent);
-            for (ExtendedDependency dependency : connectedComponent) {
+            for (ExtendedEGD dependency : connectedComponent) {
                 if (logger.isDebugEnabled()) logger.debug("Dependency " + dependency + "\nAffected: " + affectedAttributesForComponent);
                 dependency.setAffectedAttributes(affectedAttributesForComponent);
             }
         }
     }
 
-    private Map<AttributeRef, List<ExtendedDependency>> initAttributeMap(List<ExtendedDependency> dependencies) {
-        Map<AttributeRef, List<ExtendedDependency>> attributeMap = new HashMap<AttributeRef, List<ExtendedDependency>>();
-        for (ExtendedDependency dependency : dependencies) {
+    private Map<AttributeRef, List<ExtendedEGD>> initAttributeMap(List<ExtendedEGD> dependencies) {
+        Map<AttributeRef, List<ExtendedEGD>> attributeMap = new HashMap<AttributeRef, List<ExtendedEGD>>();
+        for (ExtendedEGD dependency : dependencies) {
             for (AttributeRef localAffectedAttribute : dependency.getLocalAffectedAttributes()) {
-                List<ExtendedDependency> dependenciesForAttribute = attributeMap.get(localAffectedAttribute);
+                List<ExtendedEGD> dependenciesForAttribute = attributeMap.get(localAffectedAttribute);
                 if (dependenciesForAttribute == null) {
-                    dependenciesForAttribute = new ArrayList<ExtendedDependency>();
+                    dependenciesForAttribute = new ArrayList<ExtendedEGD>();
                     attributeMap.put(localAffectedAttribute, dependenciesForAttribute);
                 }
                 dependenciesForAttribute.add(dependency);
@@ -187,18 +187,18 @@ public class BuildExtendedDependencies {
         return attributeMap;
     }
 
-    private UndirectedGraph<ExtendedDependency, DefaultEdge> initDependencyGraph(List<ExtendedDependency> dependencies, Map<AttributeRef, List<ExtendedDependency>> attributeMap) {
-        UndirectedGraph<ExtendedDependency, DefaultEdge> dependencyGraph = new SimpleGraph<ExtendedDependency, DefaultEdge>(DefaultEdge.class);
-        for (ExtendedDependency dependency : dependencies) {
+    private UndirectedGraph<ExtendedEGD, DefaultEdge> initDependencyGraph(List<ExtendedEGD> dependencies, Map<AttributeRef, List<ExtendedEGD>> attributeMap) {
+        UndirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph = new SimpleGraph<ExtendedEGD, DefaultEdge>(DefaultEdge.class);
+        for (ExtendedEGD dependency : dependencies) {
             dependencyGraph.addVertex(dependency);
         }
-        for (ExtendedDependency dependency : dependencies) {
+        for (ExtendedEGD dependency : dependencies) {
             if (dependency.getAffectedAttributes() != null) {
                 continue;
             }
             for (AttributeRef localAffected : dependency.getLocalAffectedAttributes()) {
-                List<ExtendedDependency> otherDependencies = attributeMap.get(localAffected);
-                for (ExtendedDependency otherDependency : otherDependencies) {
+                List<ExtendedEGD> otherDependencies = attributeMap.get(localAffected);
+                for (ExtendedEGD otherDependency : otherDependencies) {
                     if (dependency.equals(otherDependency)) {
                         continue;
                     }
@@ -212,9 +212,9 @@ public class BuildExtendedDependencies {
         return dependencyGraph;
     }
 
-    private List<AttributeRef> extractAttributesForComponent(Set<ExtendedDependency> connectedComponent) {
+    private List<AttributeRef> extractAttributesForComponent(Set<ExtendedEGD> connectedComponent) {
         List<AttributeRef> result = new ArrayList<AttributeRef>();
-        for (ExtendedDependency dependency : connectedComponent) {
+        for (ExtendedEGD dependency : connectedComponent) {
             for (AttributeRef affectedAttribute : dependency.getLocalAffectedAttributes()) {
                 if (!result.contains(affectedAttribute)) {
                     result.add(affectedAttribute);
@@ -224,9 +224,9 @@ public class BuildExtendedDependencies {
         return result;
     }
 
-    private String printDependencies(List<ExtendedDependency> dependencies) {
+    private String printDependencies(List<ExtendedEGD> dependencies) {
         StringBuilder result = new StringBuilder();
-        for (ExtendedDependency dependency : dependencies) {
+        for (ExtendedEGD dependency : dependencies) {
             result.append(dependency.toLongString()).append("\n");
         }
         return result.toString();

@@ -26,8 +26,8 @@
             <pathelement location="${lib.dir}/js.jar" />  
             <pathelement location="${lib.dir}/js-engine.jar" />  
             <pathelement location="${lib.dir}/simmetrics-1.6.2.jar" />  
-            <pathelement location="${lib.dir}/jgrapht-jdk1.6.jar" />  
-            <pathelement location="${lib.dir}/jgraph.jar" />  
+            <pathelement location="${lib.dir}/jgrapht-core-${jgrapht-core.ver}.jar" />  
+            <!--<pathelement location="${lib.dir}/jgraph-${jgraph.ver}.jar" />-->  
             <pathelement location="${lib.dir}/c3p0-${c3p0.ver}.jar" />  
             <pathelement location="${lib.dir}/mchange-commons-java-${mchange.ver}.jar" />  
             <pathelement location="${lib.dir}/commons-io-2.4.jar" />  

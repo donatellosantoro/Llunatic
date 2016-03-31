@@ -111,6 +111,7 @@ public class DAOUtility {
         File file = new java.io.File(filename);
         BufferedWriter out = null;
         try {
+            file.getParentFile().mkdirs();
             out = new BufferedWriter(new FileWriter(file));
             XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
             xout.output(document, out);

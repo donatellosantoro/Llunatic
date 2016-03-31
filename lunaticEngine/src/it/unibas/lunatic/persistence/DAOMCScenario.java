@@ -24,8 +24,10 @@ import it.unibas.lunatic.model.chase.chasemc.usermanager.AfterLLUNUserManager;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.IUserManager;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.InteractiveUserManager;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.StandardUserManager;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.script.ScriptException;
@@ -68,6 +70,7 @@ public class DAOMCScenario {
     private static final String VALUE_COMPARATOR_DATE = "dateComparator";
     private static final String VALUE_COMPARATOR_STRING = "stringComparator";
     private DAOXmlUtility daoUtility = new DAOXmlUtility();
+    private DAOLunaticConfiguration daoConfiguration = new DAOLunaticConfiguration();
     private TransformFilePaths filePathTransformator = new TransformFilePaths();
     private DAOMainMemoryDatabase daoMainMemoryDatabase = new DAOMainMemoryDatabase();
     private String fileScenario;
@@ -78,6 +81,7 @@ public class DAOMCScenario {
 
     public Scenario loadScenario(String fileScenario, String suffix) throws DAOException {
         this.fileScenario = fileScenario;
+        long start = new Date().getTime();
         try {
             Scenario scenario = new Scenario(fileScenario, suffix);
             Document document = daoUtility.buildDOM(fileScenario);
@@ -123,8 +127,9 @@ public class DAOMCScenario {
             scenario.setUserManager(userManager);
             //CONFIGURATION
             Element configurationElement = rootElement.getChild("configuration");
-            LunaticConfiguration configuration = loadConfiguration(configurationElement);
+            LunaticConfiguration configuration = daoConfiguration.loadConfiguration(configurationElement);
             scenario.setConfiguration(configuration);
+            initDatabase(scenario);
             return scenario;
         } catch (Throwable ex) {
             logger.error(ex.getLocalizedMessage());
@@ -134,6 +139,9 @@ public class DAOMCScenario {
                 message += "\n" + ex.getMessage();
             }
             throw new DAOException(message);
+        } finally {
+            long end = new Date().getTime();
+            ChaseStats.getInstance().addStat(ChaseStats.LOAD_TIME, end - start);
         }
     }
 
@@ -442,49 +450,6 @@ public class DAOMCScenario {
         return userManager;
     }
 
-    private LunaticConfiguration loadConfiguration(Element configurationElement) {
-        LunaticConfiguration configuration = new LunaticConfiguration();
-        if (configurationElement == null || configurationElement.getChildren().isEmpty()) {
-            return configuration;
-        }
-        Element useLimit1Element = configurationElement.getChild("useLimit1");
-        if (useLimit1Element != null) {
-            configuration.setUseLimit1ForEGDs(Boolean.parseBoolean(useLimit1Element.getValue()));
-        }
-        Element removeDuplicatesElement = configurationElement.getChild("removeDuplicates");
-        if (removeDuplicatesElement != null) {
-            configuration.setRemoveDuplicates(Boolean.parseBoolean(removeDuplicatesElement.getValue()));
-        }
-        Element checkGroundSolutionsElement = configurationElement.getChild("checkGroundSolutions");
-        if (checkGroundSolutionsElement != null) {
-            configuration.setCheckGroundSolutions(Boolean.parseBoolean(checkGroundSolutionsElement.getValue()));
-        }
-        Element exportSolutionsElement = configurationElement.getChild("exportSolutions");
-        if (exportSolutionsElement != null) {
-            configuration.setExportSolutions(Boolean.parseBoolean(exportSolutionsElement.getValue()));
-        }
-        Element exportSolutionsPathElement = configurationElement.getChild("exportSolutionsPath");
-        if (exportSolutionsPathElement != null) {
-            configuration.setExportSolutionsPath(exportSolutionsPathElement.getValue());
-        }
-        Element exportSolutionsTypeElement = configurationElement.getChild("exportSolutionsType");
-        if (exportSolutionsTypeElement != null) {
-            configuration.setExportSolutionsType(exportSolutionsTypeElement.getValue());
-            if (!configuration.getExportSolutionsType().equals("CSV")) {
-                throw new DAOException("Export type not supported");
-            }
-        }
-        Element exportChangesElement = configurationElement.getChild("exportChanges");
-        if (exportChangesElement != null) {
-            configuration.setExportChanges(Boolean.parseBoolean(exportChangesElement.getValue()));
-        }
-        Element exportChangesPathElement = configurationElement.getChild("exportChangesPath");
-        if (exportChangesPathElement != null) {
-            configuration.setExportChangesPath(exportChangesPathElement.getValue());
-        }
-        return configuration;
-    }
-
     @SuppressWarnings("unchecked")
     private List<String> loadAuthoritativeSources(Element authoritativeSourcesElement, Scenario scenario) {
         if (authoritativeSourcesElement == null || authoritativeSourcesElement.getChildren().isEmpty()) {
@@ -517,5 +482,17 @@ public class DAOMCScenario {
             throw new DAOException("Unable to parse attribute " + stringAttributeRef);
         }
         return new AttributeRef(tokens[0], tokens[1]);
+    }
+
+    private void initDatabase(Scenario scenario) {
+        if(!scenario.isDBMS()){
+            return;
+        }
+        if (scenario.getSource() != null && (scenario.getSource() instanceof DBMSDB)) {
+            DBMSDB dbmsdb = (DBMSDB) scenario.getSource();
+            dbmsdb.initDBMS();
+        }
+        DBMSDB dbmsdb = (DBMSDB) scenario.getTarget();
+        dbmsdb.initDBMS();
     }
 }

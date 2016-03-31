@@ -12,9 +12,9 @@ public class TConvertScenario extends TestCase {
 
     public void testConvertMMToDBMS() throws Exception {
         String baseDir = "/Users/donatello/Temp/datasets/";
-        String dependenciesString = baseDir + "dependencies-synth-chain0.xml";
-        String sourceInitDBOutFile = baseDir + "source-initdb-chain0.xml";
-        String targetInitDBOutFile = baseDir + "target-initdb-chain0.xml";
+        String dependenciesString = baseDir + "dependencies.xml";
+        String sourceInitDBOutFile = baseDir + "source-initdb.xml";
+        String targetInitDBOutFile = baseDir + "target-initdb.xml";
         sqlGenerator.generateSQL(dependenciesString, sourceInitDBOutFile, targetInitDBOutFile);
     }
 

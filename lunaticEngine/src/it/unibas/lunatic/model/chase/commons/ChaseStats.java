@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 public class ChaseStats {
 
     public static final String TOTAL_TIME = "Total Time";
+    public static final String LOAD_TIME = "Loading Time";
+    public static final String WRITE_TIME = "Writing Time";
     public static final String EGD_TIME = "EGD Time";
     public static final String EGD_VIOLATION_QUERY_TIME = "EGD Violation Query Time";
     public static final String TGD_VIOLATION_QUERY_TIME = "TGD Violation Query Time";
@@ -116,7 +118,6 @@ public class ChaseStats {
         sb.append("------ SCENARIO STATS ------").append("\n");
         Set<String> printedStats = new HashSet<String>();
         appendStat(NUMBER_OF_STTGDS, "", sb, printedStats);
-        appendStat(NUMBER_OF_STTGDS, "", sb, printedStats);
         appendStat(NUMBER_OF_EXTGDS, "", sb, printedStats);
         appendStat(NUMBER_OF_EXTEGDS, "", sb, printedStats);
         appendStat(NUMBER_OF_EGDS, "", sb, printedStats);
@@ -129,6 +130,8 @@ public class ChaseStats {
         appendStat(NUMBER_OF_FAILED_GREEDY_SCENARIOS, "", sb, printedStats);
         sb.append("------ CHASE STATS ------").append("\n");
         appendStat(TOTAL_TIME, "ms", sb, printedStats);
+        appendStat(LOAD_TIME, "ms", sb, printedStats);
+        appendStat(WRITE_TIME, "ms", sb, printedStats);
         appendStat(STTGD_TIME, "ms", sb, printedStats);
         appendStat(EGD_TIME, "ms", sb, printedStats);
         appendStat(EGD_VIOLATION_QUERY_TIME, "ms", sb, printedStats);
@@ -150,23 +153,13 @@ public class ChaseStats {
         appendStat(COMPUTE_SIMILARITY_TIME, "ms", sb, printedStats);
         appendStat(CHECK_REDUNDANCY_TIME, "ms", sb, printedStats);
         sb.append("-------------------------").append("\n");
-        sb.append("------ CHASE STATS ------").append("\n");
-        for (Dependency d : dependencyStats.keySet()) {
-            sb.append(d.getId()).append(": ").append(dependencyStats.get(d)).append(" ms").append("\n");
+        if (!dependencyStats.isEmpty()) {
+            sb.append("------ DEPENDENCIES STATS ------").append("\n");
+            for (Dependency d : dependencyStats.keySet()) {
+                sb.append(d.getId()).append(": ").append(dependencyStats.get(d)).append(" ms").append("\n");
+            }
+            sb.append("-------------------------").append("\n");
         }
-        sb.append("-------------------------").append("\n");
-        sb.append("------ HASH STATS ------").append("\n");
-        appendStat(HASHED_CELL_GROUPS, "", sb, printedStats);
-        appendStat(HASH_CELL_GROUP_TIME, "ms", sb, printedStats);
-        appendStat(HASHED_CELL_GROUP_CELLS, "", sb, printedStats);
-        appendStat(HASH_CELL_GROUP_CELL_TIME, "ms", sb, printedStats);
-        sb.append("-------------------------").append("\n");
-        sb.append("------ OTHER ------").append("\n");
-//        appendStat(TEMP_1, "ms", sb, printedStats);
-//        appendStat(TEMP_2, "ms", sb, printedStats);
-//        appendStat(TEMP_3, "ms", sb, printedStats);
-//        appendStat(TEMP_4, "ms", sb, printedStats);
-//        appendStat(TEMP_5, "ms", sb, printedStats);
         appendOtherStats(printedStats, sb);
         return sb.toString();
     }
@@ -182,8 +175,11 @@ public class ChaseStats {
         List<String> otherStats = new ArrayList<String>(this.stats.keySet());
         otherStats.removeAll(printedStats);
         Collections.sort(otherStats);
-        for (String key : otherStats) {
-            appendStat(key, "", sb, printedStats);
+        if (!otherStats.isEmpty()) {
+            sb.append("------ OTHER ------").append("\n");
+            for (String key : otherStats) {
+                appendStat(key, "", sb, printedStats);
+            }
         }
     }
 

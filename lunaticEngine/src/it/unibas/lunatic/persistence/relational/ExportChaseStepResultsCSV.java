@@ -7,6 +7,7 @@ import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForTGD;
 import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
@@ -18,6 +19,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import speedy.SpeedyConstants;
@@ -57,6 +59,7 @@ public class ExportChaseStepResultsCSV {
     }
 
     public void exportSolutionsInSeparateFiles(ChaseTree chaseTree, Scenario scenario) {
+        long start = new Date().getTime();
         List<DeltaChaseStep> leaves = ChaseUtility.getAllLeaves(chaseTree.getRoot());
         int solutionIndex = 0;
         for (DeltaChaseStep step : leaves) {
@@ -71,19 +74,24 @@ public class ExportChaseStepResultsCSV {
                 exportTable(table, path);
             }
         }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.WRITE_TIME, end - start);
     }
 
     public void exportChangesInSeparateFiles(ChaseTree chaseTree, Scenario scenario) {
+        long start = new Date().getTime();
         List<DeltaChaseStep> leaves = ChaseUtility.getAllLeaves(chaseTree.getRoot());
         int solutionIndex = 0;
         for (DeltaChaseStep step : leaves) {
             if (step.isInvalid() || step.isDuplicate()) {
                 continue;
             }
-            String path = scenario.getConfiguration().getExportSolutionsPath() + "/Changes_" + solutionIndex++ +".csv";
+            String path = scenario.getConfiguration().getExportSolutionsPath() + "/Changes_" + solutionIndex++ + ".csv";
             System.out.println("Exporting changes " + solutionIndex + " into " + path);
             OperatorFactory.getInstance().getGenerateModifiedCells(scenario).generate(step, path);
         }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.WRITE_TIME, end - start);
     }
 
     private void exportSolutions(DeltaChaseStep step, String folder, List<String> results, boolean materializeFKJoins) {
@@ -170,12 +178,12 @@ public class ExportChaseStepResultsCSV {
                     continue;
                 }
                 String value = cell.getValue().toString();
-//                if (LunaticConstants.NULL_VALUE.equals(value)) {
-//                    value = "";
-//                }
-                if (value.startsWith(SpeedyConstants.SKOLEM_PREFIX)) {
+                if (SpeedyConstants.NULL_VALUE.equals(value)) {
                     value = "NULL";
                 }
+//                if (value.startsWith(SpeedyConstants.SKOLEM_PREFIX)) {
+//                    value = "NULL";
+//                }
                 line.append(value).append(CSV_SEPARATOR);
             }
             LunaticUtility.removeChars(CSV_SEPARATOR.length(), line);

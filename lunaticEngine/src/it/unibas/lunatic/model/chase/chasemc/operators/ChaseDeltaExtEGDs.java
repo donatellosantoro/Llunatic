@@ -13,7 +13,7 @@ import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
-import it.unibas.lunatic.model.dependency.DependencyStratum;
+import it.unibas.lunatic.model.dependency.EGDStratum;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +52,7 @@ public class ChaseDeltaExtEGDs {
         int size = root.getNumberOfNodes();
         boolean userInteractionRequired = false;
         DependencyStratification stratification = scenario.getStratification();
-        for (DependencyStratum stratum : stratification.getStrata()) {
+        for (EGDStratum stratum : stratification.getEGDStrata()) {
             if (LunaticConfiguration.isPrintSteps()) System.out.println("---- Chasing egd stratum: " + stratum.getId());
             if (logger.isDebugEnabled()) logger.debug("------------------Chasing stratum: ----\n" + stratum);
             userInteractionRequired = userInteractionRequired || chaseTree(root, scenario, chaseState, stratum.getDependencies(), premiseTreeMap);

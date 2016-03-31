@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -45,6 +46,8 @@ public class CheckSolution {
             if (areStatisfiedEGDs(chaseStep, scenario) && areSatisfiedTGDs(chaseStep, scenario)) {
                 chaseStep.setSolution(true);
                 checkForGroundSolution(chaseStep, scenario);
+            } else if (scenario.getConfiguration().isDeProxyMode()) {
+                throw new ChaseException("Leaf node " + chaseStep.getId() + " is not a solution");
             }
         }
         for (DeltaChaseStep child : chaseStep.getChildren()) {
@@ -83,7 +86,7 @@ public class CheckSolution {
             if (logger.isDebugEnabled()) logger.debug("All EGDs are satisfied on node " + currentNode.getId());
             return true;
         }
-        if (logger.isDebugEnabled()) logger.debug("EGDs " + unsatisfiedDependencies + " can be unsatisfied... Node " + currentNode.getId() + " is not a solution");
+        logger.warn("EGDs " + unsatisfiedDependencies + " can be unsatisfied... Node " + currentNode.getId() + " is not a solution");
         return false;
     }
 
@@ -92,14 +95,14 @@ public class CheckSolution {
         if (extTGDs.isEmpty()) {
             return true;
         }
-        if (logger.isDebugEnabled()) logger.debug("Checking EGDs...");
+        if (logger.isDebugEnabled()) logger.debug("Checking TGDs...");
         List<Dependency> unsatisfiedDependencies;
         unsatisfiedDependencies = unsatisfiedDependenciesChecker.findUnsatisfiedTGDs(currentNode, extTGDs, scenario);
         if (unsatisfiedDependencies.isEmpty()) {
-            if (logger.isDebugEnabled()) logger.debug("All EGDs are satisfied on node " + currentNode.getId());
+            if (logger.isDebugEnabled()) logger.debug("All TGDs are satisfied on node " + currentNode.getId());
             return true;
         }
-        if (logger.isDebugEnabled()) logger.debug("EGDs " + unsatisfiedDependencies + " can be unsatisfied... Node " + currentNode.getId() + " is not a solution");
+        if (logger.isDebugEnabled()) logger.debug("TGDs " + unsatisfiedDependencies + " can be unsatisfied... Node " + currentNode.getId() + " is not a solution");
         return false;
     }
 }

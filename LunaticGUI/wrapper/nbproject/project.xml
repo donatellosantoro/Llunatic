@@ -188,8 +188,8 @@
                 <binary-origin>release/modules/ext/mybatis-3.1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jgrapht-jdk1.6.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jgrapht-jdk1.6.jar</binary-origin>
+                <runtime-relative-path>ext/jgrapht-core-0.9.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jgrapht-core-0.9.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/postgresql-9.1-903.jdbc3.jar</runtime-relative-path>
@@ -242,10 +242,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/concurrent.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/concurrent.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jgraph.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jgraph.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-jcs-core-2.0-beta-1.jar</runtime-relative-path>

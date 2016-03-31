@@ -16,8 +16,8 @@ public class DependencyToString {
     public String toLogicalString(DED ded, String indent, boolean compactFormat) {
         StringBuilder result = new StringBuilder();
         result.append("DED ").append(ded.getId()).append(":\n");
-        for (Object associated : ded.getAssociatedDependencies()) {
-            result.append(associated.toString()).append("\n");
+        for (Dependency associated : ded.getAssociatedDependencies()) {
+            result.append(associated.toLogicalString()).append("\n");
         }
         return result.toString();
     }

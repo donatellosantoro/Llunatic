@@ -9,16 +9,24 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaserFactory;
+import it.unibas.lunatic.persistence.DAOLunaticConfiguration;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jdom.Document;
+import org.jdom.Element;
+import speedy.exceptions.DBMSException;
 import speedy.model.database.IDatabase;
 import speedy.model.database.ITable;
+import speedy.persistence.relational.AccessConfiguration;
+import speedy.persistence.xml.DAOXmlUtility;
+import speedy.utility.DBMSUtility;
+import speedy.utility.PrintUtility;
 
 public class Main {
+
+    private final static DAOMCScenario daoScenario = new DAOMCScenario();
+    private final static DAOLunaticConfiguration daoConfiguration = new DAOLunaticConfiguration();
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -33,8 +41,11 @@ public class Main {
         }
         try {
             String fileScenario = confFile.getAbsolutePath();
-            System.out.print("*** Loading scenario " + fileScenario + "... ");
-            DAOMCScenario daoScenario = new DAOMCScenario();
+            LunaticConfiguration conf = daoConfiguration.loadConfiguration(fileScenario);
+            if (conf.isRecreateDBOnStart()) {
+                removeExistingDB(fileScenario);
+            }
+            System.out.println("*** Loading scenario " + fileScenario + "... ");
             Scenario scenario = daoScenario.loadScenario(fileScenario);
             System.out.println(" Scenario loaded!");
             if (!bigScenario(scenario)) {
@@ -81,7 +92,7 @@ public class Main {
         long end = new Date().getTime();
         double sec = (end - start) / 1000.0;
         ChaseTreeSize resultSizer = new ChaseTreeSize();
-        System.out.println("*** Chasing MC scenario successful...");
+        PrintUtility.printSuccess("*** Chasing MC scenario successful...");
         System.out.println("Time elapsed: " + sec + " sec");
         System.out.println("Number of solutions: " + resultSizer.getPotentialSolutions(result));
         System.out.println("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
@@ -141,5 +152,39 @@ public class Main {
             }
         }
         return false;
+    }
+
+    private static void removeExistingDB(String fileScenario) {
+        AccessConfiguration accessConfiguration = loadTargetAccessConfiguration(fileScenario);
+        if (accessConfiguration == null) {
+            return;
+        }
+        try {
+            PrintUtility.printInformation("Removing db " + accessConfiguration.getDatabaseName() + ", if exist...");
+            DBMSUtility.deleteDB(accessConfiguration);
+            PrintUtility.printSuccess("Database removed!");
+        } catch (DBMSException ex) {
+            String message = ex.getMessage();
+            if (!message.contains("does not exist")) {
+                PrintUtility.printError("Unable to drop database.\n" + ex.getLocalizedMessage());
+            }
+        }
+    }
+
+    private static AccessConfiguration loadTargetAccessConfiguration(String fileScenario) {
+        Document document = new DAOXmlUtility().buildDOM(fileScenario);
+        Element rootElement = document.getRootElement();
+        Element databaseElement = rootElement.getChild("target");
+        Element dbmsElement = databaseElement.getChild("access-configuration");
+        if (dbmsElement == null) {
+            return null;
+        }
+        AccessConfiguration accessConfiguration = new AccessConfiguration();
+        accessConfiguration.setDriver(dbmsElement.getChildText("driver").trim());
+        accessConfiguration.setUri(dbmsElement.getChildText("uri").trim());
+        accessConfiguration.setSchemaName(dbmsElement.getChildText("schema").trim());
+        accessConfiguration.setLogin(dbmsElement.getChildText("login").trim());
+        accessConfiguration.setPassword(dbmsElement.getChildText("password").trim());
+        return accessConfiguration;
     }
 }

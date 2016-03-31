@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class DependencyStratum {
+public class EGDStratum {
 
     private List<Dependency> dependencies;
-    private List<ExtendedDependency> extendedDependencies;
+    private List<ExtendedEGD> extendedDependencies;
     private String id;
 
-    public DependencyStratum(Set<Dependency> dependencies, Set<ExtendedDependency> extendedDependencies) {
+    public EGDStratum(Set<Dependency> dependencies, Set<ExtendedEGD> extendedDependencies) {
         this.dependencies = new ArrayList<Dependency>(dependencies);
-        this.extendedDependencies = new ArrayList<ExtendedDependency>(extendedDependencies);
+        this.extendedDependencies = new ArrayList<ExtendedEGD>(extendedDependencies);
     }
 
     public List<Dependency> getDependencies() {
         return dependencies;
     }
 
-    public List<ExtendedDependency> getExtendedDependencies() {
+    public List<ExtendedEGD> getExtendedDependencies() {
         return extendedDependencies;
     }
 
