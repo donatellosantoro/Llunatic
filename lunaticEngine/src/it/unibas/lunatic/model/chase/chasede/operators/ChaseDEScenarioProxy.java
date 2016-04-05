@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasede.operators;
 
+import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
@@ -12,13 +13,21 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.DEPartialOrder;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.dbms.SQLQueryString;
+import speedy.model.database.operators.dbms.RunSQLQueryString;
+import speedy.utility.DBMSUtility;
+import speedy.utility.PrintUtility;
+import speedy.utility.SpeedyUtility;
 
 public class ChaseDEScenarioProxy implements IDEChaser {
 
@@ -46,11 +55,32 @@ public class ChaseDEScenarioProxy implements IDEChaser {
             throw new ChaseFailedException("Chase fails. No solutions...");
         }
         IBuildDatabaseForChaseStep databaseBuilder = OperatorFactory.getInstance().getDatabaseBuilder(scenario);
+        long start = new Date().getTime();
         IDatabase result = databaseBuilder.extractDatabaseWithDistinct(solution.getId(), solution.getDeltaDB(), solution.getOriginalDB(), scenario);
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.BUILD_SOLUTION_TIME, end - start);
+        if (LunaticConfiguration.isPrintSteps()) PrintUtility.printInformation("*** Writing solution in database time: " + (end - start) + " ms");
+        executeFinalQueries(result, scenario);
         if (logger.isDebugEnabled()) logger.debug("----Result of chase: " + result);
         scenario.setExtEGDs(new ArrayList<Dependency>());
         scenario.setEGDs(egds);
         return result;
+    }
+
+    private void executeFinalQueries(IDatabase result, Scenario scenario) {
+        if (scenario.getSQLQueries().isEmpty()) {
+            return;
+        }
+        RunSQLQueryString sqlQueryRunner = new RunSQLQueryString();
+        for (SQLQueryString sqlQuery : scenario.getSQLQueries()) {
+            long start = new Date().getTime();
+            ITupleIterator it = sqlQueryRunner.runQuery(sqlQuery, result);
+            long resultSize = SpeedyUtility.getTupleIteratorSize(it);
+            it.close();
+            long end = new Date().getTime();
+            if (LunaticConfiguration.isPrintSteps()) PrintUtility.printInformation("*** Query " + sqlQuery.getId() + " Time: " + (end - start) + " ms -  Result size: " + resultSize);
+            ChaseStats.getInstance().addStat(ChaseStats.FINAL_QUERY_TIME, end - start);
+        }
     }
 
     public IDatabase doChase(Scenario scenario) {

@@ -13,9 +13,11 @@ import org.slf4j.LoggerFactory;
 
 public class ChaseStats {
 
-    public static final String TOTAL_TIME = "Total Time";
+    public static final String TOTAL_TIME = "Chasing Time";
     public static final String LOAD_TIME = "Loading Time";
     public static final String WRITE_TIME = "Writing Time";
+    public static final String BUILD_SOLUTION_TIME = "Building Final Solution Time";
+    public static final String FINAL_QUERY_TIME = "Final Query Time";
     public static final String EGD_TIME = "EGD Time";
     public static final String EGD_VIOLATION_QUERY_TIME = "EGD Violation Query Time";
     public static final String TGD_VIOLATION_QUERY_TIME = "TGD Violation Query Time";
@@ -132,6 +134,8 @@ public class ChaseStats {
         appendStat(TOTAL_TIME, "ms", sb, printedStats);
         appendStat(LOAD_TIME, "ms", sb, printedStats);
         appendStat(WRITE_TIME, "ms", sb, printedStats);
+        appendStat(BUILD_SOLUTION_TIME, "ms", sb, printedStats);
+        appendStat(FINAL_QUERY_TIME, "ms", sb, printedStats);
         appendStat(STTGD_TIME, "ms", sb, printedStats);
         appendStat(EGD_TIME, "ms", sb, printedStats);
         appendStat(EGD_VIOLATION_QUERY_TIME, "ms", sb, printedStats);

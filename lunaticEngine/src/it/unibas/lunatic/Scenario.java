@@ -15,10 +15,12 @@ import java.util.List;
 import speedy.model.database.EmptyDB;
 import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
+import speedy.model.database.dbms.SQLQueryString;
 import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.utility.SpeedyUtility;
 
 public class Scenario {
-
+    
     private String fileName;
     private String absolutePath;
     private IDatabase source;
@@ -40,130 +42,131 @@ public class Scenario {
     private IUserManager userManager = new StandardUserManager();
     private LunaticConfiguration configuration = new LunaticConfiguration();
     private DependencyStratification stratification;
-
+    private List<SQLQueryString> sqlQueries = new ArrayList<SQLQueryString>();
+    
     public Scenario(String fileName, String suffix) {
         this.fileName = fileName;
         this.suffix = suffix;
     }
-
+    
     public String getAbsolutePath() {
         return absolutePath;
     }
-
+    
     public void setAbsolutePath(String absolutePath) {
         this.absolutePath = absolutePath;
     }
-
+    
     public boolean isDEScenario() {
         return !isMCScenario() && !isDEDScenario();
     }
-
+    
     public boolean isMCScenario() {
         return !this.extEgds.isEmpty();
     }
-
+    
     public boolean isDEDScenario() {
         return (!this.dedstTgds.isEmpty()) || (!this.dedegds.isEmpty()) || (!this.dedextTgds.isEmpty()) || (!this.dedegds.isEmpty());
     }
-
+    
     public String getFileName() {
         return fileName;
     }
-
+    
     public IDatabase getSource() {
         return source;
     }
-
+    
     public void setSource(IDatabase source) {
         this.source = source;
     }
-
+    
     public IDatabase getTarget() {
         return target;
     }
-
+    
     public void setTarget(IDatabase target) {
         this.target = target;
     }
-
+    
     public String getSuffix() {
         return suffix;
     }
-
+    
     public boolean hasSuffix() {
         return suffix != null && !suffix.trim().isEmpty();
     }
-
+    
     public List<Dependency> getSTTgds() {
         return stTgds;
     }
-
+    
     public void setSTTGDs(List<Dependency> stTgds) {
         this.stTgds = stTgds;
     }
-
+    
     public List<Dependency> getExtTGDs() {
         return extTgds;
     }
-
+    
     public void setExtTGDs(List<Dependency> eTgds) {
         this.extTgds = eTgds;
     }
-
+    
     public List<Dependency> getDCs() {
         return dcs;
     }
-
+    
     public void setDCs(List<Dependency> dcs) {
         this.dcs = dcs;
     }
-
+    
     public List<Dependency> getEGDs() {
         return egds;
     }
-
+    
     public void setEGDs(List<Dependency> egds) {
         if (!egds.isEmpty() && !this.extEgds.isEmpty()) {
             throw new IllegalArgumentException("Either egds or extended egds may be specified for a scenario");
         }
         this.egds = egds;
     }
-
+    
     public List<Dependency> getExtEGDs() {
         return extEgds;
     }
-
+    
     public void setExtEGDs(List<Dependency> eEgds) {
         if (!eEgds.isEmpty() && !this.egds.isEmpty()) {
             throw new IllegalArgumentException("Either egds or extended egds may be specified for a scenario");
         }
         this.extEgds = eEgds;
     }
-
+    
     public List<DED> getDEDstTGDs() {
         return dedstTgds;
     }
-
+    
     public void setDEDstTGDs(List<DED> dedstTgds) {
         this.dedstTgds = dedstTgds;
     }
-
+    
     public List<DED> getDEDextTGDs() {
         return dedextTgds;
     }
-
+    
     public void setDEDextTGDs(List<DED> dedextTgds) {
         this.dedextTgds = dedextTgds;
     }
-
+    
     public List<DED> getDEDEGDs() {
         return dedegds;
     }
-
+    
     public void setDEDEGDs(List<DED> dedegds) {
         this.dedegds = dedegds;
     }
-
+    
     public Dependency getDependency(String dependencyId) {
         for (Dependency dependency : stTgds) {
             if (dependency.getId().equals(dependencyId)) {
@@ -192,88 +195,96 @@ public class Scenario {
         }
         return null;
     }
-
+    
     public IPartialOrder getPartialOrder() {
         return partialOrder;
     }
-
+    
     public void setPartialOrder(IPartialOrder partialOrder) {
         this.partialOrder = partialOrder;
     }
-
+    
     public ScriptPartialOrder getScriptPartialOrder() {
         return scriptPartialOrder;
     }
-
+    
     public void setScriptPartialOrder(ScriptPartialOrder scriptPartialOrder) {
         this.scriptPartialOrder = scriptPartialOrder;
     }
-
+    
     public List<OrderingAttribute> getOrderingAttributes() {
         return orderingAttributes;
     }
-
+    
     public void setOrderingAttributes(List<OrderingAttribute> orderingAttributes) {
         this.orderingAttributes = orderingAttributes;
     }
-
+    
     public IUserManager getUserManager() {
         return userManager;
     }
-
+    
     public void setUserManager(IUserManager userManager) {
         this.userManager = userManager;
     }
-
+    
     public CostManagerConfiguration getCostManagerConfiguration() {
         return costManagerConfiguration;
     }
-
+    
     public void setCostManagerConfiguration(CostManagerConfiguration costManagerConfiguration) {
         this.costManagerConfiguration = costManagerConfiguration;
     }
-
+    
     public boolean isMainMemory() {
         return (this.source == null || this.source instanceof MainMemoryDB || this.source instanceof EmptyDB)
                 && (this.target instanceof MainMemoryDB || this.target instanceof EmptyDB);
     }
-
+    
     public boolean isDBMS() {
         return (this.source == null || this.source instanceof EmptyDB || this.source instanceof DBMSDB)
                 && (this.target instanceof DBMSDB);
     }
-
+    
     public DependencyStratification getStratification() {
         return stratification;
     }
-
+    
     public void setStratification(DependencyStratification stratification) {
         this.stratification = stratification;
     }
-
+    
     public void setConfiguration(LunaticConfiguration configuration) {
         this.configuration = configuration;
     }
-
+    
     public LunaticConfiguration getConfiguration() {
         return configuration;
     }
-
+    
     public List<String> getAuthoritativeSources() {
         return authoritativeSources;
     }
-
+    
     public void setAuthoritativeSources(List<String> authoritativeSources) {
         this.authoritativeSources = authoritativeSources;
     }
-
+    
+    public void addSQLQueryString(SQLQueryString sqlQueryString) {
+        this.sqlQueries.add(sqlQueryString);
+    }
+    
+    public List<SQLQueryString> getSQLQueries() {
+        return sqlQueries;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;
         hash = 19 * hash + (this.fileName != null ? this.fileName.hashCode() : 0);
         return hash;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
@@ -282,7 +293,7 @@ public class Scenario {
         if ((this.fileName == null) ? (other.fileName != null) : !this.fileName.equals(other.fileName)) return false;
         return true;
     }
-
+    
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder("=============================== SCENARIO ================================\n");
@@ -304,9 +315,12 @@ public class Scenario {
             result.append("Authoritative sources: ").append(this.authoritativeSources).append("\n");
         }
         result.append(toStringDependencies());
+        if (!this.sqlQueries.isEmpty()) {
+            result.append("Final Queries: ").append(SpeedyUtility.printCollection(this.sqlQueries)).append("\n");
+        }
         return result.toString();
     }
-
+    
     public String toStringDependencies() {
         StringBuilder result = new StringBuilder();
         if (!this.stTgds.isEmpty()) {

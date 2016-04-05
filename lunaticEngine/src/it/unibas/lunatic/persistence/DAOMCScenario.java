@@ -41,6 +41,7 @@ import speedy.model.database.AttributeRef;
 import speedy.model.database.EmptyDB;
 import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
+import speedy.model.database.dbms.SQLQueryString;
 import speedy.persistence.file.CSVFile;
 import speedy.persistence.file.IImportFile;
 import speedy.persistence.file.XMLFile;
@@ -125,6 +126,9 @@ public class DAOMCScenario {
             Element userManagerElement = rootElement.getChild("userManager");
             IUserManager userManager = loadUserManager(userManagerElement, scenario);
             scenario.setUserManager(userManager);
+            //QUERIES
+            Element queriesElement = rootElement.getChild("queries");
+            loadQueries(queriesElement, scenario);
             //CONFIGURATION
             Element configurationElement = rootElement.getChild("configuration");
             LunaticConfiguration configuration = daoConfiguration.loadConfiguration(configurationElement);
@@ -476,6 +480,20 @@ public class DAOMCScenario {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private void loadQueries(Element queriesElement, Scenario scenario) {
+        if (queriesElement == null) {
+            return;
+        }
+        List<Element> sourceElements = queriesElement.getChildren("query");
+        for (Element sourceElement : sourceElements) {
+            String queryId = sourceElement.getAttributeValue("id");
+            String queryString = sourceElement.getText();
+            SQLQueryString sqlQueryString = new SQLQueryString(queryId, queryString);
+            scenario.addSQLQueryString(sqlQueryString);
+        }
+    }
+
     private AttributeRef parseAttributeRef(String stringAttributeRef) {
         String[] tokens = stringAttributeRef.split("\\.");
         if (tokens.length != 2) {
@@ -485,7 +503,7 @@ public class DAOMCScenario {
     }
 
     private void initDatabase(Scenario scenario) {
-        if(!scenario.isDBMS()){
+        if (!scenario.isDBMS()) {
             return;
         }
         if (scenario.getSource() != null && (scenario.getSource() instanceof DBMSDB)) {
@@ -495,4 +513,5 @@ public class DAOMCScenario {
         DBMSDB dbmsdb = (DBMSDB) scenario.getTarget();
         dbmsdb.initDBMS();
     }
+
 }
