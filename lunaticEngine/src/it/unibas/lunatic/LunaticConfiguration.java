@@ -6,6 +6,7 @@ public class LunaticConfiguration {
     private static boolean printSteps = false;
     private boolean debugMode = false;
     private boolean recreateDBOnStart = false;
+    private boolean cleanSchemasOnStartForDEScenarios = true;
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;
     private boolean deProxyMode = false; //MCProxy for DE chase
@@ -31,7 +32,8 @@ public class LunaticConfiguration {
     private String exportChangesPath;
 //
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
-    private final String deChaser = LunaticConstants.PROXY_MC_CHASER;
+//    private final String deChaser = LunaticConstants.PROXY_MC_CHASER;
+    private final String deChaser = LunaticConstants.OPTIMIZED_CHASER;
 //
 //    private String cacheType = LunaticConstants.NO_CACHE;
 //    private String cacheType = LunaticConstants.LAZY_CACHE;
@@ -268,6 +270,14 @@ public class LunaticConfiguration {
 
     public void setExportChangesPath(String exportChangesPath) {
         this.exportChangesPath = exportChangesPath;
+    }
+
+    public boolean isCleanSchemasOnStartForDEScenarios() {
+        return cleanSchemasOnStartForDEScenarios;
+    }
+
+    public void setCleanSchemasOnStartForDEScenarios(boolean cleanSchemasOnStartForDEScenarios) {
+        this.cleanSchemasOnStartForDEScenarios = cleanSchemasOnStartForDEScenarios;
     }
 
     @Override

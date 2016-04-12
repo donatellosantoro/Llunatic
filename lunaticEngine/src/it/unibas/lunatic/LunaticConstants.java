@@ -53,6 +53,7 @@ public class LunaticConstants {
     ///////////////    DE CHASER STRATEGIES    ///////////////////
     public static final String CLASSIC_DE_CHASER = "CLASSIC_DE_CHASER";
     public static final String PROXY_MC_CHASER = "PROXY_MC_CHASER";
+    public static final String OPTIMIZED_CHASER = "OPTIMIZED_CHASER";
     
     ///////////////////// COST MANAGER
     public static final String COST_MANAGER_STANDARD = "Standard";

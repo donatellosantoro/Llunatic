@@ -44,6 +44,8 @@ public class Main {
             LunaticConfiguration conf = daoConfiguration.loadConfiguration(fileScenario);
             if (conf.isRecreateDBOnStart()) {
                 removeExistingDB(fileScenario);
+            } else if (isDEScenario(fileScenario) && conf.isCleanSchemasOnStartForDEScenarios()) {
+                cleanWorkTargetSchemas(fileScenario);
             }
             System.out.println("*** Loading scenario " + fileScenario + "... ");
             Scenario scenario = daoScenario.loadScenario(fileScenario);
@@ -171,6 +173,25 @@ public class Main {
         }
     }
 
+    private static void cleanWorkTargetSchemas(String fileScenario) {
+        AccessConfiguration accessConfiguration = loadTargetAccessConfiguration(fileScenario);
+        if (accessConfiguration == null) {
+            return;
+        }
+        try {
+            PrintUtility.printInformation("Removing schema " + accessConfiguration.getSchemaName() + " and "
+                    + LunaticConstants.WORK_SCHEMA + ", if exist...");
+            DBMSUtility.removeSchema(accessConfiguration.getSchemaName(), accessConfiguration);
+            DBMSUtility.removeSchema(LunaticConstants.WORK_SCHEMA, accessConfiguration);
+            PrintUtility.printSuccess("Schemas removed!");
+        } catch (DBMSException ex) {
+            String message = ex.getMessage();
+            if (!message.contains("does not exist")) {
+                PrintUtility.printError("Unable to drop schema.\n" + ex.getLocalizedMessage());
+            }
+        }
+    }
+
     private static AccessConfiguration loadTargetAccessConfiguration(String fileScenario) {
         Document document = new DAOXmlUtility().buildDOM(fileScenario);
         Element rootElement = document.getRootElement();
@@ -186,5 +207,16 @@ public class Main {
         accessConfiguration.setLogin(dbmsElement.getChildText("login").trim());
         accessConfiguration.setPassword(dbmsElement.getChildText("password").trim());
         return accessConfiguration;
+    }
+
+    private static boolean isDEScenario(String fileScenario) {
+        Document document = new DAOXmlUtility().buildDOM(fileScenario);
+        Element rootElement = document.getRootElement();
+        Element dependenciesElement = rootElement.getChild("dependencies");
+        if (dependenciesElement == null) {
+            return false;
+        }
+        String dependenciesString = dependenciesElement.getValue().trim();
+        return !(dependenciesString.contains("ExtEGDs") && !dependenciesString.contains("DED-"));
     }
 }
