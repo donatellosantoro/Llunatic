@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import speedy.model.algebra.operators.ITupleIterator;
 import speedy.model.database.dbms.SQLQueryString;
 import speedy.model.database.operators.dbms.RunSQLQueryString;
-import speedy.utility.DBMSUtility;
 import speedy.utility.PrintUtility;
 import speedy.utility.SpeedyUtility;
 
