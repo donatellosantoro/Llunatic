@@ -1,6 +1,5 @@
 package it.unibas.lunatic.test.checker;
 
-import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
 import it.unibas.lunatic.test.comparator.instances.CompareInstances;

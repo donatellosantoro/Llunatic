@@ -2,7 +2,6 @@ package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasede.operators.IInsertTuplesForTargetTGDs;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
@@ -34,17 +33,18 @@ import speedy.model.database.Tuple;
 import speedy.model.database.TupleOID;
 import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 import speedy.model.database.operators.IRunQuery;
+import it.unibas.lunatic.model.chase.chasede.operators.IInsertDeltaTuplesForTargetTGDs;
 
-public class MainMemoryInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs {
+public class MainMemoryInsertDeltaTuplesForTargetTGDs implements IInsertDeltaTuplesForTargetTGDs {
 
-    private static Logger logger = LoggerFactory.getLogger(MainMemoryInsertTuplesForTargetTGDs.class);
+    private static Logger logger = LoggerFactory.getLogger(MainMemoryInsertDeltaTuplesForTargetTGDs.class);
 
     private IInsertTuple insertOperator;
     private IRunQuery queryRunner;
     private IOccurrenceHandler occurrenceHandler;
     private IOIDGenerator oidGenerator;
 
-    public MainMemoryInsertTuplesForTargetTGDs(IInsertTuple insertOperator, IRunQuery queryRunner, IOccurrenceHandler occurrenceHandler, IOIDGenerator oidGenerator) {
+    public MainMemoryInsertDeltaTuplesForTargetTGDs(IInsertTuple insertOperator, IRunQuery queryRunner, IOccurrenceHandler occurrenceHandler, IOIDGenerator oidGenerator) {
         this.insertOperator = insertOperator;
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;

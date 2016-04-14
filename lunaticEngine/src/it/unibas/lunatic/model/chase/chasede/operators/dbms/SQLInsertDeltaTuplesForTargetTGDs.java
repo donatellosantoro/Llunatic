@@ -1,9 +1,7 @@
 package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 
 import it.unibas.lunatic.LunaticConfiguration;
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasede.operators.IInsertTuplesForTargetTGDs;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
@@ -41,15 +39,16 @@ import speedy.model.database.dbms.DBMSTable;
 import speedy.model.database.mainmemory.datasource.OID;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
+import it.unibas.lunatic.model.chase.chasede.operators.IInsertDeltaTuplesForTargetTGDs;
 
-public class SQLInsertTuplesForTargetTGDs implements IInsertTuplesForTargetTGDs {
+public class SQLInsertDeltaTuplesForTargetTGDs implements IInsertDeltaTuplesForTargetTGDs {
 
-    private static Logger logger = LoggerFactory.getLogger(SQLInsertTuplesForTargetTGDs.class);
+    private static Logger logger = LoggerFactory.getLogger(SQLInsertDeltaTuplesForTargetTGDs.class);
 
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
     private IOIDGenerator oidGenerator;
 
-    public SQLInsertTuplesForTargetTGDs(IOIDGenerator oidGenerator) {
+    public SQLInsertDeltaTuplesForTargetTGDs(IOIDGenerator oidGenerator) {
         this.oidGenerator = oidGenerator;
     }
 

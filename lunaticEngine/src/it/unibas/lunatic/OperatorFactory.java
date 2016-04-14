@@ -2,15 +2,14 @@ package it.unibas.lunatic;
 
 import it.unibas.lunatic.model.chase.chasede.operators.ChangeCellDEProxy;
 import it.unibas.lunatic.model.chase.chasede.operators.ChaseTargetTGDsWithBatchInsert;
-import it.unibas.lunatic.model.chase.chasede.operators.IInsertTuplesForTargetTGDs;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
 import it.unibas.lunatic.model.chase.chasede.operators.OccurrenceHandlerDEProxy;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDs;
-import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertTuplesForTargetTGDs;
+import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertDeltaTuplesForTargetTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLUpdateCell;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.ChaseMainMemorySTTGDs;
-import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertTuplesForTargetTGDs;
+import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertDeltaTuplesForTargetTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryUpdateCell;
 import it.unibas.lunatic.model.chase.chaseded.IDEDDatabaseManager;
 import it.unibas.lunatic.model.chase.chaseded.dbms.SQLDEDDatabaseManager;
@@ -61,6 +60,13 @@ import speedy.model.database.operators.dbms.SQLDatabaseManager;
 import speedy.model.database.operators.dbms.SQLRunQuery;
 import speedy.model.database.operators.mainmemory.MainMemoryDatabaseManager;
 import speedy.model.database.operators.mainmemory.MainMemoryRunQuery;
+import it.unibas.lunatic.model.chase.chasede.operators.IInsertDeltaTuplesForTargetTGDs;
+import it.unibas.lunatic.model.chase.chasede.operators.IInsertFromSelectNaive;
+import it.unibas.lunatic.model.chase.chasede.operators.IRemoveDuplicates;
+import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectNaive;
+import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLRemoveDuplicates;
+import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectNaive;
+import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryRemoveDuplicates;
 
 public class OperatorFactory {
 
@@ -254,11 +260,25 @@ public class OperatorFactory {
         return new ChaseTreeToString(getDatabaseBuilder(scenario), getOccurrenceHandler(scenario));
     }
 
-    private IInsertTuplesForTargetTGDs getInsertTupleForTargetTGDs(Scenario scenario) {
+    private IInsertDeltaTuplesForTargetTGDs getInsertTupleForTargetTGDs(Scenario scenario) {
         if (scenario.isMainMemory()) {
-            return new MainMemoryInsertTuplesForTargetTGDs(getInsertTuple(scenario), getQueryRunner(scenario), getOccurrenceHandler(scenario), getOIDGenerator(scenario));
+            return new MainMemoryInsertDeltaTuplesForTargetTGDs(getInsertTuple(scenario), getQueryRunner(scenario), getOccurrenceHandler(scenario), getOIDGenerator(scenario));
         }
-        return new SQLInsertTuplesForTargetTGDs(getOIDGenerator(scenario));
+        return new SQLInsertDeltaTuplesForTargetTGDs(getOIDGenerator(scenario));
+    }
+
+    public IInsertFromSelectNaive getInsertFromSelectNaive(Scenario scenario) {
+        if (scenario.isMainMemory()) {
+            return new MainMemoryInsertFromSelectNaive();
+        }
+        return new SQLInsertFromSelectNaive();
+    }
+
+    public IRemoveDuplicates getDuplicateRemover(Scenario scenario) {
+        if (scenario.isMainMemory()) {
+            return new MainMemoryRemoveDuplicates();
+        }
+        return new SQLRemoveDuplicates();
     }
 
     public IExportSolution getSolutionExporter(Scenario scenario) {

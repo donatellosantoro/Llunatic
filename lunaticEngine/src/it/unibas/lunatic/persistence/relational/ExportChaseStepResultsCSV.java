@@ -78,6 +78,17 @@ public class ExportChaseStepResultsCSV {
         ChaseStats.getInstance().addStat(ChaseStats.WRITE_TIME, end - start);
     }
 
+    public void exportSolutionInSeparateFiles(IDatabase database, Scenario scenario) {
+        long start = new Date().getTime();
+        String path = scenario.getConfiguration().getExportSolutionsPath();
+        for (String tableName : database.getTableNames()) {
+            ITable table = database.getTable(tableName);
+            exportTable(table, path);
+        }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.WRITE_TIME, end - start);
+    }
+
     public void exportChangesInSeparateFiles(ChaseTree chaseTree, Scenario scenario) {
         long start = new Date().getTime();
         List<DeltaChaseStep> leaves = ChaseUtility.getAllLeaves(chaseTree.getRoot());

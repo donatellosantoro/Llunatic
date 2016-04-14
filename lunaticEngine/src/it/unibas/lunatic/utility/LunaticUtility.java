@@ -374,6 +374,28 @@ public class LunaticUtility {
         return true;
     }
 
+    public static IDatabase getTable(AttributeRef attributeRef, Scenario scenario) {
+        if (attributeRef.isSource()) {
+            return scenario.getSource();
+        } else {
+            return scenario.getTarget();
+        }
+    }
+
+    public static long increaseIfNotNull(long value, Long newValue) {
+        if (newValue != null) {
+            value += newValue;
+        }
+        return value;
+    }
+
+    public static long decreaseIfNotNull(long value, Long newValue) {
+        if (newValue != null) {
+            value += newValue;
+        }
+        return value;
+    }
+
 }
 
 class StringComparator implements Comparator<Object> {

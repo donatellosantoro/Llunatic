@@ -17,12 +17,14 @@ import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.ITable;
 import speedy.model.database.dbms.SQLQueryString;
 import speedy.model.database.operators.dbms.RunSQLQueryString;
 import speedy.utility.PrintUtility;
@@ -31,6 +33,7 @@ import speedy.utility.SpeedyUtility;
 public class ChaseDEScenarioProxy implements IDEChaser {
 
     private static Logger logger = LoggerFactory.getLogger(ChaseDEScenarioProxy.class);
+    private AnalyzeDatabase databaseAnalyzer = new AnalyzeDatabase();
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
         ChaseMCScenario mcChaser = ChaserFactory.getChaser(scenario);
@@ -61,6 +64,7 @@ public class ChaseDEScenarioProxy implements IDEChaser {
         if (LunaticConfiguration.isPrintSteps()) PrintUtility.printInformation("*** Writing solution in database time: " + (end - start) + " ms");
         executeFinalQueries(result, scenario);
         if (logger.isDebugEnabled()) logger.debug("----Result of chase: " + result);
+        printResult(result);
         scenario.setExtEGDs(new ArrayList<Dependency>());
         scenario.setEGDs(egds);
         return result;
@@ -80,6 +84,45 @@ public class ChaseDEScenarioProxy implements IDEChaser {
             if (LunaticConfiguration.isPrintSteps()) PrintUtility.printInformation("*** Query " + sqlQuery.getId() + " Time: " + (end - start) + " ms -  Result size: " + resultSize);
             ChaseStats.getInstance().addStat(ChaseStats.FINAL_QUERY_TIME, end - start);
         }
+    }
+
+    private void printResult(IDatabase targetDB) {
+        if (!LunaticConfiguration.isPrintSteps()) {
+            return;
+        }
+        System.out.println("");
+        System.out.println("Target Database Stats");
+        long totalNumberOfTuples = 0;
+        boolean printDetails = targetDB.getTableNames().size() < 10;
+        for (String tableName : targetDB.getTableNames()) {
+            ITable table = targetDB.getTable(tableName);
+            long tableSize = databaseAnalyzer.getTableSize(table);
+            totalNumberOfTuples += tableSize;
+            if (printDetails) {
+                System.out.println("# " + tableName + ": " + tableSize + " tuples");
+            }
+        }
+        long numberOfNulls = databaseAnalyzer.countNulls(targetDB);
+        System.out.println("# Number of nulls: " + numberOfNulls);
+        System.out.println("### Total Number of Tuples: " + totalNumberOfTuples + " tuples");
+        long preProcessingTime = 0L;
+        long chasingTime = 0L;
+        long postProcessingTime = 0L;
+        //Pre Processing
+        preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.LOAD_TIME));
+        preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.DELTA_DB_BUILDER));
+        //Chasing
+        chasingTime = LunaticUtility.increaseIfNotNull(chasingTime, ChaseStats.getInstance().getStat(ChaseStats.TOTAL_TIME));
+        chasingTime = LunaticUtility.decreaseIfNotNull(chasingTime, ChaseStats.getInstance().getStat(ChaseStats.DELTA_DB_BUILDER));
+        //Post Processing
+        postProcessingTime = LunaticUtility.increaseIfNotNull(postProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.WRITE_TIME));
+        postProcessingTime = LunaticUtility.increaseIfNotNull(postProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.BUILD_SOLUTION_TIME));
+        //Total Processing
+        long totalTime = preProcessingTime + chasingTime + postProcessingTime;
+        PrintUtility.printInformation("*** PreProcessing time: " + preProcessingTime + " ms");
+        PrintUtility.printInformation("*** Chasing time: " + chasingTime + " ms");
+        PrintUtility.printInformation("*** PostProcessing time: " + postProcessingTime + " ms");
+        PrintUtility.printInformation("*** Total time: " + totalTime + " ms");
     }
 
     public IDatabase doChase(Scenario scenario) {

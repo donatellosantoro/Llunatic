@@ -2,8 +2,10 @@ package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasede.operators.IRemoveDuplicates;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import speedy.model.database.IDatabase;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import speedy.model.database.mainmemory.MainMemoryDB;
@@ -14,6 +16,7 @@ import speedy.utility.comparator.StringComparator;
 public class MainMemoryRemoveDuplicates implements IRemoveDuplicates {
 
     public void removeDuplicatesModuloOID(IDatabase database, Scenario scenario) {
+        long start = new Date().getTime();
         MainMemoryDB mainMemoryDB = (MainMemoryDB) database;
         INode instance = mainMemoryDB.getDataSource().getInstances().get(0);
         for (String table : mainMemoryDB.getTableNames()) {
@@ -23,6 +26,8 @@ public class MainMemoryRemoveDuplicates implements IRemoveDuplicates {
             }
             removeDuplicatesModuloOID(tableRoot.getChildren());
         }
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.REMOVE_DUPLICATE_TIME, end - start);
     }
 
     private void removeDuplicatesModuloOID(List<INode> result) {

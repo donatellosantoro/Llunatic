@@ -6,7 +6,7 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.database.IDatabase;
 
-public interface IInsertTuplesForTargetTGDs {
+public interface IInsertDeltaTuplesForTargetTGDs {
 
     boolean execute(IAlgebraOperator sourceQuery, DeltaChaseStep currentNode, Dependency tgd, Scenario scenario, IDatabase databaseForStep);
 

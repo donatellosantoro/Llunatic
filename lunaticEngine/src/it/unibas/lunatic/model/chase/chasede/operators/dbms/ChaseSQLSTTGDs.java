@@ -55,6 +55,7 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
         QueryManager.executeScript(result.toString(), accessConfiguration, true, true, true, false);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.STTGD_TIME, end - start);
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("****Chase for s-t tgds completed in " + (end - start) + "ms");
     }
 
     private String cleanTargetScript(Scenario scenario) {

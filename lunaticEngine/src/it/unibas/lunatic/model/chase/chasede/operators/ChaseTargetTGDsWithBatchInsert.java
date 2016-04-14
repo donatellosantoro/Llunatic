@@ -28,10 +28,10 @@ public class ChaseTargetTGDsWithBatchInsert implements IChaseDeltaExtTGDs {
     public static final int ITERATION_LIMIT = 10;
     private static Logger logger = LoggerFactory.getLogger(ChaseTargetTGDsWithBatchInsert.class);
 
-    private IInsertTuplesForTargetTGDs insertTuples;
+    private IInsertDeltaTuplesForTargetTGDs insertTuples;
     private IBuildDatabaseForChaseStep databaseBuilder;
 
-    public ChaseTargetTGDsWithBatchInsert(IInsertTuplesForTargetTGDs insertTuples, IBuildDatabaseForChaseStep databaseBuilder) {
+    public ChaseTargetTGDsWithBatchInsert(IInsertDeltaTuplesForTargetTGDs insertTuples, IBuildDatabaseForChaseStep databaseBuilder) {
         this.insertTuples = insertTuples;
         this.databaseBuilder = databaseBuilder;
     }

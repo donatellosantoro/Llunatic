@@ -7,6 +7,9 @@ public class VariableEquivalenceClass {
 
     private List<FormulaVariable> variables = new ArrayList<FormulaVariable>();
 
+    public VariableEquivalenceClass() {
+    }
+
     public List<FormulaVariable> getVariables() {
         return variables;
     }

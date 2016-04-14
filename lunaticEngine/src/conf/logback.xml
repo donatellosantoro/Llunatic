@@ -26,6 +26,7 @@
     <!--     MODEL     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager" level="INFO"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.PartitionLinearTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chasemc.partialorder.AbstractPartialOrder" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseEGDEquivalenceClass" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtTGDs" level="DEBUG"/>-->

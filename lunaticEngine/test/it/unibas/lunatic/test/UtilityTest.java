@@ -13,6 +13,7 @@ import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.ITable;
+import speedy.model.database.dbms.DBMSTable;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.persistence.xml.DAOXmlUtility;
@@ -97,6 +98,10 @@ public class UtilityTest {
     }
 
     public static long getSize(ITable table) {
+        if (table instanceof DBMSTable) {
+            DBMSTable dbtable = (DBMSTable) table;
+            dbtable.reset();
+        }
         return table.getSize();
     }
 

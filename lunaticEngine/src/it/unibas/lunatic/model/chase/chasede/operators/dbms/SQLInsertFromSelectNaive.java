@@ -19,6 +19,7 @@ import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.DBMSUtility;
+import speedy.utility.SpeedyUtility;
 
 public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
 
@@ -30,25 +31,22 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
         String insertQuery = generateInsertScript(dependency, selectQuery, (DBMSDB) target, scenario);
         return QueryManager.executeInsertOrDelete(insertQuery, ((DBMSDB) target).getAccessConfiguration());
     }
-
-//    private Map<Dependency, String> buildDependenciesQueries(Scenario scenario) {
-//        Map<Dependency, String> result = new HashMap<Dependency, String>();
-//        for (Dependency dependency : scenario.getExtTGDs()) {
-//            IAlgebraOperator standardInsert = insertGenerator.generate(dependency, scenario);
-//            String selectQuery = queryBuilder.treeToSQL(standardInsert, scenario, SpeedyConstants.INDENT + SpeedyConstants.INDENT);
-//            String insertQuery = generateInsertScript(scenario, dependency, selectQuery);
-//            if (logger.isDebugEnabled()) logger.debug("Insert query for dependency\n" + dependency + "\n\n" + insertQuery + "\n\n");
-//            result.put(dependency, insertQuery);
-//        }
-//        return result;
-//    }
+    
     private String generateInsertScript(Dependency dependency, String selectQuery, DBMSDB target, Scenario scenario) {
         StringBuilder result = new StringBuilder();
         String targetSchemaName = DBMSUtility.getSchemaNameAndDot(target.getAccessConfiguration());
         for (IFormulaAtom atom : dependency.getConclusion().getAtoms()) {
             RelationalAtom relationalAtom = (RelationalAtom) atom;
             String tableToInsert = relationalAtom.getTableName();
-            result.append("INSERT INTO ").append(targetSchemaName).append(tableToInsert).append("\n");
+            result.append("INSERT INTO ").append(targetSchemaName).append(tableToInsert).append("(");
+            for (FormulaAttribute formulaAttribute : relationalAtom.getAttributes()) {
+                if (formulaAttribute.getAttributeName().equalsIgnoreCase(SpeedyConstants.OID)) {
+                    continue;
+                }
+                result.append(formulaAttribute.getAttributeName()).append(", ");
+            }
+            SpeedyUtility.removeChars(", ".length(), result);
+            result.append(")\n");
             result.append(generateSelectForInsert(relationalAtom, dependency, selectQuery, scenario));
             result.append(";\n\n");
         }
@@ -63,8 +61,7 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
             result.append(attributeGenerator.generateSQL(formulaAttribute, stTgd, skolems, scenario));
             result.append(", ");
         }
-        result.deleteCharAt(result.length() - 1);
-        result.deleteCharAt(result.length() - 1);
+        SpeedyUtility.removeChars(", ".length(), result);
         result.append("\n").append(SpeedyConstants.INDENT);
         result.append(" FROM (");
         result.append("\n");
