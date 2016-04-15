@@ -391,7 +391,7 @@ public class LunaticUtility {
 
     public static long decreaseIfNotNull(long value, Long newValue) {
         if (newValue != null) {
-            value += newValue;
+            value -= newValue;
         }
         return value;
     }

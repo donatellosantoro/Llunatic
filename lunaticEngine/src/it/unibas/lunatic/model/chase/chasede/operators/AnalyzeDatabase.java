@@ -2,17 +2,21 @@ package it.unibas.lunatic.model.chase.chasede.operators;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
 import speedy.model.algebra.operators.ITupleIterator;
 import speedy.model.database.Cell;
 import speedy.model.database.IDatabase;
 import speedy.model.database.ITable;
 import speedy.model.database.Tuple;
-import speedy.model.database.dbms.DBMSTable;
 
 public class AnalyzeDatabase {
 
-    public long countNulls(IDatabase database) {
+    private long THRESHOLD = 2000000;
+    private final static Logger logger = LoggerFactory.getLogger(AnalyzeDatabase.class);
+
+    public Integer countNulls(IDatabase database) {
         Set<String> nulls = new HashSet<String>();
         for (String tableName : database.getTableNames()) {
             ITable table = database.getTable(tableName);
@@ -23,6 +27,10 @@ public class AnalyzeDatabase {
                     String value = cell.getValue().toString();
                     if (value.startsWith(SpeedyConstants.SKOLEM_PREFIX)) {
                         nulls.add(value);
+                    }
+                    if (nulls.size() > THRESHOLD) {
+                        logger.error("More than " + THRESHOLD + " nulls");
+                        return null;
                     }
                 }
             }

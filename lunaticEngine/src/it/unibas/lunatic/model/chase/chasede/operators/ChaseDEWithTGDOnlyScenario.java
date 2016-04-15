@@ -110,7 +110,7 @@ public class ChaseDEWithTGDOnlyScenario implements IDEChaser {
                 System.out.println("# " + tableName + ": " + tableSize + " tuples");
             }
         }
-        long numberOfNulls = databaseAnalyzer.countNulls(targetDB);
+        Integer numberOfNulls = databaseAnalyzer.countNulls(targetDB);
         System.out.println("# Number of nulls: " + numberOfNulls);
         System.out.println("### Total Number of Tuples: " + totalNumberOfTuples + " tuples");
         long preProcessingTime = 0L;
