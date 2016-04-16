@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <source>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+S(a, b, c, d)
+INSTANCE:
+S(a: "a" , b: "b", c: "c")
+]]>
+        </generate>
+    </source>
+    <target>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+T1(a, b, c)
+T2(a, b)
+T3(a, b, c)
+W1(a, b)
+W2(a, b)
+]]>
+        </generate>
+    </target>
+    <dependencies>
+<![CDATA[
+STTGDs:
+S(a: $a, b: $b, c: $c) -> T1(a: $a, b: $b, c: $c).
+S(a: $a, b: $b, c: $c) -> W1(a: $a, b: $b).
+ExtTGDs:
+T1(a: $a, b: $b, c: $c) -> T2(a: $a, b: $b).
+T2(a: $a, b: $b) -> T3(a: $a, b: $b, c: $c).
+T3(a: $a, b: $b, c: $c) -> T2(a: $b, b: $b).
+W1(a: $a, b: $b) -> W2(a: $a, b: $b).
+W2(a: $a, b: $b) -> W1(a: $b, b: $b).
+]]>
+    </dependencies>
+</scenario>

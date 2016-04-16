@@ -98,21 +98,6 @@ public class ChaseDEWithTGDOnlyScenario implements IDEChaser {
         if (!LunaticConfiguration.isPrintSteps()) {
             return;
         }
-        System.out.println("");
-        System.out.println("Target Database Stats");
-        long totalNumberOfTuples = 0;
-        boolean printDetails = targetDB.getTableNames().size() < 10;
-        for (String tableName : targetDB.getTableNames()) {
-            ITable table = targetDB.getTable(tableName);
-            long tableSize = databaseAnalyzer.getTableSize(table);
-            totalNumberOfTuples += tableSize;
-            if (printDetails) {
-                System.out.println("# " + tableName + ": " + tableSize + " tuples");
-            }
-        }
-        Integer numberOfNulls = databaseAnalyzer.countNulls(targetDB);
-        System.out.println("# Number of nulls: " + numberOfNulls);
-        System.out.println("### Total Number of Tuples: " + totalNumberOfTuples + " tuples");
         long preProcessingTime = 0L;
         long chasingTime = 0L;
         long postProcessingTime = 0L;
@@ -129,6 +114,25 @@ public class ChaseDEWithTGDOnlyScenario implements IDEChaser {
         PrintUtility.printInformation("*** Chasing time: " + chasingTime + " ms");
         PrintUtility.printInformation("*** PostProcessing time: " + postProcessingTime + " ms");
         PrintUtility.printInformation("*** Total time: " + totalTime + " ms");
+        printTargetStats(targetDB);
+    }
+
+    private void printTargetStats(IDatabase targetDB) {
+        System.out.println("");
+        System.out.println("Target Database Stats");
+        long totalNumberOfTuples = 0;
+        boolean printDetails = targetDB.getTableNames().size() < 10;
+        for (String tableName : targetDB.getTableNames()) {
+            ITable table = targetDB.getTable(tableName);
+            long tableSize = databaseAnalyzer.getTableSize(table);
+            totalNumberOfTuples += tableSize;
+            if (printDetails) {
+                System.out.println("# " + tableName + ": " + tableSize + " tuples");
+            }
+        }
+        Integer numberOfNulls = databaseAnalyzer.countNulls(targetDB);
+        System.out.println("# Number of nulls: " + numberOfNulls);
+        System.out.println("### Total Number of Tuples: " + totalNumberOfTuples + " tuples");
     }
 
     private boolean checkIfAllTGDsAreLinear(List<Dependency> extTGDs) {
