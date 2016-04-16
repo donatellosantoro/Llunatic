@@ -43,6 +43,8 @@
             <path refid="compile.classpath" />
             <pathelement location="${test.build.dir}" />
             <pathelement location="${lib.dir}/junit.jar" />
+            <pathelement location="${lib.dir}/jgrapht-ext-${jgrapht-core.ver}.jar" />
+            <pathelement location="${lib.dir}/jgraphx-2.0.0.1.jar" />
         </path>
     </target>
     

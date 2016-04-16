@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 import speedy.model.database.AttributeRef;
 import speedy.utility.SpeedyUtility;
 
@@ -16,6 +18,7 @@ public class DependencyStratification {
     //TGDs
     private List<TGDStratum> tgdStrata = new ArrayList<TGDStratum>();
     private Map<Dependency, Set<Dependency>> affectedTGDsMap;
+    private DirectedGraph<TGDStratum, DefaultEdge> strataGraph;
 
     public List<EGDStratum> getEGDStrata() {
         return egdStrata;
@@ -52,6 +55,14 @@ public class DependencyStratification {
 
     public void addTGDStratum(TGDStratum stratum) {
         this.tgdStrata.add(stratum);
+    }
+
+    public DirectedGraph<TGDStratum, DefaultEdge> getStrataGraph() {
+        return strataGraph;
+    }
+
+    public void setStrataGraph(DirectedGraph<TGDStratum, DefaultEdge> strataGraph) {
+        this.strataGraph = strataGraph;
     }
 
     @Override

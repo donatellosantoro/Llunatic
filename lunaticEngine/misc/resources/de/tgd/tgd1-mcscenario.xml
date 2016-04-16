@@ -16,25 +16,36 @@ S(a: "a" , b: "b", c: "c")
         <generate>
 <![CDATA[
 SCHEMA:
-T1(a, b, c)
-T2(a, b)
-T3(a, b, c)
-W1(a, b)
-W2(a, b)
+Ta1(a, b)
+Ta2(a, b)
+Ta3(a, b)
+Tb1(a, b)
+Tb2(a, b)
+Tb3(a, b)
+Tc1(a, b)
+Td1(a, b)
+Te1(a, b)
 ]]>
         </generate>
     </target>
     <dependencies>
 <![CDATA[
 STTGDs:
-S(a: $a, b: $b, c: $c) -> T1(a: $a, b: $b, c: $c).
-S(a: $a, b: $b, c: $c) -> W1(a: $a, b: $b).
+S(a: $a, b: $b, c: $c) -> Ta1(a: $a, b: $b).
+S(a: $a, b: $b, c: $c) -> Tb1(a: $a, b: $b).
 ExtTGDs:
-T1(a: $a, b: $b, c: $c) -> T2(a: $a, b: $b).
-T2(a: $a, b: $b) -> T3(a: $a, b: $b, c: $c).
-T3(a: $a, b: $b, c: $c) -> T2(a: $b, b: $b).
-W1(a: $a, b: $b) -> W2(a: $a, b: $b).
-W2(a: $a, b: $b) -> W1(a: $b, b: $b).
+TGDa1: Ta1(a: $a, b: $b) -> Ta2(a: $a, b: $b).
+TGDa2: Ta2(a: $a, b: $b) -> Ta3(a: $a, b: $b).
+TGDa3: Ta3(a: $a, b: $b) -> Ta1(a: $a, b: $b).
+
+TGDb1: Tb1(a: $a, b: $b) -> Tb2(a: $a, b: $b).
+TGDb2: Tb2(a: $a, b: $b) -> Tb3(a: $a, b: $b).
+TGDb3: Tb3(a: $a, b: $b) -> Tb1(a: $a, b: $b).
+
+TGDc1: Ta3(a: $a, b: $b) -> Tc1(a: $a, b: $b).
+TGDd1: Tb3(a: $a, b: $b) -> Td1(a: $a, b: $b).
+
+TGDe1: Tc1(a: $a, b: $b), Td1(a: $a, b: $b) -> Te1(a: $a, b: $b).
 ]]>
     </dependencies>
 </scenario>

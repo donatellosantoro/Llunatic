@@ -45,6 +45,8 @@ public class BuildTGDStratification {
             stratum.setId(++counter + "");
         }
         if (logger.isDebugEnabled()) logger.debug(stratification.getTGDStrata().toString());
+        DirectedGraph<TGDStratum, DefaultEdge> strataGraph = buildStrataGraph(chaseGraph, stratification.getTGDStrata());
+        stratification.setStrataGraph(strataGraph);
     }
 
     private Map<Dependency, Set<Dependency>> findAffectedDependenciesForTGDs(List<Dependency> tgds) {
@@ -114,53 +116,66 @@ public class BuildTGDStratification {
         return new TGDStratum(sortedTGDs);
     }
 
-}
-
-class SortDependenciesByInputDegree implements Comparator<Dependency> {
-
-    private DirectedGraph<Dependency, DefaultEdge> chaseGraph;
-
-    public SortDependenciesByInputDegree(DirectedGraph<Dependency, DefaultEdge> chaseGraph) {
-        this.chaseGraph = chaseGraph;
-    }
-
-    public int compare(Dependency d1, Dependency d2) {
-        int inputDegree1 = chaseGraph.inDegreeOf(d1);
-        int inputDegree2 = chaseGraph.inDegreeOf(d2);
-        return inputDegree1 - inputDegree2;
-    }
-
-}
-
-class TGDStratumComparator implements Comparator<TGDStratum> {
-
-    private ConnectivityInspector<Dependency, DefaultEdge> inspector;
-    private DirectedGraph<Dependency, DefaultEdge> dependencyGraph;
-
-    public TGDStratumComparator(DirectedGraph<Dependency, DefaultEdge> dependencyGraph) {
-        this.dependencyGraph = dependencyGraph;
-        this.inspector = new ConnectivityInspector<Dependency, DefaultEdge>(dependencyGraph);
-    }
-
-    public int compare(TGDStratum t1, TGDStratum t2) {
-        if (existsPath(t1, t2)) {
-            return -1;
-        } else if (existsPath(t2, t1)) {
-            return 1;
+    private DirectedGraph<TGDStratum, DefaultEdge> buildStrataGraph(DirectedGraph<Dependency, DefaultEdge> dependencyGraph, List<TGDStratum> tgdStrata) {
+        DirectedGraph<TGDStratum, DefaultEdge> strataGraph = new DefaultDirectedGraph<TGDStratum, DefaultEdge>(DefaultEdge.class);
+        for (TGDStratum stratum : tgdStrata) {
+            strataGraph.addVertex(stratum);
         }
-        return 0;
+        for (TGDStratum stratumA : tgdStrata) {
+            for (TGDStratum stratumB : tgdStrata) {
+                if(stratumA == stratumB){
+                    continue;
+                }
+                if (existsPath(dependencyGraph, stratumA, stratumB)) {
+                    strataGraph.addEdge(stratumA, stratumB);
+                }
+            }
+        }
+        return strataGraph;
     }
 
-    private boolean existsPath(TGDStratum t1, TGDStratum t2) {
+    private boolean existsPath(DirectedGraph<Dependency, DefaultEdge> dependencyGraph, TGDStratum t1, TGDStratum t2) {
         for (Dependency dependency1 : t1.getTgds()) {
             for (Dependency dependency2 : t2.getTgds()) {
-//                if (inspector.pathExists(dependency1, dependency2)) {
                 if (dependencyGraph.containsEdge(dependency1, dependency2)) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    class SortDependenciesByInputDegree implements Comparator<Dependency> {
+
+        private DirectedGraph<Dependency, DefaultEdge> chaseGraph;
+
+        public SortDependenciesByInputDegree(DirectedGraph<Dependency, DefaultEdge> chaseGraph) {
+            this.chaseGraph = chaseGraph;
+        }
+
+        public int compare(Dependency d1, Dependency d2) {
+            int inputDegree1 = chaseGraph.inDegreeOf(d1);
+            int inputDegree2 = chaseGraph.inDegreeOf(d2);
+            return inputDegree1 - inputDegree2;
+        }
+    }
+
+    class TGDStratumComparator implements Comparator<TGDStratum> {
+
+        private DirectedGraph<Dependency, DefaultEdge> dependencyGraph;
+
+        public TGDStratumComparator(DirectedGraph<Dependency, DefaultEdge> dependencyGraph) {
+            this.dependencyGraph = dependencyGraph;
+        }
+
+        public int compare(TGDStratum t1, TGDStratum t2) {
+            if (existsPath(dependencyGraph, t1, t2)) {
+                return -1;
+            } else if (existsPath(dependencyGraph, t2, t1)) {
+                return 1;
+            }
+            return 0;
+        }
     }
 
 }

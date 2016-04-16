@@ -1,8 +1,9 @@
 package it.unibas.lunatic.model.dependency;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class TGDStratum {
+public class TGDStratum implements Serializable{
 
     private List<Dependency> tgds;
     private String id;
@@ -25,6 +26,10 @@ public class TGDStratum {
 
     @Override
     public String toString() {
+        return "Stratutm " + id;
+    }
+
+    public String toLongString() {
         StringBuilder result = new StringBuilder();
         result.append("Stratum ").append(id).append(" [\n");
         for (Dependency dependency : tgds) {
