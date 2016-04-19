@@ -3,6 +3,7 @@ package it.unibas.lunatic.parser.operators;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ParserException;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.dependency.operators.AssignAliasesInFormulas;
 import it.unibas.lunatic.model.dependency.operators.CheckRecursion;
@@ -18,6 +19,7 @@ import it.unibas.lunatic.parser.output.DependenciesParser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -197,6 +199,7 @@ public class ParseDependencies {
 
 // final callback method for processing dependencies
     public void processDependencies() {
+        long start = new Date().getTime();
         scenario.setSTTGDs(processDependencies(stTGDs));
         scenario.setExtTGDs(processExtTGDs(eTGDs, false));
         scenario.setDCs(processDependencies(dcs));
@@ -205,6 +208,8 @@ public class ParseDependencies {
         scenario.setDEDstTGDs(processDEDs(dedstTGDs));
         scenario.setDEDextTGDs(processDEDExtTGDs(dedeTGDs));
         scenario.setDEDEGDs(processDEDs(dedegds));
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.PROCESS_DEPENDENCIES_TIME, end - start);
     }
 
     public String clean(String expressionString) {
@@ -292,7 +297,7 @@ public class ParseDependencies {
             equivalenceClassFinder.findVariableEquivalenceClasses(dependency); // needed after each variable change
 //            assignAuthoritativeSources(dependency); // needed twice
         }
-        if (dependency.getType().equals(LunaticConstants.ExtTGD) || dependency.getType().equals(LunaticConstants.EGD) 
+        if (dependency.getType().equals(LunaticConstants.ExtTGD) || dependency.getType().equals(LunaticConstants.EGD)
                 || dependency.getType().equals(LunaticConstants.ExtEGD)) {
             dependency = egdJoinNormalizer.normalizeJoinsInEgd(dependency);
         }

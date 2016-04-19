@@ -51,6 +51,11 @@ public class ChaseStats {
     public static final String NUMBER_OF_EXECUTED_GREEDY_SCENARIOS = "#Executed greedy Scenarios";
     public static final String NUMBER_OF_FAILED_GREEDY_SCENARIOS = "#Failed greedy Scenarios";
     /////
+    public static final String PARSING_TIME = "Parsing Time";
+    public static final String LOAD_XML_SCENARIO_TIME = "Load XML Scenario Time";
+    public static final String PROCESS_DEPENDENCIES_TIME = "Process Dependencies Time";
+    public static final String INIT_DB_TIME = "Init DB Time";
+    /////
     public static final String HASHED_CELL_GROUPS = "#Hashed cellgroup";
     public static final String HASH_CELL_GROUP_TIME = "Hash cellgroup time";
     public static final String HASHED_CELL_GROUP_CELLS = "#Hashed cellgroup-cell";

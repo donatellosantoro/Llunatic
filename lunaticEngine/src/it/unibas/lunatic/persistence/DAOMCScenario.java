@@ -85,7 +85,10 @@ public class DAOMCScenario {
         long start = new Date().getTime();
         try {
             Scenario scenario = new Scenario(fileScenario, suffix);
+            long startLoadXML = new Date().getTime();
             Document document = daoUtility.buildDOM(fileScenario);
+            long endLoadXML = new Date().getTime();
+            ChaseStats.getInstance().addStat(ChaseStats.LOAD_XML_SCENARIO_TIME, endLoadXML - startLoadXML);
             Element rootElement = document.getRootElement();
             //SOURCE
             Element sourceElement = rootElement.getChild("source");
@@ -95,6 +98,15 @@ public class DAOMCScenario {
             Element targetElement = rootElement.getChild("target");
             IDatabase targetDatabase = loadDatabase(targetElement, suffix);
             scenario.setTarget(targetDatabase);
+            //CONFIGURATION
+            Element configurationElement = rootElement.getChild("configuration");
+            LunaticConfiguration configuration = daoConfiguration.loadConfiguration(configurationElement);
+            scenario.setConfiguration(configuration);
+            long end = new Date().getTime();
+            ChaseStats.getInstance().addStat(ChaseStats.LOAD_TIME, end - start);
+            //InitDB (out of LOAD_TIME stat)
+            initDatabase(scenario);
+            start = new Date().getTime();
             //AUTHORITATIVE SOURCES
             Element authoritativeSourcesElement = rootElement.getChild("authoritativeSources");
             List<String> authoritativeSources = loadAuthoritativeSources(authoritativeSourcesElement, scenario);
@@ -129,11 +141,8 @@ public class DAOMCScenario {
             //QUERIES
             Element queriesElement = rootElement.getChild("queries");
             loadQueries(queriesElement, scenario);
-            //CONFIGURATION
-            Element configurationElement = rootElement.getChild("configuration");
-            LunaticConfiguration configuration = daoConfiguration.loadConfiguration(configurationElement);
-            scenario.setConfiguration(configuration);
-            initDatabase(scenario);
+            end = new Date().getTime();
+            ChaseStats.getInstance().addStat(ChaseStats.LOAD_TIME, end - start);
             return scenario;
         } catch (Throwable ex) {
             logger.error(ex.getLocalizedMessage());
@@ -144,8 +153,6 @@ public class DAOMCScenario {
             }
             throw new DAOException(message);
         } finally {
-            long end = new Date().getTime();
-            ChaseStats.getInstance().addStat(ChaseStats.LOAD_TIME, end - start);
         }
     }
 
@@ -474,7 +481,10 @@ public class DAOMCScenario {
         String dependenciesString = dependenciesElement.getValue().trim();
         ParseDependencies generator = new ParseDependencies();
         try {
+            long start = new Date().getTime();
             generator.generateDependencies(dependenciesString, scenario);
+            long end = new Date().getTime();
+            ChaseStats.getInstance().addStat(ChaseStats.PARSING_TIME, end - start);
         } catch (Exception ex) {
             throw new DAOException(ex);
         }
@@ -510,8 +520,11 @@ public class DAOMCScenario {
             DBMSDB dbmsdb = (DBMSDB) scenario.getSource();
             dbmsdb.initDBMS();
         }
+        long start = new Date().getTime();
         DBMSDB dbmsdb = (DBMSDB) scenario.getTarget();
         dbmsdb.initDBMS();
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.INIT_DB_TIME, end - start);
     }
 
 }
