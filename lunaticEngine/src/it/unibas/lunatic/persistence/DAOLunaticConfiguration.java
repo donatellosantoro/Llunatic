@@ -78,6 +78,10 @@ public class DAOLunaticConfiguration {
         if (exportChangesPathElement != null) {
             configuration.setExportChangesPath(exportChangesPathElement.getValue());
         }
+        Element maxNumberOfThreadsElement = configurationElement.getChild("maxNumberOfThreads");
+        if (maxNumberOfThreadsElement != null) {
+            configuration.setMaxNumberOfThreads(Integer.parseInt(maxNumberOfThreadsElement.getValue()));
+        }
         return configuration;
     }
 }
