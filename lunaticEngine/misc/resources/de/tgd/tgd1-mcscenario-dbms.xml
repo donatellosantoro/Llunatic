@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <source>
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:tgd1</uri>
+            <schema>source</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+create table s(
+	oid serial,
+	a text,
+	b text,
+	c text
+);
+INSERT INTO source.s(a, b, c) VALUES ('a', 'b', 'c');
+INSERT INTO source.s(a, b, c) VALUES ('a', 'b', 'c');
+
+]]>
+</init-db>
+    </source>
+    <target>
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:tgd1</uri>
+            <schema>target</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+create table tc1(
+	oid serial,
+	a text,
+	b text
+);
+create table td1(
+	oid serial,
+	a text,
+	b text
+);
+create table te1(
+	oid serial,
+	a text,
+	b text
+);
+create table tb3(
+	oid serial,
+	a text,
+	b text
+);
+create table tb2(
+	oid serial,
+	a text,
+	b text
+);
+create table ta3(
+	oid serial,
+	a text,
+	b text
+);
+create table ta2(
+	oid serial,
+	a text,
+	b text
+);
+create table ta1(
+	oid serial,
+	a text,
+	b text
+);
+create table tb1(
+	oid serial,
+	a text,
+	b text
+);
+
+]]>
+</init-db>
+    </target>
+      <dependencies>
+<![CDATA[
+STTGDs:
+s(a: $a, b: $b, c: $c) -> ta1(a: $a, b: $b).
+s(a: $a, b: $b, c: $c) -> tb1(a: $a, b: $b).
+ExtTGDs:
+tgda1: ta1(a: $a, b: $b) -> ta2(a: $a, b: $b).
+tgda2: ta2(a: $a, b: $b) -> ta3(a: $a, b: $b).
+tgda3: ta3(a: $a, b: $b) -> ta1(a: $a, b: $b).
+
+tgdb1: tb1(a: $a, b: $b) -> tb2(a: $a, b: $b).
+tgdb2: tb2(a: $a, b: $b) -> tb3(a: $a, b: $b).
+tgdb3: tb3(a: $a, b: $b) -> tb1(a: $a, b: $b).
+
+tgdc1: ta3(a: $a, b: $b) -> tc1(a: $a, b: $b).
+tgdd1: tb3(a: $a, b: $b) -> td1(a: $a, b: $b).
+
+tgde1: tc1(a: $a, b: $b), td1(a: $a, b: $b) -> te1(a: $a, b: $b).
+]]>
+    </dependencies>
+</scenario>

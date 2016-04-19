@@ -70,7 +70,9 @@
     <!--<logger name="it.unibas.lunatic.persistence.relational.GenerateSQLFromDependencies" level="DEBUG"/>-->
 
     <!--     CHASE DE     -->
-    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs" level="DEBUG"/>-->
+<!--    <logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs" level="DEBUG"/>
+    <logger name="it.unibas.lunatic.model.chase.chasede.operators.ScheduleTGDStrata" level="DEBUG"/>
+    <logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDStratumThread" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryInsertTuplesForTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseDeltaDCs" level="DEBUG"/>-->
 

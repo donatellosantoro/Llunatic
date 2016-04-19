@@ -12,8 +12,15 @@ public class TestTGDStratification extends CheckTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestTGDStratification.class);
 
-    public void testRSEgd() throws Exception {
+    public void testTgd0() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/tgd0-mcscenario.xml");
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        checkExpectedInstances(result, scenario);
+    }
+
+    public void testTgd1() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/tgd1-mcscenario.xml");
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

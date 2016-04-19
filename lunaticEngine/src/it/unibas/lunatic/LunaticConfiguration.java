@@ -30,6 +30,8 @@ public class LunaticConfiguration {
     private String exportSolutionsType;
     private boolean exportChanges = false;
     private String exportChangesPath;
+
+    private int maxNumberOfThreads = 12;
 //
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
 //    private final String deChaser = LunaticConstants.PROXY_MC_CHASER;
@@ -280,6 +282,14 @@ public class LunaticConfiguration {
         this.cleanSchemasOnStartForDEScenarios = cleanSchemasOnStartForDEScenarios;
     }
 
+    public int getMaxNumberOfThreads() {
+        return maxNumberOfThreads;
+    }
+
+    public void setMaxNumberOfThreads(int maxNumberOfThreads) {
+        this.maxNumberOfThreads = maxNumberOfThreads;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
@@ -297,6 +307,7 @@ public class LunaticConfiguration {
                 + "\n\t UseSymmetricOptimization: " + useSymmetricOptimization
                 + "\n\t NumberCellsWeightForRanking: " + numberCellsWeightForRanking
                 + "\n\t DiscardDuplicateTuples: " + discardDuplicateTuples
+                + "\n\t MaxNumberOfThreads: " + maxNumberOfThreads
                 + "\n\t UseBatchInsert: " + useBatchInsert
                 + "\n\t ExportSolutions: " + exportSolutions
                 + "\n\t ExportSolutionsPath: " + exportSolutionsPath

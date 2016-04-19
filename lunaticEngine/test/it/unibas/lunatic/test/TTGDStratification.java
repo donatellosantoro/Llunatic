@@ -36,24 +36,15 @@ public class TTGDStratification extends TestCase {
 //        List<TGDStratum> tgdStrata = stratification.getTGDStrata();
 //        if (logger.isDebugEnabled()) logger.debug(tgdStrata.toString());
 //        assertEquals(3, tgdStrata.size());
-//    }
-//    public void testTGD1() throws Exception {
-//        Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/tgd1-mcscenario.xml");
-//        stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
-//        DependencyStratification stratification = scenario.getStratification();
-//        List<TGDStratum> tgdStrata = stratification.getTGDStrata();
 //        for (TGDStratum tGDStratum : tgdStrata) {
 //            System.out.println(tGDStratum.toLongString());
 //        }
-//        if (logger.isDebugEnabled()) logger.debug(tgdStrata.toString());
-//        assertEquals(5, tgdStrata.size());
-//        if (logger.isDebugEnabled()) logger.debug(stratification.getStrataGraph().toString());
 //        showGraph(stratification.getStrataGraph());
 //        while (true) {
 //        }
 //    }
-    public void testTGDSynth() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromAbsolutePath("/Users/donatello/Projects/chaseBench/datasets/synthetic_constraints/scenario/llunatic/synthetic_constraints-0-100-scenario-dbms.xml");
+    public void testTGD1() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/tgd1-mcscenario.xml");
         stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
         DependencyStratification stratification = scenario.getStratification();
         List<TGDStratum> tgdStrata = stratification.getTGDStrata();
@@ -61,11 +52,26 @@ public class TTGDStratification extends TestCase {
             System.out.println(tGDStratum.toLongString());
         }
         if (logger.isDebugEnabled()) logger.debug(tgdStrata.toString());
+        assertEquals(5, tgdStrata.size());
         if (logger.isDebugEnabled()) logger.debug(stratification.getStrataGraph().toString());
         showGraph(stratification.getStrataGraph());
         while (true) {
         }
     }
+//    public void testTGDSynth() throws Exception {
+//        Scenario scenario = UtilityTest.loadScenarioFromAbsolutePath("");
+//        stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
+//        DependencyStratification stratification = scenario.getStratification();
+//        List<TGDStratum> tgdStrata = stratification.getTGDStrata();
+//        for (TGDStratum tGDStratum : tgdStrata) {
+//            System.out.println(tGDStratum.toLongString());
+//        }
+//        if (logger.isDebugEnabled()) logger.debug(tgdStrata.toString());
+//        if (logger.isDebugEnabled()) logger.debug(stratification.getStrataGraph().toString());
+//        showGraph(stratification.getStrataGraph());
+//        while (true) {
+//        }
+//    }
 
     private void showGraph(DirectedGraph<TGDStratum, DefaultEdge> strataGraph) {
         JGraphXAdapter<TGDStratum, DefaultEdge> jgxAdapterContext = new JGraphXAdapter<TGDStratum, DefaultEdge>(strataGraph);

@@ -45,6 +45,7 @@ public class ChaseDEWithTGDOnlyScenario implements IDEChaser {
     public ChaseDEWithTGDOnlyScenario(IChaseSTTGDs stChaser, IRunQuery queryRunner, IInsertFromSelectNaive naiveInsert,
             IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep databaseBuilder, IRemoveDuplicates duplicateRemover) {
         this.stChaser = stChaser;
+//        this.extTgdChaser = new ChaseExtTGDs(naiveInsert);
         this.extTgdChaser = new ChaseExtTGDs(naiveInsert);
         this.dChaser = new ChaseDCs(queryRunner);
         this.deltaBuilder = deltaBuilder;
