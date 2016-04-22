@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.dependency.AttributesInSameCellGroups;
 import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedEGD;
@@ -8,17 +9,12 @@ import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.EGDStratum;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.jgrapht.DirectedGraph;
-import org.jgrapht.alg.ConnectivityInspector;
-import org.jgrapht.alg.StrongConnectivityInspector;
+import org.jgrapht.Graphs;
+import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.slf4j.Logger;
@@ -27,20 +23,33 @@ import org.slf4j.LoggerFactory;
 public class AnalyzeDependencies {
 
     private static final Logger logger = LoggerFactory.getLogger(AnalyzeDependencies.class);
+    private final BuildFaginDependencyGraph faginDependencyGraphBuilder = new BuildFaginDependencyGraph();
     private final CheckWeaklyAcyclicityInTGDs weaklyAcyclicityChecker = new CheckWeaklyAcyclicityInTGDs();
-    private final BuildExtendedDependencies dependencyBuilder = new BuildExtendedDependencies();
     private final FindSymmetricAtoms symmetryFinder = new FindSymmetricAtoms();
     private final AssignAdditionalAttributes additionalAttributesAssigner = new AssignAdditionalAttributes();
     private final BuildTGDStratification tgdStratificationBuilder = new BuildTGDStratification();
+    private final FindAttributesWithLabeledNulls attributeWithNullsFinder = new FindAttributesWithLabeledNulls();
+    private final BuildEGDStratification egdStratificationBuilder = new BuildEGDStratification();
+    private final FindAttributesInSameCellGroup attributeInSameCellGroupFinder = new FindAttributesInSameCellGroup();
 
     public void prepareDependenciesAndGenerateStratification(Scenario scenario) {
         if (scenario.getStratification() != null) {
             return;
         }
-        weaklyAcyclicityChecker.check(scenario.getExtTGDs());
+        DirectedGraph<AttributeRef, ExtendedEdge> faginDependencyGraph = faginDependencyGraphBuilder.buildGraph(scenario.getExtTGDs());
+        if (logger.isDebugEnabled()) logger.debug("Fagin Dependency graph " + faginDependencyGraph);
+        weaklyAcyclicityChecker.check(faginDependencyGraph, scenario.getExtTGDs());
+        DirectedGraph<AttributeRef, ExtendedEdge> dependencyGraph = removeSpecialEdges(faginDependencyGraph);
+        if (logger.isDebugEnabled()) logger.debug("Dependency graph " + dependencyGraph);
+        if (scenario.getConfiguration().isDeScenario() && !scenario.getExtEGDs().isEmpty()) {
+            Set<AttributeRef> attributesWithLabeledNulls = attributeWithNullsFinder.findAttributes(dependencyGraph, scenario);
+            scenario.setAttributesWithLabeledNulls(attributesWithLabeledNulls);
+        }
+        AttributesInSameCellGroups attributesInSameCellGroups = attributeInSameCellGroupFinder.findAttributes(dependencyGraph);
+        scenario.setAttributesInSameCellGroups(attributesInSameCellGroups);
         findAllQueriedAttributesForEGDs(scenario.getExtEGDs());
         findAllQueriedAttributesForTGDs(scenario.getExtTGDs());
-        DependencyStratification stratification = generateStratification(scenario);
+        DependencyStratification stratification = egdStratificationBuilder.generateStratification(scenario);
         findDependenciesForAttributes(stratification, scenario.getExtEGDs());
         findDependenciesForAttributes(stratification, scenario.getExtTGDs());
         symmetryFinder.findSymmetricAtoms(scenario.getExtEGDs(), scenario);
@@ -63,70 +72,6 @@ public class AnalyzeDependencies {
             List<AttributeRef> queriedAttributes = DependencyUtility.findTargetQueriedAttributesForExtTGD(dependency);
             dependency.setQueriedAttributes(queriedAttributes);
         }
-    }
-
-    private DependencyStratification generateStratification(Scenario scenario) {
-        List<ExtendedEGD> extendedDependencies = dependencyBuilder.buildExtendedEGDs(scenario.getExtEGDs(), scenario);
-        DirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph = initDependencyGraph(extendedDependencies);
-        StrongConnectivityInspector<ExtendedEGD, DefaultEdge> strongConnectivityInspector = new StrongConnectivityInspector<ExtendedEGD, DefaultEdge>(dependencyGraph);
-        List<Set<ExtendedEGD>> stronglyConnectedComponents = strongConnectivityInspector.stronglyConnectedSets();
-        DependencyStratification stratification = new DependencyStratification();
-        for (Set<ExtendedEGD> extendedDependencySet : stronglyConnectedComponents) {
-            Set<Dependency> dependencySet = buildDependencySet(extendedDependencySet);
-            EGDStratum stratum = new EGDStratum(dependencySet, extendedDependencySet);
-            Collections.sort(stratum.getDependencies(), new DependencyComparator(scenario));
-            stratification.addEGDStratum(stratum);
-        }
-        Collections.sort(stratification.getEGDStrata(), new EGDStratumComparator(dependencyGraph));
-        int counter = 0;
-        for (EGDStratum stratum : stratification.getEGDStrata()) {
-            stratum.setId(++counter + "");
-        }
-        if (logger.isDebugEnabled()) logger.debug("Stratification: " + stratification);
-        return stratification;
-    }
-
-    private DirectedGraph<ExtendedEGD, DefaultEdge> initDependencyGraph(List<ExtendedEGD> dependencies) {
-        DirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph = new DefaultDirectedGraph<ExtendedEGD, DefaultEdge>(DefaultEdge.class);
-        for (ExtendedEGD dependency : dependencies) {
-            dependencyGraph.addVertex(dependency);
-        }
-        Map<AttributeRef, List<ExtendedEGD>> queryAttributeMap = initQueryAttributeMap(dependencies);
-        for (ExtendedEGD dependency : dependencies) {
-            for (AttributeRef affectedAttribute : dependency.getAffectedAttributes()) {
-                List<ExtendedEGD> dependenciesThatQueryAttribute = queryAttributeMap.get(affectedAttribute);
-                if (dependenciesThatQueryAttribute == null) {
-                    continue;
-                }
-                for (ExtendedEGD queryDepenency : dependenciesThatQueryAttribute) {
-                    dependencyGraph.addEdge(dependency, queryDepenency);
-                }
-            }
-        }
-        return dependencyGraph;
-    }
-
-    private Map<AttributeRef, List<ExtendedEGD>> initQueryAttributeMap(List<ExtendedEGD> dependencies) {
-        Map<AttributeRef, List<ExtendedEGD>> attributeMap = new HashMap<AttributeRef, List<ExtendedEGD>>();
-        for (ExtendedEGD dependency : dependencies) {
-            for (AttributeRef queryAttributes : dependency.getQueriedAttributes()) {
-                List<ExtendedEGD> dependenciesForAttribute = attributeMap.get(queryAttributes);
-                if (dependenciesForAttribute == null) {
-                    dependenciesForAttribute = new ArrayList<ExtendedEGD>();
-                    attributeMap.put(queryAttributes, dependenciesForAttribute);
-                }
-                dependenciesForAttribute.add(dependency);
-            }
-        }
-        return attributeMap;
-    }
-
-    private Set<Dependency> buildDependencySet(Set<ExtendedEGD> extendedDependencySet) {
-        Set<Dependency> result = new HashSet<Dependency>();
-        for (ExtendedEGD extendedDependency : extendedDependencySet) {
-            result.add(extendedDependency.getDependency());
-        }
-        return result;
     }
 
     private void findAllAffectedAttributes(List<Dependency> extEGDs) {
@@ -169,14 +114,28 @@ public class AnalyzeDependencies {
         }
     }
 
+    private DirectedGraph<AttributeRef, ExtendedEdge> removeSpecialEdges(DirectedGraph<AttributeRef, ExtendedEdge> faginDependencyGraph) {
+        DirectedGraph<AttributeRef, ExtendedEdge> dependencyGraph = new DefaultDirectedGraph<AttributeRef, ExtendedEdge>(ExtendedEdge.class);
+        if (faginDependencyGraph == null) {
+            return dependencyGraph;
+        }
+        Graphs.addGraph(dependencyGraph, faginDependencyGraph);
+        for (ExtendedEdge edge : faginDependencyGraph.edgeSet()) {
+            if (edge.isSpecial() && !edge.isNormal()) {
+                dependencyGraph.removeEdge(edge);
+            }
+        }
+        return dependencyGraph;
+    }
+
 }
 
 class EGDStratumComparator implements Comparator<EGDStratum> {
 
-    private ConnectivityInspector<ExtendedEGD, DefaultEdge> inspector;
+    private DirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph;
 
     public EGDStratumComparator(DirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph) {
-        this.inspector = new ConnectivityInspector<ExtendedEGD, DefaultEdge>(dependencyGraph);
+        this.dependencyGraph = dependencyGraph;
     }
 
     public int compare(EGDStratum t1, EGDStratum t2) {
@@ -191,7 +150,8 @@ class EGDStratumComparator implements Comparator<EGDStratum> {
     private boolean existsPath(EGDStratum t1, EGDStratum t2) {
         for (ExtendedEGD dependency1 : t1.getExtendedDependencies()) {
             for (ExtendedEGD dependency2 : t2.getExtendedDependencies()) {
-                if (inspector.pathExists(dependency1, dependency2)) {
+                List<DefaultEdge> path = DijkstraShortestPath.findPathBetween(dependencyGraph, dependency1, dependency2);
+                if (path != null) {
                     return true;
                 }
             }

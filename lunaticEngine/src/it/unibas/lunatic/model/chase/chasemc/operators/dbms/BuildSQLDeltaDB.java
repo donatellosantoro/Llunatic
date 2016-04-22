@@ -15,6 +15,7 @@ import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
@@ -33,8 +34,8 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         DBMSDB deltaDB = new DBMSDB(accessConfiguration);
         LunaticDBMSUtility.createWorkSchema(accessConfiguration, scenario);
         StringBuilder script = new StringBuilder();
-        script.append(createOccurrencesAndProvenancesTable(accessConfiguration, scenario));
-        List<AttributeRef> affectedAttributes = findAllAffectedAttributes(scenario);
+        script.append(createCellGroupTable(accessConfiguration, scenario));
+        Set<AttributeRef> affectedAttributes = findAllAffectedAttributes(scenario);
         script.append(createDeltaRelationsSchema(database, accessConfiguration, affectedAttributes, scenario));
         script.append(insertIntoDeltaRelations(database, accessConfiguration, rootName, affectedAttributes, scenario));
         QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true, false);
@@ -43,7 +44,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         return deltaDB;
     }
 
-    private String createOccurrencesAndProvenancesTable(AccessConfiguration accessConfiguration, Scenario scenario) {
+    private String createCellGroupTable(AccessConfiguration accessConfiguration, Scenario scenario) {
         StringBuilder script = new StringBuilder();
         script.append("----- Generating occurrences tables -----\n");
         script.append("CREATE TABLE ").append(DBMSUtility.getSchemaNameAndDot(accessConfiguration)).append(LunaticConstants.CELLGROUP_TABLE).append("(").append("\n");
@@ -59,7 +60,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         return script.toString();
     }
 
-    private String createDeltaRelationsSchema(IDatabase database, AccessConfiguration accessConfiguration, List<AttributeRef> affectedAttributes, Scenario scenario) {
+    private String createDeltaRelationsSchema(IDatabase database, AccessConfiguration accessConfiguration, Set<AttributeRef> affectedAttributes, Scenario scenario) {
         String deltaDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario);
         StringBuilder script = new StringBuilder();
         script.append("----- Generating Delta Relations Schema -----\n");
@@ -114,7 +115,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         return script.toString();
     }
 
-    private String insertIntoDeltaRelations(IDatabase database, AccessConfiguration accessConfiguration, String rootStepId, List<AttributeRef> affectedAttributes, Scenario scenario) {
+    private String insertIntoDeltaRelations(IDatabase database, AccessConfiguration accessConfiguration, String rootStepId, Set<AttributeRef> affectedAttributes, Scenario scenario) {
         String originalDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(((DBMSDB) database).getAccessConfiguration(), scenario);
         String deltaDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario);
         StringBuilder script = new StringBuilder();

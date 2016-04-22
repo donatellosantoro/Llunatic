@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.mainmemory;
 
-import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfDBOIDs;

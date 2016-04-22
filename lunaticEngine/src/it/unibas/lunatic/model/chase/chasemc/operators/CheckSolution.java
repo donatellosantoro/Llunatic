@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
+import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
@@ -46,7 +47,7 @@ public class CheckSolution {
             if (areStatisfiedEGDs(chaseStep, scenario) && areSatisfiedTGDs(chaseStep, scenario)) {
                 chaseStep.setSolution(true);
                 checkForGroundSolution(chaseStep, scenario);
-            } else if (scenario.getConfiguration().isDeProxyMode()) {
+            } else if (scenario.getConfiguration().isDeScenario()) {
                 throw new ChaseException("Leaf node " + chaseStep.getId() + " is not a solution");
             }
         }

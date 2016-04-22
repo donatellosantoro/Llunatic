@@ -15,6 +15,7 @@ import speedy.model.database.IValue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
@@ -41,7 +42,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
     @Override
     public MainMemoryDB generate(IDatabase database, Scenario scenario, String rootName) {
         long start = new Date().getTime();
-        List<AttributeRef> affectedAttributes = findAllAffectedAttributes(scenario);
+        Set<AttributeRef> affectedAttributes = findAllAffectedAttributes(scenario);
 //        List<AttributeRef> nonAffectedAttributes = findNonAffectedAttributes(scenario, affectedAttributes);
         INode schemaNode = new TupleNode(PersistenceConstants.DATASOURCE_ROOT_LABEL, IntegerOIDGenerator.getNextOID());
         schemaNode.setRoot(true);
@@ -55,7 +56,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         return deltaDB;
     }
 
-    private void generateSchema(INode schemaNode, MainMemoryDB database, List<AttributeRef> affectedAttributes) {
+    private void generateSchema(INode schemaNode, MainMemoryDB database, Set<AttributeRef> affectedAttributes) {
         for (String tableName : database.getTableNames()) {
             ITable table = database.getTable(tableName);
             List<Attribute> tableNonAffectedAttributes = new ArrayList<Attribute>();
@@ -115,7 +116,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         return attributeNodeInstance;
     }
 
-    private void generateInstance(MainMemoryDB deltaDB, MainMemoryDB database, String rootName, List<AttributeRef> affectedAttributes) {
+    private void generateInstance(MainMemoryDB deltaDB, MainMemoryDB database, String rootName, Set<AttributeRef> affectedAttributes) {
         DataSource dataSource = deltaDB.getDataSource();
         INode instanceNode = new TupleNode(PersistenceConstants.DATASOURCE_ROOT_LABEL, IntegerOIDGenerator.getNextOID());
         instanceNode.setRoot(true);
@@ -125,7 +126,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         dataSource.addInstance(instanceNode);
     }
 
-    private void insertTargetTablesIntoDeltaDB(MainMemoryDB database, INode instanceNode, List<AttributeRef> affectedAttributes, String rootName) {
+    private void insertTargetTablesIntoDeltaDB(MainMemoryDB database, INode instanceNode, Set<AttributeRef> affectedAttributes, String rootName) {
         for (String tableName : database.getTableNames()) {
             ITable table = database.getTable(tableName);
             initInstanceNode(table, instanceNode, affectedAttributes);
@@ -169,7 +170,7 @@ public class BuildMainMemoryDeltaDB extends AbstractBuildDeltaDB {
         }
     }
 
-    private void initInstanceNode(ITable table, INode instanceNode, List<AttributeRef> affectedAttributes) {
+    private void initInstanceNode(ITable table, INode instanceNode, Set<AttributeRef> affectedAttributes) {
         for (Attribute attribute : table.getAttributes()) {
             if (attribute.getName().equals(SpeedyConstants.OID)) {
                 continue;

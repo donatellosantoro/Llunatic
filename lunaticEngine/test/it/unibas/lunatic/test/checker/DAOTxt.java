@@ -22,6 +22,9 @@ public class DAOTxt {
     }
 
     private void handleFactLine(String line, Map<String, List<IExpectedTuple>> result) {
+        if (line.isEmpty()) {
+            return;
+        }
         StringTokenizer tokenizer = new StringTokenizer(line, ",()");
         String relationName = tokenizer.nextToken().trim().toLowerCase();
         List<IExpectedTuple> tuples = result.get(relationName);

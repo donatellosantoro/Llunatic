@@ -48,9 +48,9 @@ import speedy.model.database.TupleOID;
 import speedy.model.database.operators.IRunQuery;
 import speedy.utility.comparator.StringComparator;
 
-public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
+public class ChaseExtEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChaseEGDEquivalenceClass.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChaseExtEGDEquivalenceClass.class);
 
     private final IRunQuery queryRunner;
     private final IOccurrenceHandler occurrenceHandler;
@@ -58,7 +58,7 @@ public class ChaseEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
     private Tuple lastTuple;
     private boolean lastTupleHandled;
 
-    public ChaseEGDEquivalenceClass(IRunQuery queryRunner, IOccurrenceHandler occurrenceHandler, IChangeCell cellChanger) {
+    public ChaseExtEGDEquivalenceClass(IRunQuery queryRunner, IOccurrenceHandler occurrenceHandler, IChangeCell cellChanger) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
         this.cellChanger = cellChanger;

@@ -4,6 +4,7 @@ import org.jgrapht.graph.DefaultEdge;
 
 public class ExtendedEdge extends DefaultEdge {
 
+    private boolean normal = false;
     private boolean special = false;
 
     public boolean isSpecial() {
@@ -12,6 +13,14 @@ public class ExtendedEdge extends DefaultEdge {
 
     public void setSpecial(boolean special) {
         this.special = special;
+    }
+
+    public boolean isNormal() {
+        return normal;
+    }
+
+    public void setNormal(boolean normal) {
+        this.normal = normal;
     }
 
     @Override

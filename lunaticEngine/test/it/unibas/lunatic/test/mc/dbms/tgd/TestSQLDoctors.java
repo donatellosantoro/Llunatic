@@ -25,10 +25,10 @@ public class TestSQLDoctors extends CheckExpectedSolutionsTest {
         DeltaChaseStep result = chaser.doChase(scenario);
 //        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
         if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
-        assertEquals(9, resultSizer.getSolutions(result));
-        assertEquals(15, resultSizer.getDuplicates(result));
+        assertEquals(7, resultSizer.getSolutions(result));
+        assertEquals(44, resultSizer.getDuplicates(result));
         checkSolutions(result);
-        exportResults("/Temp/expectedDoctors/", result);
+//        exportResults("/Temp/expectedDoctors/", result);
         checkExpectedSolutions("expectedDoctors", result);
     }
 }

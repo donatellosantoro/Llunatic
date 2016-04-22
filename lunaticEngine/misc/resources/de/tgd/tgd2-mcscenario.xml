@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <source>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+s0(a, b, c, d)
+s1(a, b, c, d)
+INSTANCE:
+s0(a: "x1",b: "x2", c: "x3",d: "x4")
+s0(a: "x1",b: "x2", c: "x7",d: "x4")
+s0(a: "x1",b: "x2", c: "x5",d: "x6")
+s0(a: "x9",b: "x2", c: "x5",d: "x6")
+s0(a: "t1",b: "t2", c: "t3",d: "t4")
+s1(a: "t1",b: "t5", c: "t6",d: "t7")
+s1(a: "t1",b: "t5", c: "t8",d: "t8")
+s1(a: "t8",b: "t5", c: "t8",d: "t8")
+]]>
+        </generate>
+    </source>
+    <target>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+t1(a, b, c, d)
+t2(a, b, c, d)
+t3(a, b, c, d)
+]]>
+        </generate>
+    </target>
+    <dependencies>
+<![CDATA[
+STTGDs:
+s0(a: $X1,b: $X2,c: $X3, d:$X4) -> t1(a: $X1,b: $X2,c: $X3, d:$Y1),t2(a: $X1,b: $Y2,c: $Y3, d:$Y4),t3(a: $X2,b: $Y2,c: $Y5, d:$Y6).
+s0(a: $X1,b: $X2,c: $X3, d:$X4) -> t1(a: $X1,b: $X2,c: $X3, d:$Y1),t2(a: $Y1,b: $Y2,c: $Y3, d:$Y11),t3(a: $Y11,b: $Y22,c: $Y55, d:$X4).
+s0(a: $X1,b: $X2,c: $X3, d:$X4),s1(a: $X1,b: $X5,c: $X6, d:$X7) -> t1(a: $X1,b: $X2,c: $X3, d:$Y1),t2(a: $X6,b: $X7,c: $Y2, d:$Y2),t3(a: $X3,b: $X4,c: $X11, d:$X12).
+s1(a: $X1,b: $X5,c: $X6, d:$X7) -> t1(a: $X1,b: $Y2,c: $Y3, d:$Y1),t1(a: $X6,b: $X7,c: $Y4, d:$Y4),t1(a: $X7,b: $X6,c: $Y5, d:$Y5).
+s1(a: $X1,b: $X5,c: $X6, d:$X6) -> t1(a: $X1,b: $Y2,c: $Y3, d:$Y1),t2(a: $X6,b: $X6,c: $Y2, d:$Y2),t3(a: $X6,b: $X6,c: $X11, d:$X12).
+
+ExtTGDs:
+t1(a: $X1,b: $X2,c: $X3,d: $X4) -> t1(a: $X1,b: $Y1,c: $Y2,d: $Y3).
+t1(a: $X1,b: $X2,c: $X3,d: $X4),t2(a: $X1,b: $X5,c: $X6,d: $X7) -> t2(a: $X1,b: $Y1,c: $Y2,d: $Y3),t3(a: $X1,b: $Y2,c: $Y3,d: $Y4).
+]]>
+    </dependencies>
+</scenario>

@@ -17,6 +17,7 @@ import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
+import speedy.model.database.IDatabase;
 
 public class CheckExpectedSolutionsTest extends CheckTest {
 
@@ -106,7 +107,7 @@ public class CheckExpectedSolutionsTest extends CheckTest {
     protected void checkQuality(Map<String, List<PrecisionAndRecall>> quality) {
         for (String expected : quality.keySet()) {
             List<PrecisionAndRecall> qualityForExpected = quality.get(expected);
-            if (logger.isDebugEnabled()) logger.debug("Comparing expected: "+ expected + " with: "+ qualityForExpected.get(0).getGeneratedInstance());
+            if (logger.isDebugEnabled()) logger.debug("Comparing expected: " + expected + " with: " + qualityForExpected.get(0).getGeneratedInstance());
             Assert.assertEquals("Instance " + expected + " was not generated!", 1.0, qualityForExpected.get(0).getfMeasure());
         }
     }
@@ -125,5 +126,10 @@ public class CheckExpectedSolutionsTest extends CheckTest {
     protected void exportResults(String folderName, DeltaChaseStep result) {
         ExportChaseStepResultsCSV resultExporter = new ExportChaseStepResultsCSV();
         resultExporter.exportResult(result, folderName, false);
+    }
+
+    protected void exportResults(String folderName, IDatabase result) {
+        ExportChaseStepResultsCSV resultExporter = new ExportChaseStepResultsCSV();
+        resultExporter.exportDatabase(result, folderName + "/Solution.csv");
     }
 }

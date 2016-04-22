@@ -6,7 +6,7 @@ import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForTGD;
 import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;

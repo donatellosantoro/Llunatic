@@ -1,8 +1,8 @@
 #customers
 ssn,name,phone,cfphone,str,city,cc
 111,M. White,408-3334,8,Red Ave.,_L83,112-321
-222,F. Lennon,122-1876,9,Sky Dr.,_L109,_L330
-222,L. Lennon,000-0000,0,Fry Dr.,_L109,_L330
+222,F. Lennon,122-1876,9,Sky Dr.,_L109,781-658
+222,L. Lennon,000-0000,0,Fry Dr.,_L109,784-659
 
 #treatments
 ssn,salary,insurance,treatment,date

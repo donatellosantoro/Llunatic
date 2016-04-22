@@ -55,7 +55,7 @@ public class ScheduleTGDStrata {
             return;
         }
         if (logger.isDebugEnabled()) logger.debug("Starting thread for tgdStratum " + tgdStratum);
-        ChaseExtTGDStratumThread stratumThread = new ChaseExtTGDStratumThread(this, tgdStratum, treeMap, naiveInsert, scenario, chaseState);
+        ChaseTargetTGDStratumThread stratumThread = new ChaseTargetTGDStratumThread(this, tgdStratum, treeMap, naiveInsert, scenario, chaseState);
         threadManager.startThread(stratumThread);
     }
 

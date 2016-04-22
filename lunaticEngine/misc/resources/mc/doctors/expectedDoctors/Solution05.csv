@@ -1,14 +1,14 @@
-#doctor
-npi,name,hospital,email
-5555,_L160,PPTH,house@ppth.com
-1112,R. Chase,Sacred Hearth,chase@sh.com
-5556,G. House,NULL,NULL
-1222,C. Taub,NULL,NULL
-
 #prescription
 rxid,patient,npiref
 P1,J. Doe,1222
-P3,M. White,5556
 P2,W. Smith,5555
-_L10,J. Doe,1112
+P3,M. White,5556
+_L634,J. Doe,1112
+
+#doctor
+npi,name,hospital,email
+1112,R. Chase,Sacred Hearth,chase@sh.com
+1222,C. Taub,_SKm1-N1(P1;J. Doe;1222;C. Taub),_SKm1-N2(P1;J. Doe;1222;C. Taub)
+5555,_L10,PPTH,house@ppth.com
+5556,G. House,_SKm1-N1(P3;M. White;5556;G. House),_SKm1-N2(P3;M. White;5556;G. House)
 

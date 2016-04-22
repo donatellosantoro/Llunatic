@@ -46,9 +46,9 @@ import speedy.model.database.Tuple;
 import speedy.model.database.TupleOID;
 import speedy.model.database.operators.IRunQuery;
 
-public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
+public class ChaseSymmetricExtEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChaseSymmetricEGDEquivalenceClass.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChaseSymmetricExtEGDEquivalenceClass.class);
 
     private final IRunQuery queryRunner;
     private final IOccurrenceHandler occurrenceHandler;
@@ -56,7 +56,7 @@ public class ChaseSymmetricEGDEquivalenceClass implements IChaseEGDEquivalenceCl
     private Tuple lastTuple;
     private boolean lastTupleHandled;
 
-    public ChaseSymmetricEGDEquivalenceClass(IRunQuery queryRunner, IOccurrenceHandler occurrenceHandler, IChangeCell cellChanger) {
+    public ChaseSymmetricExtEGDEquivalenceClass(IRunQuery queryRunner, IOccurrenceHandler occurrenceHandler, IChangeCell cellChanger) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
         this.cellChanger = cellChanger;

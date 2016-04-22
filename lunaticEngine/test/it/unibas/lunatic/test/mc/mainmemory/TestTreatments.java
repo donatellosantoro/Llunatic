@@ -50,7 +50,7 @@ public class TestTreatments extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug("Number of duplicate solutions: " + resultSizer.getDuplicates(result));
         checkSolutions(result);
         Assert.assertEquals(2, resultSizer.getSolutions(result));
-        Assert.assertEquals(3, resultSizer.getDuplicates(result));
+        Assert.assertEquals(6, resultSizer.getDuplicates(result));
 //        exportResults("/Temp/expectedTreatmentsScenarioPOFRS5", result);
         checkExpectedSolutions("expectedTreatmentsScenarioPOFRS5", result);
     }

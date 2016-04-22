@@ -1,12 +1,17 @@
 package it.unibas.lunatic.model.chase.chasede.operators;
 
 import it.unibas.lunatic.LunaticConfiguration;
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseFailedException;
+import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForEGD;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;
-import it.unibas.lunatic.model.chase.chasemc.operators.CheckRedundancy;
-import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDeltaDB;
+import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
+import it.unibas.lunatic.model.chase.chasemc.operators.ChaserResult;
+import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
@@ -25,28 +30,36 @@ import speedy.model.database.ITable;
 import speedy.model.database.operators.IRunQuery;
 import speedy.utility.PrintUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
+import java.util.ArrayList;
+import java.util.Map;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.dbms.SQLQueryString;
+import speedy.model.database.operators.dbms.RunSQLQueryString;
+import speedy.utility.SpeedyUtility;
 
-public class ChaseDEWithTGDOnlyScenario implements IDEChaser {
+public class ChaseDEScenario implements IDEChaser {
 
     public static final int ITERATION_LIMIT = 10;
-    private final static Logger logger = LoggerFactory.getLogger(ChaseDEWithTGDOnlyScenario.class);
-    private final CheckRedundancy redundancyChecker = new CheckRedundancy();
+    private final static Logger logger = LoggerFactory.getLogger(ChaseDEScenario.class);
     private final AnalyzeDependencies stratificationBuilder = new AnalyzeDependencies();
     private final PartitionLinearTGDs linearTGDPartitioner = new PartitionLinearTGDs();
     private final ExportChaseStepResultsCSV resultExporter = new ExportChaseStepResultsCSV();
+    private final BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
     private final AnalyzeDatabase databaseAnalyzer = new AnalyzeDatabase();
     private final IBuildDeltaDB deltaBuilder;
     private final IBuildDatabaseForChaseStep databaseBuilder;
     private final IChaseSTTGDs stChaser;
-    private final ChaseExtTGDs extTgdChaser;
+    private final ChaseTargetTGDs tgdChaser;
+    private final ChaseDeltaEGDs egdChaser;
     private final ChaseDCs dChaser;
     private final IRemoveDuplicates duplicateRemover;
 
-    public ChaseDEWithTGDOnlyScenario(IChaseSTTGDs stChaser, IRunQuery queryRunner, IInsertFromSelectNaive naiveInsert,
+    public ChaseDEScenario(IChaseSTTGDs stChaser, ChaseDeltaEGDs egdChaser, IRunQuery queryRunner, IInsertFromSelectNaive naiveInsert,
             IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep databaseBuilder, IRemoveDuplicates duplicateRemover) {
         this.stChaser = stChaser;
-//        this.extTgdChaser = new ChaseExtTGDs(naiveInsert);
-        this.extTgdChaser = new ChaseExtTGDs(naiveInsert);
+        this.tgdChaser = new ChaseTargetTGDs(naiveInsert);
+        this.egdChaser = egdChaser;
         this.dChaser = new ChaseDCs(queryRunner);
         this.deltaBuilder = deltaBuilder;
         this.databaseBuilder = databaseBuilder;
@@ -54,7 +67,15 @@ public class ChaseDEWithTGDOnlyScenario implements IDEChaser {
     }
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
-        checkDataSources(scenario);
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_STTGDS, scenario.getSTTgds().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EGDS, scenario.getEGDs().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXTGDS, scenario.getExtTGDs().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DCS, scenario.getDCs().size());
+        if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
+        List<Dependency> egds = scenario.getEGDs();
+        scenario.setEGDs(new ArrayList<Dependency>());
+        scenario.setExtEGDs(egds);
+        CostManagerUtility.setDECostManager(scenario);
         long start = new Date().getTime();
         try {
             stChaser.doChase(scenario, false);
@@ -62,21 +83,38 @@ public class ChaseDEWithTGDOnlyScenario implements IDEChaser {
             if (logger.isDebugEnabled()) logger.debug("-------------------Chasing dependencies on mc scenario: " + scenario);
             stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
             linearTGDPartitioner.findLinearTGD(scenario);
+            Map<Dependency, IAlgebraOperator> egdQueryMap = treeBuilderForEGD.buildPremiseAlgebraTreesForEGDs(scenario.getExtEGDs(), scenario);
             boolean allLinearTGDs = checkIfAllTGDsAreLinear(scenario.getExtTGDs());
-            extTgdChaser.doChase(scenario, chaseState);
-            if (!scenario.getEGDs().isEmpty()) {
+            tgdChaser.doChase(scenario, chaseState);
+            if (!scenario.getExtEGDs().isEmpty()) {
                 int iterations = 0;
-                while (iterations < ITERATION_LIMIT) {
+                while (true) {
                     if (chaseState.isCancelled()) {
                         ChaseUtility.stopChase(chaseState);
                     }
-//                    boolean cellChanges = egdChaser.doChase(scenario, chaseState);
-//                    boolean newTuples = extTgdChaser.doChase( scenario, chaseState);
-//                    if (!newTuples && !cellChanges) {
-//                        break;
-//                    } else {
-//                        iterations++;
-//                    }
+                    IDatabase deltaDB = deltaBuilder.generate(targetDB, scenario, LunaticConstants.CHASE_STEP_ROOT);
+                    if (logger.isDebugEnabled()) logger.debug("DeltaDB: " + deltaDB);
+                    ChaseTree chaseTree = new ChaseTree(scenario);
+                    DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);
+                    ChaserResult egdResult = egdChaser.doChase(root, scenario, chaseState, egdQueryMap);
+                    boolean cellChanges = egdResult.isNewNodes();
+                    if (!cellChanges) {
+                        break;
+                    }
+                    DeltaChaseStep lastStep = getLastStep(chaseTree.getRoot());
+                    targetDB = databaseBuilder.extractDatabaseWithDistinct(lastStep.getId(), lastStep.getDeltaDB(), lastStep.getOriginalDB(), scenario);
+                    scenario.setTarget(targetDB);
+                    if (allLinearTGDs) {
+                        break;
+                    }
+                    boolean newTuples = tgdChaser.doChase(scenario, chaseState);
+                    if (!newTuples) {
+                        break;
+                    }
+                    iterations++;
+                    if (iterations > ITERATION_LIMIT) {
+                        throw new ChaseFailedException("Iteration limit reached. Chase might not terminate. Iterations: " + iterations);
+                    }
                 }
             }
             dChaser.doChase(scenario, chaseState);
@@ -86,12 +124,31 @@ public class ChaseDEWithTGDOnlyScenario implements IDEChaser {
                 duplicateRemover.removeDuplicatesModuloOID(targetDB, scenario);
                 resultExporter.exportSolutionInSeparateFiles(targetDB, scenario);
             }
+            executeFinalQueries(targetDB, scenario);
             printResult(targetDB);
+            scenario.setExtEGDs(new ArrayList<Dependency>());
+            scenario.setEGDs(egds);
             return targetDB;
         } catch (ChaseFailedException e) {
             throw e;
         } finally {
             if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
+        }
+    }
+
+    private void executeFinalQueries(IDatabase result, Scenario scenario) {
+        if (scenario.getSQLQueries().isEmpty()) {
+            return;
+        }
+        RunSQLQueryString sqlQueryRunner = new RunSQLQueryString();
+        for (SQLQueryString sqlQuery : scenario.getSQLQueries()) {
+            long start = new Date().getTime();
+            ITupleIterator it = sqlQueryRunner.runQuery(sqlQuery, result);
+            long resultSize = SpeedyUtility.getTupleIteratorSize(it);
+            it.close();
+            long end = new Date().getTime();
+            if (LunaticConfiguration.isPrintSteps()) PrintUtility.printInformation("*** Query " + sqlQuery.getId() + " Time: " + (end - start) + " ms -  Result size: " + resultSize);
+            ChaseStats.getInstance().addStat(ChaseStats.FINAL_QUERY_TIME, end - start);
         }
     }
 
@@ -145,12 +202,15 @@ public class ChaseDEWithTGDOnlyScenario implements IDEChaser {
         return true;
     }
 
-    private void checkDataSources(Scenario scenario) {
-        redundancyChecker.checkDuplicateOIDs(scenario);
-    }
-
     public IDatabase doChase(Scenario scenario) {
         return doChase(scenario, ImmutableChaseState.getInstance());
+    }
+
+    private DeltaChaseStep getLastStep(DeltaChaseStep node) {
+        while (!node.getChildren().isEmpty()) {
+            node = node.getChildren().get(0);
+        }
+        return node;
     }
 
 }

@@ -147,6 +147,14 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
     }
 
     public void loadCellGroups(String stepId, IDatabase deltaDB, Scenario scenario) {
+        if (scenario.getConfiguration().isDeScenario() && !scenario.getConfiguration().getDeChaser().equals(LunaticConstants.PROXY_MC_CHASER)) {
+            loadCellGroupsForDE(stepId, deltaDB, scenario);
+        } else {
+            loadCellGroupsForMC(stepId, deltaDB, scenario);
+        }
+    }
+
+    private void loadCellGroupsForMC(String stepId, IDatabase deltaDB, Scenario scenario) {
 //        if (isDebug(stepId)) logger.warn("Loading occurrences value for step " + stepId);
         if (logger.isTraceEnabled()) logger.trace("Loading occurrences value for step " + stepId);
         if (logger.isTraceEnabled()) logger.trace("DeltaDB " + deltaDB.printInstances());
@@ -225,6 +233,46 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
             tableAlias.setSource(true);
             tableAlias.setAuthoritative(LunaticUtility.isAuthoritative(tableAlias.getTableName(), scenario));
         }
+        CellGroupCell cellGroupCell = new CellGroupCell(cellRef, currentValue, originalValue, type, false);
+        cellGroupCell.setLastSavedCellGroupId(cellGroupId);
+        return cellGroupCell;
+    }
+
+    private void loadCellGroupsForDE(String stepId, IDatabase deltaDB, Scenario scenario) {
+//        if (isDebug(stepId)) logger.warn("Loading occurrences value for step " + stepId);
+        if (logger.isTraceEnabled()) logger.trace("Loading occurrences value for step " + stepId);
+        if (logger.isTraceEnabled()) logger.trace("DeltaDB " + deltaDB.printInstances());
+        IAlgebraOperator query = CellGroupTableUtility.buildQueryToExtractCellGroupCellsForStepDE(stepId);
+        if (logger.isDebugEnabled()) logger.debug("QueryToExtractCellGroupIds:\n " + query);
+//        if (isDebug(stepId)) logger.warn(new AlgebraTreeToSQL().treeToSQL(query, null, deltaDB, ""));
+        ITupleIterator it = queryRunner.run(query, null, deltaDB);
+        while (it.hasNext()) {
+            Tuple tuple = it.next();
+            CellGroupCell cellGroupCell = buildCellGroupCellDE(tuple, scenario);
+            IValue cellGroupId = cellGroupCell.getLastSavedCellGroupId();
+            CellGroup cellGroup = loadCellGroupFromId(cellGroupId, stepId, deltaDB, scenario);
+            if (cellGroup == null) { //No cached version
+                cellGroup = new CellGroup(cellGroupId, false);
+                putCellGroup(cellGroup, stepId, deltaDB, scenario);
+            }
+            addCellGroupCellIntoCellGroup(cellGroupCell, cellGroup);
+            if (logger.isDebugEnabled()) logger.debug("Added cellgroup cell " + cellGroupCell + " into cg:\n" + cellGroup.toLongString());
+        }
+        it.close();
+    }
+
+    private CellGroupCell buildCellGroupCellDE(Tuple tuple, Scenario scenario) {
+        TupleOID tid = new TupleOID(LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_OID));
+        String table = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_TABLE) + "";
+        String attribute = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.CELL_ATTRIBUTE) + "";
+        IValue cellGroupId = LunaticUtility.getAttributevalueInTuple(tuple, LunaticConstants.GROUP_ID);
+        IValue originalValue = cellGroupId;
+        String type = LunaticConstants.TYPE_OCCURRENCE;
+        IValue currentValue = CellGroupIDGenerator.getCellGroupValueFromGroupID(cellGroupId);
+        CellRef cellRef = new CellRef(tid, new AttributeRef(table, attribute));
+        TableAlias tableAlias = cellRef.getAttributeRef().getTableAlias();
+        tableAlias.setSource(true);
+        tableAlias.setAuthoritative(LunaticUtility.isAuthoritative(tableAlias.getTableName(), scenario));
         CellGroupCell cellGroupCell = new CellGroupCell(cellRef, currentValue, originalValue, type, false);
         cellGroupCell.setLastSavedCellGroupId(cellGroupId);
         return cellGroupCell;

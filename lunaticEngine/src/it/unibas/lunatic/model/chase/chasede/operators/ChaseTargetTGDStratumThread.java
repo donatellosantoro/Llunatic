@@ -16,9 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 
-public class ChaseExtTGDStratumThread implements IBackgroundThread {
+public class ChaseTargetTGDStratumThread implements IBackgroundThread {
 
-    private final static Logger logger = LoggerFactory.getLogger(ChaseExtTGDStratumThread.class);
+    private final static Logger logger = LoggerFactory.getLogger(ChaseTargetTGDStratumThread.class);
     private ScheduleTGDStrata tgdScheduler;
     private TGDStratum stratum;
     private Map<Dependency, IAlgebraOperator> treeMap;
@@ -26,7 +26,7 @@ public class ChaseExtTGDStratumThread implements IBackgroundThread {
     private Scenario scenario;
     private IChaseState chaseState;
 
-    public ChaseExtTGDStratumThread(ScheduleTGDStrata tgdScheduler, TGDStratum stratum, Map<Dependency, IAlgebraOperator> treeMap, IInsertFromSelectNaive naiveInsert, Scenario scenario, IChaseState chaseState) {
+    public ChaseTargetTGDStratumThread(ScheduleTGDStrata tgdScheduler, TGDStratum stratum, Map<Dependency, IAlgebraOperator> treeMap, IInsertFromSelectNaive naiveInsert, Scenario scenario, IChaseState chaseState) {
         this.tgdScheduler = tgdScheduler;
         this.stratum = stratum;
         this.treeMap = treeMap;

@@ -27,8 +27,8 @@ public class TestDoctors extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
         if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
-        assertEquals(9, resultSizer.getSolutions(result));
-        assertEquals(15, resultSizer.getDuplicates(result));
+        assertEquals(7, resultSizer.getSolutions(result));
+        assertEquals(44, resultSizer.getDuplicates(result));
 //        checkSolutions(result);
 //        exportResults("/Temp/expectedDoctorsMM/", result);
         checkExpectedSolutions("expectedDoctors", result);

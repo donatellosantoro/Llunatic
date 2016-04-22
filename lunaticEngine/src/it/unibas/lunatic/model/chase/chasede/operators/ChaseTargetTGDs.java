@@ -17,15 +17,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 
-public class ChaseExtTGDs {
+public class ChaseTargetTGDs {
 
-    private final static Logger logger = LoggerFactory.getLogger(ChaseExtTGDs.class);
+    private final static Logger logger = LoggerFactory.getLogger(ChaseTargetTGDs.class);
 
     private BuildAlgebraTreeForStandardChase insertGenerator = new BuildAlgebraTreeForStandardChase();
     private IInsertFromSelectNaive naiveInsert;
     private ScheduleTGDStrata tgdScheduler;
 
-    public ChaseExtTGDs(IInsertFromSelectNaive naiveInsert) {
+    public ChaseTargetTGDs(IInsertFromSelectNaive naiveInsert) {
         this.naiveInsert = naiveInsert;
     }
 

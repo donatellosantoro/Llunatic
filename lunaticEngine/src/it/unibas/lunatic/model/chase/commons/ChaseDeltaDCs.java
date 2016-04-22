@@ -2,7 +2,6 @@ package it.unibas.lunatic.model.chase.commons;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
-import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;

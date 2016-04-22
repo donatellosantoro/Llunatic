@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
+import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -36,13 +37,13 @@ public class ChaseDeltaExtEGDs {
     private final IChaseEGDEquivalenceClass egdChaser;
     private final IOccurrenceHandler occurrenceHandler;
 
-    public ChaseDeltaExtEGDs(IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
+    public ChaseDeltaExtEGDs(IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
             IInsertTuple insertOperator, IBatchInsert batchInsertOperator, IChangeCell cellChanger,
             IOccurrenceHandler occurrenceHandler, CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker) {
         this.databaseBuilder = stepBuilder;
         this.duplicateChecker = new CheckDuplicates();
-        this.symmetricEGDChaser = new ChaseSymmetricEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
-        this.egdChaser = new ChaseEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
+        this.symmetricEGDChaser = new ChaseSymmetricExtEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
+        this.egdChaser = new ChaseExtEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
         this.unsatisfiedDependenciesChecker = new CheckUnsatisfiedDependencies(databaseBuilder, occurrenceHandler, queryRunner);
         this.occurrenceHandler = occurrenceHandler;
     }

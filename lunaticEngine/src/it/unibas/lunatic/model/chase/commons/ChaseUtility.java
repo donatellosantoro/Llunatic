@@ -110,6 +110,16 @@ public class ChaseUtility {
         return tuple;
     }
 
+    public static Tuple buildTupleDE(TupleOID tid, String stepId, IValue newValue, IValue groupID, String deltaTableName, String attributeName) {
+        TupleOID oid = new TupleOID(IntegerOIDGenerator.getNextOID());
+        Tuple tuple = new Tuple(oid);
+        tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, SpeedyConstants.TID), new ConstantValue(tid)));
+        tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, SpeedyConstants.STEP), new ConstantValue(stepId)));
+        tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, attributeName), newValue));
+        tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, LunaticConstants.GROUP_ID), groupID));
+        return tuple;
+    }
+
     public static boolean isSatisfied(Dependency egd, Tuple premiseTuple) {
         for (IFormulaAtom atom : egd.getConclusion().getAtoms()) {
             if (!(atom instanceof ComparisonAtom)) {
@@ -248,7 +258,7 @@ public class ChaseUtility {
     }
 
     private static void addLeaves(DeltaChaseStep node, List<DeltaChaseStep> result) {
-        if(node.getChildren().isEmpty()){
+        if (node.getChildren().isEmpty()) {
             result.add(node);
             return;
         }

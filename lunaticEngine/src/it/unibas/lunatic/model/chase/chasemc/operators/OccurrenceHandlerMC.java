@@ -38,10 +38,10 @@ public class OccurrenceHandlerMC implements IOccurrenceHandler {
 
     private static Logger logger = LoggerFactory.getLogger(OccurrenceHandlerMC.class);
 
-    private IRunQuery queryRunner;
-    private IInsertTuple insertOperator;
-    private IDelete deleteOperator;
-    private ICacheManager cacheManager;
+    protected IRunQuery queryRunner;
+    protected IInsertTuple insertOperator;
+    protected IDelete deleteOperator;
+    protected ICacheManager cacheManager;
 
     private FindOriginalValuesForCellGroupCells cellGroupMerger = new FindOriginalValuesForCellGroupCells();
 
@@ -78,13 +78,13 @@ public class OccurrenceHandlerMC implements IOccurrenceHandler {
         return mergedCG;
     }
 
-    private CellGroup loadCellGroupFromId(IValue value, IDatabase deltaDB, String stepId, Scenario scenario) {
+    protected CellGroup loadCellGroupFromId(IValue value, IDatabase deltaDB, String stepId, Scenario scenario) {
         CellGroup cellGroup = this.cacheManager.loadCellGroupFromId(value, stepId, deltaDB, scenario);
-        if (isDebug(value, stepId)) {
-            if (cellGroup != null && cellGroup.getJustifications().size() < 3) {
-                throw new IllegalArgumentException("Wrong cell group " + cellGroup);
-            }
-        }
+//        if (isDebug(value, stepId)) {
+//            if (cellGroup != null && cellGroup.getJustifications().size() < 3) {
+//                throw new IllegalArgumentException("Wrong cell group " + cellGroup);
+//            }
+//        }
         if (logger.isDebugEnabled()) logger.debug("CellGroup for id " + value + ": " + cellGroup);
         return cellGroup;
     }

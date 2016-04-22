@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.IDatabase;
 
-public class TestSQLTGDStratification extends CheckTest {
+public class TestSQLTGDs extends CheckTest {
 
-    private static Logger logger = LoggerFactory.getLogger(TestSQLTGDStratification.class);
+    private static Logger logger = LoggerFactory.getLogger(TestSQLTGDs.class);
 
     public void testRSEgd() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/tgd0-mcscenario-dbms.xml", true);

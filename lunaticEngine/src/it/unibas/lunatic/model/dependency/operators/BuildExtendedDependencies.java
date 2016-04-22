@@ -14,9 +14,9 @@ import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +47,7 @@ public class BuildExtendedDependencies {
                 if (logger.isDebugEnabled()) logger.debug("Building backward egds...");
                 extendedDependencies.addAll(buildBackwardEGDs(dependency));
             }
-            findQueriedAndLocalAffectedAttributes(dependency, extendedDependencies);
+            findQueriedAndLocalAffectedAttributes(dependency, extendedDependencies, scenario);
             result.addAll(extendedDependencies);
             dependency.setExtendedDependencies(extendedDependencies);
             Collections.sort(dependency.getExtendedDependencies(), new ExtendedDependencyComparator());
@@ -82,7 +82,7 @@ public class BuildExtendedDependencies {
                 result.add(occurrence);
             }
         }
-        if (logger.isDebugEnabled()) logger.debug("Result: " + result);
+        if (logger.isDebugEnabled()) logger.debug("Variable Occurrences: " + result);
         dependency.setBackwardAttributes(result);
     }
 
@@ -104,12 +104,19 @@ public class BuildExtendedDependencies {
     ///////                  FIND QUERY AND AFFECTED ATTRIBUTES
     ///////
     //////////////////////////////////////////////////////////////////////////////////
-    private void findQueriedAndLocalAffectedAttributes(Dependency dependency, List<ExtendedEGD> extendedDependencies) {
-        List<AttributeRef> forwardAffectedAttributes = findAffectedAttributesForForwardDependency(dependency);
+    private void findQueriedAndLocalAffectedAttributes(Dependency dependency, List<ExtendedEGD> extendedDependencies, Scenario scenario) {
+        List<AttributeRef> forwardAffectedAttributes = findAffectedAttributesForForwardDependency(dependency, scenario);
         for (ExtendedEGD extendedDependency : extendedDependencies) {
             if (extendedDependency.isBackward()) {
                 FormulaVariableOccurrence occurrence = extendedDependency.getOccurrence();
-                List<AttributeRef> affectedAttributes = Arrays.asList(new AttributeRef[]{ChaseUtility.unAlias(occurrence.getAttributeRef())});
+                AttributeRef unaliasedAttribute = ChaseUtility.unAlias(occurrence.getAttributeRef());
+                Set<AttributeRef> attributesInSameCellGroups = scenario.getAttributesInSameCellGroups().getRelatedAttribute(unaliasedAttribute);
+                List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
+                if (attributesInSameCellGroups != null) {
+                    affectedAttributes.addAll(attributesInSameCellGroups);
+                } else {
+                    affectedAttributes.add(unaliasedAttribute);
+                }
                 extendedDependency.setLocalAffectedAttributes(affectedAttributes);
             }
             if (extendedDependency.isForward()) {
@@ -118,8 +125,8 @@ public class BuildExtendedDependencies {
         }
     }
 
-    private List<AttributeRef> findAffectedAttributesForForwardDependency(Dependency dependency) throws ChaseException {
-        List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>();
+    private List<AttributeRef> findAffectedAttributesForForwardDependency(Dependency dependency, Scenario scenario) throws ChaseException {
+        Set<AttributeRef> affectedAttributes = new HashSet<AttributeRef>();
         for (IFormulaAtom atom : dependency.getConclusion().getAtoms()) {
             if (!(atom instanceof ComparisonAtom)) {
                 throw new ChaseException("Illegal egd. Only comparisons are allowed in the conclusion: " + dependency);
@@ -129,20 +136,16 @@ public class BuildExtendedDependencies {
                 throw new ChaseException("Unable to handle extended egd: constants appear in conclusion; \n" + dependency.toLongString() + "\n - Comparison atom: " + comparison + "\n - Number of variables: " + comparison.getVariables().size());
             }
             FormulaVariable v1 = comparison.getVariables().get(0);
-            if (v1.getPremiseRelationalOccurrences().size() > 1) {
-                dependency.setOverlapBetweenAffectedAndQueried(true);
-            }
             FormulaVariable v2 = comparison.getVariables().get(1);
-            if (v2.getPremiseRelationalOccurrences().size() > 1) {
-                dependency.setOverlapBetweenAffectedAndQueried(true);
-            }
-            addAttributesForVariable(v1, affectedAttributes);
-            addAttributesForVariable(v2, affectedAttributes);
+            addAttributesForVariable(affectedAttributes, v1, dependency, scenario);
+            addAttributesForVariable(affectedAttributes, v2, dependency, scenario);
         }
-        return affectedAttributes;
+        return new ArrayList<AttributeRef>(affectedAttributes);
     }
 
-    private void addAttributesForVariable(FormulaVariable v, List<AttributeRef> attributes) {
+    private void addAttributesForVariable(Set<AttributeRef> attributes, FormulaVariable v, Dependency dependency, Scenario scenario) {
+        Set<AttributeRef> variablesWithNulls = scenario.getAttributesWithLabeledNulls();
+        boolean foundAffectedAttribute = false;
         for (FormulaVariableOccurrence occurrence : v.getPremiseRelationalOccurrences()) {
             AttributeRef attribute = occurrence.getAttributeRef();
             if (attribute.getTableAlias().isSource()) {
@@ -152,7 +155,19 @@ public class BuildExtendedDependencies {
             if (attributes.contains(unaliasedAttribute)) {
                 continue;
             }
-            attributes.add(unaliasedAttribute);
+            if (scenario.getConfiguration().isDeScenario() && !variablesWithNulls.contains(unaliasedAttribute)) {
+                continue;
+            }
+            foundAffectedAttribute = true;
+            Set<AttributeRef> attributesInSameCellGroups = scenario.getAttributesInSameCellGroups().getRelatedAttribute(unaliasedAttribute);
+            if (attributesInSameCellGroups != null) {
+                attributes.addAll(attributesInSameCellGroups);
+            } else {
+                attributes.add(unaliasedAttribute);
+            }
+        }
+        if (foundAffectedAttribute && v.getPremiseRelationalOccurrences().size() > 1) {
+            dependency.setOverlapBetweenAffectedAndQueried(true);
         }
     }
 

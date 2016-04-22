@@ -9,7 +9,7 @@ public class LunaticConfiguration {
     private boolean cleanSchemasOnStartForDEScenarios = true;
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;
-    private boolean deProxyMode = false; //MCProxy for DE chase
+    private boolean deScenario = false; //MCProxy for DE chase
     private boolean checkGroundSolutions = false;
     private boolean checkSolutions = false;
     private boolean checkSolutionsQuery = false;
@@ -31,11 +31,11 @@ public class LunaticConfiguration {
     private boolean exportChanges = false;
     private String exportChangesPath;
 
-    private int maxNumberOfThreads = 12;
-//
+    private int maxNumberOfThreads = 1;
+
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
-//    private final String deChaser = LunaticConstants.PROXY_MC_CHASER;
-    private final String deChaser = LunaticConstants.OPTIMIZED_CHASER;
+//    private String deChaser = LunaticConstants.PROXY_MC_CHASER;
+    private String deChaser = LunaticConstants.OPTIMIZED_CHASER;
 //
 //    private String cacheType = LunaticConstants.NO_CACHE;
 //    private String cacheType = LunaticConstants.LAZY_CACHE;
@@ -94,12 +94,12 @@ public class LunaticConfiguration {
         this.useLimit1ForEGDs = useLimit1ForEGDs;
     }
 
-    public boolean isDeProxyMode() {
-        return deProxyMode;
+    public boolean isDeScenario() {
+        return deScenario;
     }
 
-    public void setDeProxyMode(boolean deProxyMode) {
-        this.deProxyMode = deProxyMode;
+    public void setDeScenario(boolean deScenario) {
+        this.deScenario = deScenario;
     }
 
     public boolean isCheckGroundSolutions() {
@@ -159,9 +159,10 @@ public class LunaticConfiguration {
         return deChaser;
     }
 
-//    public void setDeChaser(String deChaser) {
-//        this.deChaser = deChaser;
-//    }
+    public void setDeChaser(String deChaser) {
+        this.deChaser = deChaser;
+    }
+
     public boolean isUseSymmetricOptimization() {
         return useSymmetricOptimization;
     }
@@ -297,7 +298,7 @@ public class LunaticConfiguration {
                 + "\n\t IterationLimit: " + iterationLimit
                 + "\n\t RecreateDBOnStart: " + recreateDBOnStart
                 + "\n\t UseLimit1: " + useLimit1ForEGDs
-                + "\n\t DEProxyMode: " + deProxyMode
+                + "\n\t DEProxyMode: " + deScenario
                 + "\n\t CheckSolutions: " + checkSolutions
                 + "\n\t CheckSolutionsQuery: " + checkSolutionsQuery
                 + "\n\t CheckGroundSolutions: " + checkGroundSolutions

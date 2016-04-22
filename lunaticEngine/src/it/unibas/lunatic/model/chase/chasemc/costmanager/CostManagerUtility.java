@@ -13,6 +13,7 @@ import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
+import it.unibas.lunatic.model.chase.chasede.partialorder.DEPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -37,6 +38,16 @@ import speedy.model.database.TupleOID;
 public class CostManagerUtility {
 
     private static Logger logger = LoggerFactory.getLogger(CostManagerUtility.class);
+
+    public static void setDECostManager(Scenario scenario) {
+        CostManagerConfiguration costManagerConfiguration = new CostManagerConfiguration();
+        costManagerConfiguration.setDoBackward(false);
+        costManagerConfiguration.setDoPermutations(false);
+        scenario.setCostManagerConfiguration(costManagerConfiguration);
+        scenario.setPartialOrder(new DEPartialOrder());
+        scenario.getConfiguration().setDeScenario(true);
+        scenario.getConfiguration().setRemoveDuplicates(false);
+    }
 
     public static List<Dependency> selectDependenciesToChase(List<Dependency> unsatisfiedDependencies, DeltaChaseStep chaseRoot, CostManagerConfiguration costManagerConfiguration) {
         if (logger.isDebugEnabled()) logger.debug("Selecting dependencies to chase - Unsatisfied " + LunaticUtility.printDependencyIds(unsatisfiedDependencies));

@@ -44,6 +44,9 @@
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.NormalizeJoinsInEGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.BuildExtendedDependencies" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.BuildTGDStratification" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.BuildEGDStratification" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.FindAttributesWithLabeledNulls" level="TRACE"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.FindAttributesInSameCellGroup" level="TRACE"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.CheckWeaklyAcyclicityInTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies" level="DEBUG"/>-->
@@ -70,11 +73,13 @@
     <!--<logger name="it.unibas.lunatic.persistence.relational.GenerateSQLFromDependencies" level="DEBUG"/>-->
 
     <!--     CHASE DE     -->
-<!--    <logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs" level="DEBUG"/>
-    <logger name="it.unibas.lunatic.model.chase.chasede.operators.ScheduleTGDStrata" level="DEBUG"/>
-    <logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDStratumThread" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDEScenario" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ScheduleTGDStrata" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDStratumThread" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryInsertTuplesForTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseDeltaDCs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDs" level="DEBUG"/>-->
 
     <!--     CHASE MC     -->    
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager" level="DEBUG"/>-->
@@ -98,6 +103,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.ReplaceConstantsWithVariables" level="DEBUG"/>-->
+    
     <!--     Cache     -->
     <!--    <logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.AbstractGreedyCacheManager" level="trace"/>
     <logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager" level="DEBUG"/>-->

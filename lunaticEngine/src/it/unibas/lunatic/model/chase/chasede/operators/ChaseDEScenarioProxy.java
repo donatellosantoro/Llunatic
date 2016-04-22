@@ -10,9 +10,8 @@ import it.unibas.lunatic.model.chase.commons.control.ImmutableChaseState;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
-import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.DEPartialOrder;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
+import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaserFactory;
 import speedy.model.database.IDatabase;
@@ -40,13 +39,7 @@ public class ChaseDEScenarioProxy implements IDEChaser {
         List<Dependency> egds = scenario.getEGDs();
         scenario.setEGDs(new ArrayList<Dependency>());
         scenario.setExtEGDs(egds);
-        CostManagerConfiguration costManagerConfiguration = new CostManagerConfiguration();
-        costManagerConfiguration.setDoBackward(false);
-        costManagerConfiguration.setDoPermutations(false);
-        scenario.setCostManagerConfiguration(costManagerConfiguration);
-        scenario.setPartialOrder(new DEPartialOrder());
-        scenario.getConfiguration().setDeProxyMode(true);
-        scenario.getConfiguration().setRemoveDuplicates(false);
+        CostManagerUtility.setDECostManager(scenario);
         DeltaChaseStep chaseStep = mcChaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("----MC result: " + chaseStep);
         if (chaseStep.getNumberOfLeaves() > 1) {
