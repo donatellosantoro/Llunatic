@@ -18,6 +18,8 @@ Llunatic is a general purpose chase-engine that can be used both for data-repair
 
 Additional material about the project can be found at the following address: http://www.db.unibas.it/projects/llunatic/
 
+The code is distributed according to the terms of the GPLv3 license (see file LICENSE.txt)
+
 ===
 ### How to import project in NetBeans ####
 1. In NetBeans, File -> Open projects... and select the project folder
