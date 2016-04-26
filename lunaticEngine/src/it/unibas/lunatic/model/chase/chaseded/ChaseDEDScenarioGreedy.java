@@ -16,12 +16,12 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.FindTargetGenerators;
 import it.unibas.lunatic.model.dependency.operators.NormalizeConclusionsInTGDs;
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.utility.combinatorial.GenericListGenerator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.utility.combinatorics.GenericListGenerator;
 
 public class ChaseDEDScenarioGreedy implements IDEDChaser {
 

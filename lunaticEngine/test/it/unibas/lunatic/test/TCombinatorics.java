@@ -1,7 +1,7 @@
 package it.unibas.lunatic.test;
 
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.utility.combinatorial.GenericListGenerator;
+import speedy.utility.combinatorics.GenericListGenerator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

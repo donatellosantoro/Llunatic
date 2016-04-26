@@ -17,7 +17,7 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.utility.combinatorial.GenericListGenerator;
+import speedy.utility.combinatorics.GenericListGenerator;
 import it.unibas.lunatic.utility.combinatorial.GenericPowersetGenerator;
 import java.util.ArrayList;
 import java.util.Arrays;
