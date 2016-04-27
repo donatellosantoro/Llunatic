@@ -79,7 +79,7 @@ public class SQLInsertDeltaTuplesForTargetTGDs implements IInsertDeltaTuplesForT
         StringBuilder query = new StringBuilder();
         String tmpTable = ChaseUtility.getTmpTableForTGDViolations(tgd, null, true, scenario);
         query.append("DROP TABLE IF EXISTS ").append(tmpTable).append(";\n");
-        query.append("CREATE TABLE ").append(tmpTable).append(" WITH OIDS AS (\n");
+        query.append("CREATE UNLOGGED TABLE ").append(tmpTable).append(" WITH OIDS AS (\n");
         query.append("SELECT ");
         Map<AttributeRef, IValueGenerator> targetGenerators = tgd.getTargetGenerators();
         if (logger.isDebugEnabled()) logger.debug("----Tgd generator map: " + LunaticUtility.printMap(targetGenerators));

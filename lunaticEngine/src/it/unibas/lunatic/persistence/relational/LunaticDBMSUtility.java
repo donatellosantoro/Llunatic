@@ -15,12 +15,10 @@ import speedy.model.database.LLUNValue;
 import speedy.model.database.NullValue;
 import speedy.model.database.TableAlias;
 import speedy.model.database.TupleOID;
-import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 import speedy.persistence.Types;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
-import speedy.utility.DBMSUtility;
 
 public class LunaticDBMSUtility {
 
@@ -139,22 +137,6 @@ public class LunaticDBMSUtility {
         StringBuilder result = new StringBuilder();
         result.append("DROP SCHEMA IF EXISTS ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(" CASCADE;\n");
         result.append("CREATE SCHEMA ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(";\n\n");
-        QueryManager.executeScript(result.toString(), accessConfiguration, true, true, false, false);
-    }
-
-    public static void deleteSkolemOccurrencesTable(DBMSDB targetDB, AccessConfiguration accessConfiguration, Scenario scenario) {
-        StringBuilder result = new StringBuilder();
-        result.append("----- Removing Existing Skolem Table -----\n");
-        result.append("DROP TABLE IF EXISTS ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(".");
-        result.append(LunaticConstants.SKOLEM_OCC_TABLE).append(";\n");
-        for (String tableName : targetDB.getTableNames()) {
-            if (tableName.equals(LunaticConstants.SKOLEM_OCC_TABLE)) {
-                continue;
-            }
-            result.append("DROP TRIGGER IF EXISTS trigg_update_skolem_").append(tableName);
-            result.append(" ON ").append(DBMSUtility.getSchemaNameAndDot(targetDB.getAccessConfiguration())).append(tableName).append(";").append("\n\n");
-        }
-        result.append("\n");
         QueryManager.executeScript(result.toString(), accessConfiguration, true, true, false, false);
     }
 

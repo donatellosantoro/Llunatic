@@ -18,7 +18,7 @@ public class MaterializePremiseQueries {
         result.append("----- Materializing queries of TGDs -----\n");
         for (Dependency dependency : scenario.getSTTgds()) {
             IAlgebraOperator operator = treeBuilder.buildTreeForPremise(dependency, scenario);
-            result.append("CREATE TABLE ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(".").append(dependency.getId()).append(" AS\n");
+            result.append("CREATE UNLOGGED TABLE ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(".").append(dependency.getId()).append(" AS\n");
             result.append(queryBuilder.treeToSQL(operator, scenario.getSource(), scenario.getTarget(), SpeedyConstants.INDENT));
             result.append(";\n\n");
         }

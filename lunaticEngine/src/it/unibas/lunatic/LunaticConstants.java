@@ -15,7 +15,6 @@ public class LunaticConstants {
     public static final String DED = "DED";
 
     public static final String WORK_SCHEMA = "work";
-    public static final String SKOLEM_OCC_TABLE = "skolem_occ";
 
     public static final String CHASE_FORWARD = "f";
     public static final String CHASE_BACKWARD = "b";

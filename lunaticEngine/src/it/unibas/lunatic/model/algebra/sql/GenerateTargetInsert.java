@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.algebra.sql;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;

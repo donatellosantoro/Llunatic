@@ -55,14 +55,4 @@ public class SQLRemoveDuplicates implements IRemoveDuplicates {
         result.append(");\n");
         return result.toString();
     }
-
-//    private String removeDuplicatesFromTable(String tableName, List<Attribute> attributes, String schema){
-//        StringBuilder result = new StringBuilder();
-//        result.append("CREATE TABLE ").append(schema).append(".").append(tableName).append(SUFF).append(" WITH OIDS AS\n");
-//        result.append("SELECT DISTINCT * FROM ").append(schema).append(".").append(tableName).append(";\n\n");
-//        result.append("DROP TABLE ").append(schema).append(".").append(tableName).append(";\n");
-//        result.append("ALTER TABLE ").append(schema).append(".").append(tableName).append(SUFF);
-//        result.append(" RENAME TO ").append(tableName).append(";\n");
-//        return result.toString();
-//    }
 }

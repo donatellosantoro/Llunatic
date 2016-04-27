@@ -36,9 +36,6 @@ public class DataSourceTxtInstanceChecker {
 
     protected void checkTable(IDatabase database, ITable table, Map<String, List<IExpectedTuple>> instanceMap, String expectedInstanceFile) {
         String tableName = table.getName();
-        if (tableName.equals(LunaticConstants.SKOLEM_OCC_TABLE)) {
-            return;
-        }
         List<IExpectedTuple> expectedTuples = instanceMap.get(tableName.toLowerCase());
         if (UtilityTest.getSize(table) == 0) {
             TestCase.assertNull("Unable to find generated tuples for set: " + tableName + " in " + expectedInstanceFile, expectedTuples);
@@ -159,9 +156,6 @@ public class DataSourceTxtInstanceChecker {
         List<Tuple> tupleNodes = new ArrayList<Tuple>();
         for (String tableName : instance.getTableNames()) {
             ITable table = instance.getTable(tableName);
-            if (table.getName().equals(LunaticConstants.SKOLEM_OCC_TABLE)) {
-                continue;
-            }
             ITupleIterator tupleIterator = table.getTupleIterator();
             while (tupleIterator.hasNext()) {
                 Tuple tuple = tupleIterator.next();

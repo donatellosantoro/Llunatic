@@ -1,10 +1,8 @@
 package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 
 import it.unibas.lunatic.LunaticConfiguration;
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.sql.GenerateTargetInsert;
-import it.unibas.lunatic.model.algebra.sql.GenerateTrigger;
 import it.unibas.lunatic.model.algebra.sql.MaterializePremiseQueries;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
@@ -24,7 +22,6 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
 
     private final MaterializePremiseQueries materializeQuery = new MaterializePremiseQueries();
     private final GenerateTargetInsert targetInsertQuery = new GenerateTargetInsert();
-    private final GenerateTrigger triggerGenerator = new GenerateTrigger();
 
     public void doChase(Scenario scenario, boolean cleanTarget) {
         if (!scenario.isDBMS()) {
@@ -35,7 +32,6 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
         DBMSDB target = (DBMSDB) scenario.getTarget();
         AccessConfiguration accessConfiguration = (target).getAccessConfiguration();
         LunaticDBMSUtility.createWorkSchema(accessConfiguration, scenario);
-        LunaticDBMSUtility.deleteSkolemOccurrencesTable(target, accessConfiguration, scenario);
         if (scenario.getSTTgds().isEmpty()) {
             return;
         }
@@ -47,7 +43,6 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
         if (cleanTarget) {
             result.append(cleanTargetScript(scenario));
         }
-        result.append(triggerGenerator.generateScript(scenario));
         result.append(targetInsertQuery.generateScript(scenario));
         result.append("\nCOMMIT;\n");
         result.append("--DROP SCHEMA ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(" CASCADE;\n");
@@ -63,9 +58,6 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
         result.append("----- Cleaning Target -----\n");
         DBMSDB targetDB = (DBMSDB) scenario.getTarget();
         for (String tableName : scenario.getTarget().getTableNames()) {
-            if (tableName.equals(LunaticConstants.SKOLEM_OCC_TABLE)) {
-                continue;
-            }
             result.append("DELETE FROM ").append(DBMSUtility.getSchemaNameAndDot(targetDB.getAccessConfiguration())).append(tableName).append(";\n");
         }
         result.append("\n");

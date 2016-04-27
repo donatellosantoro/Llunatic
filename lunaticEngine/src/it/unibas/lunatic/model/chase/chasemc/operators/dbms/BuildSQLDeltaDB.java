@@ -46,8 +46,8 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
 
     private String createCellGroupTable(AccessConfiguration accessConfiguration, Scenario scenario) {
         StringBuilder script = new StringBuilder();
-        script.append("----- Generating occurrences tables -----\n");
-        script.append("CREATE TABLE ").append(DBMSUtility.getSchemaNameAndDot(accessConfiguration)).append(LunaticConstants.CELLGROUP_TABLE).append("(").append("\n");
+        script.append("----- Generating cell group table -----\n");
+        script.append("CREATE UNLOGGED TABLE ").append(DBMSUtility.getSchemaNameAndDot(accessConfiguration)).append(LunaticConstants.CELLGROUP_TABLE).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.CELL_OID).append(" bigint,").append("\n");
@@ -86,7 +86,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
     private String createDeltaRelationSchemaAndTrigger(String deltaDBSchema, String tableName, String attributeName, String attributeType) {
         StringBuilder script = new StringBuilder();
         String deltaRelationName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
-        script.append("CREATE TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
+        script.append("CREATE UNLOGGED TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
         script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
@@ -104,7 +104,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
     private String createTableForNonAffected(String deltaDBSchema, String tableName, List<Attribute> tableNonAffectedAttributes) {
         String deltaRelationName = tableName + LunaticConstants.NA_TABLE_SUFFIX;
         StringBuilder script = new StringBuilder();
-        script.append("CREATE TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
+        script.append("CREATE UNLOGGED TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
         for (Attribute attribute : tableNonAffectedAttributes) {
             script.append(SpeedyConstants.INDENT).append(attribute.getName()).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attribute.getType())).append(",\n");

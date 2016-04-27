@@ -75,7 +75,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
         } else {
             tableName = constantsInFormula.getTableNameForConclusionConstants();
         }
-        script.append("CREATE TABLE ").append(LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario)).append(".").append(tableName).append("(").append("\n");
+        script.append("CREATE UNLOGGED TABLE ").append(LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario)).append(".").append(tableName).append("(").append("\n");
         for (ConstantInFormula constant : constantsInFormula.getConstants(premise)) {
             String attributeName = DependencyUtility.buildAttributeNameForConstant(constant.getConstantValue());
             String type = constant.getType();

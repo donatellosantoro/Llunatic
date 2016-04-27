@@ -174,7 +174,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
                     cleanStepId = getHash(cleanStepId);
                 }
                 String materializedTableName = tableName + "_" + dependencyId + "_" + cleanStepId;
-                CreateTableAs createTable = new CreateTableAs(materializedTableName, materializedTableName, deltaDBSchemaName, distinct);
+                CreateTableAs createTable = new CreateTableAs(materializedTableName, materializedTableName, deltaDBSchemaName, distinct, true);
                 createTable.addChild(algebraRoot);
                 resultOperator = createTable;
             } else {
@@ -273,7 +273,7 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
         if (materialize) {
             String tableName = "tmp_" + LunaticDBMSUtility.attributeRefToAliasSQL(attribute) + "_" + cleanStepId;
             String tableAlias = LunaticDBMSUtility.attributeRefToAliasSQL(attribute);
-            CreateTableAs createTable = new CreateTableAs(tableName, tableAlias, deltaDBSchemaName, false);
+            CreateTableAs createTable = new CreateTableAs(tableName, tableAlias, deltaDBSchemaName, false, true);
             createTable.addChild(project);
             resultOperator = createTable;
         } else {
