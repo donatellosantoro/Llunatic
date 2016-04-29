@@ -41,6 +41,7 @@ import speedy.model.algebra.aggregatefunctions.MaxAggregateFunction;
 import speedy.model.algebra.aggregatefunctions.ValueAggregateFunction;
 import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
 import speedy.model.database.TableAlias;
+import speedy.model.database.dbms.DBMSVirtualTable;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.SpeedyUtility;
@@ -90,6 +91,7 @@ public class BuildSQLDBForChaseStepDE implements IBuildDatabaseForChaseStep {
             cleanStepId = getHash(cleanStepId);
         }
         DBMSVirtualDB virtualDB = new DBMSVirtualDB((DBMSDB) originalDB, ((DBMSDB) deltaDB), "__" + cleanStepId, accessConfiguration);
+        analyzeTables(virtualDB, tableViews.keySet());
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.STEP_DB_BUILDER, end - start);
         if (logger.isInfoEnabled()) logger.info("Generated database for step " + stepId + " - " + (end - start) + " ms");
@@ -104,22 +106,21 @@ public class BuildSQLDBForChaseStepDE implements IBuildDatabaseForChaseStep {
         long start = new Date().getTime();
         if (logger.isDebugEnabled()) logger.debug("Generating database for step " + stepId + " and depedency " + dependency);
         //Materialize join
-        Map<String, List<AttributeRef>> attributeMap = new HashMap<String, List<AttributeRef>>();
+        Map<String, List<AttributeRef>> tablesAndAttributesToExtract = new HashMap<String, List<AttributeRef>>();
         List<AttributeRef> requestedAttributesForDependency = DependencyUtility.extractRequestedAttributesWithExistential(dependency);
         if (requestedAttributesForDependency.isEmpty()) {
             throw new IllegalArgumentException("Unable to find relevant attributes for dependency " + dependency);
         }
         for (AttributeRef attribute : requestedAttributesForDependency) {
-            List<AttributeRef> attributesForTable = attributeMap.get(attribute.getTableName());
+            List<AttributeRef> attributesForTable = tablesAndAttributesToExtract.get(attribute.getTableName());
             if (attributesForTable == null) {
                 attributesForTable = new ArrayList<AttributeRef>();
-                attributeMap.put(attribute.getTableName(), attributesForTable);
+                tablesAndAttributesToExtract.put(attribute.getTableName(), attributesForTable);
             }
             attributesForTable.add(attribute);
         }
         StringBuilder script = new StringBuilder();
-//        script.append("ANALYZE;\n");
-        Map<String, String> tableViews = extractDatabase("\"" + stepId + "\"", dependency.getId(), deltaDB, originalDB, attributeMap, true, false, scenario);
+        Map<String, String> tableViews = extractDatabase("\"" + stepId + "\"", dependency.getId(), deltaDB, originalDB, tablesAndAttributesToExtract, true, false, scenario);
         for (String tableName : tableViews.keySet()) {
             String viewScript = tableViews.get(tableName);
             script.append(viewScript).append("\n");
@@ -132,13 +133,26 @@ public class BuildSQLDBForChaseStepDE implements IBuildDatabaseForChaseStep {
             cleanStepId = getHash(cleanStepId);
         }
         DBMSVirtualDB virtualDB = new DBMSVirtualDB((DBMSDB) originalDB, ((DBMSDB) deltaDB), "_" + dependency.getId() + "_" + cleanStepId, accessConfiguration);
+        analyzeTables(virtualDB, tableViews.keySet());
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.STEP_DB_BUILDER, end - start);
-        if (logger.isInfoEnabled()) logger.info("Generating database for step " + stepId + " and depedency " + dependency+ " - " + (end - start) + " ms");
+        if (logger.isInfoEnabled()) logger.info("Generating database for step " + stepId + " and depedency " + dependency + " - " + (end - start) + " ms");
         if (checkOIDsInTables) {
             oidChecker.checkDatabase(virtualDB);
         }
         return virtualDB;
+    }
+
+    private void analyzeTables(DBMSVirtualDB virtualDB, Set<String> tablesToExtract) {
+        String schemaName = virtualDB.getAccessConfiguration().getSchemaAndSuffix();
+        assert (!virtualDB.getTableNames().isEmpty());
+        for (String tableName : virtualDB.getTableNames()) {
+            if (!tablesToExtract.contains(tableName)) {
+                continue;
+            }
+            DBMSVirtualTable virtualTable = (DBMSVirtualTable) virtualDB.getTable(tableName);
+            QueryManager.executeScript("ANALYZE " + schemaName + "." + virtualTable.getVirtualName(), virtualDB.getAccessConfiguration(), true, true, true, false);
+        }
     }
 
     private Map<String, String> extractDatabase(String stepId, String dependencyId, IDatabase deltaDB, IDatabase originalDB, Map<String, List<AttributeRef>> tablesAndAttributesToExtract, boolean materialize, boolean distinct, Scenario scenario) {
