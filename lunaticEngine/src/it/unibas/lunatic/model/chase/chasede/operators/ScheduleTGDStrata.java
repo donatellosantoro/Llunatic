@@ -47,27 +47,37 @@ public class ScheduleTGDStrata {
     }
 
     public void startThreadForTGDStratum(TGDStratum tgdStratum) {
-        if (!unsatisfiedStrata.contains(tgdStratum)) {
-            return;
+        this.unsatisfiedStrataLock.lock();
+        try {
+            if (!unsatisfiedStrata.contains(tgdStratum)) {
+                return;
+            }
+            if (!allPreviousStrataAreSatisfied(tgdStratum)) {
+                if (logger.isDebugEnabled()) logger.debug("Stratum " + tgdStratum + " is waiting for previous strata...");
+                return;
+            }
+            if (logger.isDebugEnabled()) logger.debug("Starting thread for tgdStratum " + tgdStratum);
+            ChaseTargetTGDStratumThread stratumThread = new ChaseTargetTGDStratumThread(this, tgdStratum, treeMap, naiveInsert, scenario, chaseState);
+            threadManager.startThread(stratumThread);
+        } finally {
+            this.unsatisfiedStrataLock.unlock();
         }
-        if (!allPreviousStrataAreSatisfied(tgdStratum)) {
-            if (logger.isDebugEnabled()) logger.debug("Stratum " + tgdStratum + " is waiting for previous strata...");
-            return;
-        }
-        if (logger.isDebugEnabled()) logger.debug("Starting thread for tgdStratum " + tgdStratum);
-        ChaseTargetTGDStratumThread stratumThread = new ChaseTargetTGDStratumThread(this, tgdStratum, treeMap, naiveInsert, scenario, chaseState);
-        threadManager.startThread(stratumThread);
     }
 
     private boolean allPreviousStrataAreSatisfied(TGDStratum tgdStratum) {
-        DirectedGraph<TGDStratum, DefaultEdge> strataGraph = scenario.getStratification().getStrataGraph();
-        for (DefaultEdge inEdge : strataGraph.incomingEdgesOf(tgdStratum)) {
-            TGDStratum prevStratum = strataGraph.getEdgeSource(inEdge);
-            if (unsatisfiedStrata.contains(prevStratum)) {
-                return false;
+        this.unsatisfiedStrataLock.lock();
+        try {
+            DirectedGraph<TGDStratum, DefaultEdge> strataGraph = scenario.getStratification().getStrataGraph();
+            for (DefaultEdge inEdge : strataGraph.incomingEdgesOf(tgdStratum)) {
+                TGDStratum prevStratum = strataGraph.getEdgeSource(inEdge);
+                if (unsatisfiedStrata.contains(prevStratum)) {
+                    return false;
+                }
             }
+            return true;
+        } finally {
+            this.unsatisfiedStrataLock.unlock();
         }
-        return true;
     }
 
     public void waitForUnsatisfiedStrata() {

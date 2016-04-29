@@ -50,7 +50,7 @@ public class BuildTGDStratification {
 
     private Map<Dependency, Set<Dependency>> findAffectedDependenciesForTGDs(List<Dependency> tgds) {
         Map<Dependency, Set<Dependency>> result = new HashMap<Dependency, Set<Dependency>>();
-        Map<String, Set<Dependency>> relationInDependencyPremiseMap = buildRelationInDependencyMap(tgds);
+        Map<String, Set<Dependency>> relationInDependencyPremiseMap = mapTgdsWithAtomInPremise(tgds);
         if (logger.isDebugEnabled()) logger.debug("Relation in Dependency: \n" + SpeedyUtility.printMap(relationInDependencyPremiseMap));
         for (Dependency tgd : tgds) {
             Set<Dependency> affectedDependenciesForTGD = findAffectedDependenciesForTGD(tgd, relationInDependencyPremiseMap);
@@ -59,7 +59,7 @@ public class BuildTGDStratification {
         return result;
     }
 
-    private Map<String, Set<Dependency>> buildRelationInDependencyMap(List<Dependency> tgds) {
+    private Map<String, Set<Dependency>> mapTgdsWithAtomInPremise(List<Dependency> tgds) {
         Map<String, Set<Dependency>> result = new HashMap<String, Set<Dependency>>();
         for (Dependency tgd : tgds) {
             for (IFormulaAtom atom : tgd.getPremise().getAtoms()) {
@@ -79,7 +79,7 @@ public class BuildTGDStratification {
         return result;
     }
 
-    private Set<Dependency> findAffectedDependenciesForTGD(Dependency tgd, Map<String, Set<Dependency>> relationInDependencyPremiseMap) {
+    private Set<Dependency> findAffectedDependenciesForTGD(Dependency tgd, Map<String, Set<Dependency>> tgdsWithAtomInPremiseMap) {
         Set<Dependency> result = new HashSet<Dependency>();
         for (IFormulaAtom atom : tgd.getConclusion().getAtoms()) {
             if (!(atom instanceof RelationalAtom)) {
@@ -87,7 +87,7 @@ public class BuildTGDStratification {
             }
             RelationalAtom relationalAtom = (RelationalAtom) atom;
             String key = relationalAtom.getTableAlias().getTableName();
-            Set<Dependency> involvedDependencies = relationInDependencyPremiseMap.get(key);
+            Set<Dependency> involvedDependencies = tgdsWithAtomInPremiseMap.get(key);
             if (involvedDependencies == null) {
                 continue;
             }

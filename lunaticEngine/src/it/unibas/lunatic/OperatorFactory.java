@@ -3,7 +3,7 @@ package it.unibas.lunatic;
 import it.unibas.lunatic.model.chase.chasede.operators.ChangeCellDE;
 import it.unibas.lunatic.model.chase.chasede.operators.ChangeCellDEProxy;
 import it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDs;
-import it.unibas.lunatic.model.chase.chasede.operators.ChaseTargetTGDsWithBatchInsert;
+import it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaTargetTGDsWithBatchInsert;
 import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
 import it.unibas.lunatic.model.chase.chasede.operators.OccurrenceHandlerDEProxy;
@@ -249,7 +249,7 @@ public class OperatorFactory {
 
     public IChaseDeltaExtTGDs getExtTgdChaser(Scenario scenario) {
         if (scenario.isDEScenario()) {
-            return new ChaseTargetTGDsWithBatchInsert(getInsertTupleForTargetTGDs(scenario), getDatabaseBuilder(scenario));
+            return new ChaseDeltaTargetTGDsWithBatchInsert(getInsertTupleForTargetTGDs(scenario), getDatabaseBuilder(scenario));
         }
         return new ChaseDeltaExtTGDs(getQueryRunner(scenario), getDatabaseBuilder(scenario),
                 getOccurrenceHandler(scenario), getOIDGenerator(scenario), getCellChanger(scenario));

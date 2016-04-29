@@ -14,7 +14,7 @@ public class TestSQLChaseEgd extends CheckTest {
     private static Logger logger = LoggerFactory.getLogger(TestSQLChaseEgd.class);
 
     public void testRSEgd() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.RS_egd_dbms);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.RS_egd_dbms, true);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

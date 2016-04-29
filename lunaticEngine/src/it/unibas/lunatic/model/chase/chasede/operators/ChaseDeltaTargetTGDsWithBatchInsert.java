@@ -23,15 +23,15 @@ import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.database.IDatabase;
 
-public class ChaseTargetTGDsWithBatchInsert implements IChaseDeltaExtTGDs {
+public class ChaseDeltaTargetTGDsWithBatchInsert implements IChaseDeltaExtTGDs {
 
     public static final int ITERATION_LIMIT = 10;
-    private static Logger logger = LoggerFactory.getLogger(ChaseTargetTGDsWithBatchInsert.class);
+    private static Logger logger = LoggerFactory.getLogger(ChaseDeltaTargetTGDsWithBatchInsert.class);
 
     private IInsertDeltaTuplesForTargetTGDs insertTuples;
     private IBuildDatabaseForChaseStep databaseBuilder;
 
-    public ChaseTargetTGDsWithBatchInsert(IInsertDeltaTuplesForTargetTGDs insertTuples, IBuildDatabaseForChaseStep databaseBuilder) {
+    public ChaseDeltaTargetTGDsWithBatchInsert(IInsertDeltaTuplesForTargetTGDs insertTuples, IBuildDatabaseForChaseStep databaseBuilder) {
         this.insertTuples = insertTuples;
         this.databaseBuilder = databaseBuilder;
     }
