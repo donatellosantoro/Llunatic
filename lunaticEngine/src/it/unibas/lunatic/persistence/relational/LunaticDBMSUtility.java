@@ -145,7 +145,7 @@ public class LunaticDBMSUtility {
     }
 
     public static String getWorkSchema(Scenario scenario) {
-        String schemaName = LunaticConstants.WORK_SCHEMA;
+        String schemaName = SpeedyConstants.WORK_SCHEMA;
         if (scenario.hasSuffix()) {
             schemaName += SpeedyConstants.SUFFIX_SEPARATOR + scenario.getSuffix();
         }

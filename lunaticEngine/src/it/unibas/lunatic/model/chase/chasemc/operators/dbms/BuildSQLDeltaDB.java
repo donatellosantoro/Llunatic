@@ -30,24 +30,35 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
     public DBMSDB generate(IDatabase database, Scenario scenario, String rootName) {
         long start = new Date().getTime();
         AccessConfiguration accessConfiguration = ((DBMSDB) database).getAccessConfiguration().clone();
-        accessConfiguration.setSchemaName(LunaticConstants.WORK_SCHEMA);
+        accessConfiguration.setSchemaName(SpeedyConstants.WORK_SCHEMA);
         DBMSDB deltaDB = new DBMSDB(accessConfiguration);
         LunaticDBMSUtility.createWorkSchema(accessConfiguration, scenario);
         StringBuilder script = new StringBuilder();
         script.append(createCellGroupTable(accessConfiguration, scenario));
         Set<AttributeRef> affectedAttributes = findAllAffectedAttributes(scenario);
-        script.append(createDeltaRelationsSchema(database, accessConfiguration, affectedAttributes, scenario));
+        if (logger.isDebugEnabled()) logger.debug("Affected attributes " + affectedAttributes);
+        List<String> deltaTables = new ArrayList<String>();
+        script.append(createDeltaRelationsSchema(database, deltaTables, accessConfiguration, affectedAttributes, scenario));
         script.append(insertIntoDeltaRelations(database, accessConfiguration, rootName, affectedAttributes, scenario));
         QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true, false);
+        analyzeDeltaTables(deltaTables, accessConfiguration);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_BUILDER, end - start);
         return deltaDB;
     }
 
+    private void analyzeDeltaTables(List<String> deltaTables, AccessConfiguration accessConfiguration) {
+        QueryManager.executeScript("ANALYZE " + DBMSUtility.getSchemaNameAndDot(accessConfiguration) + LunaticConstants.CELLGROUP_TABLE, accessConfiguration, true, true, true, false);
+        for (String tableName : deltaTables) {
+            QueryManager.executeScript("ANALYZE " + tableName, accessConfiguration, true, true, true, false);
+        }
+    }
+
     private String createCellGroupTable(AccessConfiguration accessConfiguration, Scenario scenario) {
         StringBuilder script = new StringBuilder();
         script.append("----- Generating cell group table -----\n");
-        script.append("CREATE UNLOGGED TABLE ").append(DBMSUtility.getSchemaNameAndDot(accessConfiguration)).append(LunaticConstants.CELLGROUP_TABLE).append("(").append("\n");
+        String unloggedOption = (scenario.getConfiguration().isUseUnloggedWorkTables() ? " UNLOGGED " : "");
+        script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(DBMSUtility.getSchemaNameAndDot(accessConfiguration)).append(LunaticConstants.CELLGROUP_TABLE).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.CELL_OID).append(" bigint,").append("\n");
@@ -60,7 +71,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         return script.toString();
     }
 
-    private String createDeltaRelationsSchema(IDatabase database, AccessConfiguration accessConfiguration, Set<AttributeRef> affectedAttributes, Scenario scenario) {
+    private String createDeltaRelationsSchema(IDatabase database, List<String> deltaTables, AccessConfiguration accessConfiguration, Set<AttributeRef> affectedAttributes, Scenario scenario) {
         String deltaDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario);
         StringBuilder script = new StringBuilder();
         script.append("----- Generating Delta Relations Schema -----\n");
@@ -72,21 +83,24 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
                     continue;
                 }
                 if (isAffected(new AttributeRef(table.getName(), attribute.getName()), affectedAttributes)) {
-                    script.append(createDeltaRelationSchemaAndTrigger(deltaDBSchema, table.getName(), attribute.getName(), attribute.getType()));
+                    script.append(createDeltaRelationSchemaAndTrigger(deltaDBSchema, deltaTables, table.getName(), attribute.getName(), attribute.getType(), scenario));
                 } else {
                     tableNonAffectedAttributes.add(attribute);
                 }
             }
-            script.append(createTableForNonAffected(deltaDBSchema, table.getName(), tableNonAffectedAttributes));
+            script.append(createTableForNonAffected(deltaDBSchema, deltaTables, table.getName(), tableNonAffectedAttributes, scenario));
         }
         if (logger.isDebugEnabled()) logger.debug("\n----Generating Delta Relations Schema: " + script);
         return script.toString();
     }
 
-    private String createDeltaRelationSchemaAndTrigger(String deltaDBSchema, String tableName, String attributeName, String attributeType) {
+    private String createDeltaRelationSchemaAndTrigger(String deltaDBSchema, List<String> deltaTables, String tableName, String attributeName, String attributeType, Scenario scenario) {
         StringBuilder script = new StringBuilder();
         String deltaRelationName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
-        script.append("CREATE UNLOGGED TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
+        String schemaAndTable = deltaDBSchema + "." + deltaRelationName;
+        deltaTables.add(schemaAndTable);
+        String unloggedOption = (scenario.getConfiguration().isUseUnloggedWorkTables() ? " UNLOGGED " : "");
+        script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(schemaAndTable).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
         script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
@@ -101,10 +115,13 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         return script.toString();
     }
 
-    private String createTableForNonAffected(String deltaDBSchema, String tableName, List<Attribute> tableNonAffectedAttributes) {
+    private String createTableForNonAffected(String deltaDBSchema, List<String> deltaTables, String tableName, List<Attribute> tableNonAffectedAttributes, Scenario scenario) {
         String deltaRelationName = tableName + LunaticConstants.NA_TABLE_SUFFIX;
+        String schemaAndTable = deltaDBSchema + "." + deltaRelationName;
+        deltaTables.add(schemaAndTable);
         StringBuilder script = new StringBuilder();
-        script.append("CREATE UNLOGGED TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append("(").append("\n");
+        String unloggedOption = (scenario.getConfiguration().isUseUnloggedWorkTables() ? " UNLOGGED " : "");
+        script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(schemaAndTable).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
         for (Attribute attribute : tableNonAffectedAttributes) {
             script.append(SpeedyConstants.INDENT).append(attribute.getName()).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attribute.getType())).append(",\n");

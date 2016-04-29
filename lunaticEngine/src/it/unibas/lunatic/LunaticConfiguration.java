@@ -23,6 +23,7 @@ public class LunaticConfiguration {
     private boolean chaseDEDGreedyRandomScenarios = false;
     private boolean discardDuplicateTuples = false;
     private double numberCellsWeightForRanking = 0.7;
+    private boolean useUnloggedWorkTables = true;
     private boolean useHashForSkolem = true;
     private boolean useBatchInsert = true;
     private boolean exportSolutions = false;
@@ -227,6 +228,14 @@ public class LunaticConfiguration {
         this.useHashForSkolem = useHashForSkolem;
     }
 
+    public boolean isUseUnloggedWorkTables() {
+        return useUnloggedWorkTables;
+    }
+
+    public void setUseUnloggedWorkTables(boolean useUnloggedWorkTables) {
+        this.useUnloggedWorkTables = useUnloggedWorkTables;
+    }
+
     public boolean isUseBatchInsert() {
         return useBatchInsert;
     }
@@ -310,6 +319,8 @@ public class LunaticConfiguration {
                 + "\n\t DiscardDuplicateTuples: " + discardDuplicateTuples
                 + "\n\t MaxNumberOfThreads: " + maxNumberOfThreads
                 + "\n\t UseBatchInsert: " + useBatchInsert
+                + "\n\t UseUnloggedWorkTables: " + useUnloggedWorkTables
+                + "\n\t UseHashForSkolem: " + useHashForSkolem
                 + "\n\t ExportSolutions: " + exportSolutions
                 + "\n\t ExportSolutionsPath: " + exportSolutionsPath
                 + "\n\t ExportSolutionsType: " + exportSolutionsType

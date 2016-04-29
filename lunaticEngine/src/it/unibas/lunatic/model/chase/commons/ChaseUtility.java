@@ -356,10 +356,15 @@ public class ChaseUtility {
         List<Entry<IValue, Integer>> entryList = new ArrayList<Entry<IValue, Integer>>(occurrenceHistogram.entrySet());
         Collections.sort(entryList, new Comparator<Entry<IValue, Integer>>() {
             public int compare(Entry<IValue, Integer> entry1, Entry<IValue, Integer> entry2) {
-                if (entry1.getValue().equals(entry2.getValue())) {
-                    return entry1.getKey().toString().compareTo(entry2.getKey().toString());
+                if (!entry1.getValue().equals(entry2.getValue())) {
+                    return -1 * entry1.getValue().compareTo(entry2.getValue());
                 }
-                return -1 * entry1.getValue().compareTo(entry2.getValue());
+                String s1 = entry1.getKey().toString();
+                String s2 = entry2.getKey().toString();
+                if (s1.length() != s2.length()) {
+                    return s1.length() - s2.length();
+                }
+                return s1.compareTo(s2);
             }
         });
         return entryList;

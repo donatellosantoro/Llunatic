@@ -9,6 +9,7 @@ import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.ChaserFactory;
+import it.unibas.lunatic.persistence.DAOAccessConfiguration;
 import it.unibas.lunatic.persistence.DAOLunaticConfiguration;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import java.io.File;
@@ -27,6 +28,7 @@ public class Main {
 
     private final static DAOMCScenario daoScenario = new DAOMCScenario();
     private final static DAOLunaticConfiguration daoConfiguration = new DAOLunaticConfiguration();
+    private final static DAOAccessConfiguration daoAccessConfiguration = new DAOAccessConfiguration();
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -45,7 +47,8 @@ public class Main {
             if (conf.isRecreateDBOnStart()) {
                 removeExistingDB(fileScenario);
             } else if (isDEScenario(fileScenario) && conf.isCleanSchemasOnStartForDEScenarios()) {
-                cleanWorkTargetSchemas(fileScenario);
+                AccessConfiguration accessConfiguration = daoAccessConfiguration.loadTargetAccessConfiguration(fileScenario);
+                DBMSUtility.cleanWorkTargetSchemas(accessConfiguration);
             }
             System.out.println("*** Loading scenario " + fileScenario + "... ");
             Scenario scenario = daoScenario.loadScenario(fileScenario);
@@ -84,7 +87,6 @@ public class Main {
             System.out.println("Chase Result:");
             System.out.println(result);
         }
-        System.out.println(ChaseStats.getInstance().toString());
     }
 
     private static void chaseMCScenario(Scenario scenario) {
@@ -157,7 +159,7 @@ public class Main {
     }
 
     private static void removeExistingDB(String fileScenario) {
-        AccessConfiguration accessConfiguration = loadTargetAccessConfiguration(fileScenario);
+        AccessConfiguration accessConfiguration = daoAccessConfiguration.loadTargetAccessConfiguration(fileScenario);
         if (accessConfiguration == null) {
             return;
         }
@@ -171,42 +173,6 @@ public class Main {
                 PrintUtility.printError("Unable to drop database.\n" + ex.getLocalizedMessage());
             }
         }
-    }
-
-    private static void cleanWorkTargetSchemas(String fileScenario) {
-        AccessConfiguration accessConfiguration = loadTargetAccessConfiguration(fileScenario);
-        if (accessConfiguration == null) {
-            return;
-        }
-        try {
-            PrintUtility.printInformation("Removing schema " + accessConfiguration.getSchemaName() + " and "
-                    + LunaticConstants.WORK_SCHEMA + ", if exist...");
-            DBMSUtility.removeSchema(accessConfiguration.getSchemaName(), accessConfiguration);
-            DBMSUtility.removeSchema(LunaticConstants.WORK_SCHEMA, accessConfiguration);
-            PrintUtility.printSuccess("Schemas removed!");
-        } catch (DBMSException ex) {
-            String message = ex.getMessage();
-            if (!message.contains("does not exist")) {
-                PrintUtility.printError("Unable to drop schema.\n" + ex.getLocalizedMessage());
-            }
-        }
-    }
-
-    private static AccessConfiguration loadTargetAccessConfiguration(String fileScenario) {
-        Document document = new DAOXmlUtility().buildDOM(fileScenario);
-        Element rootElement = document.getRootElement();
-        Element databaseElement = rootElement.getChild("target");
-        Element dbmsElement = databaseElement.getChild("access-configuration");
-        if (dbmsElement == null) {
-            return null;
-        }
-        AccessConfiguration accessConfiguration = new AccessConfiguration();
-        accessConfiguration.setDriver(dbmsElement.getChildText("driver").trim());
-        accessConfiguration.setUri(dbmsElement.getChildText("uri").trim());
-        accessConfiguration.setSchemaName(dbmsElement.getChildText("schema").trim());
-        accessConfiguration.setLogin(dbmsElement.getChildText("login").trim());
-        accessConfiguration.setPassword(dbmsElement.getChildText("password").trim());
-        return accessConfiguration;
     }
 
     private static boolean isDEScenario(String fileScenario) {

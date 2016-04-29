@@ -79,7 +79,8 @@ public class SQLInsertDeltaTuplesForTargetTGDs implements IInsertDeltaTuplesForT
         StringBuilder query = new StringBuilder();
         String tmpTable = ChaseUtility.getTmpTableForTGDViolations(tgd, null, true, scenario);
         query.append("DROP TABLE IF EXISTS ").append(tmpTable).append(";\n");
-        query.append("CREATE UNLOGGED TABLE ").append(tmpTable).append(" WITH OIDS AS (\n");
+        String unloggedOption = (scenario.getConfiguration().isUseUnloggedWorkTables() ? " UNLOGGED " : "");
+        query.append("CREATE ").append(unloggedOption).append(" TABLE ").append(tmpTable).append(" WITH OIDS AS (\n");
         query.append("SELECT ");
         Map<AttributeRef, IValueGenerator> targetGenerators = tgd.getTargetGenerators();
         if (logger.isDebugEnabled()) logger.debug("----Tgd generator map: " + LunaticUtility.printMap(targetGenerators));
@@ -135,11 +136,11 @@ public class SQLInsertDeltaTuplesForTargetTGDs implements IInsertDeltaTuplesForT
         root.addChild(name);
         String prefix = "(['||";
         if (useHash) {
-            prefix += " left(md5(";
+            prefix += " right(md5(";
         }
         String suffix = "||'])'";
         if (useHash) {
-            suffix = "),10) " + suffix;
+            suffix = "),15) " + suffix;
         }
         AppendSkolemPart append = new AppendSkolemPart(prefix, suffix, "||']-['||");
         root.addChild(append);

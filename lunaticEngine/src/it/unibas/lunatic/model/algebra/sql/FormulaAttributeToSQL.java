@@ -62,11 +62,11 @@ public class FormulaAttributeToSQL {
         root.addChild(name);
         String prefix = "(['||";
         if (useHash) {
-            prefix += " left(md5(";
+            prefix += " right(md5(";
         }
         String suffix = "||'])'";
         if (useHash) {
-            suffix = "),10) " + suffix;
+            suffix = "),15) " + suffix;
         }
         AppendSkolemPart append = new AppendSkolemPart(prefix, suffix, "||']-['||");
         root.addChild(append);

@@ -1,11 +1,11 @@
 package it.unibas.lunatic.model.chase.chaseded.dbms;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chaseded.IDEDDatabaseManager;
 import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
+import speedy.SpeedyConstants;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 
@@ -93,7 +93,7 @@ public class SQLDEDDatabaseManager implements IDEDDatabaseManager {
 
     private AccessConfiguration getWorkAccessConfiguration(AccessConfiguration accessConfiguration) {
         AccessConfiguration workSchema = accessConfiguration.clone();
-        workSchema.setSchemaName(LunaticConstants.WORK_SCHEMA);
+        workSchema.setSchemaName(SpeedyConstants.WORK_SCHEMA);
         return workSchema;
     }
 }

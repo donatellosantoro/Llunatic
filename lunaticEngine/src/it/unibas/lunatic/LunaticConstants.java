@@ -14,8 +14,6 @@ public class LunaticConstants {
     public static final String DC = "DC";
     public static final String DED = "DED";
 
-    public static final String WORK_SCHEMA = "work";
-
     public static final String CHASE_FORWARD = "f";
     public static final String CHASE_BACKWARD = "b";
     public static final String CHASE_USER = "u";

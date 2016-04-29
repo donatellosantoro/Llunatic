@@ -121,7 +121,7 @@ public class ChaseDEScenario implements IDEChaser {
             long end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.TOTAL_TIME, end - start);
             if (scenario.getConfiguration().isExportSolutions()) {
-                duplicateRemover.removeDuplicatesModuloOID(targetDB, scenario);
+//                duplicateRemover.removeDuplicatesModuloOID(targetDB, scenario);
                 resultExporter.exportSolutionInSeparateFiles(targetDB, scenario);
             }
             executeFinalQueries(targetDB, scenario);
@@ -156,6 +156,7 @@ public class ChaseDEScenario implements IDEChaser {
         if (!LunaticConfiguration.isPrintSteps()) {
             return;
         }
+        System.out.println(ChaseStats.getInstance().toString());
         long preProcessingTime = 0L;
         long chasingTime = 0L;
         long postProcessingTime = 0L;
