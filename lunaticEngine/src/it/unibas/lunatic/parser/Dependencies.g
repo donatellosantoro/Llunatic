@@ -62,8 +62,7 @@ dependencies:
 	         ('EGDs:' egd+ { counter = 0;} |
 	          'DED-EGDs:' dedegd+ {counter = 0;} | 
 	          'ExtEGDs:' eegd+ { counter = 0;} )?
-	         ('DCs:' dc+ { counter = 0;} )?
-		 { generator.processDependencies(); };
+	         ('DCs:' dc+ { counter = 0;} )?;
 
 sttgd:	 	 dependency {  dependency.setType(LunaticConstants.STTGD); dependency.setId("m" + counter++); generator.addSTTGD(dependency); } ;
 
