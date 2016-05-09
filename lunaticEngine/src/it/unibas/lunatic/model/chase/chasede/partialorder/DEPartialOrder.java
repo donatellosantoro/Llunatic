@@ -4,6 +4,7 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.PartialOrderConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
+import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.exceptions.PartialOrderException;
 import it.unibas.lunatic.model.chase.chasede.operators.CorrectCellGroupIDDE;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
@@ -86,12 +87,12 @@ public class DEPartialOrder implements IPartialOrder {
             if (constantCell.getValue().equals(firstConstantValue)) {
                 continue;
             }
-            throw new ChaseException("Unable to equate different constants in DE. " + SpeedyUtility.printCollection(constantCells));
+            throw new ChaseFailedException("Unable to equate different constants in DE. " + SpeedyUtility.printCollection(constantCells));
         }
     }
 
     public IValue generalizeNonAuthoritativeConstantCells(Set<CellGroupCell> nonAuthoritativeCells, CellGroup cellGroup, Scenario scenario) {
-        throw new ChaseException("Unable to generalize constant cells in DE");
+        throw new ChaseFailedException("Unable to generalize constant cells in DE");
     }
 
     @Override

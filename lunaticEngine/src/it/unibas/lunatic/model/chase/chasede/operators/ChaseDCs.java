@@ -2,6 +2,7 @@ package it.unibas.lunatic.model.chase.chasede.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
+import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
 import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.control.IChaseState;
@@ -32,7 +33,7 @@ public class ChaseDCs {
             ITupleIterator result = queryRunner.run(treeRoot, scenario.getSource(), scenario.getTarget());
             if (result.hasNext()) {
                 result.close();
-                throw new ChaseException("Chase fails. Denial constraint is violated: " + dc);
+                throw new ChaseFailedException("Chase fails. Denial constraint is violated: " + dc);
             }
             result.close();
         }
