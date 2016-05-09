@@ -26,6 +26,8 @@ import it.unibas.lunatic.model.chase.chasemc.usermanager.InteractiveUserManager;
 import it.unibas.lunatic.model.chase.chasemc.usermanager.StandardUserManager;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.dependency.Dependency;
+import it.unibas.lunatic.model.dependency.operators.ProcessDependencies;
+import it.unibas.lunatic.parser.ParserOutput;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,10 +72,11 @@ public class DAOMCScenario {
     private static final String VALUE_COMPARATOR_FLOAT = "floatComparator";
     private static final String VALUE_COMPARATOR_DATE = "dateComparator";
     private static final String VALUE_COMPARATOR_STRING = "stringComparator";
-    private DAOXmlUtility daoUtility = new DAOXmlUtility();
-    private DAOLunaticConfiguration daoConfiguration = new DAOLunaticConfiguration();
-    private TransformFilePaths filePathTransformator = new TransformFilePaths();
-    private DAOMainMemoryDatabase daoMainMemoryDatabase = new DAOMainMemoryDatabase();
+    private final DAOXmlUtility daoUtility = new DAOXmlUtility();
+    private final DAOLunaticConfiguration daoConfiguration = new DAOLunaticConfiguration();
+    private final TransformFilePaths filePathTransformator = new TransformFilePaths();
+    private final DAOMainMemoryDatabase daoMainMemoryDatabase = new DAOMainMemoryDatabase();
+    private final ProcessDependencies dependencyProcessor = new ProcessDependencies();
     private String fileScenario;
 
     public Scenario loadScenario(String fileScenario) throws DAOException {
@@ -483,6 +486,8 @@ public class DAOMCScenario {
         try {
             long start = new Date().getTime();
             generator.generateDependencies(dependenciesString, scenario);
+            ParserOutput parserOutput = generator.getParserOutput();
+            dependencyProcessor.processDependencies(parserOutput, scenario);
             long end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.PARSING_TIME, end - start);
         } catch (Exception ex) {

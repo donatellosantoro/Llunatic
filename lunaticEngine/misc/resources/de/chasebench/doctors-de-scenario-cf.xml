@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:chasebench_doctors_10K_de</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <import>
+      <input type="csv" separator="," table="treatment">data/10K/treatment.csv</input>
+      <input type="csv" separator="," table="physician">data/10K/physician.csv</input>
+      <input type="csv" separator="," table="medprescription">data/10K/medprescription.csv</input>
+      <input type="csv" separator="," table="hospital">data/10K/hospital.csv</input>
+    </import>
+  </source>
+  <target>
+    <type>DBMS</type>
+    <generateFromDependencies>true</generateFromDependencies>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:chasebench_doctors_10K_de</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+  </target>
+  <configuration>
+    <printSteps>true</printSteps>
+      <recreateDBOnStart>false</recreateDBOnStart>
+      <exportSolutions>false</exportSolutions>
+      <exportSolutionsPath>/Temp/llunatic/doctors/&SIZE;/</exportSolutionsPath>
+      <exportSolutionsType>CSV</exportSolutionsType>
+  </configuration>
+  <dependencies>
+    <sttgdsFile>dependencies/doctors.st.txt</sttgdsFile>
+    <egdsFile>dependencies/doctors.egds.txt</egdsFile>
+  </dependencies>
+  <queries>
+    <queryFile>queries/queries.txt</queryFile>
+  </queries>
+
+</scenario>
