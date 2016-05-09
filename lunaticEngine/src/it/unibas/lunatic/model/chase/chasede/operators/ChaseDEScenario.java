@@ -53,17 +53,15 @@ public class ChaseDEScenario implements IDEChaser {
     private final ChaseTargetTGDs tgdChaser;
     private final ChaseDeltaEGDs egdChaser;
     private final ChaseDCs dChaser;
-    private final IRemoveDuplicates duplicateRemover;
 
     public ChaseDEScenario(IChaseSTTGDs stChaser, ChaseDeltaEGDs egdChaser, IRunQuery queryRunner, IInsertFromSelectNaive naiveInsert,
-            IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep databaseBuilder, IRemoveDuplicates duplicateRemover) {
+            IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep databaseBuilder) {
         this.stChaser = stChaser;
         this.tgdChaser = new ChaseTargetTGDs(naiveInsert);
         this.egdChaser = egdChaser;
         this.dChaser = new ChaseDCs(queryRunner);
         this.deltaBuilder = deltaBuilder;
         this.databaseBuilder = databaseBuilder;
-        this.duplicateRemover = duplicateRemover;
     }
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
@@ -121,7 +119,6 @@ public class ChaseDEScenario implements IDEChaser {
             long end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.TOTAL_TIME, end - start);
             if (scenario.getConfiguration().isExportSolutions()) {
-//                duplicateRemover.removeDuplicatesModuloOID(targetDB, scenario);
                 resultExporter.exportSolutionInSeparateFiles(targetDB, scenario);
             }
             executeFinalQueries(targetDB, scenario);

@@ -1,7 +1,7 @@
 package it.unibas.lunatic.test;
 
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.utility.combinatorial.GenericMultiCombinationsGenerator;
+import speedy.utility.combinatorics.GenericMultiCombinationsGenerator;
 import java.util.Arrays;
 import java.util.List;
 import junit.framework.TestCase;

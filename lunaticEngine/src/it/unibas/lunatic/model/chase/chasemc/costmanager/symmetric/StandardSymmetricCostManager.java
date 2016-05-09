@@ -17,8 +17,7 @@ import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.utility.combinatorial.GenericMultiCombinationsGenerator;
-import it.unibas.lunatic.utility.combinatorial.GenericPowersetGenerator;
+import it.unibas.spicy.utility.GenericPowersetGenerator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.IValue;
 import speedy.model.database.LLUNValue;
+import speedy.utility.combinatorics.GenericMultiCombinationsGenerator;
 
 public class StandardSymmetricCostManager implements ICostManager {
 

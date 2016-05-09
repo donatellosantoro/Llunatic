@@ -120,17 +120,6 @@ public class DAOUtility {
         }
     }
 
-    public static String cleanXmlString(String xmlString) {
-        String stringCleaned = xmlString;
-        stringCleaned.replaceAll("&gt;", ">");
-        stringCleaned.replaceAll("&lt;", "<");
-        stringCleaned.replaceAll("&quot;", "\"");
-        stringCleaned.replaceAll("&apos;", "'");
-        stringCleaned.replaceAll("&amp;", "&");
-
-        return stringCleaned;
-    }
-
     public String relativize(String baseFilePath, String relativeFilePath) {
         baseFilePath = generateFolderPath(baseFilePath);
         List<String> basePathSteps = getPathSteps(baseFilePath);

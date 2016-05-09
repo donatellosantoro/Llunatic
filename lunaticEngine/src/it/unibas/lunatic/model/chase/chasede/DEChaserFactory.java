@@ -33,8 +33,7 @@ public class DEChaserFactory {
         IRunQuery queryRunner = OperatorFactory.getInstance().getQueryRunner(scenario);
         IBuildDeltaDB deltaBuilder = OperatorFactory.getInstance().getDeltaDBBuilderDE(scenario);
         IBuildDatabaseForChaseStep databaseBuilder = OperatorFactory.getInstance().getDatabaseBuilderDE(scenario);
-        IRemoveDuplicates duplicateRemover = OperatorFactory.getInstance().getDuplicateRemover(scenario);
-        ChaseDEScenario tgdChaser = new ChaseDEScenario(stChaser, egdChaser, queryRunner, insertFromSelectNaive, deltaBuilder, databaseBuilder, duplicateRemover);
+        ChaseDEScenario tgdChaser = new ChaseDEScenario(stChaser, egdChaser, queryRunner, insertFromSelectNaive, deltaBuilder, databaseBuilder);
         return tgdChaser;
     }
 

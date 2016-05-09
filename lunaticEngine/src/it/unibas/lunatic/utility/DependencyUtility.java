@@ -274,4 +274,12 @@ public class DependencyUtility {
         return !findAuthoritativeAtoms(egd, scenario).isEmpty();
     }
 
+    public static boolean isLav(Dependency stTgd) {
+        return stTgd.getPremise().getPositiveFormula().getAtoms().size() == 1;
+    }
+
+    public static boolean isGav(Dependency stTgd) {
+        return stTgd.getConclusion().getPositiveFormula().getAtoms().size() == 1;
+    }
+
 }

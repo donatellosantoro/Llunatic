@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.algebra.sql;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
 import it.unibas.lunatic.model.database.skolem.AppendSkolemPart;
 import it.unibas.lunatic.model.database.skolem.ISkolemPart;
 import it.unibas.lunatic.model.database.skolem.StringSkolemPart;
@@ -17,7 +16,6 @@ import speedy.SpeedyConstants;
 import speedy.model.database.Attribute;
 import speedy.model.database.AttributeRef;
 import speedy.persistence.Types;
-import speedy.utility.DBMSUtility;
 
 public class FormulaAttributeToSQL {
 

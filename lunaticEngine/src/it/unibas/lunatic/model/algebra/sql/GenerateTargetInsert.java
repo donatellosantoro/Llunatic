@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.algebra.sql;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
@@ -9,7 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import speedy.SpeedyConstants;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
 import speedy.model.database.Attribute;
 import speedy.model.database.TableAlias;
 import speedy.model.database.dbms.DBMSDB;
@@ -19,25 +23,27 @@ import speedy.utility.DBMSUtility;
 public class GenerateTargetInsert {
 
     private FormulaAttributeToSQL attributeGenerator = new FormulaAttributeToSQL();
+    private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
+    private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
 
-    public String generateScript(Scenario scenario) {
+    public String generateScript(Scenario scenario, Set<Dependency> dependenciesToMaterialize) {
         StringBuilder result = new StringBuilder();
         result.append("----- Generating target insert -----\n");
         Map<String, List<String>> insertMap = new HashMap<String, List<String>>();
         for (Dependency stTgd : scenario.getSTTgds()) {
-            generateScript(stTgd, insertMap, scenario);
+            generateScriptDependency(stTgd, insertMap, dependenciesToMaterialize, scenario);
         }
         result.append(generateScriptFromMap(scenario, insertMap));
         return result.toString();
     }
 
-    private void generateScript(Dependency stTgd, Map<String, List<String>> insertMap, Scenario scenario) {
+    private void generateScriptDependency(Dependency stTgd, Map<String, List<String>> insertMap, Set<Dependency> dependenciesToMaterialize, Scenario scenario) {
         IFormula conclusion = stTgd.getConclusion();
         for (IFormulaAtom atom : conclusion.getAtoms()) {
             RelationalAtom relationalAtom = (RelationalAtom) atom;
             TableAlias tableAlias = relationalAtom.getTableAlias();
             List<String> selects = getSelectsForTable(insertMap, tableAlias.getTableName());
-            String sourceSQLQuery = generateSelectForInsert(relationalAtom, stTgd, scenario);
+            String sourceSQLQuery = generateSelectForInsert(relationalAtom, stTgd, dependenciesToMaterialize, scenario);
             selects.add(sourceSQLQuery);
         }
     }
@@ -51,7 +57,7 @@ public class GenerateTargetInsert {
         return selects;
     }
 
-    private String generateSelectForInsert(RelationalAtom relationalAtom, Dependency stTgd, Scenario scenario) {
+    private String generateSelectForInsert(RelationalAtom relationalAtom, Dependency stTgd, Set<Dependency> dependenciesToMaterialize, Scenario scenario) {
         StringBuilder result = new StringBuilder();
         result.append(SpeedyConstants.INDENT).append("SELECT DISTINCT ");
         Map<FormulaVariable, SkolemFunctionGenerator> skolems = new HashMap<FormulaVariable, SkolemFunctionGenerator>();
@@ -60,7 +66,15 @@ public class GenerateTargetInsert {
             result.append(", ");
         }
         LunaticUtility.removeChars(", ".length(), result);
-        result.append(" FROM ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(".").append(stTgd.getId());
+        result.append(" FROM ");
+        if (dependenciesToMaterialize.contains(stTgd)) {
+            result.append(LunaticDBMSUtility.getWorkSchema(scenario)).append(".").append(stTgd.getId());
+        } else {
+            result.append(" (\n");
+            IAlgebraOperator operator = treeBuilder.buildTreeForPremise(stTgd, scenario);
+            result.append(queryBuilder.treeToSQL(operator, scenario.getSource(), scenario.getTarget(), SpeedyConstants.INDENT));
+            result.append("\n) as tmp_").append(stTgd.getId());
+        }
         return result.toString();
     }
 

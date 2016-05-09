@@ -8,7 +8,7 @@ import speedy.model.database.IValue;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
-import it.unibas.lunatic.utility.combinatorial.GenericCombinationsGenerator;
+import speedy.utility.combinatorics.GenericCombinationsGenerator;
 import speedy.utility.combinatorics.GenericListGenerator;
 import java.util.ArrayList;
 import java.util.Arrays;

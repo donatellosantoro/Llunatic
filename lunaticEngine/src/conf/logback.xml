@@ -71,6 +71,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLExportSolution" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.persistence.relational.GenerateSQLFromDependencies" level="DEBUG"/>-->
+    <logger name="it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDs" level="DEBUG"/>
 
     <!--     CHASE DE     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDEScenario" level="DEBUG"/>-->
