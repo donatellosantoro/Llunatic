@@ -37,6 +37,8 @@ public class Scenario {
     private List<DED> dedstTgds = new ArrayList<DED>();
     private List<DED> dedextTgds = new ArrayList<DED>();
     private List<DED> dedegds = new ArrayList<DED>();
+    private List<Dependency> queries = new ArrayList<Dependency>();
+    private List<SQLQueryString> sqlQueries = new ArrayList<SQLQueryString>();
     private List<String> authoritativeSources = new ArrayList<String>();
     private IPartialOrder partialOrder;
     private ScriptPartialOrder scriptPartialOrder;
@@ -46,7 +48,6 @@ public class Scenario {
     private Set<AttributeRef> attributesWithLabeledNulls;
     private AttributesInSameCellGroups attributesInSameCellGroups;
     private DependencyStratification stratification;
-    private List<SQLQueryString> sqlQueries = new ArrayList<SQLQueryString>();
     //
     private LunaticConfiguration configuration = new LunaticConfiguration();
 
@@ -171,6 +172,14 @@ public class Scenario {
 
     public void setDEDEGDs(List<DED> dedegds) {
         this.dedegds = dedegds;
+    }
+
+    public List<Dependency> getQueries() {
+        return queries;
+    }
+
+    public void setQueries(List<Dependency> queries) {
+        this.queries = queries;
     }
 
     public Dependency getDependency(String dependencyId) {
@@ -299,7 +308,7 @@ public class Scenario {
     public void setAttributesInSameCellGroups(AttributesInSameCellGroups attributesInSameCellGroups) {
         this.attributesInSameCellGroups = attributesInSameCellGroups;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 5;

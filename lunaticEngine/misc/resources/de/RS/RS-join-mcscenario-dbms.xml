@@ -20,6 +20,8 @@ create table r (
 ) with oids;
 
 insert into r values ('1', '2');
+insert into r values ('2', '3');
+insert into r values ('4', '4');
 ]]>
     </init-db>
   </source>
@@ -46,6 +48,13 @@ create table t (
   a varchar(50),
   b varchar(50)
 ) with oids;
+
+create table w (
+  a varchar(50),
+  b varchar(50),
+  c varchar(50),
+  d varchar(50)
+) with oids;
 ]]>
     </init-db>
   </target>
@@ -54,8 +63,10 @@ create table t (
 STTGDs:
 r(a: $x, b: $y) -> s(a: $x, b: $y).
 ExtTGDs:
-s(a: $x, b: $y) -> t(a: $x, b: $N), t(a: $N, b: $x).
-//s(a: $x, b: $y) -> t(a: $x, b: $N).
+t1: s(a: $x, b: $y) -> t(a: $x, b: $N), t(a: $N, b: $x).
+t2: s(a: $x, b: $x) -> w(a: $x, b: $x, c: $N, d: $N).
+t3: w(a: $x, b: $x, c: $x, d: $x) -> w(a: $x, b: $x, c: $x, d: $x).
+t4: w(a: $x, b: $x, c: $y, d: $y) -> w(a: $x, b: $x, c: $x, d: $x).
 ]]>
     </dependencies>
 </scenario>

@@ -15,6 +15,7 @@ public class ParserOutput {
     private final List<DED> dedstTGDs = new ArrayList<DED>();
     private final List<DED> dedeTGDs = new ArrayList<DED>();
     private final List<DED> dedegds = new ArrayList<DED>();
+    private final List<Dependency> queries = new ArrayList<Dependency>();
 
     public List<Dependency> getStTGDs() {
         return stTGDs;
@@ -47,6 +48,9 @@ public class ParserOutput {
     public List<DED> getDedegds() {
         return dedegds;
     }
-    
+
+    public List<Dependency> getQueries() {
+        return queries;
+    }
 
 }

@@ -374,7 +374,7 @@ public class LunaticUtility {
         return true;
     }
 
-    public static IDatabase getTable(AttributeRef attributeRef, Scenario scenario) {
+    public static IDatabase getDatabase(AttributeRef attributeRef, Scenario scenario) {
         if (attributeRef.isSource()) {
             return scenario.getSource();
         } else {

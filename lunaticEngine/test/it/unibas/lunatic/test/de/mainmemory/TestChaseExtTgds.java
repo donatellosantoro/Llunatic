@@ -22,6 +22,7 @@ public class TestChaseExtTgds extends CheckTest {
 
     public void testJoin() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.RS_join);
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

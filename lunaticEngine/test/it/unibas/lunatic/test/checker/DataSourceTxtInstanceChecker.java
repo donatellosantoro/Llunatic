@@ -46,10 +46,11 @@ public class DataSourceTxtInstanceChecker {
         ITupleIterator it = table.getTupleIterator();
         while (it.hasNext()) {
             Tuple instanceTuple = it.next();
-            TestCase.assertTrue("Extra tuples were generated: " + instanceTuple.toString() + getMessage(expectedInstanceFile, instanceMap, database), checkTupleValues(instanceTuple, expectedTuplesClone));
+            boolean result = checkTupleValues(instanceTuple, expectedTuplesClone);
+            TestCase.assertTrue("Extra tuples were generated: " + instanceTuple.toString() + getMessage(expectedInstanceFile, instanceMap, database), result);
         }
         it.close();
-        TestCase.assertEquals("Unable to find tuple: " + expectedTuples + getMessage(expectedInstanceFile, instanceMap, database) + "\n" + expectedTuples, 0, expectedTuplesClone.size());
+        TestCase.assertEquals("Unable to find tuples: " + expectedTuplesClone + getMessage(expectedInstanceFile, instanceMap, database) , 0, expectedTuplesClone.size());
     }
 
     private String getMessage(String expectedInstanceFile, Map<String, List<IExpectedTuple>> instanceMap, IDatabase database) {

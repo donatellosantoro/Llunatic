@@ -4,34 +4,40 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ParserException;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.parser.ParserOutput;
-import it.unibas.lunatic.parser.output.DependenciesLexer;
-import it.unibas.lunatic.parser.output.DependenciesParser;
+import it.unibas.lunatic.parser.output.DependenciesCFLexer;
+import it.unibas.lunatic.parser.output.DependenciesCFParser;
 import it.unibas.lunatic.utility.DependencyUtility;
+import java.util.ArrayList;
+import java.util.List;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.database.Attribute;
+import speedy.model.database.IDatabase;
+import speedy.model.database.ITable;
 
 @SuppressWarnings("unchecked")
-public class ParseDependencies {
+public class ParseDependenciesCF {
 
     public final static String NULL = "#NULL#";
-    private static final Logger logger = LoggerFactory.getLogger(ParseDependencies.class);
+    private static final Logger logger = LoggerFactory.getLogger(ParseDependenciesCF.class);
 
     private final ParserOutput parserOutput = new ParserOutput();
     private Scenario scenario;
 
     public ParserOutput getParserOutput() {
         return parserOutput;
-    }    
-    
+    }
+
     public void generateDependencies(String text, Scenario scenario) throws Exception {
         try {
             this.scenario = scenario;
-            DependenciesLexer lex = new DependenciesLexer(new ANTLRStringStream(text));
+            DependenciesCFLexer lex = new DependenciesCFLexer(new ANTLRStringStream(text));
             CommonTokenStream tokens = new CommonTokenStream(lex);
-            DependenciesParser g = new DependenciesParser(tokens);
+            DependenciesCFParser g = new DependenciesCFParser(tokens);
             try {
                 g.setGenerator(this);
                 g.prog();
@@ -44,6 +50,27 @@ public class ParseDependencies {
             logger.error(e.getLocalizedMessage());
             throw new ParserException(e);
         }
+    }
+
+    public String findAttributeName(String tableName, int attributePosition, boolean inPremise, boolean stTGD) {
+        IDatabase database = scenario.getTarget();
+        if (inPremise && stTGD) {
+            database = scenario.getSource();
+        }
+        ITable table = database.getTable(tableName);
+        List<Attribute> tableAttributes = getAttributesWithNoOIDs(table.getAttributes());
+        return tableAttributes.get(attributePosition).getName();
+    }
+
+    private List<Attribute> getAttributesWithNoOIDs(List<Attribute> attributes) {
+        List<Attribute> result = new ArrayList<Attribute>();
+        for (Attribute attribute : attributes) {
+            if (attribute.getName().equals(SpeedyConstants.OID)) {
+                continue;
+            }
+            result.add(attribute);
+        }
+        return result;
     }
 
     public void addSTTGD(Dependency d) {
@@ -81,7 +108,12 @@ public class ParseDependencies {
         parserOutput.getDedegds().add(ded);
     }
 
+    public void addQuery(Dependency query) {
+        parserOutput.getQueries().add(query);
+    }
+
     public String clean(String expressionString) {
         return DependencyUtility.clean(expressionString);
     }
+
 }

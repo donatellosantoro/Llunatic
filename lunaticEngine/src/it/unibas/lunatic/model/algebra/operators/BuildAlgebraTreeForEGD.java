@@ -52,7 +52,7 @@ public class BuildAlgebraTreeForEGD {
         IAlgebraOperator premiseRoot;
         if (!dependency.hasSymmetricChase() || !useSymmetry) {
             if (logger.isDebugEnabled()) logger.debug("Building tree for non-symmetric dependency...");
-            premiseRoot = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, dependency.getPremise().getPositiveFormula(), true);
+            premiseRoot = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, dependency.getPremise().getPositiveFormula(), true, true);
             IAlgebraOperator select = addSelectionsForViolations(dependency);
             select.addChild(premiseRoot);
             premiseRoot = select;

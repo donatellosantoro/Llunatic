@@ -27,6 +27,7 @@ import speedy.model.algebra.Select;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.TableAlias;
 import speedy.model.expressions.Expression;
+import speedy.utility.SpeedyUtility;
 
 public class BuildAlgebraTreeForPositiveFormula {
 
@@ -34,7 +35,7 @@ public class BuildAlgebraTreeForPositiveFormula {
 
     private FindConnectedTables connectedTablesFinder = new FindConnectedTables();
 
-    public IAlgebraOperator buildTreeForPositiveFormula(Dependency dependency, PositiveFormula positiveFormula, boolean premise) {
+    public IAlgebraOperator buildTreeForPositiveFormula(Dependency dependency, PositiveFormula positiveFormula, boolean premise, boolean addOidInequality) {
         if (logger.isDebugEnabled()) logger.debug("Building tree for formula: " + positiveFormula);
         List<RelationalAtom> relationalAtoms = extractRelationalAtoms(positiveFormula);
         List<IFormulaAtom> builtInAtoms = extractBuiltInAtoms(positiveFormula);
@@ -43,14 +44,14 @@ public class BuildAlgebraTreeForPositiveFormula {
         if (logger.isDebugEnabled()) logger.debug("--Builtin atoms: " + builtInAtoms);
         if (logger.isDebugEnabled()) logger.debug("--Comparisons: " + comparisonAtoms);
         Map<TableAlias, IAlgebraOperator> treeMap = new HashMap<TableAlias, IAlgebraOperator>();
-        initializeMap(relationalAtoms, treeMap);
+        initializeMap(relationalAtoms, treeMap, dependency, positiveFormula, premise);
         addLocalSelectionsForBuiltinsAndComparisons(builtInAtoms, treeMap, premise);
         addLocalSelectionsForBuiltinsAndComparisons(comparisonAtoms, treeMap, premise);
         IAlgebraOperator root;
         if (relationalAtoms.size() == 1) {
             root = treeMap.get(relationalAtoms.get(0).getTableAlias());
         } else {
-            root = addJoinsAndCartesianProducts(dependency, positiveFormula, relationalAtoms, treeMap, premise);
+            root = addJoinsAndCartesianProducts(dependency, positiveFormula, relationalAtoms, treeMap, premise, addOidInequality);
             root = addGlobalSelectionsForBuiltins(builtInAtoms, root);
             root = addGlobalSelectionsForComparisons(comparisonAtoms, root, positiveFormula, premise);
         }
@@ -89,18 +90,73 @@ public class BuildAlgebraTreeForPositiveFormula {
         return result;
     }
 
-    private void initializeMap(List<RelationalAtom> atoms, Map<TableAlias, IAlgebraOperator> treeMap) {
+    private void initializeMap(List<RelationalAtom> atoms, Map<TableAlias, IAlgebraOperator> treeMap, Dependency dependency, PositiveFormula positiveFormula, boolean premise) {
         for (RelationalAtom atom : atoms) {
             if (logger.isDebugEnabled()) logger.debug("Initialize operator for table alias in atom " + atom);
             RelationalAtom relationalAtom = (RelationalAtom) atom;
             TableAlias tableAlias = relationalAtom.getTableAlias();
             IAlgebraOperator tableRoot = new Scan(tableAlias);
+            tableRoot = addLocalSelectionsForVariableInSameRelationalAtom(tableRoot, relationalAtom, dependency, positiveFormula, premise);
             tableRoot = addLocalSelections(tableRoot, relationalAtom);
             treeMap.put(tableAlias, tableRoot);
         }
     }
 
     //////////////////////          LOCAL SELECTIONS
+    private IAlgebraOperator addLocalSelectionsForVariableInSameRelationalAtom(IAlgebraOperator scan, RelationalAtom relationalAtom, Dependency dependency, PositiveFormula positiveFormula, boolean premise) {
+        Map<FormulaVariable, List<FormulaVariableOccurrence>> variablesWithMultipleOccurrences = findVariablesWithMultipleOccurrencesInAtom(relationalAtom, dependency, positiveFormula, premise);
+        if (variablesWithMultipleOccurrences.isEmpty()) {
+            return scan;
+        }
+        if (logger.isDebugEnabled()) logger.debug("Variables with multiple occurrences in atom " + relationalAtom + ":\n" + SpeedyUtility.printMap(variablesWithMultipleOccurrences));
+        List<Expression> selections = new ArrayList<Expression>();
+        for (List<FormulaVariableOccurrence> formulaVariables : variablesWithMultipleOccurrences.values()) {
+            for (int i = 0; i < formulaVariables.size() - 1; i++) {
+                FormulaVariableOccurrence v1 = formulaVariables.get(i);
+                AttributeRef a1 = v1.getAttributeRef();
+                FormulaVariableOccurrence v2 = formulaVariables.get(i + 1);
+                AttributeRef a2 = v2.getAttributeRef();
+                Expression selection = new Expression(a1.getName() + "==" + a2.getName());
+                selection.getJepExpression().getVar(a1.getName()).setDescription(a1);
+                selection.getJepExpression().getVar(a2.getName()).setDescription(a2);
+                selections.add(selection);
+            }
+        }
+        if (!selections.isEmpty()) {
+            Select select = new Select(selections);
+            select.addChild(scan);
+            scan = select;
+        }
+        return scan;
+    }
+
+    private Map<FormulaVariable, List<FormulaVariableOccurrence>> findVariablesWithMultipleOccurrencesInAtom(RelationalAtom relationalAtom, Dependency dependency, PositiveFormula positiveFormula, boolean premise) {
+        if (logger.isDebugEnabled()) logger.debug("Finding variables with multiple occurrences in atom " + relationalAtom);
+        Map<FormulaVariable, List<FormulaVariableOccurrence>> result = new HashMap<FormulaVariable, List<FormulaVariableOccurrence>>();
+        List<FormulaVariable> allVariablesInDependency = new ArrayList<FormulaVariable>();
+        allVariablesInDependency.addAll(dependency.getPremise().getLocalVariables());
+        allVariablesInDependency.addAll(dependency.getConclusion().getLocalVariables());
+        for (FormulaVariable variable : allVariablesInDependency) {
+            List<FormulaVariableOccurrence> occurrencesInAtom = new ArrayList<FormulaVariableOccurrence>();
+            List<FormulaVariableOccurrence> relationalOccurrences;
+            if (premise) {
+                relationalOccurrences = variable.getPremiseRelationalOccurrences();
+            } else {
+                relationalOccurrences = variable.getConclusionRelationalOccurrences();
+            }
+            if (logger.isDebugEnabled()) logger.debug("Variable: " + variable + ": " + relationalOccurrences);
+            for (FormulaVariableOccurrence relationalOccurrence : relationalOccurrences) {
+                if (relationalOccurrence.getAttributeRef().getTableAlias().equals(relationalAtom.getTableAlias())) {
+                    occurrencesInAtom.add(relationalOccurrence);
+                }
+            }
+            if (occurrencesInAtom.size() > 1) {
+                result.put(variable, occurrencesInAtom);
+            }
+        }
+        return result;
+    }
+
     private IAlgebraOperator addLocalSelections(IAlgebraOperator scan, RelationalAtom relationalAtom) {
         IAlgebraOperator root = scan;
         List<Expression> selections = new ArrayList<Expression>();
@@ -137,7 +193,7 @@ public class BuildAlgebraTreeForPositiveFormula {
                 if (hasLocalOccurrences(tableAlias, atom, premise)) {
                     atomToRemove = true;
                     IAlgebraOperator rootForAlias = treeMap.get(tableAlias);
-                    if(rootForAlias == null){
+                    if (rootForAlias == null) {
                         throw new IllegalArgumentException("Unable to find operator for table alias " + tableAlias);
                     }
                     if (rootForAlias instanceof Select) {
@@ -175,7 +231,7 @@ public class BuildAlgebraTreeForPositiveFormula {
     }
 
     //////////////////////          JOINS
-    private IAlgebraOperator addJoinsAndCartesianProducts(Dependency dependency, PositiveFormula positiveFormula, List<RelationalAtom> atoms, Map<TableAlias, IAlgebraOperator> treeMap, boolean premise) {
+    private IAlgebraOperator addJoinsAndCartesianProducts(Dependency dependency, PositiveFormula positiveFormula, List<RelationalAtom> atoms, Map<TableAlias, IAlgebraOperator> treeMap, boolean premise, boolean addOidInequality) {
         List<FormulaVariable> equalityGeneratingVariables = findEqualityGeneratingVariables(positiveFormula, premise);
         if (logger.isDebugEnabled()) logger.debug("Equality generating variables: " + equalityGeneratingVariables);
         List<Equality> equalities = extractEqualities(equalityGeneratingVariables, positiveFormula, premise);
@@ -186,7 +242,7 @@ public class BuildAlgebraTreeForPositiveFormula {
         assignEqualityGroupsToConnectedTables(connectedTables, equalityGroups);
         List<IAlgebraOperator> rootsForConnectedComponents = new ArrayList<IAlgebraOperator>();
         for (ConnectedTables connectedComponent : connectedTables) {
-            rootsForConnectedComponents.add(generateRootForConnectedComponent(connectedComponent, dependency, treeMap));
+            rootsForConnectedComponents.add(generateRootForConnectedComponent(connectedComponent, dependency, treeMap, addOidInequality));
         }
         if (rootsForConnectedComponents.size() == 1) {
             return rootsForConnectedComponents.get(0);
@@ -275,7 +331,7 @@ public class BuildAlgebraTreeForPositiveFormula {
         }
     }
 
-    private IAlgebraOperator generateRootForConnectedComponent(ConnectedTables connectedTables, Dependency dependency, Map<TableAlias, IAlgebraOperator> treeMap) {
+    private IAlgebraOperator generateRootForConnectedComponent(ConnectedTables connectedTables, Dependency dependency, Map<TableAlias, IAlgebraOperator> treeMap, boolean addOidInequality) {
         if (connectedTables.getTableAliases().size() == 1) {
             TableAlias singletonTable = connectedTables.getTableAliases().iterator().next();
             return treeMap.get(singletonTable);
@@ -289,7 +345,7 @@ public class BuildAlgebraTreeForPositiveFormula {
             if (isSelection(equalityGroup, addedTables)) {
                 continue;
             }
-            root = addJoin(dependency, equalityGroup, addedTables, root, treeMap);
+            root = addJoin(dependency, equalityGroup, addedTables, root, treeMap, addOidInequality);
             if (logger.isDebugEnabled()) logger.debug("Adding join for equality group:\n" + equalityGroup + "\nResult:\n" + root);
             it.remove();
         }
@@ -352,7 +408,7 @@ public class BuildAlgebraTreeForPositiveFormula {
                 && addedTables.contains(equalityGroup.getRightTable()));
     }
 
-    private IAlgebraOperator addJoin(Dependency dependency, EqualityGroup equalityGroup, List<TableAlias> addedTables, IAlgebraOperator joinRoot, Map<TableAlias, IAlgebraOperator> treeMap) {
+    private IAlgebraOperator addJoin(Dependency dependency, EqualityGroup equalityGroup, List<TableAlias> addedTables, IAlgebraOperator joinRoot, Map<TableAlias, IAlgebraOperator> treeMap, boolean addOidInequality) {
         if (logger.isDebugEnabled()) logger.debug("-------Adding join for equality: " + equalityGroup);
         // standard case: add table for right attribute
         IAlgebraOperator leftChild = joinRoot;
@@ -379,7 +435,7 @@ public class BuildAlgebraTreeForPositiveFormula {
 //        AlgebraUtility.addIfNotContained(addedTables, equalityGroup.leftTable);
 //        AlgebraUtility.addIfNotContained(addedTables, equalityGroup.rightTable);
         IAlgebraOperator root = join;
-        if (equalityGroup.getLeftTable().getTableName().equals(equalityGroup.getRightTable().getTableName()) && !dependency.joinGraphIsCyclic()) {
+        if (addOidInequality && equalityGroup.getLeftTable().getTableName().equals(equalityGroup.getRightTable().getTableName()) && !dependency.joinGraphIsCyclic()) {
             root = addOidInequality(equalityGroup.getLeftTable(), equalityGroup.getRightTable(), root);
         }
         return root;
@@ -437,4 +493,5 @@ public class BuildAlgebraTreeForPositiveFormula {
             return variable.getConclusionRelationalOccurrences();
         }
     }
+
 }

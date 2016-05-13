@@ -56,13 +56,16 @@
     <!--<logger name="speedy.model.algebra.Join" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.GroupBy" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.mainmemory.InsertTuple" level="DEBUG"/>-->
-    <!--<logger name="speedy.model.algebra.operators.BuildAlgebraTreeForPositiveFormula" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.BuildAlgebraTreeForSymmetricEGD" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->
     <!--<logger name="speedy.model.dependency.operators.NormalizeDependency" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.sql.AlgebraTreeToSQL" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.operators.sql.ExpressionToSQL" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.sql.GenerateTrigger" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForStandardChase" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.utility.DependencyUtility" level="TRACE"/>-->
     
     <!--     MainMemory     -->
     <!--<logger name="speedy.model.algebra.operators.mainmemory.MainMemoryInsertTuple" level="DEBUG"/>-->
@@ -71,7 +74,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLExportSolution" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.persistence.relational.GenerateSQLFromDependencies" level="DEBUG"/>-->
-    <logger name="it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDs" level="DEBUG"/>
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDs" level="DEBUG"/>-->
 
     <!--     CHASE DE     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDEScenario" level="DEBUG"/>-->
@@ -80,7 +83,9 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDStratumThread" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryInsertTuplesForTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseDeltaDCs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseTargetTGDStratumThread" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ExecuteFinalQueries" level="DEBUG"/>-->
 
     <!--     CHASE MC     -->    
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager" level="DEBUG"/>-->
@@ -106,8 +111,8 @@
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.ReplaceConstantsWithVariables" level="DEBUG"/>-->
     
     <!--     Cache     -->
-    <!--    <logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.AbstractGreedyCacheManager" level="trace"/>
-    <logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.AbstractGreedyCacheManager" level="trace"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager" level="DEBUG"/>-->
     
 
     <!--     CHASE DED     -->
@@ -117,6 +122,7 @@
     <!--<logger name="it.unibas.lunatic.ScriptUtility" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.test.comparator.instances.CompareInstances" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.PooledDbConnectionFactory" level="TRACE"/>-->
+    <!--<logger name="speedy.persistence.xml.operators.TransformFilePaths" level="DEBUG" />-->
     
     <logger name="com.mchange" level="WARN"/>
     <logger name="com.sun" level="WARN"/>

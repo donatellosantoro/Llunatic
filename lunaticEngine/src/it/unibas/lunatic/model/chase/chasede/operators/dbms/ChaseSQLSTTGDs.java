@@ -51,7 +51,6 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
         Set<Dependency> dependenciesToMaterialize = findDependenciesToMaterialize(scenario.getSTTgds(), scenario);
 //        Set<Dependency> dependenciesToMaterialize = new HashSet<Dependency>(scenario.getSTTgds());
         if (logger.isDebugEnabled()) logger.debug("Dependencies to materialize: " + dependenciesToMaterialize);
-        logger.error("Dependencies to materialize: " + dependenciesToMaterialize);
         StringBuilder result = new StringBuilder();
         result.append("BEGIN TRANSACTION;\n");
         result.append("SET CONSTRAINTS ALL DEFERRED;\n\n");

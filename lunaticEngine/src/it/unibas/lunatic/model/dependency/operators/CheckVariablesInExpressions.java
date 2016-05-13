@@ -29,7 +29,7 @@ class CheckFormulaVariablesVisitor implements IFormulaVisitor {
 
     public void visitPositiveFormula(PositiveFormula formula) {
         for (IFormulaAtom atom : formula.getAtoms()) {
-            if ((atom instanceof RelationalAtom)) {
+            if ((atom instanceof RelationalAtom) || (atom instanceof QueryAtom)) {
                 continue;
             }
             List<String> variableIds = atom.getExpression().getVariables();

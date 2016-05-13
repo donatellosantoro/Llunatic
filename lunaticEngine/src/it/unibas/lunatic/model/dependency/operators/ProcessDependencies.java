@@ -49,6 +49,7 @@ public class ProcessDependencies {
         scenario.setDEDstTGDs(processDEDs(parserOutput.getDedstTGDs(), scenario));
         scenario.setDEDextTGDs(processDEDExtTGDs(parserOutput.getDedeTGDs(), scenario));
         scenario.setDEDEGDs(processDEDs(parserOutput.getDedegds(), scenario));
+        scenario.setQueries(processDependencies(parserOutput.getQueries(), scenario));
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.PROCESS_DEPENDENCIES_TIME, end - start);
     }
@@ -174,7 +175,7 @@ public class ProcessDependencies {
     private void checkComparisons(Dependency d) {
         for (IFormulaAtom atom : d.getConclusion().getAtoms()) {
             if (!(atom instanceof ComparisonAtom)) {
-                throw new ParserException("EGDs must have comparisons in their conclusions: " + d);
+                throw new ParserException("EGDs must have comparisons in their conclusions: " + d.toLogicalString());
             }
             if (!atom.toString().contains("==")) {
                 throw new ParserException("EGDs must have equalies in their conclusions: " + d);

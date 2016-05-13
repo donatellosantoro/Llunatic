@@ -13,6 +13,7 @@ public class LunaticConstants {
     public static final String EGD = "EGD";
     public static final String DC = "DC";
     public static final String DED = "DED";
+    public static final String QUERY = "QUERY";
 
     public static final String CHASE_FORWARD = "f";
     public static final String CHASE_BACKWARD = "b";

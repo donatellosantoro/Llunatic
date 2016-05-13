@@ -4,20 +4,25 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.Distinct;
 import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.ProjectWithoutOIDs;
 import speedy.model.algebra.Select;
+import speedy.model.database.Attribute;
 import speedy.model.database.AttributeRef;
 import speedy.model.expressions.Expression;
+import speedy.persistence.Types;
+import speedy.utility.SpeedyUtility;
 
 public class BuildAlgebraTreeForCertainAnswerQuery {
 
     private final static Logger logger = LoggerFactory.getLogger(BuildAlgebraTreeForCertainAnswerQuery.class);
-    private BuildAlgebraTreeForStandardChase treeBuilder = new BuildAlgebraTreeForStandardChase();
+    private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
 
     public IAlgebraOperator generateOperator(Dependency extTGD, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Generating standard query for dependency " + extTGD);
@@ -25,9 +30,9 @@ public class BuildAlgebraTreeForCertainAnswerQuery {
         if (logger.isDebugEnabled()) logger.debug("Universal variables: " + universalVariables);
         List<AttributeRef> universalAttributes = DependencyUtility.getUniversalAttributesInPremise(universalVariables);
         if (logger.isDebugEnabled()) logger.debug("Universal attributes: " + universalVariables);
-        IAlgebraOperator premiseOperator = treeBuilder.buildPremiseOperator(extTGD, scenario, universalVariables);
+        IAlgebraOperator premiseOperator = buildPremiseOperator(extTGD, scenario, universalVariables);
         if (logger.isDebugEnabled()) logger.debug("Premise operator\n" + premiseOperator);
-        List<Expression> expressions = buildExpression(universalAttributes);
+        List<Expression> expressions = buildExpression(universalAttributes, scenario);
         Select certainSelect = new Select(expressions);
         certainSelect.addChild(premiseOperator);
         Distinct distinct = new Distinct();
@@ -35,15 +40,28 @@ public class BuildAlgebraTreeForCertainAnswerQuery {
         return distinct;
     }
 
-    private List<Expression> buildExpression(List<AttributeRef> universalAttributes) {
+    public IAlgebraOperator buildPremiseOperator(Dependency dependency, Scenario scenario, List<FormulaVariable> universalVariables) {
+        IAlgebraOperator premiseOperator = treeBuilder.buildTreeForPremiseWithNoOIDInequality(dependency, scenario);
+        List<AttributeRef> universalAttributes = DependencyUtility.getUniversalAttributesInPremise(universalVariables);
+        if (logger.isDebugEnabled()) logger.debug("Universal attributes in premise: " + universalAttributes);
+        ProjectWithoutOIDs root = new ProjectWithoutOIDs(SpeedyUtility.createProjectionAttributes(universalAttributes));
+        root.addChild(premiseOperator);
+        return root;
+    }
+
+    private List<Expression> buildExpression(List<AttributeRef> universalAttributes, Scenario scenario) {
         List<Expression> expressions = new ArrayList<Expression>();
-        for (AttributeRef universalAttribute : universalAttributes) {
+        for (AttributeRef attributeRef : universalAttributes) {
+            Attribute attribute = LunaticUtility.getAttribute(attributeRef, LunaticUtility.getDatabase(attributeRef, scenario));
+            String type = attribute.getType();
             StringBuilder stringExpression = new StringBuilder();
-            stringExpression.append("(isNotNull(").append(universalAttribute.toString()).append("))");
-            stringExpression.append(" && ");
-            stringExpression.append("!(startswith(").append(universalAttribute.toString()).append(",\"_SK\"))");
+            stringExpression.append("(isNotNull(").append(attributeRef.toString()).append("))");
+            if (type.equals(Types.STRING)) {
+                stringExpression.append(" && ");
+                stringExpression.append("!(startswith(").append(attributeRef.toString()).append(",\"_SK\"))");
+            }
             Expression expression = new Expression(stringExpression.toString());
-            expression.setVariableDescription(universalAttribute.toString(), universalAttribute);
+            expression.setVariableDescription(attributeRef.toString(), attributeRef);
             expressions.add(expression);
         }
         return expressions;

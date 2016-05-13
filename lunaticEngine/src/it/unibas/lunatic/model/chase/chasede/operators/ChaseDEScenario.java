@@ -33,10 +33,6 @@ import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Map;
 import speedy.model.algebra.IAlgebraOperator;
-import speedy.model.algebra.operators.ITupleIterator;
-import speedy.model.database.dbms.SQLQueryString;
-import speedy.model.database.operators.dbms.RunSQLQueryString;
-import speedy.utility.SpeedyUtility;
 
 public class ChaseDEScenario implements IDEChaser {
 
@@ -47,6 +43,7 @@ public class ChaseDEScenario implements IDEChaser {
     private final ExportChaseStepResultsCSV resultExporter = new ExportChaseStepResultsCSV();
     private final BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
     private final AnalyzeDatabase databaseAnalyzer = new AnalyzeDatabase();
+    private final ExecuteFinalQueries finalQueryExecutor;
     private final IBuildDeltaDB deltaBuilder;
     private final IBuildDatabaseForChaseStep databaseBuilder;
     private final IChaseSTTGDs stChaser;
@@ -62,6 +59,7 @@ public class ChaseDEScenario implements IDEChaser {
         this.dChaser = new ChaseDCs(queryRunner);
         this.deltaBuilder = deltaBuilder;
         this.databaseBuilder = databaseBuilder;
+        this.finalQueryExecutor = new ExecuteFinalQueries(queryRunner);
     }
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
@@ -121,7 +119,7 @@ public class ChaseDEScenario implements IDEChaser {
             if (scenario.getConfiguration().isExportSolutions()) {
                 resultExporter.exportSolutionInSeparateFiles(targetDB, scenario);
             }
-            executeFinalQueries(targetDB, scenario);
+            finalQueryExecutor.executeFinalQueries(targetDB, scenario);
             printResult(targetDB);
             scenario.setExtEGDs(new ArrayList<Dependency>());
             scenario.setEGDs(egds);
@@ -130,22 +128,6 @@ public class ChaseDEScenario implements IDEChaser {
             throw e;
         } finally {
             if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
-        }
-    }
-
-    private void executeFinalQueries(IDatabase result, Scenario scenario) {
-        if (scenario.getSQLQueries().isEmpty()) {
-            return;
-        }
-        RunSQLQueryString sqlQueryRunner = new RunSQLQueryString();
-        for (SQLQueryString sqlQuery : scenario.getSQLQueries()) {
-            long start = new Date().getTime();
-            ITupleIterator it = sqlQueryRunner.runQuery(sqlQuery, result);
-            long resultSize = SpeedyUtility.getTupleIteratorSize(it);
-            it.close();
-            long end = new Date().getTime();
-            if (LunaticConfiguration.isPrintSteps()) PrintUtility.printInformation("*** Query " + sqlQuery.getId() + " Time: " + (end - start) + " ms -  Result size: " + resultSize);
-            ChaseStats.getInstance().addStat(ChaseStats.FINAL_QUERY_TIME, end - start);
         }
     }
 

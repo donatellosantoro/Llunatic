@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+<!ENTITY source_schema SYSTEM "schemas/source_schema.xml">
+<!ENTITY target_schema SYSTEM "schemas/target_schema.xml">
+]>
 <scenario>
   <source>
     <type>DBMS</type>
     <access-configuration>
       <driver>org.postgresql.Driver</driver>
-      <uri>jdbc:postgresql:chasebench_doctors_10K_de</uri>
+      <uri>jdbc:postgresql:chasebench_doctors_small_de</uri>
       <schema>source</schema>
       <login>pguser</login>
       <password>pguser</password>
     </access-configuration>
+    &source_schema;
     <import>
-      <input type="csv" separator="," table="treatment">data/10K/treatment.csv</input>
-      <input type="csv" separator="," table="physician">data/10K/physician.csv</input>
-      <input type="csv" separator="," table="medprescription">data/10K/medprescription.csv</input>
-      <input type="csv" separator="," table="hospital">data/10K/hospital.csv</input>
+      <input type="csv" separator="," hasHeader="false" table="treatment">data/treatment.csv</input>
+      <input type="csv" separator="," hasHeader="false" table="physician">data/physician.csv</input>
+      <input type="csv" separator="," hasHeader="false" table="medprescription">data/medprescription.csv</input>
+      <input type="csv" separator="," hasHeader="false" table="hospital">data/hospital.csv</input>
     </import>
   </source>
   <target>
@@ -21,18 +26,16 @@
     <generateFromDependencies>true</generateFromDependencies>
     <access-configuration>
       <driver>org.postgresql.Driver</driver>
-      <uri>jdbc:postgresql:chasebench_doctors_10K_de</uri>
+      <uri>jdbc:postgresql:chasebench_doctors_small_de</uri>
       <schema>target</schema>
       <login>pguser</login>
       <password>pguser</password>
     </access-configuration>
+    &target_schema;
   </target>
   <configuration>
     <printSteps>true</printSteps>
       <recreateDBOnStart>false</recreateDBOnStart>
-      <exportSolutions>false</exportSolutions>
-      <exportSolutionsPath>/Temp/llunatic/doctors/&SIZE;/</exportSolutionsPath>
-      <exportSolutionsType>CSV</exportSolutionsType>
   </configuration>
   <dependencies>
     <sttgdsFile>dependencies/doctors.st.txt</sttgdsFile>

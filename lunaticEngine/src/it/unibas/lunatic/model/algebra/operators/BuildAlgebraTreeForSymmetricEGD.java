@@ -39,7 +39,7 @@ public class BuildAlgebraTreeForSymmetricEGD {
         if (logger.isDebugEnabled()) logger.debug("Building tree for symmetric dependency...");
         PositiveFormula symmetricFormula = symmetricPremiseGenerator.generateSymmetricPremise(dependency);
         if (logger.isDebugEnabled()) logger.debug("Symmetric formula: " + symmetricFormula);
-        IAlgebraOperator premiseRoot = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, symmetricFormula, true);
+        IAlgebraOperator premiseRoot = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, symmetricFormula, true, true);
         IAlgebraOperator violationValues = generateViolationValues(dependency, premiseRoot);
         IAlgebraOperator selectIn = generateSelectIn(dependency, violationValues);
         selectIn.addChild(premiseRoot);

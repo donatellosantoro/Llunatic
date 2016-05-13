@@ -9,6 +9,7 @@ R(a, b)
 INSTANCE:
 R(a: "1" , b: "2")
 R(a: "2" , b: "3")
+R(a: "4" , b: "4")
 ]]>
         </generate>
     </source>
@@ -19,6 +20,7 @@ R(a: "2" , b: "3")
 SCHEMA:
 S(a, b)
 T(a, b)
+W(a, b, c, d)
 ]]>
         </generate>
     </target>
@@ -27,7 +29,10 @@ T(a, b)
 STTGDs:
 R(a: $x, b: $y) -> S(a: $x, b: $y).
 ExtTGDs:
-S(a: $x, b: $y) -> T(a: $x, b: $N), T(a: $N, b: $x).
+t1: S(a: $x, b: $y) -> T(a: $x, b: $N), T(a: $N, b: $x).
+t2: S(a: $x, b: $x) -> W(a: $x, b: $x, c: $N, d: $N).
+t3: W(a: $x, b: $x, c: $x, d: $x) -> W(a: $x, b: $x, c: $x, d: $x).
+t4: W(a: $x, b: $x, c: $y, d: $y) -> W(a: $x, b: $x, c: $x, d: $x).
 ]]>
     </dependencies>
 </scenario>

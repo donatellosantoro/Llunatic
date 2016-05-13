@@ -16,6 +16,7 @@ import speedy.SpeedyConstants;
 import speedy.model.database.Attribute;
 import speedy.model.database.AttributeRef;
 import speedy.persistence.Types;
+import speedy.utility.DBMSUtility;
 
 public class FormulaAttributeToSQL {
 
@@ -42,11 +43,16 @@ public class FormulaAttributeToSQL {
 //        return dependency.getId() + "." + sourceOccurrence.getAttributeRef().toScriptString();
         AttributeRef attributeRef = sourceOccurrence.getAttributeRef();
         String attributeRefToSQL = LunaticDBMSUtility.attributeRefToSQL(attributeRef);
-        Attribute attribute = LunaticUtility.getAttribute(attributeRef, LunaticUtility.getTable(attributeRef, scenario));
-        if (attribute.getType().equals(Types.INTEGER)) {
-            attributeRefToSQL = "CAST(" + attributeRefToSQL + " as text)";
+        Attribute sourceAttribute = LunaticUtility.getAttribute(attributeRef, LunaticUtility.getDatabase(attributeRef, scenario));
+        Attribute targetAttribute = LunaticUtility.getAttribute(occurrence.getAttributeRef(), LunaticUtility.getDatabase(occurrence.getAttributeRef(), scenario));
+        if (isCastNeeded(sourceAttribute, targetAttribute)) {
+            attributeRefToSQL = "CAST(" + attributeRefToSQL + " as " + DBMSUtility.convertDataSourceTypeToDBType(targetAttribute.getType()) + ")";
         }
         return attributeRefToSQL;
+    }
+
+    private boolean isCastNeeded(Attribute sourceAttribute, Attribute targetAttribute) {
+        return !sourceAttribute.getType().equals(targetAttribute.getType());
     }
 
     private IValueGenerator createSkolemGenerator(FormulaVariable variable, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems, Scenario scenario) {
@@ -89,4 +95,5 @@ public class FormulaAttributeToSQL {
         }
         return result;
     }
+
 }

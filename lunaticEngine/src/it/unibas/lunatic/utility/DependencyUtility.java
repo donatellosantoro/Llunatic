@@ -36,9 +36,11 @@ public class DependencyUtility {
     }
 
     public static List<FormulaVariable> getUniversalVariablesInConclusion(Dependency dependency) {
+        if (logger.isTraceEnabled()) logger.trace("Finding universal variables in conclusion for dependency " + dependency.toLogicalString());
         List<FormulaVariable> result = new ArrayList<FormulaVariable>();
         for (FormulaVariable formulaVariable : dependency.getPremise().getLocalVariables()) {
             List<FormulaVariableOccurrence> variablesOccurrence = formulaVariable.getConclusionRelationalOccurrences();
+            if (logger.isTraceEnabled()) logger.trace("Conclusion relational occurrences for variable " + formulaVariable.getId() + ": " + variablesOccurrence);
             if (!variablesOccurrence.isEmpty()) {
                 LunaticUtility.addIfNotContained(result, formulaVariable);
             }
@@ -280,6 +282,12 @@ public class DependencyUtility {
 
     public static boolean isGav(Dependency stTgd) {
         return stTgd.getConclusion().getPositiveFormula().getAtoms().size() == 1;
+    }
+
+    public static String clean(String expressionString) {
+        String result = expressionString.trim();
+        result = result.replaceAll("\\$", "");
+        return result.substring(1, result.length() - 1);
     }
 
 }

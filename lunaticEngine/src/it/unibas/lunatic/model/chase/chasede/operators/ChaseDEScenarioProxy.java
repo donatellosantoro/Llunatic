@@ -55,28 +55,13 @@ public class ChaseDEScenarioProxy implements IDEChaser {
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.BUILD_SOLUTION_TIME, end - start);
         if (LunaticConfiguration.isPrintSteps()) PrintUtility.printInformation("*** Writing solution in database time: " + (end - start) + " ms");
-        executeFinalQueries(result, scenario);
+        ExecuteFinalQueries finalQueryExecutor = new ExecuteFinalQueries(OperatorFactory.getInstance().getQueryRunner(scenario));
+        finalQueryExecutor.executeFinalQueries(result, scenario);
         if (logger.isDebugEnabled()) logger.debug("----Result of chase: " + result);
         printResult(result);
         scenario.setExtEGDs(new ArrayList<Dependency>());
         scenario.setEGDs(egds);
         return result;
-    }
-
-    private void executeFinalQueries(IDatabase result, Scenario scenario) {
-        if (scenario.getSQLQueries().isEmpty()) {
-            return;
-        }
-        RunSQLQueryString sqlQueryRunner = new RunSQLQueryString();
-        for (SQLQueryString sqlQuery : scenario.getSQLQueries()) {
-            long start = new Date().getTime();
-            ITupleIterator it = sqlQueryRunner.runQuery(sqlQuery, result);
-            long resultSize = SpeedyUtility.getTupleIteratorSize(it);
-            it.close();
-            long end = new Date().getTime();
-            if (LunaticConfiguration.isPrintSteps()) PrintUtility.printInformation("*** Query " + sqlQuery.getId() + " Time: " + (end - start) + " ms -  Result size: " + resultSize);
-            ChaseStats.getInstance().addStat(ChaseStats.FINAL_QUERY_TIME, end - start);
-        }
     }
 
     private void printResult(IDatabase targetDB) {

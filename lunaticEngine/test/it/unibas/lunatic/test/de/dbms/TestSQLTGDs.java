@@ -25,4 +25,11 @@ public class TestSQLTGDs extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }
+
+    public void testTgd2() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/tgd2-mcscenario-dbms.xml", true);
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        checkExpectedInstances(result, scenario);
+    }
 }
