@@ -76,7 +76,7 @@ public class LunaticDBMSUtility {
         if (columnType.equals(Types.INTEGER)) {
             return "bigint";
         }
-        if (columnType.equals(Types.DOUBLE)) {
+        if (columnType.equals(Types.REAL)) {
             return "float";
         }
         if (columnType.equals(Types.BOOLEAN)) {

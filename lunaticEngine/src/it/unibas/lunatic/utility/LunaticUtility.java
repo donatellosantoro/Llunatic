@@ -344,7 +344,7 @@ public class LunaticUtility {
         }
         try {
             Double.parseDouble(value.toString());
-            return Types.DOUBLE;
+            return Types.REAL;
         } catch (NumberFormatException e) {
         }
         return Types.STRING;
