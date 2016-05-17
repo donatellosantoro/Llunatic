@@ -16,16 +16,7 @@ public class TestSQLBookPublisher extends CheckTest {
 
     public void testScenarioClassic() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_dbms, true);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.OPTIMIZED_CHASER);
-        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
-        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
-        if (logger.isDebugEnabled()) logger.debug(result.toString());
-        checkExpectedInstances(result, scenario);
-    }
-
-    public void testScenarioProxy() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_dbms, true);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.PROXY_MC_CHASER);
+        scenario.getConfiguration().setDeChaser(LunaticConstants.DE_OPTIMIZED_CHASER);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());

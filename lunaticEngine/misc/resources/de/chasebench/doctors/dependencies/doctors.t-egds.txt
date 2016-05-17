@@ -1,0 +1,39 @@
+prescription(?id,?patient1,?npi1,?conf1),
+prescription(?id,?patient2,?npi2,?conf2) ->
+    ?patient1 = ?patient2 .
+
+prescription(?id,?patient1,?npi1,?conf1),
+prescription(?id,?patient2,?npi2,?conf2) ->
+    ?npi1 = ?npi2 .
+
+prescription(?id,?patient1,?npi1,?conf1),
+prescription(?id,?patient2,?npi2,?conf2) ->
+   ?conf1 = ?conf2 .
+
+doctor(?npi,?doctor1,?spec1,?hospital1,?conf1),
+doctor(?npi,?doctor2,?spec2,?hospital2,?conf2) ->
+    ?doctor1 = ?doctor2 .
+
+doctor(?npi,?doctor1,?spec1,?hospital1,?conf1),
+doctor(?npi,?doctor2,?spec2,?hospital2,?conf2) ->
+    ?spec1 = ?spec2 .
+
+doctor(?npi,?doctor1,?spec1,?hospital1,?conf1),
+doctor(?npi,?doctor2,?spec2,?hospital2,?conf2) ->
+    ?hospital1 = ?hospital2 .
+
+doctor(?npi1,?doctor,?spec1,?hospital1,?conf1),
+doctor(?npi2,?doctor,?spec2,?hospital2,?conf2) ->
+    ?npi1 = ?npi2 .
+
+doctor(?npi1,?doctor,?spec1,?hospital1,?conf1),
+doctor(?npi2,?doctor,?spec2,?hospital2,?conf2) ->
+    ?conf1 = ?conf2 .
+
+targethospital(?doctor,?spec,?hospital1,?npi1,?hconf1),
+doctor(?npi2,?doctor,?spec,?hospital2,?conf2) ->
+    ?hospital1 = ?hospital2 .
+
+targethospital(?doctor,?spec,?hospital1,?npi1,?hconf1),
+doctor(?npi2,?doctor,?spec,?hospital2,?conf2) ->
+    ?npi1 = ?npi2 .

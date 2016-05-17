@@ -123,6 +123,7 @@
     <!--<logger name="it.unibas.lunatic.test.comparator.instances.CompareInstances" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.PooledDbConnectionFactory" level="TRACE"/>-->
     <!--<logger name="speedy.persistence.xml.operators.TransformFilePaths" level="DEBUG" />-->
+    <!--<logger name="it.unibas.lunatic.persistence.DAODBSchemaCF" level="DEBUG" />-->
     
     <logger name="com.mchange" level="WARN"/>
     <logger name="com.sun" level="WARN"/>

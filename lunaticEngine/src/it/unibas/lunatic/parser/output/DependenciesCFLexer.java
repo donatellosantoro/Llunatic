@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g 2016-05-11 13:13:04
+// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g 2016-05-16 18:54:17
 
 package it.unibas.lunatic.parser.output;
 
@@ -306,7 +306,7 @@ public class DependenciesCFLexer extends Lexer {
 		try {
 			int _type = OPERATOR;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:161:9: ( '=' | '!=' | '>' | '<' | '>=' | '<=' )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:163:9: ( '=' | '!=' | '>' | '<' | '>=' | '<=' )
 			int alt1=6;
 			switch ( input.LA(1) ) {
 			case '=':
@@ -352,39 +352,39 @@ public class DependenciesCFLexer extends Lexer {
 			}
 			switch (alt1) {
 				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:161:12: '='
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:163:12: '='
 					{
 					match('='); 
 					}
 					break;
 				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:161:18: '!='
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:163:18: '!='
 					{
 					match("!="); 
 
 					}
 					break;
 				case 3 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:161:25: '>'
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:163:25: '>'
 					{
 					match('>'); 
 					}
 					break;
 				case 4 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:161:31: '<'
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:163:31: '<'
 					{
 					match('<'); 
 					}
 					break;
 				case 5 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:161:37: '>='
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:163:37: '>='
 					{
 					match(">="); 
 
 					}
 					break;
 				case 6 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:161:44: '<='
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:163:44: '<='
 					{
 					match("<="); 
 
@@ -406,8 +406,8 @@ public class DependenciesCFLexer extends Lexer {
 		try {
 			int _type = IDENTIFIER;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:163:13: ( ( LETTER ) ( LETTER | DIGIT | '_' | '-' )* )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:163:18: ( LETTER ) ( LETTER | DIGIT | '_' | '-' )*
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:165:13: ( ( LETTER ) ( LETTER | DIGIT | '_' | '-' )* )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:165:18: ( LETTER ) ( LETTER | DIGIT | '_' | '-' )*
 			{
 			if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 				input.consume();
@@ -417,7 +417,7 @@ public class DependenciesCFLexer extends Lexer {
 				recover(mse);
 				throw mse;
 			}
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:163:27: ( LETTER | DIGIT | '_' | '-' )*
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:165:27: ( LETTER | DIGIT | '_' | '-' )*
 			loop2:
 			while (true) {
 				int alt2=2;
@@ -462,11 +462,11 @@ public class DependenciesCFLexer extends Lexer {
 		try {
 			int _type = STRING;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:166:9: ( '\"' (~ ( '\\r' | '\\n' | '\"' ) )* '\"' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:166:19: '\"' (~ ( '\\r' | '\\n' | '\"' ) )* '\"'
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:168:9: ( '\"' (~ ( '\\r' | '\\n' | '\"' ) )* '\"' )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:168:19: '\"' (~ ( '\\r' | '\\n' | '\"' ) )* '\"'
 			{
 			match('\"'); 
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:166:23: (~ ( '\\r' | '\\n' | '\"' ) )*
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:168:23: (~ ( '\\r' | '\\n' | '\"' ) )*
 			loop3:
 			while (true) {
 				int alt3=2;
@@ -512,10 +512,10 @@ public class DependenciesCFLexer extends Lexer {
 		try {
 			int _type = NUMBER;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:167:8: ( ( '-' )? ( DIGIT )+ ( '.' ( DIGIT )+ )? )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:167:12: ( '-' )? ( DIGIT )+ ( '.' ( DIGIT )+ )?
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:169:8: ( ( '-' )? ( DIGIT )+ ( '.' ( DIGIT )+ )? )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:169:12: ( '-' )? ( DIGIT )+ ( '.' ( DIGIT )+ )?
 			{
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:167:12: ( '-' )?
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:169:12: ( '-' )?
 			int alt4=2;
 			int LA4_0 = input.LA(1);
 			if ( (LA4_0=='-') ) {
@@ -523,7 +523,7 @@ public class DependenciesCFLexer extends Lexer {
 			}
 			switch (alt4) {
 				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:167:13: '-'
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:169:13: '-'
 					{
 					match('-'); 
 					}
@@ -531,7 +531,7 @@ public class DependenciesCFLexer extends Lexer {
 
 			}
 
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:167:19: ( DIGIT )+
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:169:19: ( DIGIT )+
 			int cnt5=0;
 			loop5:
 			while (true) {
@@ -564,7 +564,7 @@ public class DependenciesCFLexer extends Lexer {
 				cnt5++;
 			}
 
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:167:26: ( '.' ( DIGIT )+ )?
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:169:26: ( '.' ( DIGIT )+ )?
 			int alt7=2;
 			int LA7_0 = input.LA(1);
 			if ( (LA7_0=='.') ) {
@@ -572,10 +572,10 @@ public class DependenciesCFLexer extends Lexer {
 			}
 			switch (alt7) {
 				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:167:27: '.' ( DIGIT )+
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:169:27: '.' ( DIGIT )+
 					{
 					match('.'); 
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:167:31: ( DIGIT )+
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:169:31: ( DIGIT )+
 					int cnt6=0;
 					loop6:
 					while (true) {
@@ -629,8 +629,8 @@ public class DependenciesCFLexer extends Lexer {
 		try {
 			int _type = NULL;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:168:9: ( '#NULL#' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:168:18: '#NULL#'
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:170:9: ( '#NULL#' )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:170:18: '#NULL#'
 			{
 			match("#NULL#"); 
 
@@ -648,7 +648,7 @@ public class DependenciesCFLexer extends Lexer {
 	// $ANTLR start "DIGIT"
 	public final void mDIGIT() throws RecognitionException {
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:169:15: ( '0' .. '9' )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:171:15: ( '0' .. '9' )
 			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:
 			{
 			if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
@@ -671,7 +671,7 @@ public class DependenciesCFLexer extends Lexer {
 	// $ANTLR start "LETTER"
 	public final void mLETTER() throws RecognitionException {
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:170:16: ( 'a' .. 'z' | 'A' .. 'Z' )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:172:16: ( 'a' .. 'z' | 'A' .. 'Z' )
 			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:
 			{
 			if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
@@ -696,10 +696,10 @@ public class DependenciesCFLexer extends Lexer {
 		try {
 			int _type = WHITESPACE;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:171:12: ( ( '\\t' | ' ' | '\\r' | '\\n' | '\\u000C' )+ )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:171:16: ( '\\t' | ' ' | '\\r' | '\\n' | '\\u000C' )+
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:173:12: ( ( '\\t' | ' ' | '\\r' | '\\n' | '\\u000C' )+ )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:173:16: ( '\\t' | ' ' | '\\r' | '\\n' | '\\u000C' )+
 			{
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:171:16: ( '\\t' | ' ' | '\\r' | '\\n' | '\\u000C' )+
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:173:16: ( '\\t' | ' ' | '\\r' | '\\n' | '\\u000C' )+
 			int cnt8=0;
 			loop8:
 			while (true) {
@@ -749,12 +749,12 @@ public class DependenciesCFLexer extends Lexer {
 		try {
 			int _type = LINE_COMMENT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:172:14: ( '//' (~ ( '\\r' | '\\n' ) )* )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:172:18: '//' (~ ( '\\r' | '\\n' ) )*
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:174:14: ( '//' (~ ( '\\r' | '\\n' ) )* )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:174:18: '//' (~ ( '\\r' | '\\n' ) )*
 			{
 			match("//"); 
 
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:172:23: (~ ( '\\r' | '\\n' ) )*
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:174:23: (~ ( '\\r' | '\\n' ) )*
 			loop9:
 			while (true) {
 				int alt9=2;
@@ -800,11 +800,11 @@ public class DependenciesCFLexer extends Lexer {
 		try {
 			int _type = EXPRESSION;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:173:11: ( '{' ( . )* '}' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:173:18: '{' ( . )* '}'
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:175:11: ( '{' ( . )* '}' )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:175:18: '{' ( . )* '}'
 			{
 			match('{'); 
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:173:21: ( . )*
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:175:21: ( . )*
 			loop10:
 			while (true) {
 				int alt10=2;
@@ -818,7 +818,7 @@ public class DependenciesCFLexer extends Lexer {
 
 				switch (alt10) {
 				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:173:22: .
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:175:22: .
 					{
 					matchAny(); 
 					}

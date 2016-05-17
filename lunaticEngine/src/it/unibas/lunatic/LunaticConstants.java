@@ -49,9 +49,7 @@ public class LunaticConstants {
     public static final String GREEDY_SINGLESTEP_JCS_CACHE = "GREEDY_JCS_SINGLESTEP";
 
     ///////////////    DE CHASER STRATEGIES    ///////////////////
-    public static final String CLASSIC_DE_CHASER = "CLASSIC_DE_CHASER";
-    public static final String PROXY_MC_CHASER = "PROXY_MC_CHASER";
-    public static final String OPTIMIZED_CHASER = "OPTIMIZED_CHASER";
+    public static final String DE_OPTIMIZED_CHASER = "DE_OPTIMIZED_CHASER";
     
     ///////////////////// COST MANAGER
     public static final String COST_MANAGER_STANDARD = "Standard";

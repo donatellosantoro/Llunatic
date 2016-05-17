@@ -91,6 +91,14 @@ public class DAOLunaticConfiguration {
         if (useLimit1Element != null) {
             configuration.setUseLimit1ForEGDs(Boolean.parseBoolean(useLimit1Element.getValue()));
         }
+        Element useHashForSkolemElement = configurationElement.getChild("useHashForSkolem");
+        if (useHashForSkolemElement != null) {
+            configuration.setUseHashForSkolem(Boolean.parseBoolean(useHashForSkolemElement.getValue()));
+        }
+        Element useDictionaryEncodingElement = configurationElement.getChild("useDictionaryEncoding");
+        if (useDictionaryEncodingElement != null) {
+            configuration.setUseDictionaryEncoding(Boolean.parseBoolean(useDictionaryEncodingElement.getValue()));
+        }
         Element removeDuplicatesElement = configurationElement.getChild("removeDuplicates");
         if (removeDuplicatesElement != null) {
             configuration.setRemoveDuplicates(Boolean.parseBoolean(removeDuplicatesElement.getValue()));

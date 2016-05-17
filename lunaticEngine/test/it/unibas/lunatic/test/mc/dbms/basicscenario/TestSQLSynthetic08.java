@@ -44,6 +44,7 @@ public class TestSQLSynthetic08 extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
         Assert.assertEquals(1, resultSizer.getSolutions(result));
         checkSolutions(result);
+//        exportResults("/Temp/llunatic/synthetic_08", result);
         checkExpectedSolutions("expected08", result);
     }
 }

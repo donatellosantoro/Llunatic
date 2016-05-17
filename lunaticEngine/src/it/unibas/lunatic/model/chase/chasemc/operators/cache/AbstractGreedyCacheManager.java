@@ -147,7 +147,7 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
     }
 
     public void loadCellGroups(String stepId, IDatabase deltaDB, Scenario scenario) {
-        if (scenario.getConfiguration().isDeScenario() && !scenario.getConfiguration().getDeChaser().equals(LunaticConstants.PROXY_MC_CHASER)) {
+        if (scenario.getConfiguration().isDeScenario()) {
             loadCellGroupsForDE(stepId, deltaDB, scenario);
         } else {
             loadCellGroupsForMC(stepId, deltaDB, scenario);

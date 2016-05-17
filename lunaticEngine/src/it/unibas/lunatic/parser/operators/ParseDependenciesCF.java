@@ -18,6 +18,7 @@ import speedy.SpeedyConstants;
 import speedy.model.database.Attribute;
 import speedy.model.database.IDatabase;
 import speedy.model.database.ITable;
+import speedy.utility.DBMSUtility;
 
 @SuppressWarnings("unchecked")
 public class ParseDependenciesCF {
@@ -114,6 +115,17 @@ public class ParseDependenciesCF {
 
     public String clean(String expressionString) {
         return DependencyUtility.clean(expressionString);
+    }
+
+    public String cleanTableName(String tableName) {
+        return DBMSUtility.cleanTableName(tableName);
+    }
+
+    public String convertSymbol(String symbol) {
+        if (scenario.getValueEncoder() == null) {
+            return "\"" + symbol + "\"";
+        }
+        return scenario.getValueEncoder().encode(symbol);
     }
 
 }

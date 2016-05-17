@@ -1,0 +1,16 @@
+treatment(?id,?patient,?hospital,?npi,?conf1),
+physician(?npi,?name,?spec,?conf2) ->
+    prescription(?id,?patient,?npi,?C1) .
+
+treatment(?id,?patient,?hospital,?npi,?conf1),
+physician(?npi,?name,?spec,?conf2) ->
+    doctor(?npi,?name,?spec,?hospital,?C2) .
+
+medprescription(?id,?patient,?npi,?doctor,?spec,?conf) ->
+    prescription(?id,?patient,?npi,?C1) .
+
+medprescription(?id,?patient,?npi,?doctor,?spec,?conf) ->
+    doctor(?npi,?doctor,?spec,?H,?C2) .
+
+hospital(?doctor,?spec,?hospital1,?npi1,?hconf1) ->
+    targethospital(?doctor,?spec,?hospital1,?npi1,?hconf1) .

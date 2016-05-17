@@ -1,55 +1,22 @@
 package it.unibas.lunatic.persistence;
 
 import it.unibas.lunatic.LunaticConfiguration;
-import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.GreedyPartialOrder;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.OrderingAttribute;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.ScriptPartialOrder;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.DateComparator;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.FloatComparator;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.IValueComparator;
-import it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator.StringComparatorForIValues;
-import it.unibas.lunatic.model.chase.chasemc.usermanager.AfterForkUserManager;
-import it.unibas.lunatic.model.chase.chasemc.usermanager.AfterLLUNForkUserManager;
-import it.unibas.lunatic.model.chase.chasemc.usermanager.AfterLLUNUserManager;
-import it.unibas.lunatic.model.chase.chasemc.usermanager.IUserManager;
-import it.unibas.lunatic.model.chase.chasemc.usermanager.InteractiveUserManager;
-import it.unibas.lunatic.model.chase.chasemc.usermanager.StandardUserManager;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
-import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.ProcessDependencies;
-import it.unibas.lunatic.model.similarity.SimilarityConfiguration;
 import it.unibas.lunatic.parser.ParserOutput;
 import it.unibas.lunatic.parser.operators.ParseDependencies;
-import java.util.ArrayList;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import javax.script.ScriptException;
-import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import speedy.SpeedyConstants;
-import speedy.model.database.AttributeRef;
-import speedy.model.database.EmptyDB;
 import speedy.model.database.IDatabase;
-import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.SQLQueryString;
-import speedy.persistence.file.CSVFile;
-import speedy.persistence.file.IImportFile;
-import speedy.persistence.file.XMLFile;
-import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.xml.DAOXmlUtility;
-import speedy.persistence.xml.operators.TransformFilePaths;
 
 public class DAOMCScenarioStandard {
 
@@ -68,18 +35,21 @@ public class DAOMCScenarioStandard {
             long endLoadXML = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.LOAD_XML_SCENARIO_TIME, endLoadXML - startLoadXML);
             Element rootElement = document.getRootElement();
-            //SOURCE
-            Element sourceElement = rootElement.getChild("source");
-            IDatabase sourceDatabase = daoDatabaseConfiguration.loadDatabase(sourceElement, null, fileScenario); //Source schema doesn't need suffix
-            scenario.setSource(sourceDatabase);
-            //TARGET
-            Element targetElement = rootElement.getChild("target");
-            IDatabase targetDatabase = daoDatabaseConfiguration.loadDatabase(targetElement, suffix, fileScenario);
-            scenario.setTarget(targetDatabase);
             //CONFIGURATION
             Element configurationElement = rootElement.getChild("configuration");
             LunaticConfiguration configuration = daoConfiguration.loadConfiguration(configurationElement);
             scenario.setConfiguration(configuration);
+            if (configuration.isUseDictionaryEncoding()) {
+                scenario.setValueEncoder(new DictionaryEncoder(DAOUtility.extractScenarioName(fileScenario)));
+            }
+            //SOURCE
+            Element sourceElement = rootElement.getChild("source");
+            IDatabase sourceDatabase = daoDatabaseConfiguration.loadDatabase(sourceElement, null, fileScenario, scenario.getValueEncoder()); //Source schema doesn't need suffix
+            scenario.setSource(sourceDatabase);
+            //TARGET
+            Element targetElement = rootElement.getChild("target");
+            IDatabase targetDatabase = daoDatabaseConfiguration.loadDatabase(targetElement, suffix, fileScenario, scenario.getValueEncoder());
+            scenario.setTarget(targetDatabase);
             long end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.LOAD_TIME, end - start);
             //InitDB (out of LOAD_TIME stat)

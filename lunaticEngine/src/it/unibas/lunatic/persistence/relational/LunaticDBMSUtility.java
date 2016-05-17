@@ -19,6 +19,7 @@ import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 import speedy.persistence.Types;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
+import speedy.utility.SpeedyUtility;
 
 public class LunaticDBMSUtility {
 
@@ -89,7 +90,7 @@ public class LunaticDBMSUtility {
         IValue value;
         if (attributeValue == null || attributeValue.toString().equalsIgnoreCase(SpeedyConstants.NULL)) {
             value = new NullValue(SpeedyConstants.NULL_VALUE);
-        } else if (attributeValue.toString().startsWith(SpeedyConstants.SKOLEM_PREFIX)) {
+        } else if (SpeedyUtility.isSkolem(attributeValue.toString())) {
             value = new NullValue(attributeValue);
         } else if (attributeValue.toString().startsWith(SpeedyConstants.LLUN_PREFIX)) {
             value = new LLUNValue(attributeValue);

@@ -14,6 +14,7 @@ import speedy.SpeedyConstants;
 import speedy.model.database.EmptyDB;
 import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
+import speedy.model.database.operators.dbms.IValueEncoder;
 import speedy.persistence.file.CSVFile;
 import speedy.persistence.file.IImportFile;
 import speedy.persistence.file.XMLFile;
@@ -28,9 +29,10 @@ public class DAODatabaseConfiguration {
     private static final String DB_TYPE_MAINMEMORY_GENERATE = "GENERATE";
     private static final String DB_TYPE_DBMS = "DBMS";
     private final DAOMainMemoryDatabase daoMainMemoryDatabase = new DAOMainMemoryDatabase();
+    private final DAODBSchemaCF daoSchema = new DAODBSchemaCF();
     private final TransformFilePaths filePathTransformator = new TransformFilePaths();
 
-    public IDatabase loadDatabase(Element databaseElement, String suffix, String fileScenario) throws DAOException {
+    public IDatabase loadDatabase(Element databaseElement, String suffix, String fileScenario, IValueEncoder valueEncoder) throws DAOException {
         if (databaseElement == null || databaseElement.getChildren().isEmpty()) {
             return new EmptyDB();
         }
@@ -38,6 +40,7 @@ public class DAODatabaseConfiguration {
         if (typeElement == null) {
             throw new DAOException("Unable to load scenario from file " + fileScenario + ". Missing tag <type>");
         }
+        boolean useDictionaryEncoding = (valueEncoder != null);
         String databaseType = typeElement.getValue();
         if (DB_TYPE_MAINMEMORY.equalsIgnoreCase(databaseType)) {
             Element xmlElement = databaseElement.getChild("xml");
@@ -66,7 +69,7 @@ public class DAODatabaseConfiguration {
             }
             AccessConfiguration accessConfiguration = new AccessConfiguration();
             accessConfiguration.setDriver(dbmsElement.getChildText("driver").trim());
-            accessConfiguration.setUri(dbmsElement.getChildText("uri").trim());
+            accessConfiguration.setUri(dbmsElement.getChildText("uri").trim() + (useDictionaryEncoding ? "_enc" : ""));
             accessConfiguration.setSchemaName(dbmsElement.getChildText("schema").trim());
             if (suffix != null && !suffix.trim().isEmpty()) {
                 accessConfiguration.setSchemaSuffix(suffix.trim());
@@ -78,6 +81,11 @@ public class DAODatabaseConfiguration {
             if (initDbElement != null) {
                 database.getInitDBConfiguration().setInitDBScript(initDbElement.getValue());
             }
+            Element schemaFileElement = databaseElement.getChild("schemaFile");
+            if (schemaFileElement != null) {
+                database.getInitDBConfiguration().setInitDBScript(daoSchema.getInitDB(schemaFileElement, fileScenario, useDictionaryEncoding));
+            }
+            database.getInitDBConfiguration().setValueEncoder(valueEncoder);
             processImport(databaseElement, database, fileScenario);
             return database;
         } else {
@@ -128,11 +136,11 @@ public class DAODatabaseConfiguration {
         if (!scenario.isDBMS()) {
             return;
         }
+        long start = new Date().getTime();
         if (scenario.getSource() != null && (scenario.getSource() instanceof DBMSDB)) {
             DBMSDB dbmsdb = (DBMSDB) scenario.getSource();
             dbmsdb.initDBMS();
         }
-        long start = new Date().getTime();
         DBMSDB dbmsdb = (DBMSDB) scenario.getTarget();
         dbmsdb.initDBMS();
         long end = new Date().getTime();

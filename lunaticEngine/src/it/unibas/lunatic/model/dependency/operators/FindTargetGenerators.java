@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.dependency.operators;
 
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.database.skolem.AppendSkolemPart;
 import it.unibas.lunatic.model.database.skolem.ISkolemPart;
 import it.unibas.lunatic.model.database.skolem.StringSkolemPart;
@@ -16,10 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import speedy.SpeedyConstants;
+import speedy.model.database.Attribute;
+import speedy.utility.SpeedyUtility;
 
 public class FindTargetGenerators {
 
-    public void findGenerators(Dependency dependency) {
+    public void findGenerators(Dependency dependency, Scenario scenario) {
         Map<FormulaVariable, SkolemFunctionGenerator> skolems = new HashMap<FormulaVariable, SkolemFunctionGenerator>();
         for (IFormulaAtom atom : dependency.getConclusion().getPositiveFormula().getAtoms()) {
             RelationalAtom relationalAtom = (RelationalAtom) atom;
@@ -31,7 +34,7 @@ public class FindTargetGenerators {
                 } else if (attribute.getValue() instanceof FormulaConstant) {
                     generator = createExpressionGeneratorForConstant(attribute);
                 } else if (attribute.getValue() instanceof FormulaVariableOccurrence) {
-                    generator = createGeneratorForVariable(attribute, dependency, skolems);
+                    generator = createGeneratorForVariable(attribute, attributeRef, dependency, skolems, scenario);
                 }
                 dependency.addTargetGenerator(attributeRef, generator);
             }
@@ -51,11 +54,11 @@ public class FindTargetGenerators {
         return generator;
     }
 
-    private IValueGenerator createGeneratorForVariable(FormulaAttribute attribute, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems) {
+    private IValueGenerator createGeneratorForVariable(FormulaAttribute attribute, AttributeRef attributeRef, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems, Scenario scenario) {
         FormulaVariableOccurrence occurrence = (FormulaVariableOccurrence) attribute.getValue();
         FormulaVariable existentialVariable = LunaticUtility.findVariableInList(occurrence, dependency.getConclusion().getLocalVariables());
         if (existentialVariable != null) {
-            return createSkolemGenerator(attribute, existentialVariable, dependency, skolems);
+            return createSkolemGenerator(attributeRef, existentialVariable, dependency, skolems, scenario);
         }
         FormulaVariable universalVariable = LunaticUtility.findVariableInList(occurrence, dependency.getPremise().getLocalVariables());
         Expression expression = new Expression(universalVariable.getId());
@@ -64,11 +67,13 @@ public class FindTargetGenerators {
         return generator;
     }
 
-    private IValueGenerator createSkolemGenerator(FormulaAttribute attribute, FormulaVariable variable, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems) {
+    private IValueGenerator createSkolemGenerator(AttributeRef attributeRef, FormulaVariable variable, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems, Scenario scenario) {
         SkolemFunctionGenerator generatorForVariable = skolems.get(variable);
         if (generatorForVariable != null) {
             return generatorForVariable;
         }
+        Attribute attribute = LunaticUtility.getAttribute(attributeRef, LunaticUtility.getDatabase(attributeRef, scenario));
+        String type = attribute.getType();
         ISkolemPart root = new AppendSkolemPart();
         ISkolemPart name = new StringSkolemPart(SpeedyConstants.SKOLEM_PREFIX + dependency.getId() + SpeedyConstants.SKOLEM_SEPARATOR + variable.getId());
         root.addChild(name);
@@ -80,7 +85,7 @@ public class FindTargetGenerators {
             expression.changeVariableDescription(formulaVariable.getId(), formulaVariable);
             append.addChild(new SubGeneratorSkolemPart(new ExpressionGenerator(expression)));
         }
-        generatorForVariable = new SkolemFunctionGenerator(root);
+        generatorForVariable = new SkolemFunctionGenerator(root, type);
         skolems.put(variable, generatorForVariable);
         return generatorForVariable;
     }

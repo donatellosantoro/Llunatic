@@ -193,7 +193,7 @@ public class ProcessDependencies {
             processInitialDependency(dependency, scenario);
             Dependency normalizedDependency = normalizeVariablesInDependency(dependency, scenario);
             if (normalizedDependency.getType().equals(LunaticConstants.STTGD)) {
-                generatorFinder.findGenerators(normalizedDependency);
+                generatorFinder.findGenerators(normalizedDependency, scenario);
             }
             result.add(normalizedDependency);
         }
@@ -214,7 +214,7 @@ public class ProcessDependencies {
             }
             for (Dependency normalizedTgd : tgdsWithNormalizedJoinsInConclusion) {
                 Dependency newTgd = normalizeVariablesInDependency(normalizedTgd, scenario);
-                generatorFinder.findGenerators(newTgd);
+                generatorFinder.findGenerators(newTgd, scenario);
                 result.add(newTgd);
             }
         }

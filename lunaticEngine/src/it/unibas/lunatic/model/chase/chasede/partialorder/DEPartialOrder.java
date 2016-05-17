@@ -87,7 +87,7 @@ public class DEPartialOrder implements IPartialOrder {
             if (constantCell.getValue().equals(firstConstantValue)) {
                 continue;
             }
-            throw new ChaseFailedException("Unable to equate different constants in DE. " + SpeedyUtility.printCollection(constantCells));
+            throw new ChaseFailedException("Unable to equate different constants in DE.\n" + SpeedyUtility.printCollection(constantCells, "\t"));
         }
     }
 

@@ -243,6 +243,10 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
 //        result.append(indent).append("IF POSITION ('").append(LunaticConstants.SKOLEM_PREFIX).append("' IN NEW.").append(attributeName).append(") = 1 ");
 //        result.append("OR POSITION ('").append(LunaticConstants.LLUN_PREFIX).append("' IN NEW.").append(attributeName).append(") = 1 ");
         result.append(indent).append("IF POSITION ('").append(SpeedyConstants.SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar)) = 1 ");
+        result.append("OR (POSITION ('").append(SpeedyConstants.BIGINT_SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar) ) = 1 ");
+        result.append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar) ) > " + SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS + " ) ");
+        result.append("OR (POSITION ('").append(SpeedyConstants.REAL_SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar) ) = 1 ");
+        result.append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar) ) > " + SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS + " ) ");
         result.append("OR POSITION ('").append(SpeedyConstants.LLUN_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar) ) = 1 ");
         result.append("THEN").append("\n");
         result.append(longIndent).append("NEW.").append(LunaticConstants.GROUP_ID).append(" = NEW.").append(attributeName).append(";\n");

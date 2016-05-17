@@ -4,12 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import speedy.SpeedyConstants;
 import speedy.model.algebra.operators.ITupleIterator;
 import speedy.model.database.Cell;
 import speedy.model.database.IDatabase;
 import speedy.model.database.ITable;
 import speedy.model.database.Tuple;
+import speedy.utility.SpeedyUtility;
 
 public class AnalyzeDatabase {
 
@@ -25,7 +25,7 @@ public class AnalyzeDatabase {
                 Tuple tuple = it.next();
                 for (Cell cell : tuple.getCells()) {
                     String value = cell.getValue().toString();
-                    if (value.startsWith(SpeedyConstants.SKOLEM_PREFIX)) {
+                    if (SpeedyUtility.isSkolem(value)) {
                         nulls.add(value);
                     }
                     if (nulls.size() > THRESHOLD) {

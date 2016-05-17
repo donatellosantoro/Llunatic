@@ -8,6 +8,7 @@ import speedy.model.database.LLUNValue;
 import speedy.model.database.NullValue;
 import speedy.model.database.Tuple;
 import speedy.model.expressions.Expression;
+import speedy.utility.SpeedyUtility;
 
 public class ExpressionGenerator implements IValueGenerator {
 
@@ -24,7 +25,7 @@ public class ExpressionGenerator implements IValueGenerator {
     public IValue generateValue(Tuple sourceTuple) {
         EvaluateExpression evaluator = new EvaluateExpression();
         Object result = evaluator.evaluateFunction(expression, sourceTuple);
-        if (result == null || result.toString().startsWith(SpeedyConstants.SKOLEM_PREFIX)) {
+        if (result == null || SpeedyUtility.isSkolem(result.toString())) {
             return new NullValue(result);
         }
         if (result.toString().startsWith(SpeedyConstants.LLUN_PREFIX)) {

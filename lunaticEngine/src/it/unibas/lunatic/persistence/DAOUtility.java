@@ -15,18 +15,21 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.commons.io.FileUtils;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
+import speedy.persistence.xml.operators.TransformFilePaths;
 
 public class DAOUtility {
 
     private static Logger logger = LoggerFactory.getLogger(DAOUtility.class);
 
-    static final String SEPARATOR = "/";
+    private static final TransformFilePaths filePathTransformator = new TransformFilePaths();
+    private static final String SEPARATOR = "/";
 
     public BufferedReader getBufferedReader(String filePath) throws FileNotFoundException, UnsupportedEncodingException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), Charset.forName("UTF-8")));
@@ -203,5 +206,31 @@ public class DAOUtility {
             resultString = "/" + resultString;
         }
         return resultString;
+    }
+
+    public static String loadFileContent(String relativeFileName, String fileScenario) throws DAOException {
+        try {
+            String result = FileUtils.readFileToString(loadFile(relativeFileName, fileScenario));
+            if (result.trim().isEmpty()) {
+                throw new DAOException("Empty file " + relativeFileName);
+            }
+            return result;
+        } catch (IOException ex) {
+            throw new DAOException(ex);
+        }
+    }
+
+    public static File loadFile(String relativeFileName, String fileScenario) throws DAOException {
+        String absoluteFileName = filePathTransformator.expand(fileScenario, relativeFileName);
+        File file = new File(absoluteFileName);
+        if (!file.exists()) {
+            throw new DAOException("File " + absoluteFileName + " does not exist");
+        }
+        return file;
+    }
+
+    public static String extractScenarioName(String fileScenario) {
+        File file = new File(fileScenario);
+        return file.getName();
     }
 }

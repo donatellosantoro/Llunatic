@@ -60,7 +60,11 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         String unloggedOption = (scenario.getConfiguration().isUseUnloggedWorkTables() ? " UNLOGGED " : "");
         script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(DBMSUtility.getSchemaNameAndDot(accessConfiguration)).append(LunaticConstants.CELLGROUP_TABLE).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
-        script.append(SpeedyConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text,").append("\n");
+        String valueType = " text,";
+        if (scenario.getConfiguration().isUseDictionaryEncoding()) {
+            valueType = " bigint,";
+        }
+        script.append(SpeedyConstants.INDENT).append(LunaticConstants.GROUP_ID).append(valueType).append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.CELL_OID).append(" bigint,").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.CELL_TABLE).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.CELL_ATTRIBUTE).append(" text").append("\n");
@@ -102,7 +106,11 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
         script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
-        script.append(SpeedyConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text").append("\n");
+        String idType = " text";
+        if (scenario.getConfiguration().isUseDictionaryEncoding()) {
+            idType = " bigint";
+        }
+        script.append(SpeedyConstants.INDENT).append(LunaticConstants.GROUP_ID).append(idType).append("\n");
         script.append(") WITH OIDS;").append("\n\n");
 //        script.append("CREATE INDEX ").append(attributeName).append("_oid  ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append(" USING btree(tid ASC);\n");
 //        script.append("CREATE INDEX ").append(attributeName).append("_step  ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append(" USING btree(step ASC);\n\n");
@@ -212,6 +220,10 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         //If is NULL or LLUN and the cluster id is not defined, copy its value as cluster id
         String longIndent = indent + SpeedyConstants.INDENT;
         result.append(indent).append("IF POSITION ('").append(SpeedyConstants.SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar)) = 1 ");
+        result.append(indent).append("OR (POSITION ('").append(SpeedyConstants.BIGINT_SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar)) = 1 ");
+        result.append(indent).append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar)) > " + SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS + " )");
+        result.append(indent).append("OR (POSITION ('").append(SpeedyConstants.REAL_SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar)) = 1 ");
+        result.append(indent).append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar)) > " + SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS + " )");
         result.append("THEN").append("\n");
         result.append(longIndent).append("NEW.").append(LunaticConstants.GROUP_ID).append(" = NEW.").append(attributeName).append(";\n");
         result.append(longIndent).append("INSERT INTO ");

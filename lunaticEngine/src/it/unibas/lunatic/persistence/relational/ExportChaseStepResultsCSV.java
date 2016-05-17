@@ -36,6 +36,7 @@ import speedy.model.database.dbms.DBMSTable;
 import speedy.model.database.dbms.DBMSVirtualDB;
 import speedy.model.database.mainmemory.MainMemoryVirtualDB;
 import speedy.model.database.mainmemory.MainMemoryVirtualTable;
+import speedy.model.database.operators.dbms.IValueEncoder;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.DBMSUtility;
@@ -71,7 +72,7 @@ public class ExportChaseStepResultsCSV {
             IDatabase database = OperatorFactory.getInstance().getDatabaseBuilder(scenario).extractDatabase(step.getId(), step.getDeltaDB(), step.getOriginalDB(), step.getScenario());
             for (String tableName : database.getTableNames()) {
                 ITable table = database.getTable(tableName);
-                exportTable(table, path);
+                exportTable(table, path, scenario);
             }
         }
         long end = new Date().getTime();
@@ -83,7 +84,7 @@ public class ExportChaseStepResultsCSV {
         String path = scenario.getConfiguration().getExportSolutionsPath();
         for (String tableName : database.getTableNames()) {
             ITable table = database.getTable(tableName);
-            exportTable(table, path);
+            exportTable(table, path, scenario);
         }
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.WRITE_TIME, end - start);
@@ -117,7 +118,7 @@ public class ExportChaseStepResultsCSV {
             if (materializeFKJoins) {
                 materializeFKJoins(database, step);
             }
-            exportDatabase(database, resultFile);
+            exportDatabase(database, resultFile, null);
             results.add(resultFile);
         } else {
             for (DeltaChaseStep child : step.getChildren()) {
@@ -129,10 +130,10 @@ public class ExportChaseStepResultsCSV {
     public void exportDatabase(DeltaChaseStep step, String stepId, String file) throws DAOException {
         IDatabase database = getDatabaseBuilder(step.getScenario()).extractDatabaseWithDistinct(stepId, step.getDeltaDB(), step.getOriginalDB(), step.getScenario());
 //        IDatabase database = databaseBuilder.extractDatabase(stepId, step.getDeltaDB(), step.getOriginalDB());
-        exportDatabase(database, file);
+        exportDatabase(database, file, step.getScenario());
     }
 
-    public void exportDatabase(IDatabase database, String file) throws DAOException {
+    public void exportDatabase(IDatabase database, String file, Scenario scenario) throws DAOException {
         File outputFile = new File(file);
         outputFile.getParentFile().mkdirs();
         PrintWriter writer = null;
@@ -141,7 +142,7 @@ public class ExportChaseStepResultsCSV {
             for (String tableName : database.getTableNames()) {
                 ITable table = database.getTable(tableName);
                 writer.println(tablePrefix + table.getName());
-                writeTable(writer, table);
+                writeTable(writer, table, scenario.getValueEncoder());
             }
         } catch (Exception ex) {
             throw new DAOException("Unable to export database " + ex);
@@ -152,14 +153,14 @@ public class ExportChaseStepResultsCSV {
         }
     }
 
-    public void exportTable(ITable table, String folder) {
+    public void exportTable(ITable table, String folder, Scenario scenario) {
         String file = folder + "/" + table.getName() + ".csv";
         File outputFile = new File(file);
         outputFile.getParentFile().mkdirs();
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8")));
-            writeTable(writer, table);
+            writeTable(writer, table, scenario.getValueEncoder());
         } catch (Exception ex) {
             throw new DAOException("Unable to export database " + ex);
         } finally {
@@ -169,7 +170,7 @@ public class ExportChaseStepResultsCSV {
         }
     }
 
-    private void writeTable(PrintWriter writer, ITable table) {
+    private void writeTable(PrintWriter writer, ITable table, IValueEncoder valueEncoder) {
         StringBuilder line = new StringBuilder();
         for (Attribute attribute : table.getAttributes()) {
             if (excludeAttribute(attribute.getName())) {
@@ -191,6 +192,8 @@ public class ExportChaseStepResultsCSV {
                 String value = cell.getValue().toString();
                 if (SpeedyConstants.NULL_VALUE.equals(value)) {
                     value = "NULL";
+                } else if (valueEncoder != null) {
+                    value = valueEncoder.decode(value);
                 }
 //                if (value.startsWith(SpeedyConstants.SKOLEM_PREFIX)) {
 //                    value = "NULL";

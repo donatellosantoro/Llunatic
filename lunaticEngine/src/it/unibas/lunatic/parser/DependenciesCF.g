@@ -105,7 +105,7 @@ conclusionQueryFormula: {  positiveFormula = new PositiveFormula();
 
 atom	:	 relationalAtom | builtin | comparison;	
 
-relationalAtom:	 name=IDENTIFIER { atom = new RelationalAtom(name.getText()); attributePosition = 0; } '(' attribute (',' attribute)* ')'
+relationalAtom:	 name=IDENTIFIER { atom = new RelationalAtom(generator.cleanTableName(name.getText())); attributePosition = 0; } '(' attribute (',' attribute)* ')'
 		 {  positiveFormula.addAtom(atom); atom.setFormula(positiveFormula); };
 		 
 queryAtom:	 name=IDENTIFIER { atom = new QueryAtom(name.getText()); attributePosition = 0; } '(' queryattribute (',' queryattribute)* ')'
@@ -132,11 +132,11 @@ comparison :	 {   expressionString = new StringBuilder();
                     positiveFormula.addAtom(atom); } ;
 
 leftargument:	 ('\?'var=IDENTIFIER { expressionString.append(var.getText()); } |
-                 constant=(STRING | NUMBER) { expressionString.append(constant.getText()); leftConstant = constant.getText();}
+                 constant=(STRING | NUMBER | IDENTIFIER) { expressionString.append(constant.getText()); leftConstant = constant.getText();}
                  );
                  
 rightargument:	 ('\?'var=IDENTIFIER { expressionString.append(var.getText()); } |
-                 constant=(STRING | NUMBER) { expressionString.append(constant.getText()); rightConstant = constant.getText();}
+                 constant=(STRING | NUMBER | IDENTIFIER) { expressionString.append(constant.getText()); rightConstant = constant.getText();}
                  );
                  
 attribute:	 { String attributeName = generator.findAttributeName(((RelationalAtom)atom).getTableName(), attributePosition, inPremise, stTGD); 
@@ -149,12 +149,14 @@ queryattribute:	 { String attributeName = "a" + attributePosition;
 		 
 value	:	 '\?'var=IDENTIFIER { attribute.setValue(new FormulaVariableOccurrence(new AttributeRef(((RelationalAtom)atom).getTableName(), attribute.getAttributeName()), var.getText())); } |
                  constant=(STRING | NUMBER) { attribute.setValue(new FormulaConstant(constant.getText())); } |
+                 symbol=(IDENTIFIER) { attribute.setValue(new FormulaSymbol(generator.convertSymbol(symbol.getText()))); } |
                  nullValue=NULL { attribute.setValue(new FormulaConstant(nullValue.getText(), true)); } |
                  expression=EXPRESSION { attribute.setValue(new FormulaExpression(new Expression(generator.clean(expression.getText())))); };
 
 
 queryvalue:	 '\?'var=IDENTIFIER { attribute.setValue(new FormulaVariableOccurrence(new AttributeRef(((QueryAtom)atom).getQueryId(), attribute.getAttributeName()), var.getText())); } |
                  constant=(STRING | NUMBER) { attribute.setValue(new FormulaConstant(constant.getText())); } |
+                 symbol=(IDENTIFIER) { attribute.setValue(new FormulaSymbol(generator.convertSymbol(symbol.getText()))); } |
                  nullValue=NULL { attribute.setValue(new FormulaConstant(nullValue.getText(), true)); } |
                  expression=EXPRESSION { attribute.setValue(new FormulaExpression(new Expression(generator.clean(expression.getText())))); };
 

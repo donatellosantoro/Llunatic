@@ -25,6 +25,7 @@ public class LunaticConfiguration {
     private double numberCellsWeightForRanking = 0.7;
     private boolean useUnloggedWorkTables = true;
     private boolean useHashForSkolem = true;
+    private boolean useDictionaryEncoding = false;
     private boolean useBatchInsert = true;
     private boolean exportSolutions = false;
     private String exportSolutionsPath;
@@ -36,7 +37,7 @@ public class LunaticConfiguration {
 
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
 //    private String deChaser = LunaticConstants.PROXY_MC_CHASER;
-    private String deChaser = LunaticConstants.OPTIMIZED_CHASER;
+    private String deChaser = LunaticConstants.DE_OPTIMIZED_CHASER;
 //
 //    private String cacheType = LunaticConstants.NO_CACHE;
 //    private String cacheType = LunaticConstants.LAZY_CACHE;
@@ -300,6 +301,14 @@ public class LunaticConfiguration {
         this.maxNumberOfThreads = maxNumberOfThreads;
     }
 
+    public boolean isUseDictionaryEncoding() {
+        return useDictionaryEncoding;
+    }
+
+    public void setUseDictionaryEncoding(boolean useDictionaryEncoding) {
+        this.useDictionaryEncoding = useDictionaryEncoding;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
@@ -321,6 +330,7 @@ public class LunaticConfiguration {
                 + "\n\t UseBatchInsert: " + useBatchInsert
                 + "\n\t UseUnloggedWorkTables: " + useUnloggedWorkTables
                 + "\n\t UseHashForSkolem: " + useHashForSkolem
+                + "\n\t UseDictionaryEncoding: " + useDictionaryEncoding
                 + "\n\t ExportSolutions: " + exportSolutions
                 + "\n\t ExportSolutionsPath: " + exportSolutionsPath
                 + "\n\t ExportSolutionsType: " + exportSolutionsType

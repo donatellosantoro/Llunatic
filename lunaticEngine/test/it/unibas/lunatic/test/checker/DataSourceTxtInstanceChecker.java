@@ -1,13 +1,11 @@
 package it.unibas.lunatic.test.checker;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.test.UtilityTest;
 import java.util.*;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import speedy.SpeedyConstants;
 import speedy.model.algebra.operators.ITupleIterator;
 import speedy.model.database.Cell;
 import speedy.model.database.IDatabase;
@@ -15,6 +13,7 @@ import speedy.model.database.ITable;
 import speedy.model.database.IValue;
 import speedy.model.database.NullValue;
 import speedy.model.database.Tuple;
+import speedy.utility.SpeedyUtility;
 
 public class DataSourceTxtInstanceChecker {
 
@@ -251,7 +250,7 @@ public class DataSourceTxtInstanceChecker {
             return false;
         }
         if (value instanceof NullValue
-                && value.getPrimitiveValue().toString().startsWith(SpeedyConstants.SKOLEM_PREFIX)) {
+                && SpeedyUtility.isSkolem(value.getPrimitiveValue().toString())) {
             return true;
         }
         return false;

@@ -2,7 +2,6 @@ package it.unibas.lunatic.test.persistence.dbms;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForCertainAnswerQuery;
-import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
@@ -10,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
-import speedy.model.database.IDatabase;
 
 public class TestSQLCF extends CheckTest {
 

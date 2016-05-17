@@ -27,7 +27,7 @@ public class TestSynthetic08 extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
         Assert.assertEquals(1, resultSizer.getSolutions(result));
         checkSolutions(result);
-        checkExpectedSolutions("expected08", result);
+        checkExpectedSolutions("expected08-mm", result);
     }
 
     public void testScenarioNonSymmetric() throws Exception {
@@ -44,6 +44,6 @@ public class TestSynthetic08 extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
         Assert.assertEquals(1, resultSizer.getSolutions(result));
         checkSolutions(result);
-        checkExpectedSolutions("expected08", result);
+        checkExpectedSolutions("expected08-mm", result);
     }
 }

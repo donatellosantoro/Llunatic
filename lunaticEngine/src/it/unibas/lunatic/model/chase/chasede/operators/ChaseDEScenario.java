@@ -141,11 +141,15 @@ public class ChaseDEScenario implements IDEChaser {
         long postProcessingTime = 0L;
         //Pre Processing
         preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.LOAD_TIME));
+        preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.DELTA_DB_BUILDER));
+        preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.STEP_DB_BUILDER));
         //Chasing
         chasingTime = LunaticUtility.increaseIfNotNull(chasingTime, ChaseStats.getInstance().getStat(ChaseStats.TOTAL_TIME));
+        chasingTime = LunaticUtility.decreaseIfNotNull(chasingTime, ChaseStats.getInstance().getStat(ChaseStats.DELTA_DB_BUILDER));
+        chasingTime = LunaticUtility.decreaseIfNotNull(chasingTime, ChaseStats.getInstance().getStat(ChaseStats.STEP_DB_BUILDER));
         //Post Processing
         postProcessingTime = LunaticUtility.increaseIfNotNull(postProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.WRITE_TIME));
-        postProcessingTime = LunaticUtility.increaseIfNotNull(postProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.REMOVE_DUPLICATE_TIME));
+//        postProcessingTime = LunaticUtility.increaseIfNotNull(postProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.REMOVE_DUPLICATE_TIME));
         //Total Processing
         long totalTime = preProcessingTime + chasingTime + postProcessingTime;
         PrintUtility.printInformation("*** PreProcessing time: " + preProcessingTime + " ms");

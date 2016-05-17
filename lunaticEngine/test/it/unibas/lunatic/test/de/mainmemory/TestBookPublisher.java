@@ -16,15 +16,7 @@ public class TestBookPublisher extends CheckTest {
 
     public void testScenarioSTOptimized() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.OPTIMIZED_CHASER);
-        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
-        if (logger.isDebugEnabled()) logger.debug(result.toString());
-        checkExpectedInstances(result, scenario);
-    }
-
-    public void testScenarioSTProxy() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.PROXY_MC_CHASER);
+        scenario.getConfiguration().setDeChaser(LunaticConstants.DE_OPTIMIZED_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
@@ -32,15 +24,7 @@ public class TestBookPublisher extends CheckTest {
 
     public void testScenarioEGDOptimized() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_egd);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.OPTIMIZED_CHASER);
-        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
-        if (logger.isDebugEnabled()) logger.debug(result.toString());
-        checkExpectedInstances(result, scenario);
-    }
-
-    public void testScenarioEGDProxy() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_egd);
-        scenario.getConfiguration().setDeChaser(LunaticConstants.PROXY_MC_CHASER);
+        scenario.getConfiguration().setDeChaser(LunaticConstants.DE_OPTIMIZED_CHASER);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

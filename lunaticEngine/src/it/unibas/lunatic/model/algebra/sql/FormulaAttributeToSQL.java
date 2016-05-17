@@ -12,11 +12,13 @@ import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
 import speedy.SpeedyConstants;
 import speedy.model.database.Attribute;
 import speedy.model.database.AttributeRef;
 import speedy.persistence.Types;
 import speedy.utility.DBMSUtility;
+import speedy.utility.SpeedyUtility;
 
 public class FormulaAttributeToSQL {
 
@@ -35,8 +37,10 @@ public class FormulaAttributeToSQL {
     private String formulaVariableOccurrenceToSQL(FormulaAttribute formulaAttribute, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems, Scenario scenario) {
         FormulaVariableOccurrence occurrence = (FormulaVariableOccurrence) formulaAttribute.getValue();
         FormulaVariable existentialVariable = LunaticUtility.findVariableInList(occurrence, dependency.getConclusion().getLocalVariables());
+        Attribute attribute = LunaticUtility.getAttribute(occurrence.getAttributeRef(), LunaticUtility.getDatabase(occurrence.getAttributeRef(), scenario));
+        String type = attribute.getType();
         if (existentialVariable != null) {
-            return createSkolemGenerator(existentialVariable, dependency, skolems, scenario).toString();
+            return createSkolemGenerator(existentialVariable, type, dependency, skolems, scenario).toString();
         }
         FormulaVariable universalVariable = LunaticUtility.findVariableInList(occurrence, dependency.getPremise().getLocalVariables());
         FormulaVariableOccurrence sourceOccurrence = universalVariable.getPremiseRelationalOccurrences().get(0);
@@ -52,24 +56,36 @@ public class FormulaAttributeToSQL {
     }
 
     private boolean isCastNeeded(Attribute sourceAttribute, Attribute targetAttribute) {
+        if (SpeedyUtility.isNumeric(sourceAttribute.getType()) && SpeedyUtility.isNumeric(targetAttribute.getType())) {
+            return false;
+        }
         return !sourceAttribute.getType().equals(targetAttribute.getType());
     }
 
-    private IValueGenerator createSkolemGenerator(FormulaVariable variable, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems, Scenario scenario) {
+    private IValueGenerator createSkolemGenerator(FormulaVariable variable, String type, Dependency dependency, Map<FormulaVariable, SkolemFunctionGenerator> skolems, Scenario scenario) {
         boolean useHash = scenario.getConfiguration().isUseHashForSkolem();
         SkolemFunctionGenerator generatorForVariable = skolems.get(variable);
         if (generatorForVariable != null) {
             return generatorForVariable;
         }
         ISkolemPart root = new AppendSkolemPart();
-        ISkolemPart name = new StringSkolemPart("'" + SpeedyConstants.SKOLEM_PREFIX + dependency.getId() + SpeedyConstants.SKOLEM_SEPARATOR + variable.getId());
-        root.addChild(name);
         String prefix = "(['||";
+        String suffix = "||'])'";
+        String skolemFunctionString = "";
+        if (SpeedyUtility.isBigInt(type)) {
+            skolemFunctionString = "bigint_skolem(";
+            suffix = suffix + ")";
+            useHash = false;
+        }
+        if (SpeedyUtility.isDoublePrecision(type)) {
+            skolemFunctionString = "double_skolem(";
+            suffix = suffix + ")";
+            useHash = false;
+        }
+        ISkolemPart name = new StringSkolemPart(skolemFunctionString + "'" + SpeedyConstants.SKOLEM_PREFIX + dependency.getId() + SpeedyConstants.SKOLEM_SEPARATOR + variable.getId());
+        root.addChild(name);
         if (useHash) {
             prefix += " right(md5(";
-        }
-        String suffix = "||'])'";
-        if (useHash) {
             suffix = "),15) " + suffix;
         }
         AppendSkolemPart append = new AppendSkolemPart(prefix, suffix, "||']-['||");
@@ -81,7 +97,7 @@ public class FormulaAttributeToSQL {
             String attributeString = LunaticDBMSUtility.attributeRefToSQL(sourceOccurrence.getAttributeRef());
             append.addChild(new StringSkolemPart(attributeString));
         }
-        generatorForVariable = new SkolemFunctionGenerator(root);
+        generatorForVariable = new SkolemFunctionGenerator(root, type);
         skolems.put(variable, generatorForVariable);
         return generatorForVariable;
     }

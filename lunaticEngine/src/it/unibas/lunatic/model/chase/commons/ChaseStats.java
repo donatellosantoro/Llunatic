@@ -60,6 +60,7 @@ public class ChaseStats {
     public static final String HASH_CELL_GROUP_TIME = "Hash cellgroup time";
     public static final String HASHED_CELL_GROUP_CELLS = "#Hashed cellgroup-cell";
     public static final String HASH_CELL_GROUP_CELL_TIME = "Hash cell group cell time";
+    public static final String DICTIONARY_ENCODING_TIME = "Dictionary encoding time";
     /////
     public static final String CHECK_CONS_CELL_GROUPS = "Check consistency of cell groups time";
     /////
@@ -138,7 +139,7 @@ public class ChaseStats {
         sb.append("------ CHASE STATS ------").append("\n");
         appendStat(TOTAL_TIME, "ms", sb, printedStats);
         appendStat(LOAD_TIME, "ms", sb, printedStats);
-        appendStat(WRITE_TIME, "ms", sb, printedStats);
+        appendStat(INIT_DB_TIME, "ms", sb, printedStats);
         appendStat(BUILD_SOLUTION_TIME, "ms", sb, printedStats);
         appendStat(FINAL_QUERY_TIME, "ms", sb, printedStats);
         appendStat(STTGD_TIME, "ms", sb, printedStats);
@@ -161,6 +162,7 @@ public class ChaseStats {
         appendStat(REMOVE_DUPLICATE_TIME, "ms", sb, printedStats);
         appendStat(COMPUTE_SIMILARITY_TIME, "ms", sb, printedStats);
         appendStat(CHECK_REDUNDANCY_TIME, "ms", sb, printedStats);
+        appendStat(WRITE_TIME, "ms", sb, printedStats);
         sb.append("-------------------------").append("\n");
         if (!dependencyStats.isEmpty()) {
             sb.append("------ DEPENDENCIES STATS ------").append("\n");

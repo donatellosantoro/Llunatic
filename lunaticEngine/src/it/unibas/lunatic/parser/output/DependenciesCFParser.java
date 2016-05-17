@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g 2016-05-11 13:13:04
+// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g 2016-05-16 18:54:17
 
 package it.unibas.lunatic.parser.output;
 
@@ -1117,7 +1117,26 @@ public class DependenciesCFParser extends Parser {
 			switch ( input.LA(1) ) {
 			case IDENTIFIER:
 				{
-				alt13=1;
+				int LA13_1 = input.LA(2);
+				if ( (LA13_1==14) ) {
+					alt13=1;
+				}
+				else if ( (LA13_1==OPERATOR) ) {
+					alt13=3;
+				}
+
+				else {
+					int nvaeMark = input.mark();
+					try {
+						input.consume();
+						NoViableAltException nvae =
+							new NoViableAltException("", 13, 1, input);
+						throw nvae;
+					} finally {
+						input.rewind(nvaeMark);
+					}
+				}
+
 				}
 				break;
 			case EXPRESSION:
@@ -1239,7 +1258,7 @@ public class DependenciesCFParser extends Parser {
 			name_tree = (CommonTree)adaptor.create(name);
 			adaptor.addChild(root_0, name_tree);
 
-			 atom = new RelationalAtom(name.getText()); attributePosition = 0; 
+			 atom = new RelationalAtom(generator.cleanTableName(name.getText())); attributePosition = 0; 
 			char_literal34=(Token)match(input,14,FOLLOW_14_in_relationalAtom575); 
 			char_literal34_tree = (CommonTree)adaptor.create(char_literal34);
 			adaptor.addChild(root_0, char_literal34_tree);
@@ -1250,7 +1269,7 @@ public class DependenciesCFParser extends Parser {
 
 			adaptor.addChild(root_0, attribute35.getTree());
 
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:108:118: ( ',' attribute )*
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:108:144: ( ',' attribute )*
 			loop14:
 			while (true) {
 				int alt14=2;
@@ -1261,7 +1280,7 @@ public class DependenciesCFParser extends Parser {
 
 				switch (alt14) {
 				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:108:119: ',' attribute
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:108:145: ',' attribute
 					{
 					char_literal36=(Token)match(input,16,FOLLOW_16_in_relationalAtom580); 
 					char_literal36_tree = (CommonTree)adaptor.create(char_literal36);
@@ -1552,7 +1571,7 @@ public class DependenciesCFParser extends Parser {
 
 
 	// $ANTLR start "leftargument"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:134:1: leftargument : ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) ) ;
+	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:134:1: leftargument : ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER | IDENTIFIER ) ) ;
 	public final DependenciesCFParser.leftargument_return leftargument() throws RecognitionException {
 		DependenciesCFParser.leftargument_return retval = new DependenciesCFParser.leftargument_return();
 		retval.start = input.LT(1);
@@ -1568,19 +1587,19 @@ public class DependenciesCFParser extends Parser {
 		CommonTree char_literal46_tree=null;
 
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:134:13: ( ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) ) )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:134:16: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:134:13: ( ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER | IDENTIFIER ) ) )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:134:16: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER | IDENTIFIER ) )
 			{
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:134:16: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:134:16: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER | IDENTIFIER ) )
 			int alt16=2;
 			int LA16_0 = input.LA(1);
 			if ( (LA16_0==25) ) {
 				alt16=1;
 			}
-			else if ( (LA16_0==NUMBER||LA16_0==STRING) ) {
+			else if ( (LA16_0==IDENTIFIER||LA16_0==NUMBER||LA16_0==STRING) ) {
 				alt16=2;
 			}
 
@@ -1606,10 +1625,10 @@ public class DependenciesCFParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:135:18: constant= ( STRING | NUMBER )
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:135:18: constant= ( STRING | NUMBER | IDENTIFIER )
 					{
 					constant=input.LT(1);
-					if ( input.LA(1)==NUMBER||input.LA(1)==STRING ) {
+					if ( input.LA(1)==IDENTIFIER||input.LA(1)==NUMBER||input.LA(1)==STRING ) {
 						input.consume();
 						adaptor.addChild(root_0, (CommonTree)adaptor.create(constant));
 						state.errorRecovery=false;
@@ -1653,7 +1672,7 @@ public class DependenciesCFParser extends Parser {
 
 
 	// $ANTLR start "rightargument"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:138:1: rightargument : ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) ) ;
+	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:138:1: rightargument : ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER | IDENTIFIER ) ) ;
 	public final DependenciesCFParser.rightargument_return rightargument() throws RecognitionException {
 		DependenciesCFParser.rightargument_return retval = new DependenciesCFParser.rightargument_return();
 		retval.start = input.LT(1);
@@ -1669,19 +1688,19 @@ public class DependenciesCFParser extends Parser {
 		CommonTree char_literal47_tree=null;
 
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:138:14: ( ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) ) )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:138:17: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:138:14: ( ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER | IDENTIFIER ) ) )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:138:17: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER | IDENTIFIER ) )
 			{
 			root_0 = (CommonTree)adaptor.nil();
 
 
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:138:17: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) )
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:138:17: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER | IDENTIFIER ) )
 			int alt17=2;
 			int LA17_0 = input.LA(1);
 			if ( (LA17_0==25) ) {
 				alt17=1;
 			}
-			else if ( (LA17_0==NUMBER||LA17_0==STRING) ) {
+			else if ( (LA17_0==IDENTIFIER||LA17_0==NUMBER||LA17_0==STRING) ) {
 				alt17=2;
 			}
 
@@ -1695,11 +1714,11 @@ public class DependenciesCFParser extends Parser {
 				case 1 :
 					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:138:18: '\\?' var= IDENTIFIER
 					{
-					char_literal47=(Token)match(input,25,FOLLOW_25_in_rightargument848); 
+					char_literal47=(Token)match(input,25,FOLLOW_25_in_rightargument852); 
 					char_literal47_tree = (CommonTree)adaptor.create(char_literal47);
 					adaptor.addChild(root_0, char_literal47_tree);
 
-					var=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_rightargument851); 
+					var=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_rightargument855); 
 					var_tree = (CommonTree)adaptor.create(var);
 					adaptor.addChild(root_0, var_tree);
 
@@ -1707,10 +1726,10 @@ public class DependenciesCFParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:139:18: constant= ( STRING | NUMBER )
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:139:18: constant= ( STRING | NUMBER | IDENTIFIER )
 					{
 					constant=input.LT(1);
-					if ( input.LA(1)==NUMBER||input.LA(1)==STRING ) {
+					if ( input.LA(1)==IDENTIFIER||input.LA(1)==NUMBER||input.LA(1)==STRING ) {
 						input.consume();
 						adaptor.addChild(root_0, (CommonTree)adaptor.create(constant));
 						state.errorRecovery=false;
@@ -1773,7 +1792,7 @@ public class DependenciesCFParser extends Parser {
 
 			 String attributeName = generator.findAttributeName(((RelationalAtom)atom).getTableName(), attributePosition, inPremise, stTGD); 
 			                   attribute = new FormulaAttribute(attributeName); attributePosition++;
-			pushFollow(FOLLOW_value_in_attribute930);
+			pushFollow(FOLLOW_value_in_attribute938);
 			value48=value();
 			state._fsp--;
 
@@ -1828,7 +1847,7 @@ public class DependenciesCFParser extends Parser {
 
 			 String attributeName = "a" + attributePosition; 
 			                   attribute = new FormulaAttribute(attributeName); attributePosition++;
-			pushFollow(FOLLOW_queryvalue_in_queryattribute949);
+			pushFollow(FOLLOW_queryvalue_in_queryattribute957);
 			queryvalue49=queryvalue();
 			state._fsp--;
 
@@ -1864,7 +1883,7 @@ public class DependenciesCFParser extends Parser {
 
 
 	// $ANTLR start "value"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:150:1: value : ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) |nullValue= NULL |expression= EXPRESSION );
+	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:150:1: value : ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) |symbol= ( IDENTIFIER ) |nullValue= NULL |expression= EXPRESSION );
 	public final DependenciesCFParser.value_return value() throws RecognitionException {
 		DependenciesCFParser.value_return retval = new DependenciesCFParser.value_return();
 		retval.start = input.LT(1);
@@ -1873,19 +1892,21 @@ public class DependenciesCFParser extends Parser {
 
 		Token var=null;
 		Token constant=null;
+		Token symbol=null;
 		Token nullValue=null;
 		Token expression=null;
 		Token char_literal50=null;
 
 		CommonTree var_tree=null;
 		CommonTree constant_tree=null;
+		CommonTree symbol_tree=null;
 		CommonTree nullValue_tree=null;
 		CommonTree expression_tree=null;
 		CommonTree char_literal50_tree=null;
 
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:150:7: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) |nullValue= NULL |expression= EXPRESSION )
-			int alt18=4;
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:150:7: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) |symbol= ( IDENTIFIER ) |nullValue= NULL |expression= EXPRESSION )
+			int alt18=5;
 			switch ( input.LA(1) ) {
 			case 25:
 				{
@@ -1898,14 +1919,19 @@ public class DependenciesCFParser extends Parser {
 				alt18=2;
 				}
 				break;
-			case NULL:
+			case IDENTIFIER:
 				{
 				alt18=3;
 				}
 				break;
-			case EXPRESSION:
+			case NULL:
 				{
 				alt18=4;
+				}
+				break;
+			case EXPRESSION:
+				{
+				alt18=5;
 				}
 				break;
 			default:
@@ -1920,11 +1946,11 @@ public class DependenciesCFParser extends Parser {
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					char_literal50=(Token)match(input,25,FOLLOW_25_in_value967); 
+					char_literal50=(Token)match(input,25,FOLLOW_25_in_value975); 
 					char_literal50_tree = (CommonTree)adaptor.create(char_literal50);
 					adaptor.addChild(root_0, char_literal50_tree);
 
-					var=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_value970); 
+					var=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_value978); 
 					var_tree = (CommonTree)adaptor.create(var);
 					adaptor.addChild(root_0, var_tree);
 
@@ -1951,25 +1977,43 @@ public class DependenciesCFParser extends Parser {
 					}
 					break;
 				case 3 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:152:18: nullValue= NULL
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:152:18: symbol= ( IDENTIFIER )
 					{
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					nullValue=(Token)match(input,NULL,FOLLOW_NULL_in_value1026); 
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:152:25: ( IDENTIFIER )
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:152:26: IDENTIFIER
+					{
+					symbol=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_value1035); 
+					symbol_tree = (CommonTree)adaptor.create(symbol);
+					adaptor.addChild(root_0, symbol_tree);
+
+					}
+
+					 attribute.setValue(new FormulaSymbol(generator.convertSymbol(symbol.getText()))); 
+					}
+					break;
+				case 4 :
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:153:18: nullValue= NULL
+					{
+					root_0 = (CommonTree)adaptor.nil();
+
+
+					nullValue=(Token)match(input,NULL,FOLLOW_NULL_in_value1061); 
 					nullValue_tree = (CommonTree)adaptor.create(nullValue);
 					adaptor.addChild(root_0, nullValue_tree);
 
 					 attribute.setValue(new FormulaConstant(nullValue.getText(), true)); 
 					}
 					break;
-				case 4 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:153:18: expression= EXPRESSION
+				case 5 :
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:154:18: expression= EXPRESSION
 					{
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					expression=(Token)match(input,EXPRESSION,FOLLOW_EXPRESSION_in_value1051); 
+					expression=(Token)match(input,EXPRESSION,FOLLOW_EXPRESSION_in_value1086); 
 					expression_tree = (CommonTree)adaptor.create(expression);
 					adaptor.addChild(root_0, expression_tree);
 
@@ -2005,7 +2049,7 @@ public class DependenciesCFParser extends Parser {
 
 
 	// $ANTLR start "queryvalue"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:156:1: queryvalue : ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) |nullValue= NULL |expression= EXPRESSION );
+	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:157:1: queryvalue : ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) |symbol= ( IDENTIFIER ) |nullValue= NULL |expression= EXPRESSION );
 	public final DependenciesCFParser.queryvalue_return queryvalue() throws RecognitionException {
 		DependenciesCFParser.queryvalue_return retval = new DependenciesCFParser.queryvalue_return();
 		retval.start = input.LT(1);
@@ -2014,19 +2058,21 @@ public class DependenciesCFParser extends Parser {
 
 		Token var=null;
 		Token constant=null;
+		Token symbol=null;
 		Token nullValue=null;
 		Token expression=null;
 		Token char_literal51=null;
 
 		CommonTree var_tree=null;
 		CommonTree constant_tree=null;
+		CommonTree symbol_tree=null;
 		CommonTree nullValue_tree=null;
 		CommonTree expression_tree=null;
 		CommonTree char_literal51_tree=null;
 
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:156:11: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) |nullValue= NULL |expression= EXPRESSION )
-			int alt19=4;
+			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:157:11: ( '\\?' var= IDENTIFIER |constant= ( STRING | NUMBER ) |symbol= ( IDENTIFIER ) |nullValue= NULL |expression= EXPRESSION )
+			int alt19=5;
 			switch ( input.LA(1) ) {
 			case 25:
 				{
@@ -2039,14 +2085,19 @@ public class DependenciesCFParser extends Parser {
 				alt19=2;
 				}
 				break;
-			case NULL:
+			case IDENTIFIER:
 				{
 				alt19=3;
 				}
 				break;
-			case EXPRESSION:
+			case NULL:
 				{
 				alt19=4;
+				}
+				break;
+			case EXPRESSION:
+				{
+				alt19=5;
 				}
 				break;
 			default:
@@ -2056,16 +2107,16 @@ public class DependenciesCFParser extends Parser {
 			}
 			switch (alt19) {
 				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:156:14: '\\?' var= IDENTIFIER
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:157:14: '\\?' var= IDENTIFIER
 					{
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					char_literal51=(Token)match(input,25,FOLLOW_25_in_queryvalue1062); 
+					char_literal51=(Token)match(input,25,FOLLOW_25_in_queryvalue1097); 
 					char_literal51_tree = (CommonTree)adaptor.create(char_literal51);
 					adaptor.addChild(root_0, char_literal51_tree);
 
-					var=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_queryvalue1065); 
+					var=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_queryvalue1100); 
 					var_tree = (CommonTree)adaptor.create(var);
 					adaptor.addChild(root_0, var_tree);
 
@@ -2073,7 +2124,7 @@ public class DependenciesCFParser extends Parser {
 					}
 					break;
 				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:157:18: constant= ( STRING | NUMBER )
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:158:18: constant= ( STRING | NUMBER )
 					{
 					root_0 = (CommonTree)adaptor.nil();
 
@@ -2092,25 +2143,43 @@ public class DependenciesCFParser extends Parser {
 					}
 					break;
 				case 3 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:158:18: nullValue= NULL
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:159:18: symbol= ( IDENTIFIER )
 					{
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					nullValue=(Token)match(input,NULL,FOLLOW_NULL_in_queryvalue1121); 
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:159:25: ( IDENTIFIER )
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:159:26: IDENTIFIER
+					{
+					symbol=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_queryvalue1157); 
+					symbol_tree = (CommonTree)adaptor.create(symbol);
+					adaptor.addChild(root_0, symbol_tree);
+
+					}
+
+					 attribute.setValue(new FormulaSymbol(generator.convertSymbol(symbol.getText()))); 
+					}
+					break;
+				case 4 :
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:160:18: nullValue= NULL
+					{
+					root_0 = (CommonTree)adaptor.nil();
+
+
+					nullValue=(Token)match(input,NULL,FOLLOW_NULL_in_queryvalue1183); 
 					nullValue_tree = (CommonTree)adaptor.create(nullValue);
 					adaptor.addChild(root_0, nullValue_tree);
 
 					 attribute.setValue(new FormulaConstant(nullValue.getText(), true)); 
 					}
 					break;
-				case 4 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:159:18: expression= EXPRESSION
+				case 5 :
+					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/DependenciesCF.g:161:18: expression= EXPRESSION
 					{
 					root_0 = (CommonTree)adaptor.nil();
 
 
-					expression=(Token)match(input,EXPRESSION,FOLLOW_EXPRESSION_in_queryvalue1146); 
+					expression=(Token)match(input,EXPRESSION,FOLLOW_EXPRESSION_in_queryvalue1208); 
 					expression_tree = (CommonTree)adaptor.create(expression);
 					adaptor.addChild(root_0, expression_tree);
 
@@ -2177,37 +2246,39 @@ public class DependenciesCFParser extends Parser {
 	public static final BitSet FOLLOW_builtin_in_atom556 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_comparison_in_atom560 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_IDENTIFIER_in_relationalAtom571 = new BitSet(new long[]{0x0000000000004000L});
-	public static final BitSet FOLLOW_14_in_relationalAtom575 = new BitSet(new long[]{0x0000000002001620L});
+	public static final BitSet FOLLOW_14_in_relationalAtom575 = new BitSet(new long[]{0x0000000002001660L});
 	public static final BitSet FOLLOW_attribute_in_relationalAtom577 = new BitSet(new long[]{0x0000000000018000L});
-	public static final BitSet FOLLOW_16_in_relationalAtom580 = new BitSet(new long[]{0x0000000002001620L});
+	public static final BitSet FOLLOW_16_in_relationalAtom580 = new BitSet(new long[]{0x0000000002001660L});
 	public static final BitSet FOLLOW_attribute_in_relationalAtom582 = new BitSet(new long[]{0x0000000000018000L});
 	public static final BitSet FOLLOW_15_in_relationalAtom586 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_IDENTIFIER_in_queryAtom604 = new BitSet(new long[]{0x0000000000004000L});
-	public static final BitSet FOLLOW_14_in_queryAtom608 = new BitSet(new long[]{0x0000000002001620L});
+	public static final BitSet FOLLOW_14_in_queryAtom608 = new BitSet(new long[]{0x0000000002001660L});
 	public static final BitSet FOLLOW_queryattribute_in_queryAtom610 = new BitSet(new long[]{0x0000000000018000L});
-	public static final BitSet FOLLOW_16_in_queryAtom613 = new BitSet(new long[]{0x0000000002001620L});
+	public static final BitSet FOLLOW_16_in_queryAtom613 = new BitSet(new long[]{0x0000000002001660L});
 	public static final BitSet FOLLOW_queryattribute_in_queryAtom615 = new BitSet(new long[]{0x0000000000018000L});
 	public static final BitSet FOLLOW_15_in_queryAtom619 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_EXPRESSION_in_builtin635 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_leftargument_in_comparison694 = new BitSet(new long[]{0x0000000000000800L});
-	public static final BitSet FOLLOW_OPERATOR_in_comparison716 = new BitSet(new long[]{0x0000000002001400L});
+	public static final BitSet FOLLOW_OPERATOR_in_comparison716 = new BitSet(new long[]{0x0000000002001440L});
 	public static final BitSet FOLLOW_rightargument_in_comparison737 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_25_in_leftargument767 = new BitSet(new long[]{0x0000000000000040L});
 	public static final BitSet FOLLOW_IDENTIFIER_in_leftargument770 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_set_in_leftargument795 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_25_in_rightargument848 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_IDENTIFIER_in_rightargument851 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_set_in_rightargument876 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_value_in_attribute930 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_queryvalue_in_queryattribute949 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_25_in_value967 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_IDENTIFIER_in_value970 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_set_in_value995 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NULL_in_value1026 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_EXPRESSION_in_value1051 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_25_in_queryvalue1062 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_IDENTIFIER_in_queryvalue1065 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_set_in_queryvalue1090 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NULL_in_queryvalue1121 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_EXPRESSION_in_queryvalue1146 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_25_in_rightargument852 = new BitSet(new long[]{0x0000000000000040L});
+	public static final BitSet FOLLOW_IDENTIFIER_in_rightargument855 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_set_in_rightargument880 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_value_in_attribute938 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_queryvalue_in_queryattribute957 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_25_in_value975 = new BitSet(new long[]{0x0000000000000040L});
+	public static final BitSet FOLLOW_IDENTIFIER_in_value978 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_set_in_value1003 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_IDENTIFIER_in_value1035 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NULL_in_value1061 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_EXPRESSION_in_value1086 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_25_in_queryvalue1097 = new BitSet(new long[]{0x0000000000000040L});
+	public static final BitSet FOLLOW_IDENTIFIER_in_queryvalue1100 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_set_in_queryvalue1125 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_IDENTIFIER_in_queryvalue1157 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_NULL_in_queryvalue1183 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_EXPRESSION_in_queryvalue1208 = new BitSet(new long[]{0x0000000000000002L});
 }

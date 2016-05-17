@@ -138,7 +138,7 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
         // needed because DEDs cannot be normalized earlier on
         newExtTGDs = dependencyNormalizer.normalizeTGDs(newExtTGDs);
         for (Dependency eTGD : newExtTGDs) {
-            generatorFinder.findGenerators(eTGD);
+            generatorFinder.findGenerators(eTGD, scenario);
         }
         if (logger.isDebugEnabled()) logger.debug("Normalized generated TGDs: \n" + LunaticUtility.printCollection(newExtTGDs));
         return newExtTGDs;

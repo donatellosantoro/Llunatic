@@ -20,6 +20,7 @@ import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.SQLQueryString;
 import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.operators.dbms.IValueEncoder;
 import speedy.utility.SpeedyUtility;
 
 public class Scenario {
@@ -48,6 +49,7 @@ public class Scenario {
     private Set<AttributeRef> attributesWithLabeledNulls;
     private AttributesInSameCellGroups attributesInSameCellGroups;
     private DependencyStratification stratification;
+    private IValueEncoder valueEncoder;
     //
     private LunaticConfiguration configuration = new LunaticConfiguration();
 
@@ -69,7 +71,7 @@ public class Scenario {
     }
 
     public boolean isMCScenario() {
-        return !this.extEgds.isEmpty();
+        return !this.extEgds.isEmpty() || (this.egds.isEmpty() && this.stTgds.isEmpty());
     }
 
     public boolean isDEDScenario() {
@@ -180,6 +182,14 @@ public class Scenario {
 
     public void setQueries(List<Dependency> queries) {
         this.queries = queries;
+    }
+
+    public IValueEncoder getValueEncoder() {
+        return valueEncoder;
+    }
+
+    public void setValueEncoder(IValueEncoder valueEncoder) {
+        this.valueEncoder = valueEncoder;
     }
 
     public Dependency getDependency(String dependencyId) {

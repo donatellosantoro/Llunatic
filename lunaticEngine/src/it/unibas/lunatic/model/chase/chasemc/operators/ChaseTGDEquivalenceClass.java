@@ -14,6 +14,7 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.generators.IValueGenerator;
+import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import speedy.model.database.TableAlias;
 import speedy.model.database.Tuple;
 import speedy.model.database.TupleOID;
 import speedy.model.database.operators.IRunQuery;
+import speedy.utility.SpeedyUtility;
 
 public class ChaseTGDEquivalenceClass {
 
@@ -261,6 +263,9 @@ public class ChaseTGDEquivalenceClass {
     private IValue generateNullValueForVariable(FormulaVariable existentialVariable, Map<AttributeRef, IValueGenerator> targetGenerators, Tuple tuple) {
         IValueGenerator generator = targetGenerators.get(existentialVariable.getConclusionRelationalOccurrences().get(0).getAttributeRef());
         IValue value = generator.generateValue(tuple);
+        if (generator instanceof SkolemFunctionGenerator) {
+            value = new NullValue(SpeedyConstants.BIGINT_SKOLEM_PREFIX + Math.abs(value.toString().hashCode()));
+        }
         return value;
     }
 
