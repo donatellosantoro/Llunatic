@@ -22,6 +22,7 @@ import speedy.SpeedyConstants;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.DBMSUtility;
+import speedy.utility.SpeedyUtility;
 
 public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
 
@@ -105,7 +106,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(schemaAndTable).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
-        script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
+        script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
         String idType = " text";
         if (scenario.getConfiguration().isUseDictionaryEncoding()) {
             idType = " bigint";
@@ -115,7 +116,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
 //        script.append("CREATE INDEX ").append(attributeName).append("_oid  ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append(" USING btree(tid ASC);\n");
 //        script.append("CREATE INDEX ").append(attributeName).append("_step  ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append(" USING btree(step ASC);\n\n");
 //        script.append("REINDEX TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append(";\n");
-        script.append(generateTriggerFunction(deltaDBSchema, tableName, attributeName));
+        script.append(generateTriggerFunction(deltaDBSchema, tableName, attributeName, attributeType));
         script.append(addTriggerToTable(deltaDBSchema, tableName, attributeName));
         return script.toString();
     }
@@ -129,7 +130,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(schemaAndTable).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
         for (Attribute attribute : tableNonAffectedAttributes) {
-            script.append(SpeedyConstants.INDENT).append(attribute.getName()).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attribute.getType())).append(",\n");
+            script.append(SpeedyConstants.INDENT).append(attribute.getName()).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attribute.getType())).append(",\n");
         }
         LunaticUtility.removeChars(",\n".length(), script);
         script.append("\n").append(") WITH OIDS;").append("\n\n");
@@ -200,7 +201,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         return result.toString();
     }
 
-    private String generateTriggerFunction(String deltaDBSchema, String tableName, String attributeName) {
+    private String generateTriggerFunction(String deltaDBSchema, String tableName, String attributeName, String attributeType) {
         StringBuilder result = new StringBuilder();
         String deltaRelationName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
         result.append("CREATE OR REPLACE FUNCTION ").append(deltaDBSchema).append(".update_occurrences_");
@@ -208,22 +209,25 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         result.append(SpeedyConstants.INDENT).append("BEGIN").append("\n");
         String indent = SpeedyConstants.INDENT + SpeedyConstants.INDENT;
         String longIndent = indent + SpeedyConstants.INDENT;
-        result.append(createInsertPart(deltaDBSchema, tableName, attributeName, longIndent));
+        result.append(createInsertPart(deltaDBSchema, tableName, attributeName, attributeType, longIndent));
         result.append(longIndent).append("RETURN NEW;").append("\n");
         result.append(SpeedyConstants.INDENT).append("END;").append("\n");
         result.append("$$ LANGUAGE plpgsql;").append("\n\n");
         return result.toString();
     }
 
-    private String createInsertPart(String deltaDBSchema, String tableName, String attributeName, String indent) {
+    private String createInsertPart(String deltaDBSchema, String tableName, String attributeName, String attributeType, String indent) {
         StringBuilder result = new StringBuilder();
-        //If is NULL or LLUN and the cluster id is not defined, copy its value as cluster id
         String longIndent = indent + SpeedyConstants.INDENT;
         result.append(indent).append("IF POSITION ('").append(SpeedyConstants.SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar)) = 1 ");
-        result.append(indent).append("OR (POSITION ('").append(SpeedyConstants.BIGINT_SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar)) = 1 ");
-        result.append(indent).append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar)) > " + SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS + " )");
-        result.append(indent).append("OR (POSITION ('").append(SpeedyConstants.REAL_SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar)) = 1 ");
-        result.append(indent).append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar)) > " + SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS + " )");
+        if (SpeedyUtility.isBigInt(attributeType)) {
+            result.append(indent).append("OR (POSITION ('").append(SpeedyConstants.BIGINT_SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar)) = 1 ");
+            result.append(indent).append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar)) > ").append(SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS).append(" )");
+        }
+        if (SpeedyUtility.isDoublePrecision(attributeType)) {
+            result.append(indent).append("OR (POSITION ('").append(SpeedyConstants.DOUBLE_SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar)) = 1 ");
+            result.append(indent).append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar)) > ").append(SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS).append(" )");
+        }
         result.append("THEN").append("\n");
         result.append(longIndent).append("NEW.").append(LunaticConstants.GROUP_ID).append(" = NEW.").append(attributeName).append(";\n");
         result.append(longIndent).append("INSERT INTO ");

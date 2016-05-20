@@ -105,13 +105,15 @@ public class DAODBSchemaCF {
         initDBScript.append("CREATE TABLE ").append(tableName).append(" (");
         initDBScript.append("\n\t  oid serial,");
         for (Attribute attribute : attributes) {
-            initDBScript.append("\n\t").append(attribute.getName()).append(" ").append(convertType(attribute.getType(), isSource, useDictionaryEncoding)).append(",");
+            String attributeType = convertType(attribute.getType(), isSource, useDictionaryEncoding);
+            if (logger.isDebugEnabled()) logger.debug("Attribute type for " + attribute + ": " + attributeType);
+            initDBScript.append("\n\t").append(attribute.getName()).append(" ").append(attributeType).append(",");
         }
         SpeedyUtility.removeChars(",".length(), initDBScript);
         initDBScript.append("\n);\n");
     }
 
-    private Object convertType(String type, boolean isSource, boolean useDictionaryEncoding) {
+    private String convertType(String type, boolean isSource, boolean useDictionaryEncoding) {
         if (useDictionaryEncoding) {
             return "bigint";
         }
@@ -126,7 +128,7 @@ public class DAODBSchemaCF {
         }
         if (type.equalsIgnoreCase("DOUBLE")) {
             if (isSource) {
-                return "float";
+                return "real";
             }
             return "double precision";
         }

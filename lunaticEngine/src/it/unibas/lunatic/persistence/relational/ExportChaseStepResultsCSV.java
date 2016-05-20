@@ -118,7 +118,7 @@ public class ExportChaseStepResultsCSV {
             if (materializeFKJoins) {
                 materializeFKJoins(database, step);
             }
-            exportDatabase(database, resultFile, null);
+            exportDatabase(database, resultFile, step.getScenario());
             results.add(resultFile);
         } else {
             for (DeltaChaseStep child : step.getChildren()) {
@@ -145,6 +145,7 @@ public class ExportChaseStepResultsCSV {
                 writeTable(writer, table, scenario.getValueEncoder());
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new DAOException("Unable to export database " + ex);
         } finally {
             if (writer != null) {

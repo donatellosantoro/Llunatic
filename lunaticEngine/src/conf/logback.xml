@@ -75,6 +75,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLExportSolution" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.persistence.relational.GenerateSQLFromDependencies" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.persistence.DictionaryEncoder" level="TRACE"/>-->
 
     <!--     CHASE DE     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDEScenario" level="DEBUG"/>-->

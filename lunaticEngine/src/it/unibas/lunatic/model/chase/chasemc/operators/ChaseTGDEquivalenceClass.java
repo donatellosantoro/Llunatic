@@ -264,7 +264,17 @@ public class ChaseTGDEquivalenceClass {
         IValueGenerator generator = targetGenerators.get(existentialVariable.getConclusionRelationalOccurrences().get(0).getAttributeRef());
         IValue value = generator.generateValue(tuple);
         if (generator instanceof SkolemFunctionGenerator) {
-            value = new NullValue(SpeedyConstants.BIGINT_SKOLEM_PREFIX + Math.abs(value.toString().hashCode()));
+            String type = ((SkolemFunctionGenerator) generator).getType();
+            String skolemValue = null;
+            if (SpeedyUtility.isBigInt(type)) {
+                skolemValue = SpeedyConstants.BIGINT_SKOLEM_PREFIX + Math.abs(value.toString().hashCode());
+            }
+            if (SpeedyUtility.isDoublePrecision(type)) {
+                skolemValue = SpeedyConstants.BIGINT_SKOLEM_PREFIX + Math.abs(value.toString().hashCode()); //Automatic conversion of bigint to doubleprecision
+            }
+            if (skolemValue != null) {
+                value = new NullValue(skolemValue);
+            }
         }
         return value;
     }

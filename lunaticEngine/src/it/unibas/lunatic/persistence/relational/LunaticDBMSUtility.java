@@ -9,17 +9,11 @@ import java.sql.SQLException;
 import speedy.SpeedyConstants;
 import speedy.exceptions.DBMSException;
 import speedy.model.database.AttributeRef;
-import speedy.model.database.ConstantValue;
-import speedy.model.database.IValue;
-import speedy.model.database.LLUNValue;
-import speedy.model.database.NullValue;
 import speedy.model.database.TableAlias;
 import speedy.model.database.TupleOID;
 import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
-import speedy.persistence.Types;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
-import speedy.utility.SpeedyUtility;
 
 public class LunaticDBMSUtility {
 
@@ -65,39 +59,6 @@ public class LunaticDBMSUtility {
             return uri.substring(0, uri.lastIndexOf("/") + 1) + tempDBName;
         }
         return uri.substring(0, uri.lastIndexOf(":") + 1) + tempDBName;
-    }
-
-    public static String convertDataSourceTypeToDBType(String columnType) {
-        if (columnType.equals(Types.DATE)) {
-            return "date";
-        }
-        if (columnType.equals(Types.DATETIME)) {
-            return "datetime";
-        }
-        if (columnType.equals(Types.INTEGER)) {
-            return "bigint";
-        }
-        if (columnType.equals(Types.REAL)) {
-            return "float";
-        }
-        if (columnType.equals(Types.BOOLEAN)) {
-            return "bool";
-        }
-        return "text";
-    }
-
-    public static IValue convertDBMSValue(Object attributeValue) {
-        IValue value;
-        if (attributeValue == null || attributeValue.toString().equalsIgnoreCase(SpeedyConstants.NULL)) {
-            value = new NullValue(SpeedyConstants.NULL_VALUE);
-        } else if (SpeedyUtility.isSkolem(attributeValue.toString())) {
-            value = new NullValue(attributeValue);
-        } else if (attributeValue.toString().startsWith(SpeedyConstants.LLUN_PREFIX)) {
-            value = new LLUNValue(attributeValue);
-        } else {
-            value = new ConstantValue(attributeValue);
-        }
-        return value;
     }
 
     public static String tableAliasToSQL(TableAlias tableAlias) {

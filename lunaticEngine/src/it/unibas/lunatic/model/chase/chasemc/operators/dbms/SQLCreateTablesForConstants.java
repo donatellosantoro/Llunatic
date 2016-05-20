@@ -16,6 +16,7 @@ import speedy.model.database.EmptyDB;
 import speedy.persistence.Types;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
+import speedy.utility.DBMSUtility;
 
 public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
 
@@ -81,7 +82,7 @@ public class SQLCreateTablesForConstants implements ICreateTablesForConstants {
             String attributeName = DependencyUtility.buildAttributeNameForConstant(constant.getConstantValue());
             String type = constant.getType();
 //            String type = LunaticUtility.findType(constantValue);
-            String dbmsType = LunaticDBMSUtility.convertDataSourceTypeToDBType(type);
+            String dbmsType = DBMSUtility.convertDataSourceTypeToDBType(type);
             script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(dbmsType).append(",").append("\n");
         }
         LunaticUtility.removeChars(", ".length(), script);

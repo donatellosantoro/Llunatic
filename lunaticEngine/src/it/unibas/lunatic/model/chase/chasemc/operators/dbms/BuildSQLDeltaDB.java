@@ -22,6 +22,7 @@ import speedy.SpeedyConstants;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.DBMSUtility;
+import speedy.utility.SpeedyUtility;
 
 public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
 
@@ -103,7 +104,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(schemaAndTable).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
-        script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
+        script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.CELL_ORIGINAL_VALUE).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.GROUP_ID).append(" text").append("\n");
         script.append(") WITH OIDS;").append("\n\n");
@@ -124,7 +125,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(schemaAndTable).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
         for (Attribute attribute : tableNonAffectedAttributes) {
-            script.append(SpeedyConstants.INDENT).append(attribute.getName()).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attribute.getType())).append(",\n");
+            script.append(SpeedyConstants.INDENT).append(attribute.getName()).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attribute.getType())).append(",\n");
         }
         LunaticUtility.removeChars(",\n".length(), script);
         script.append("\n").append(") WITH OIDS;").append("\n\n");
@@ -161,7 +162,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         String deltaRelationName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
         //NOTE: Insert is done from select. To initalize cellGroupId and original value, we need to use the trigger
         script.append("INSERT INTO ").append(deltaDBSchema).append(".").append(deltaRelationName).append("\n");
-        script.append("SELECT cast('").append(rootStepId).append("' AS varchar) AS step, " + SpeedyConstants.OID + ", ").append(attributeName);
+        script.append("SELECT cast('").append(rootStepId).append("' AS varchar) AS step, ").append(SpeedyConstants.OID).append(", ").append(attributeName);
         script.append("\n").append(SpeedyConstants.INDENT);
         script.append("FROM ").append(originalDBSchema).append(".").append(tableName).append(";");
         script.append("\n");
@@ -172,7 +173,7 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         String deltaRelationName = tableName + LunaticConstants.NA_TABLE_SUFFIX;
         StringBuilder script = new StringBuilder();
         script.append("INSERT INTO ").append(deltaDBSchema).append(".").append(deltaRelationName).append("\n");
-        script.append("SELECT ").append(SpeedyConstants.OID + ",");
+        script.append("SELECT ").append(SpeedyConstants.OID).append(",");
         for (Attribute attribute : tableNonAffectedAttributes) {
             script.append(attribute.getName()).append(",");
         }
@@ -244,9 +245,9 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
 //        result.append("OR POSITION ('").append(LunaticConstants.LLUN_PREFIX).append("' IN NEW.").append(attributeName).append(") = 1 ");
         result.append(indent).append("IF POSITION ('").append(SpeedyConstants.SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar)) = 1 ");
         result.append("OR (POSITION ('").append(SpeedyConstants.BIGINT_SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar) ) = 1 ");
-        result.append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar) ) > " + SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS + " ) ");
-        result.append("OR (POSITION ('").append(SpeedyConstants.REAL_SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar) ) = 1 ");
-        result.append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar) ) > " + SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS + " ) ");
+        result.append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar) ) > ").append(SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS).append(" ) ");
+        result.append("OR (POSITION ('").append(SpeedyConstants.DOUBLE_SKOLEM_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar) ) = 1 ");
+        result.append("   AND LENGTH(cast(NEW.").append(attributeName).append(" as varchar) ) > ").append(SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS).append(" ) ");
         result.append("OR POSITION ('").append(SpeedyConstants.LLUN_PREFIX).append("' IN cast(NEW.").append(attributeName).append(" as varchar) ) = 1 ");
         result.append("THEN").append("\n");
         result.append(longIndent).append("NEW.").append(LunaticConstants.GROUP_ID).append(" = NEW.").append(attributeName).append(";\n");

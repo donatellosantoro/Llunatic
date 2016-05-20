@@ -73,6 +73,10 @@ public class DictionaryEncoder implements IValueEncoder {
         if (stringLastValue.startsWith(SpeedyConstants.BIGINT_SKOLEM_PREFIX) || stringLastValue.startsWith(SpeedyConstants.BIGINT_LLUN_PREFIX)) {
             lastValue += SpeedyConstants.MIN_BIGINT_SAFETY_SKIP_VALUE;
         }
+        if (logger.isTraceEnabled()) {
+            if (SpeedyUtility.isSkolem(lastValue + "") || SpeedyUtility.isVariable(lastValue + "")) throw new IllegalArgumentException("Dictionary encoder generates a skolem or variable " + lastValue);
+            if (lastValue % 1000000L == 0) logger.trace("Next value: " + lastValue);
+        }
         return lastValue;
     }
 
