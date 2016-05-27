@@ -18,5 +18,6 @@ public interface IFormula extends Cloneable{
     public List<FormulaVariable> getAllVariables();
     public void accept(IFormulaVisitor visitor);
     public IFormula clone();
+    public String toSaveString();
     
 }

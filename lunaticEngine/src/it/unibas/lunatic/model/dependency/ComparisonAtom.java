@@ -125,6 +125,10 @@ public class ComparisonAtom implements IFormulaAtom {
         return this.expression.toString();
     }
 
+    public String toSaveString() {
+        return expression.toStringWithDollar();
+    }
+
     public String toLongString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Expression: ").append(this.expression.toLongString());

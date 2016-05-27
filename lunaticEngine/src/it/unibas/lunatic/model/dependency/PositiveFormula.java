@@ -113,6 +113,16 @@ public class PositiveFormula implements IFormula {
         return result.toString();
     }
 
+    public String toSaveString() {
+        StringBuilder result = new StringBuilder();
+        for (IFormulaAtom atom : atoms) {
+            result.append(atom.toSaveString()).append(", ");
+        }
+        result.deleteCharAt(result.length() - 1);
+        result.deleteCharAt(result.length() - 1);
+        return result.toString();
+    }
+
     public String toLongString() {
         StringBuilder result = new StringBuilder();
         result.append(toString());

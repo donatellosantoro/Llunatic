@@ -35,6 +35,10 @@ public class FormulaSymbol implements IFormulaValue {
 //        return "\"" + value.toString() + "\"";
     }
 
+    public String toSaveString() {
+        return value.toString();
+    }
+
     public String toLongString() {
         if (true) throw new UnsupportedOperationException();
         return "Constant : " + value.toString();

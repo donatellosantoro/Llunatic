@@ -55,7 +55,7 @@ public class FormulaVariableOccurrence implements IFormulaValue {
         return this.variableId + ":" + this.attributeRef;
     }
     
-    public String toFormulaString() {
+    public String toSaveString() {
         return "$" + this.variableId;
     }
 }

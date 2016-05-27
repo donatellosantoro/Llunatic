@@ -67,12 +67,12 @@ public class ChaseMCScenario {
         try {
             // s-t tgds are chased in the standard way; this works fine as long as there are no authoritative sources
             // in place of null cells + justifications, new cells with values are generated
+            //Generate stratification (must be first step because affects other steps)
+            stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
             stChaser.doChase(scenario, false);
             ChaseTree chaseTree = new ChaseTree(scenario);
             IDatabase targetDB = scenario.getTarget();
             if (logger.isDebugEnabled()) logger.debug("-------------------Chasing dependencies on mc scenario: " + scenario);
-            //Generate stratification (must be first step because affects other steps)
-            stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
             IDatabase deltaDB = deltaBuilder.generate(targetDB, scenario, LunaticConstants.CHASE_STEP_ROOT);
             if (logger.isDebugEnabled()) logger.debug("DeltaDB: " + deltaDB);
             DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);

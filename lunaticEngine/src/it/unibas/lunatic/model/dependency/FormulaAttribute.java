@@ -44,7 +44,11 @@ public class FormulaAttribute implements Cloneable {
     public String toString() {
         return attributeName + ": " + value;
     }
-    
+
+    public String toSaveString() {
+        return attributeName + ": " + value.toSaveString();
+    }
+
     public String toLongString() {
         return attributeName + ": " + value.toLongString();
     }

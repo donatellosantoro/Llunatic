@@ -42,12 +42,14 @@ public class ProcessDependencies {
         checkExtEGDs(parserOutput, scenario);
         checkExtTGDs(parserOutput, scenario);
         checkSTTGDs(parserOutput, scenario);
-        scenario.setSTTGDs(processDependencies(parserOutput.getStTGDs(), scenario));
+//        scenario.setSTTGDs(processDependencies(parserOutput.getStTGDs(), scenario));
+        scenario.setSTTGDs(processSTTGDs(parserOutput.getStTGDs(), false, scenario));
         scenario.setExtTGDs(processExtTGDs(parserOutput.geteTGDs(), false, scenario));
         scenario.setDCs(processDependencies(parserOutput.getDcs(), scenario));
         scenario.setEGDs(processEGDs(parserOutput.getEgds(), false, scenario));
         scenario.setExtEGDs(processEGDs(parserOutput.geteEGDs(), false, scenario));
-        scenario.setDEDstTGDs(processDEDs(parserOutput.getDedstTGDs(), scenario));
+//        scenario.setDEDstTGDs(processDEDs(parserOutput.getDedstTGDs(), scenario));
+        scenario.setDEDstTGDs(processDEDSTTGDs(parserOutput.getDedstTGDs(), scenario));
         scenario.setDEDextTGDs(processDEDExtTGDs(parserOutput.getDedeTGDs(), scenario));
         scenario.setDEDEGDs(processDEDEGDs(parserOutput.getDedegds(), scenario));
         scenario.setQueries(processDependencies(parserOutput.getQueries(), scenario));
@@ -201,6 +203,27 @@ public class ProcessDependencies {
         return result;
     }
 
+    private List<Dependency> processSTTGDs(List<Dependency> sttgds, boolean fromDEDs, Scenario scenario) {
+        List<Dependency> result = new ArrayList<Dependency>();
+        for (Dependency sttgd : sttgds) {
+            assert (sttgd.getType().equals(LunaticConstants.STTGD)) : "Conclusion normalization is only needed for sttgds";
+            doCommonProcessing(sttgd, scenario);
+            List<Dependency> tgdsWithNormalizedJoinsInConclusion = null;
+            if (fromDEDs) {
+                // DED tgds cannot be normalized at this time to avoid confusing the greedy scenario generator
+                tgdsWithNormalizedJoinsInConclusion = Arrays.asList(new Dependency[]{sttgd});
+            } else {
+                tgdsWithNormalizedJoinsInConclusion = tgdConclusionNormalizer.normalizeTGD(sttgd);
+            }
+            for (Dependency normalizedTgd : tgdsWithNormalizedJoinsInConclusion) {
+                Dependency newTgd = normalizeVariablesInDependency(normalizedTgd, scenario);
+                generatorFinder.findGenerators(newTgd, scenario);
+                result.add(newTgd);
+            }
+        }
+        return result;
+    }
+
     private List<Dependency> processEGDs(List<Dependency> egds, boolean fromDEDs, Scenario scenario) {
         List<Dependency> result = new ArrayList<Dependency>();
         for (Dependency egd : egds) {
@@ -241,9 +264,9 @@ public class ProcessDependencies {
         return result;
     }
 
-    private List<DED> processDEDs(List<DED> deds, Scenario scenario) {
+    private List<DED> processDEDSTTGDs(List<DED> deds, Scenario scenario) {
         for (DED ded : deds) {
-            List<Dependency> processedDependencies = processDependencies(ded.getAssociatedDependencies(), scenario);
+            List<Dependency> processedDependencies = processSTTGDs(ded.getAssociatedDependencies(), true, scenario);
             ded.setAssociatedDependencies(processedDependencies);
         }
         return deds;

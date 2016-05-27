@@ -7,6 +7,7 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedEGD;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.EGDStratum;
+import it.unibas.lunatic.model.dependency.RewriteSTTGDs;
 import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.Comparator;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 public class AnalyzeDependencies {
 
     private static final Logger logger = LoggerFactory.getLogger(AnalyzeDependencies.class);
+    private final RewriteSTTGDs rewriter = new RewriteSTTGDs();
     private final BuildFaginDependencyGraph faginDependencyGraphBuilder = new BuildFaginDependencyGraph();
     private final CheckWeaklyAcyclicityInTGDs weaklyAcyclicityChecker = new CheckWeaklyAcyclicityInTGDs();
     private final FindSymmetricAtoms symmetryFinder = new FindSymmetricAtoms();
@@ -36,6 +38,7 @@ public class AnalyzeDependencies {
         if (scenario.getStratification() != null) {
             return;
         }
+        rewriter.rewrite(scenario);
         DirectedGraph<AttributeRef, ExtendedEdge> faginDependencyGraph = faginDependencyGraphBuilder.buildGraph(scenario.getExtTGDs());
         if (logger.isDebugEnabled()) logger.debug("Fagin Dependency graph " + faginDependencyGraph);
         weaklyAcyclicityChecker.check(faginDependencyGraph, scenario.getExtTGDs());

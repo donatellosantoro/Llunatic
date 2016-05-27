@@ -38,7 +38,11 @@ public class FormulaConstant implements IFormulaValue {
     public String toString() {
         return value.toString();
     }
-    
+
+    public String toSaveString() {
+        return value.toString();
+    }
+
     public String toLongString() {
         return "Constant : " + value.toString();
     }

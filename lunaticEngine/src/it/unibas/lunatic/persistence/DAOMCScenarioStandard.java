@@ -5,10 +5,10 @@ import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
+import it.unibas.lunatic.model.dependency.RewriteSTTGDs;
 import it.unibas.lunatic.model.dependency.operators.ProcessDependencies;
 import it.unibas.lunatic.parser.ParserOutput;
 import it.unibas.lunatic.parser.operators.ParseDependencies;
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 import org.jdom.Document;
@@ -92,6 +92,10 @@ public class DAOMCScenarioStandard {
             return;
         }
         String dependenciesString = dependenciesElement.getValue().trim();
+        loadDependencies(dependenciesString, scenario);
+    }
+
+    public void loadDependencies(String dependenciesString, Scenario scenario) throws DAOException {
         ParseDependencies generator = new ParseDependencies();
         try {
             long start = new Date().getTime();

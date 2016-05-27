@@ -8,7 +8,13 @@ import speedy.SpeedyConstants;
 public class DependencyToString {
 
     public String toLogicalString(Dependency dependency, String indent, boolean compactFormat) {
-        DependencyToStringVisitor visitor = new DependencyToStringVisitor(indent, compactFormat);
+        DependencyToStringVisitor visitor = new DependencyToStringVisitor(indent, compactFormat, false);
+        dependency.accept(visitor);
+        return visitor.getResult().toString();
+    }
+
+    public String toSaveString(Dependency dependency) {
+        DependencyToStringVisitor visitor = new DependencyToStringVisitor("", true, true);
         dependency.accept(visitor);
         return visitor.getResult().toString();
     }
@@ -28,11 +34,13 @@ class DependencyToStringVisitor implements IFormulaVisitor {
     private Stack<String> indentStack = new Stack<String>();
     private boolean premise = true;
     private boolean compactFormat;
+    private boolean saveFormat;
     private StringBuilder result = new StringBuilder();
 
-    public DependencyToStringVisitor(String indent, boolean compactFormat) {
+    public DependencyToStringVisitor(String indent, boolean compactFormat, boolean saveFormat) {
         this.indentStack.push(indent);
         this.compactFormat = compactFormat;
+        this.saveFormat = saveFormat;
     }
 
     public void visitDependency(Dependency dependency) {
@@ -81,12 +89,14 @@ class DependencyToStringVisitor implements IFormulaVisitor {
                 result.append(getIndent()).append("and not exist (");
             }
             result.append(printVariables(formula.getLocalVariables()));
-        } else {
-            if (!isRootFormula(formula)) {
-                result.append(getIndent()).append(" !(");
-            }
+        } else if (!isRootFormula(formula)) {
+            result.append(getIndent()).append(" !(");
         }
-        result.append(formula.toString());
+        if (saveFormat) {
+            result.append(formula.toSaveString());
+        } else {
+            result.append(formula.toString());
+        }
 //      result.append("\n");
     }
 

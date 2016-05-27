@@ -210,6 +210,10 @@ public class Dependency implements Cloneable {
         return new DependencyToString().toLogicalString(this, "", false);
     }
 
+    public String toSaveString() {
+        return new DependencyToString().toSaveString(this);
+    }
+
     public String toLongString() {
         StringBuilder result = new StringBuilder();
         result.append(this.toLogicalString());

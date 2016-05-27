@@ -6,4 +6,5 @@ public interface IFormulaValue extends Cloneable{
     public boolean isNull();
     public IFormulaValue clone(); 
     public String toLongString();
+    public String toSaveString();
 }

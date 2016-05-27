@@ -37,6 +37,10 @@ public class FormulaExpression implements IFormulaValue {
         return expression.toString();
     }
 
+    public String toSaveString() {
+        return expression.toStringWithDollar();
+    }
+
     public String toLongString() {
         return "Expression : " + expression.toString();
     }

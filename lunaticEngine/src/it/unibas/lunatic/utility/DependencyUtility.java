@@ -295,4 +295,12 @@ public class DependencyUtility {
         return result.substring(1, result.length() - 1);
     }
 
+    public static String printDependencies(List<Dependency> dependencies) {
+        StringBuilder sb = new StringBuilder();
+        for (Dependency dependency : dependencies) {
+            sb.append(dependency.toLogicalString());
+        }
+        return sb.toString();
+    }
+
 }

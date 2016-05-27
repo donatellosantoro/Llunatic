@@ -81,6 +81,10 @@ public class FormulaWithNegations implements IFormula {
         return "";
     }
 
+    public String toSaveString() {
+        return "";
+    }
+
     @Override
     public FormulaWithNegations clone() {
         CloneFormulaVisitor cloneFormula = new CloneFormulaVisitor();

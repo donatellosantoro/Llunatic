@@ -60,6 +60,7 @@ public class LunaticConstants {
 
     //
     public static int MAX_NUM_EGDS_TO_CHECK_VIOLATIONS = 20;
+    public static int MAX_NUM_STTGDS_TO_REWRITE = 100;
 
     ///////////////    DEBUG MODE     ///////////////////
 //    public static final boolean DBMS_DEBUG = true;

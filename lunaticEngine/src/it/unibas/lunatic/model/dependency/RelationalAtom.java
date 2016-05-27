@@ -6,48 +6,48 @@ import java.util.List;
 import speedy.model.database.TableAlias;
 
 public class RelationalAtom implements IFormulaAtom, Cloneable {
-    
+
     private IFormula formula;
     private TableAlias tableAlias;
     private List<FormulaAttribute> attributes = new ArrayList<FormulaAttribute>();
-    
+
     public RelationalAtom(String tableName) {
         this.tableAlias = new TableAlias(tableName);
     }
-    
+
     public RelationalAtom(String tableName, List<FormulaAttribute> attributes) {
         this(tableName);
         this.attributes = attributes;
     }
-    
+
     public boolean isSource() {
         return tableAlias.isSource();
     }
-    
+
     public void setSource(boolean source) {
         this.tableAlias.setSource(source);
     }
-    
+
     public IFormula getFormula() {
         return formula;
     }
-    
+
     public void setFormula(IFormula formula) {
         this.formula = formula;
     }
-    
+
     public List<FormulaAttribute> getAttributes() {
         return attributes;
     }
-    
+
     public void addAttribute(FormulaAttribute attribute) {
         this.attributes.add(attribute);
     }
-    
+
     public TableAlias getTableAlias() {
         return tableAlias;
     }
-    
+
     public void addAlias(String alias) {
         this.tableAlias.addAlias(alias);
         for (FormulaAttribute attribute : this.attributes) {
@@ -67,35 +67,35 @@ public class RelationalAtom implements IFormulaAtom, Cloneable {
             }
         }
     }
-    
+
     public boolean isAliased() {
         return this.tableAlias.isAliased();
     }
-    
+
     public String getTableName() {
         return this.tableAlias.getTableName();
     }
-    
+
     public String getTableNameWithAlias() {
         return this.tableAlias.toString();
     }
-    
+
     public void addVariable(FormulaVariable variable) {
         throw new UnsupportedOperationException("Not supported.");
     }
-    
+
     public List<FormulaVariable> getVariables() {
         throw new UnsupportedOperationException("Not supported.");
     }
-    
+
     public Expression getExpression() {
         return null;
     }
 
     public void setExpression(Expression expression) {
         throw new UnsupportedOperationException("Not supported.");
-    }    
-    
+    }
+
     @Override
     public RelationalAtom clone() {
         // atoms are superficially cloned; see PositiveFormula.clone() for deep cloning
@@ -111,13 +111,25 @@ public class RelationalAtom implements IFormulaAtom, Cloneable {
             return null;
         }
     }
-    
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append(tableAlias.getTableName()).append("(");
         for (FormulaAttribute attribute : attributes) {
             result.append(attribute).append(", ");
+        }
+        result.deleteCharAt(result.length() - 1);
+        result.deleteCharAt(result.length() - 1);
+        result.append(")");
+        return result.toString();
+    }
+
+    public String toSaveString() {
+        StringBuilder result = new StringBuilder();
+        result.append(tableAlias.getTableName()).append("(");
+        for (FormulaAttribute attribute : attributes) {
+            result.append(attribute.toSaveString()).append(", ");
         }
         result.deleteCharAt(result.length() - 1);
         result.deleteCharAt(result.length() - 1);

@@ -11,6 +11,7 @@ public class LunaticConfiguration {
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;
     private boolean deScenario = false; //MCProxy for DE chase
+    private boolean rewriteTGDs = false;
     private boolean checkGroundSolutions = false;
     private boolean checkSolutions = false;
     private boolean checkSolutionsQuery = false;
@@ -318,6 +319,14 @@ public class LunaticConfiguration {
         this.useDictionaryEncoding = useDictionaryEncoding;
     }
 
+    public boolean isRewriteTGDs() {
+        return rewriteTGDs;
+    }
+
+    public void setRewriteTGDs(boolean rewriteTGDs) {
+        this.rewriteTGDs = rewriteTGDs;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
@@ -326,6 +335,7 @@ public class LunaticConfiguration {
                 + "\n\t RecreateDBOnStart: " + recreateDBOnStart
                 + "\n\t UseLimit1: " + useLimit1ForEGDs
                 + "\n\t DEProxyMode: " + deScenario
+                + "\n\t RewriteTGDs: " + rewriteTGDs
                 + "\n\t CheckSolutions: " + checkSolutions
                 + "\n\t CheckSolutionsQuery: " + checkSolutionsQuery
                 + "\n\t CheckGroundSolutions: " + checkGroundSolutions

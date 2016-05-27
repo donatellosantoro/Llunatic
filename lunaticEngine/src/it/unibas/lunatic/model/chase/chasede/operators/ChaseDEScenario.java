@@ -78,15 +78,16 @@ public class ChaseDEScenario implements IDEChaser {
         analyzeSourceDatabase(scenario);
         long start = new Date().getTime();
         try {
+            stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
             stChaser.doChase(scenario, false);
             IDatabase targetDB = scenario.getTarget();
             if (logger.isDebugEnabled()) logger.debug("-------------------Chasing dependencies on mc scenario: " + scenario);
-            stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
             linearTGDPartitioner.findLinearTGD(scenario);
             Map<Dependency, IAlgebraOperator> egdQueryMap = treeBuilderForEGD.buildPremiseAlgebraTreesForEGDs(scenario.getExtEGDs(), scenario);
             boolean allLinearTGDs = checkIfAllTGDsAreLinear(scenario.getExtTGDs());
             tgdChaser.doChase(scenario, chaseState);
-            if (!scenario.getExtEGDs().isEmpty() && egdsAreViolated(scenario, targetDB)) {
+            List<Dependency> satisfiedEGDs = findSatisfiedEGDs(scenario, targetDB);
+            if (!scenario.getExtEGDs().isEmpty() && satisfiedEGDs.size() < scenario.getExtEGDs().size()) {
                 int iterations = 0;
                 while (true) {
                     if (chaseState.isCancelled()) {
@@ -96,6 +97,7 @@ public class ChaseDEScenario implements IDEChaser {
                     if (logger.isDebugEnabled()) logger.debug("DeltaDB: " + deltaDB);
                     ChaseTree chaseTree = new ChaseTree(scenario);
                     DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);
+                    root.getSatisfiedEGDs().addAll(satisfiedEGDs);
                     ChaserResult egdResult = egdChaser.doChase(root, scenario, chaseState, egdQueryMap);
                     boolean cellChanges = egdResult.isNewNodes();
                     if (!cellChanges) {
@@ -196,16 +198,19 @@ public class ChaseDEScenario implements IDEChaser {
         if (LunaticConfiguration.isPrintSteps()) System.out.println("****Source database analyzed in " + (end - start) + "ms");
     }
 
-    private boolean egdsAreViolated(Scenario scenario, IDatabase targetDB) {
+    private List<Dependency> findSatisfiedEGDs(Scenario scenario, IDatabase targetDB) {
+        List<Dependency> satisfiedEGDs = new ArrayList<Dependency>();
         if (scenario.getExtEGDs().size() > LunaticConstants.MAX_NUM_EGDS_TO_CHECK_VIOLATIONS) {
-            return true;
+            return satisfiedEGDs;
         }
         for (Dependency extEGD : scenario.getExtEGDs()) {
             if (!ChaseUtility.checkEGDSatisfactionWithQuery(extEGD, targetDB, scenario)) {
-                return true;
+                if (logger.isDebugEnabled()) logger.debug("EGD " + extEGD + " is violated");
+                continue;
             }
+            satisfiedEGDs.add(extEGD);
         }
-        return false;
+        return satisfiedEGDs;
     }
 
     private boolean checkIfAllTGDsAreLinear(List<Dependency> extTGDs) {

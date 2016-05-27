@@ -59,6 +59,10 @@ public class BuiltInAtom implements IFormulaAtom {
         return expression.toString();
     }
 
+    public String toSaveString() {
+        return expression.toStringWithDollar();
+    }
+
     public String toLongString() {
         return this.expression.toString() + "\n\tvariables=" + variables;
     }
