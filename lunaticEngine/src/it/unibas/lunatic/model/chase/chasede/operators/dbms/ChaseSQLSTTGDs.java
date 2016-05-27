@@ -128,26 +128,10 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
     private void createFunctionsForNumericalSkolems(Scenario scenario) {
         DBMSDB target = (DBMSDB) scenario.getTarget();
         AccessConfiguration targetAccessConfiguration = (target).getAccessConfiguration();
-        createFunctionsForNumericalSkolem(targetAccessConfiguration);
+        DBMSUtility.createFunctionsForNumericalSkolem(targetAccessConfiguration);
         AccessConfiguration workAccessConfiguration = targetAccessConfiguration.clone();
         workAccessConfiguration.setSchemaName(SpeedyConstants.WORK_SCHEMA);
-        createFunctionsForNumericalSkolem(workAccessConfiguration);
-    }
-
-    private void createFunctionsForNumericalSkolem(AccessConfiguration accessConfiguration) {
-        StringBuilder result = new StringBuilder();
-        result.append("drop function if exists bigint_skolem(text);\n"
-                + "drop function if exists double_skolem(text);\n"
-                + "create function bigint_skolem(text) returns bigint as $$\n"
-                + " select ('" + SpeedyConstants.BIGINT_SKOLEM_PREFIX + "' || @('x'||substr(md5($1),1,13))::bit(52)::bigint)::bigint;\n"
-                + "$$ language sql;\n"
-                + "\n"
-                + "create function double_skolem(text) returns double precision as $$\n"
-                + " select ('" + SpeedyConstants.BIGINT_SKOLEM_PREFIX + "' || @('x'||substr(md5($1),1,13))::bit(52)::bigint)::double precision;\n"
-                + "$$ language sql;\n"
-                + "\n");
-        if (logger.isDebugEnabled()) logger.debug("----Script for numerical skolem: " + result);
-        QueryManager.executeScript(result.toString(), accessConfiguration, true, true, true, false);
+        DBMSUtility.createFunctionsForNumericalSkolem(workAccessConfiguration);
     }
 
 }

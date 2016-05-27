@@ -9,6 +9,7 @@ import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
+import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,10 @@ public class FormulaAttributeToSQL {
         String prefix = "(['||";
         String suffix = "||'])'";
         String skolemFunctionString = "";
+        if (!DependencyUtility.hasUniversalVariablesInConclusion(dependency)) {
+            useHash = false;
+            suffix = "'])'";
+        }
         if (SpeedyUtility.isBigInt(type)) {
             skolemFunctionString = "bigint_skolem(";
             suffix = suffix + ")";

@@ -50,13 +50,16 @@ public class LunaticConstants {
 
     ///////////////    DE CHASER STRATEGIES    ///////////////////
     public static final String DE_OPTIMIZED_CHASER = "DE_OPTIMIZED_CHASER";
-    
+
     ///////////////////// COST MANAGER
     public static final String COST_MANAGER_STANDARD = "Standard";
     public static final String COST_MANAGER_SIMILARITY = "Similarity";
 //    public static final String COST_MANAGER_SIMILARITY_MULTI_REPAIR = "SimilarityMultiRepair";
     public static final String COST_MANAGER_SAMPLING = "Sampling";
     public static final String COST_MANAGER_GREEDY = "Greedy";
+
+    //
+    public static int MAX_NUM_EGDS_TO_CHECK_VIOLATIONS = 20;
 
     ///////////////    DEBUG MODE     ///////////////////
 //    public static final boolean DBMS_DEBUG = true;

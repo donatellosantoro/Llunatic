@@ -33,6 +33,7 @@ import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Map;
 import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.database.operators.IAnalyzeDatabase;
 
 public class ChaseDEScenario implements IDEChaser {
 
@@ -42,7 +43,8 @@ public class ChaseDEScenario implements IDEChaser {
     private final PartitionLinearTGDs linearTGDPartitioner = new PartitionLinearTGDs();
     private final ExportChaseStepResultsCSV resultExporter = new ExportChaseStepResultsCSV();
     private final BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
-    private final AnalyzeDatabase databaseAnalyzer = new AnalyzeDatabase();
+    private final ComputeDatabaseSize databaseSizeCalculator = new ComputeDatabaseSize();
+    private final IAnalyzeDatabase databaseAnalyzer;
     private final ExecuteFinalQueries finalQueryExecutor;
     private final IBuildDeltaDB deltaBuilder;
     private final IBuildDatabaseForChaseStep databaseBuilder;
@@ -52,7 +54,7 @@ public class ChaseDEScenario implements IDEChaser {
     private final ChaseDCs dChaser;
 
     public ChaseDEScenario(IChaseSTTGDs stChaser, ChaseDeltaEGDs egdChaser, IRunQuery queryRunner, IInsertFromSelectNaive naiveInsert,
-            IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep databaseBuilder) {
+            IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep databaseBuilder, IAnalyzeDatabase databaseAnalyze) {
         this.stChaser = stChaser;
         this.tgdChaser = new ChaseTargetTGDs(naiveInsert);
         this.egdChaser = egdChaser;
@@ -60,6 +62,7 @@ public class ChaseDEScenario implements IDEChaser {
         this.deltaBuilder = deltaBuilder;
         this.databaseBuilder = databaseBuilder;
         this.finalQueryExecutor = new ExecuteFinalQueries(queryRunner);
+        this.databaseAnalyzer = databaseAnalyze;
     }
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
@@ -72,6 +75,7 @@ public class ChaseDEScenario implements IDEChaser {
         scenario.setEGDs(new ArrayList<Dependency>());
         scenario.setExtEGDs(egds);
         CostManagerUtility.setDECostManager(scenario);
+        analyzeSourceDatabase(scenario);
         long start = new Date().getTime();
         try {
             stChaser.doChase(scenario, false);
@@ -82,7 +86,7 @@ public class ChaseDEScenario implements IDEChaser {
             Map<Dependency, IAlgebraOperator> egdQueryMap = treeBuilderForEGD.buildPremiseAlgebraTreesForEGDs(scenario.getExtEGDs(), scenario);
             boolean allLinearTGDs = checkIfAllTGDsAreLinear(scenario.getExtTGDs());
             tgdChaser.doChase(scenario, chaseState);
-            if (!scenario.getExtEGDs().isEmpty()) {
+            if (!scenario.getExtEGDs().isEmpty() && egdsAreViolated(scenario, targetDB)) {
                 int iterations = 0;
                 while (true) {
                     if (chaseState.isCancelled()) {
@@ -132,7 +136,7 @@ public class ChaseDEScenario implements IDEChaser {
     }
 
     private void printResult(IDatabase targetDB) {
-        if (!LunaticConfiguration.isPrintSteps()) {
+        if (!LunaticConfiguration.isPrintResults()) {
             return;
         }
         System.out.println(ChaseStats.getInstance().toString());
@@ -140,6 +144,8 @@ public class ChaseDEScenario implements IDEChaser {
         long chasingTime = 0L;
         long postProcessingTime = 0L;
         //Pre Processing
+        preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.INIT_DB_TIME));
+        preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.ANALYZE_DB));
         preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.LOAD_TIME));
         preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.DELTA_DB_BUILDER));
         preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.STEP_DB_BUILDER));
@@ -152,11 +158,13 @@ public class ChaseDEScenario implements IDEChaser {
 //        postProcessingTime = LunaticUtility.increaseIfNotNull(postProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.REMOVE_DUPLICATE_TIME));
         //Total Processing
         long totalTime = preProcessingTime + chasingTime + postProcessingTime;
+        PrintUtility.printInformation("----------------------------------------------------");
         PrintUtility.printInformation("*** PreProcessing time: " + preProcessingTime + " ms");
         PrintUtility.printInformation("*** Chasing time: " + chasingTime + " ms");
         PrintUtility.printInformation("*** PostProcessing time: " + postProcessingTime + " ms");
         PrintUtility.printInformation("*** Total time: " + totalTime + " ms");
-        printTargetStats(targetDB);
+        PrintUtility.printInformation("----------------------------------------------------");
+        if (logger.isDebugEnabled()) printTargetStats(targetDB);
     }
 
     private void printTargetStats(IDatabase targetDB) {
@@ -166,15 +174,38 @@ public class ChaseDEScenario implements IDEChaser {
         boolean printDetails = targetDB.getTableNames().size() < 10;
         for (String tableName : targetDB.getTableNames()) {
             ITable table = targetDB.getTable(tableName);
-            long tableSize = databaseAnalyzer.getTableSize(table);
+            long tableSize = databaseSizeCalculator.getTableSize(table);
             totalNumberOfTuples += tableSize;
             if (printDetails) {
                 System.out.println("# " + tableName + ": " + tableSize + " tuples");
             }
         }
-        Integer numberOfNulls = databaseAnalyzer.countNulls(targetDB);
+        Integer numberOfNulls = databaseSizeCalculator.countNulls(targetDB);
         System.out.println("# Number of nulls: " + numberOfNulls);
         System.out.println("### Total Number of Tuples: " + totalNumberOfTuples + " tuples");
+    }
+
+    private void analyzeSourceDatabase(Scenario scenario) {
+        if (scenario.isMainMemory()) {
+            return;
+        }
+        long start = new Date().getTime();
+        databaseAnalyzer.analyze(scenario.getSource());
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.ANALYZE_DB, end - start);
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("****Source database analyzed in " + (end - start) + "ms");
+    }
+
+    private boolean egdsAreViolated(Scenario scenario, IDatabase targetDB) {
+        if (scenario.getExtEGDs().size() > LunaticConstants.MAX_NUM_EGDS_TO_CHECK_VIOLATIONS) {
+            return true;
+        }
+        for (Dependency extEGD : scenario.getExtEGDs()) {
+            if (!ChaseUtility.checkEGDSatisfactionWithQuery(extEGD, targetDB, scenario)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean checkIfAllTGDsAreLinear(List<Dependency> extTGDs) {

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
 import speedy.model.algebra.Distinct;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.ProjectWithoutOIDs;
@@ -17,6 +18,7 @@ import speedy.model.database.Attribute;
 import speedy.model.database.AttributeRef;
 import speedy.model.expressions.Expression;
 import speedy.persistence.Types;
+import speedy.utility.DBMSUtility;
 import speedy.utility.SpeedyUtility;
 
 public class BuildAlgebraTreeForCertainAnswerQuery {
@@ -58,7 +60,17 @@ public class BuildAlgebraTreeForCertainAnswerQuery {
             stringExpression.append("(isNotNull(").append(attributeRef.toString()).append("))");
             if (type.equals(Types.STRING)) {
                 stringExpression.append(" && ");
-                stringExpression.append("!(startswith(").append(attributeRef.toString()).append(",\"_SK\"))");
+                stringExpression.append("!(startswith(").append(attributeRef.toString()).append(",\"" + SpeedyConstants.SKOLEM_PREFIX + "\"))");
+            } else if (SpeedyUtility.isBigInt(type)) {
+                stringExpression.append(" && ");
+                stringExpression.append("(length(cast(").append(attributeRef.toString()).append(", text))  < ").append(SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS);
+                stringExpression.append(" || ");
+                stringExpression.append("!(startswith(").append(attributeRef.toString()).append(",\"" + SpeedyConstants.BIGINT_SKOLEM_PREFIX + "\")))");
+            } else if (SpeedyUtility.isDoublePrecision(type)) {
+                stringExpression.append(" && ");
+                stringExpression.append("(length(cast(").append(attributeRef.toString()).append(", text))  > ").append(SpeedyConstants.MIN_LENGTH_FOR_NUMERIC_PLACEHOLDERS);
+                stringExpression.append(" || ");
+                stringExpression.append("!(startswith(").append(attributeRef.toString()).append(",\"" + SpeedyConstants.DOUBLE_SKOLEM_PREFIX + "\")))");
             }
             Expression expression = new Expression(stringExpression.toString());
             expression.setVariableDescription(attributeRef.toString(), attributeRef);

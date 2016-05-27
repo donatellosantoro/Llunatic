@@ -1,6 +1,5 @@
 package it.unibas.lunatic.test.de.mainmemory;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import it.unibas.lunatic.test.References;
@@ -26,5 +25,12 @@ public class TestChaseEgd extends CheckTest {
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
+    }
+
+    public void testRSTgdEgdMultiple() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.RS_egd_multiple);
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+//        checkExpectedInstances(result, scenario);
     }
 }

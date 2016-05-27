@@ -20,6 +20,7 @@ import org.nfunk.jep.function.ArcTangent;
 import org.nfunk.jep.function.ArcTangent2;
 import org.nfunk.jep.function.Arg;
 import org.nfunk.jep.function.Binomial;
+import org.nfunk.jep.function.Cast;
 import org.nfunk.jep.function.Ceil;
 import org.nfunk.jep.function.ComplexPFMC;
 import org.nfunk.jep.function.Conjugate;
@@ -274,6 +275,7 @@ public class JEP implements Cloneable {
         funTab.put("indexof", new IndexOf());
         funTab.put("startswith", new StartsWith());
         funTab.put("length", new Length());
+        funTab.put("cast", new Cast());
     
         funTab.put("newId", new NewId());
         funTab.put("date", new Date());

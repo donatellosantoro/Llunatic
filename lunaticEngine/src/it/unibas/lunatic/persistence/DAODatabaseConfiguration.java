@@ -70,6 +70,7 @@ public class DAODatabaseConfiguration {
             AccessConfiguration accessConfiguration = new AccessConfiguration();
             accessConfiguration.setDriver(dbmsElement.getChildText("driver").trim());
             accessConfiguration.setUri(dbmsElement.getChildText("uri").trim() + (useDictionaryEncoding ? "_enc" : ""));
+//            accessConfiguration.setUri(dbmsElement.getChildText("uri").trim());
             accessConfiguration.setSchemaName(dbmsElement.getChildText("schema").trim());
             if (suffix != null && !suffix.trim().isEmpty()) {
                 accessConfiguration.setSchemaSuffix(suffix.trim());

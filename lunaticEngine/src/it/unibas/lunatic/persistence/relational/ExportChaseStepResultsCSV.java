@@ -61,6 +61,7 @@ public class ExportChaseStepResultsCSV {
 
     public void exportSolutionsInSeparateFiles(ChaseTree chaseTree, Scenario scenario) {
         long start = new Date().getTime();
+        if(scenario.getValueEncoder()!=null) scenario.getValueEncoder().prepareForDecoding();
         List<DeltaChaseStep> leaves = ChaseUtility.getAllLeaves(chaseTree.getRoot());
         int solutionIndex = 0;
         for (DeltaChaseStep step : leaves) {
@@ -75,17 +76,20 @@ public class ExportChaseStepResultsCSV {
                 exportTable(table, path, scenario);
             }
         }
+        if(scenario.getValueEncoder()!=null) scenario.getValueEncoder().closeDecoding();
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.WRITE_TIME, end - start);
     }
 
     public void exportSolutionInSeparateFiles(IDatabase database, Scenario scenario) {
         long start = new Date().getTime();
+        if(scenario.getValueEncoder()!=null) scenario.getValueEncoder().prepareForDecoding();
         String path = scenario.getConfiguration().getExportSolutionsPath();
         for (String tableName : database.getTableNames()) {
             ITable table = database.getTable(tableName);
             exportTable(table, path, scenario);
         }
+        if(scenario.getValueEncoder()!=null) scenario.getValueEncoder().closeDecoding();
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.WRITE_TIME, end - start);
     }
@@ -154,7 +158,7 @@ public class ExportChaseStepResultsCSV {
         }
     }
 
-    public void exportTable(ITable table, String folder, Scenario scenario) {
+    private void exportTable(ITable table, String folder, Scenario scenario) {
         String file = folder + "/" + table.getName() + ".csv";
         File outputFile = new File(file);
         outputFile.getParentFile().mkdirs();

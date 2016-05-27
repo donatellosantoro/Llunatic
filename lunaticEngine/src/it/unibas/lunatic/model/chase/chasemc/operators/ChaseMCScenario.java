@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.IInsertTuple;
 import speedy.model.database.operators.IRunQuery;
-import speedy.model.database.operators.dbms.IValueEncoder;
 import speedy.utility.PrintUtility;
 
 public class ChaseMCScenario {

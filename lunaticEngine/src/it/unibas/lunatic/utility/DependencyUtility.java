@@ -207,6 +207,11 @@ public class DependencyUtility {
         return targetJoinAttributes;
     }
 
+    public static boolean hasUniversalVariablesInConclusion(Dependency dependency) {
+        List<FormulaVariable> universalVariablesInConclusion = DependencyUtility.getUniversalVariablesInConclusion(dependency);
+        return !universalVariablesInConclusion.isEmpty();
+    }
+
     public static boolean hasSourceSymbols(Dependency dependency) {
         FindSourceAtoms sourceAtomFinder = new FindSourceAtoms();
         return sourceAtomFinder.hasSourceAtoms(dependency);

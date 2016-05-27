@@ -12,6 +12,7 @@ import java.util.Map;
 import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
 import speedy.model.database.Attribute;
 import speedy.utility.DBMSUtility;
 import speedy.utility.SpeedyUtility;
@@ -32,12 +33,14 @@ public class DAODBSchemaCF {
             throw new DAOException("SchemaFile " + schemaFileElement.getText() + " does not contain any table");
         }
         StringBuilder initDBScript = new StringBuilder();
+        initDBScript.append("BEGIN TRANSACTION;\n");
         initDBScript.append("create schema ").append(schemaName).append(";\n");
         initDBScript.append("SET search_path = ").append(schemaName).append(", pg_catalog;\n\n");
         for (String tableName : schemaMap.keySet()) {
             List<Attribute> attributes = schemaMap.get(tableName);
             appendTable(tableName, attributes, initDBScript, isSource, useDictionaryEncoding);
         }
+        initDBScript.append("\nCOMMIT TRANSACTION;");
         if (logger.isDebugEnabled()) logger.debug("InitDB Script:\n" + initDBScript.toString());
         return initDBScript.toString();
     }

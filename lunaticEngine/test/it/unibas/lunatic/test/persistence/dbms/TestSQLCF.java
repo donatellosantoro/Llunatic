@@ -2,6 +2,7 @@ package it.unibas.lunatic.test.persistence.dbms;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForCertainAnswerQuery;
+import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
+import speedy.model.database.IDatabase;
 
 public class TestSQLCF extends CheckTest {
 
@@ -27,8 +29,8 @@ public class TestSQLCF extends CheckTest {
         IAlgebraOperator operator = treeBuilder.generateOperator(q9, scenario);
         if (logger.isDebugEnabled()) logger.debug(operator.toString());
         if (logger.isDebugEnabled()) logger.debug(new AlgebraTreeToSQL().treeToSQL(operator, scenario.getSource(), scenario.getTarget(), ""));
-//        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
-//        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
     }
 
 //    public void test() throws Exception {

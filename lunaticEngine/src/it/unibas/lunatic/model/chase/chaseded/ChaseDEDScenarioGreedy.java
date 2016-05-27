@@ -14,6 +14,7 @@ import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.DED;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.FindTargetGenerators;
+import it.unibas.lunatic.model.dependency.operators.NormalizeConclusionsInEGDs;
 import it.unibas.lunatic.model.dependency.operators.NormalizeConclusionsInTGDs;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
@@ -32,7 +33,8 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
     private IDEDDatabaseManager databaseManager;
     //
     private ImmutableChaseState immutableChaseState = ImmutableChaseState.getInstance();
-    private NormalizeConclusionsInTGDs dependencyNormalizer = new NormalizeConclusionsInTGDs();
+    private NormalizeConclusionsInTGDs tgdDependencyNormalizer = new NormalizeConclusionsInTGDs();
+    private NormalizeConclusionsInEGDs egdDependencyNormalizer = new NormalizeConclusionsInEGDs();
     private FindTargetGenerators generatorFinder = new FindTargetGenerators();
 
     public ChaseDEDScenarioGreedy(IChaseSTTGDs stChaser, IDEChaser deChaser, IDEDDatabaseManager databaseManager) {
@@ -72,7 +74,7 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
                 result = doChase(scenario, dedScenario, chaseState);
                 //Solution found
                 if (logger.isDebugEnabled()) logger.debug("DED Scenario " + dedScenario.getId() + " generates a solution!");
-                if (LunaticConfiguration.isPrintSteps()) System.out.println("*** DED Scenario " + dedScenario.getId() + " generates a solution!");
+                if (LunaticConfiguration.isPrintResults()) System.out.println("*** DED Scenario " + dedScenario.getId() + " generates a solution!");
                 if (scenario.getConfiguration().isChaseDEDGreedyExecuteAllScenarios()) {
                     rollbackChase(originalTarget, scenario);
                     continue;
@@ -82,7 +84,7 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
             } catch (ChaseFailedException ex) {
                 if (logger.isDebugEnabled()) logger.debug("Chase fail: " + ex);
                 if (logger.isDebugEnabled()) logger.debug("DED Scenario " + dedScenario.getId() + " failed!");
-                if (LunaticConfiguration.isPrintSteps()) System.out.println("*** DED Scenario " + dedScenario.getId() + " failed!");
+                if (LunaticConfiguration.isPrintResults()) System.out.println("*** DED Scenario " + dedScenario.getId() + " failed!");
                 ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_FAILED_GREEDY_SCENARIOS, 1);
                 rollbackChase(originalTarget, scenario);
             } catch (Exception ex) {
@@ -119,9 +121,8 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
         for (DED ded : scenario.getDEDstTGDs()) {
             deScenario.getSTTgds().add(dedScenario.getDependencyForDED(ded));
         }
-        for (DED ded : scenario.getDEDEGDs()) {
-            deScenario.getEGDs().add(dedScenario.getDependencyForDED(ded));
-        }
+        List<Dependency> newEGDs = processDEDEGDs(scenario, dedScenario);
+        deScenario.getEGDs().addAll(newEGDs);
         List<Dependency> newExtTGDs = processDEDTGDs(scenario, dedScenario);
         deScenario.getExtTGDs().addAll(newExtTGDs);
         if (logger.isDebugEnabled()) logger.debug("DE Scenario associated to the DED Scenario " + dedScenario.getId() + ":\n" + deScenario);
@@ -136,12 +137,24 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
         }
         if (logger.isDebugEnabled()) logger.debug("Generated TGDs from DED: \n" + LunaticUtility.printCollection(newExtTGDs));
         // needed because DEDs cannot be normalized earlier on
-        newExtTGDs = dependencyNormalizer.normalizeTGDs(newExtTGDs);
+        newExtTGDs = tgdDependencyNormalizer.normalizeTGDs(newExtTGDs);
         for (Dependency eTGD : newExtTGDs) {
             generatorFinder.findGenerators(eTGD, scenario);
         }
         if (logger.isDebugEnabled()) logger.debug("Normalized generated TGDs: \n" + LunaticUtility.printCollection(newExtTGDs));
         return newExtTGDs;
+    }
+
+    private List<Dependency> processDEDEGDs(Scenario scenario, GreedyDEDScenario dedScenario) {
+        List<Dependency> newEGDs = new ArrayList<Dependency>();
+        for (DED ded : scenario.getDEDEGDs()) {
+            newEGDs.add(dedScenario.getDependencyForDED(ded));
+        }
+        if (logger.isDebugEnabled()) logger.debug("Generated EGDs from DED: \n" + LunaticUtility.printCollection(newEGDs));
+        // needed because DEDs cannot be normalized earlier on
+        newEGDs = egdDependencyNormalizer.normalizeEGDs(newEGDs);
+        if (logger.isDebugEnabled()) logger.debug("Normalized generated EGDs: \n" + LunaticUtility.printCollection(newEGDs));
+        return newEGDs;
     }
 
     private List<GreedyDEDScenario> generateGreedyDEDScenarios(Scenario scenario) {

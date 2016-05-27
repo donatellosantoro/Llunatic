@@ -106,7 +106,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(schemaAndTable).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
-        script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attributeType)).append(",").append("\n");
+        script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attributeType, scenario.getConfiguration())).append(",").append("\n");
         String idType = " text";
         if (scenario.getConfiguration().isUseDictionaryEncoding()) {
             idType = " bigint";
@@ -130,7 +130,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(schemaAndTable).append("(").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
         for (Attribute attribute : tableNonAffectedAttributes) {
-            script.append(SpeedyConstants.INDENT).append(attribute.getName()).append(" ").append(DBMSUtility.convertDataSourceTypeToDBType(attribute.getType())).append(",\n");
+            script.append(SpeedyConstants.INDENT).append(attribute.getName()).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attribute.getType(), scenario.getConfiguration())).append(",\n");
         }
         LunaticUtility.removeChars(",\n".length(), script);
         script.append("\n").append(") WITH OIDS;").append("\n\n");
@@ -192,20 +192,26 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
     private String addTriggerToTable(String deltaDBSchema, String tableName, String attributeName) {
         StringBuilder result = new StringBuilder();
         String deltaRelationName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
-        result.append("DROP TRIGGER IF EXISTS trigg_update_occurrences_").append(deltaRelationName);
+        String triggerName = "trigg_update_occurrences_" + deltaRelationName;
+        triggerName = DBMSUtility.cleanFunctionName(triggerName);
+        String functionName = "update_occurrences_" + deltaRelationName;
+        functionName = DBMSUtility.cleanFunctionName(functionName);
+        result.append("DROP TRIGGER IF EXISTS ").append(triggerName);
         result.append(" ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append(";").append("\n\n");
-        result.append("CREATE TRIGGER trigg_update_occurrences_").append(deltaRelationName).append("\n");
+        result.append("CREATE TRIGGER ").append(triggerName).append("\n");
         result.append("BEFORE INSERT ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append("\n");
-        result.append("FOR EACH ROW EXECUTE PROCEDURE ").append(deltaDBSchema).append(".update_occurrences_");
-        result.append(deltaRelationName).append("();").append("\n\n");
+        result.append("FOR EACH ROW EXECUTE PROCEDURE ").append(deltaDBSchema).append(".");
+        result.append(functionName).append("();").append("\n\n");
         return result.toString();
     }
 
     private String generateTriggerFunction(String deltaDBSchema, String tableName, String attributeName, String attributeType) {
         StringBuilder result = new StringBuilder();
         String deltaRelationName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
-        result.append("CREATE OR REPLACE FUNCTION ").append(deltaDBSchema).append(".update_occurrences_");
-        result.append(deltaRelationName).append("() RETURNS TRIGGER AS $$").append("\n");
+        String functionName = "update_occurrences_" + deltaRelationName;
+        functionName = DBMSUtility.cleanFunctionName(functionName);
+        result.append("CREATE OR REPLACE FUNCTION ").append(deltaDBSchema).append(".");
+        result.append(functionName).append("() RETURNS TRIGGER AS $$").append("\n");
         result.append(SpeedyConstants.INDENT).append("BEGIN").append("\n");
         String indent = SpeedyConstants.INDENT + SpeedyConstants.INDENT;
         String longIndent = indent + SpeedyConstants.INDENT;

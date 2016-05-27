@@ -12,7 +12,10 @@ import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
+import speedy.exceptions.DBMSException;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
 import speedy.model.database.IDatabase;
@@ -23,17 +26,28 @@ import speedy.utility.SpeedyUtility;
 
 public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
 
+    private final static Logger logger = LoggerFactory.getLogger(SQLInsertFromSelectNaive.class);
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
     private FormulaAttributeToSQL attributeGenerator = new FormulaAttributeToSQL();
 
     public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target, Scenario scenario) {
-        String selectQuery = queryBuilder.treeToSQL(sourceQuery, source, target, SpeedyConstants.INDENT + SpeedyConstants.INDENT);
-        String insertQuery = generateInsertScript(dependency, selectQuery, (DBMSDB) target, scenario);
-        return QueryManager.executeInsertOrDelete(insertQuery, ((DBMSDB) target).getAccessConfiguration());
+        try {
+//        LunaticDBMSUtility.createFunctionsForNumericalSkolem(((DBMSDB) target).getAccessConfiguration());
+            String selectQuery = queryBuilder.treeToSQL(sourceQuery, source, target, SpeedyConstants.INDENT + SpeedyConstants.INDENT);
+            String insertQuery = generateInsertScript(dependency, selectQuery, (DBMSDB) target, scenario);
+            return QueryManager.executeInsertOrDelete(insertQuery, ((DBMSDB) target).getAccessConfiguration());
+        } catch (DBMSException ex) {
+            if (ex.getMessage().contains("ERROR: function bigint_skolem(text) does not exist")) {
+                logger.warn("Some function missings in the current C3p0 thread. Retrying...");
+                return execute(dependency, sourceQuery, source, target, scenario);
+            }
+            throw ex;
+        }
     }
-    
+
     private String generateInsertScript(Dependency dependency, String selectQuery, DBMSDB target, Scenario scenario) {
         StringBuilder result = new StringBuilder();
+        result.append("BEGIN TRANSACTION;\n");
         String targetSchemaName = DBMSUtility.getSchemaNameAndDot(target.getAccessConfiguration());
         for (IFormulaAtom atom : dependency.getConclusion().getAtoms()) {
             RelationalAtom relationalAtom = (RelationalAtom) atom;
@@ -50,6 +64,7 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
             result.append(generateSelectForInsert(relationalAtom, dependency, selectQuery, scenario));
             result.append(";\n\n");
         }
+        result.append("COMMIT TRANSACTION;\n");
         return result.toString();
     }
 

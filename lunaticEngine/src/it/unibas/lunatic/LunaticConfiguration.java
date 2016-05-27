@@ -4,6 +4,7 @@ public class LunaticConfiguration {
 
 //    private static boolean printSteps = true;
     private static boolean printSteps = false;
+    private static boolean printResults = false;
     private boolean debugMode = false;
     private boolean recreateDBOnStart = false;
     private boolean cleanSchemasOnStartForDEScenarios = true;
@@ -54,6 +55,14 @@ public class LunaticConfiguration {
 
     public static void setPrintSteps(boolean aPrintSteps) {
         printSteps = aPrintSteps;
+    }
+
+    public static boolean isPrintResults() {
+        return printResults;
+    }
+
+    public static void setPrintResults(boolean aPrintResults) {
+        printResults = aPrintResults;
     }
 
     public boolean isDebugMode() {

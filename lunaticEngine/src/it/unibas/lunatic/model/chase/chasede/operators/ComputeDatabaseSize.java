@@ -11,10 +11,10 @@ import speedy.model.database.ITable;
 import speedy.model.database.Tuple;
 import speedy.utility.SpeedyUtility;
 
-public class AnalyzeDatabase {
+public class ComputeDatabaseSize {
 
     private long THRESHOLD = 2000000;
-    private final static Logger logger = LoggerFactory.getLogger(AnalyzeDatabase.class);
+    private final static Logger logger = LoggerFactory.getLogger(ComputeDatabaseSize.class);
 
     public Integer countNulls(IDatabase database) {
         Set<String> nulls = new HashSet<String>();

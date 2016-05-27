@@ -41,6 +41,9 @@ public class FormulaVariable implements Cloneable, IVariableDescription {
     }
 
     public void addNonRelationalOccurrence(IFormulaAtom atom) {
+        if(atom == null){
+            throw new IllegalArgumentException("Adding null atom to occurrence");
+        }
         if (atom instanceof RelationalAtom) {
             throw new IllegalArgumentException("This is a relational atom occurrence: " + atom);
         }

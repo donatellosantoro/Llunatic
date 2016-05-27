@@ -13,6 +13,7 @@ import it.unibas.lunatic.persistence.DAOAccessConfiguration;
 import it.unibas.lunatic.persistence.DAOLunaticConfiguration;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import java.io.File;
+import java.text.DateFormat;
 import java.util.Date;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -26,6 +27,7 @@ import speedy.utility.PrintUtility;
 
 public class Main {
 
+    private final static DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG);
     private final static DAOMCScenario daoScenario = new DAOMCScenario();
     private final static DAOLunaticConfiguration daoConfiguration = new DAOLunaticConfiguration();
     private final static DAOAccessConfiguration daoAccessConfiguration = new DAOAccessConfiguration();
@@ -45,9 +47,9 @@ public class Main {
             String fileScenario = confFile.getAbsolutePath();
             LunaticConfiguration conf = daoConfiguration.loadConfiguration(fileScenario);
             if (conf.isRecreateDBOnStart()) {
-                removeExistingDB(fileScenario);
+                removeExistingDB(fileScenario, conf);
             } else if (isDEScenario(fileScenario) && conf.isCleanSchemasOnStartForDEScenarios()) {
-                AccessConfiguration accessConfiguration = daoAccessConfiguration.loadTargetAccessConfiguration(fileScenario);
+                AccessConfiguration accessConfiguration = daoAccessConfiguration.loadTargetAccessConfiguration(fileScenario, conf);
                 DBMSUtility.cleanWorkTargetSchemas(accessConfiguration);
             }
             System.out.println("*** Loading scenario " + fileScenario + "... ");
@@ -56,7 +58,7 @@ public class Main {
             if (!bigScenario(scenario)) {
                 System.out.println(scenario);
             }
-            System.out.println("*** Chasing scenario...");
+            System.out.println("*** Chasing scenario (" + df.format(new Date()) + ")...");
             long start = new Date().getTime();
             if (scenario.isDEDScenario()) {
                 chaseDEDScenario(scenario);
@@ -158,8 +160,8 @@ public class Main {
         return false;
     }
 
-    private static void removeExistingDB(String fileScenario) {
-        AccessConfiguration accessConfiguration = daoAccessConfiguration.loadTargetAccessConfiguration(fileScenario);
+    public static void removeExistingDB(String fileScenario, LunaticConfiguration conf) {
+        AccessConfiguration accessConfiguration = daoAccessConfiguration.loadTargetAccessConfiguration(fileScenario, conf);
         if (accessConfiguration == null) {
             return;
         }
@@ -175,7 +177,7 @@ public class Main {
         }
     }
 
-    private static boolean isDEScenario(String fileScenario) {
+    public static boolean isDEScenario(String fileScenario) {
         Document document = new DAOXmlUtility().buildDOM(fileScenario);
         Element rootElement = document.getRootElement();
         Element dependenciesElement = rootElement.getChild("dependencies");

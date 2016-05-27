@@ -79,6 +79,10 @@ public class DAOLunaticConfiguration {
         if (configurationElement == null || configurationElement.getChildren().isEmpty()) {
             return configuration;
         }
+        Element printResultsElement = configurationElement.getChild("printResults");
+        if (printResultsElement != null) {
+            configuration.setPrintResults(Boolean.parseBoolean(printResultsElement.getValue()));
+        }
         Element printStepsElement = configurationElement.getChild("printSteps");
         if (printStepsElement != null) {
             configuration.setPrintSteps(Boolean.parseBoolean(printStepsElement.getValue()));

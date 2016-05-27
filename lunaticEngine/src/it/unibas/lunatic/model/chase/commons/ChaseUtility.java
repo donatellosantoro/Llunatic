@@ -2,8 +2,10 @@ package it.unibas.lunatic.model.chase.commons;
 
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.LunaticConstants;
+import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
+import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForEGD;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
@@ -35,12 +37,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
 import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.Limit;
 import speedy.model.algebra.Scan;
 import speedy.model.algebra.Select;
+import speedy.model.algebra.operators.ITupleIterator;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
 import speedy.model.database.CellRef;
 import speedy.model.database.ConstantValue;
+import speedy.model.database.IDatabase;
 import speedy.model.database.IValue;
 import speedy.model.database.TableAlias;
 import speedy.model.database.Tuple;
@@ -483,6 +488,19 @@ public class ChaseUtility {
 
     public static boolean hasChaseStats(Scenario scenario) {
         return !scenario.getExtEGDs().isEmpty() && scenario.getConfiguration().isRemoveDuplicates();
+    }
+
+    public static boolean checkEGDSatisfactionWithQuery(Dependency egd, IDatabase databaseForStep, Scenario scenario) {
+        if (logger.isDebugEnabled()) logger.debug("Checking satisfaction for egd " + egd.getId() + " in current node ");
+        BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
+        IAlgebraOperator violationQuery = treeBuilderForEGD.buildTreeForExtEGDPremise(egd, true, scenario);
+        Limit limit1 = new Limit(1);
+        limit1.addChild(violationQuery);
+        if (logger.isDebugEnabled()) logger.debug("Violation query\n" + limit1);
+        ITupleIterator it = OperatorFactory.getInstance().getQueryRunner(scenario).run(limit1, scenario.getSource(), databaseForStep);
+        boolean hasResults = it.hasNext();
+        it.close();
+        return !hasResults;
     }
 
 }

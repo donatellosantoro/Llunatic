@@ -70,6 +70,9 @@ import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.BuildMainMemor
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.BuildMainMemoryDeltaDBDE;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectNaive;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryRemoveDuplicates;
+import speedy.model.database.operators.IAnalyzeDatabase;
+import speedy.model.database.operators.dbms.SQLAnalyzeDatabase;
+import speedy.model.database.operators.mainmemory.MainMemoryAnalyzeDatabase;
 
 public class OperatorFactory {
 
@@ -321,6 +324,13 @@ public class OperatorFactory {
             return new MainMemoryRemoveDuplicates();
         }
         return new SQLRemoveDuplicates();
+    }
+
+    public IAnalyzeDatabase getDatabaseAnalyzer(Scenario scenario) {
+        if (scenario.isMainMemory()) {
+            return new MainMemoryAnalyzeDatabase();
+        }
+        return new SQLAnalyzeDatabase();
     }
 
     public IExportSolution getSolutionExporter(Scenario scenario) {

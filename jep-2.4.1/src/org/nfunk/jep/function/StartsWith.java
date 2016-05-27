@@ -36,6 +36,7 @@ public class StartsWith extends PostfixMathCommand {
     public String getSQLName(Node node, JEP jepExpression) {
         String right = getValue(node.jjtGetChild(0),jepExpression);
         String left = getValue(node.jjtGetChild(1),jepExpression);
-        return "(" + right + " LIKE " + left + " || '%')";
+//        return "(" + right + "::text LIKE " + left + " || '%')";
+        return " (POSITION (" + left + " IN " + right + " ::text) = 1) ";
     }
 }

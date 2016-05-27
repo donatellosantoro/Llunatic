@@ -33,6 +33,7 @@ public class ChaseStats {
     public static final String DTGD_TIME = "Denial TGD Time";
     public static final String DELTA_DB_BUILDER = "Building Delta DB";
     public static final String STEP_DB_BUILDER = "Building DB for Chase Step";
+    public static final String ANALYZE_DB = "Analyze Database Time";
     public static final String REMOVE_DUPLICATE_TIME = "Removing Duplicate Time";
     public static final String DUPLICATE_TIME = "Finding Duplicate Time";
     public static final String COMPUTE_SIMILARITY_TIME = "Compute Similarity Time";
@@ -60,7 +61,11 @@ public class ChaseStats {
     public static final String HASH_CELL_GROUP_TIME = "Hash cellgroup time";
     public static final String HASHED_CELL_GROUP_CELLS = "#Hashed cellgroup-cell";
     public static final String HASH_CELL_GROUP_CELL_TIME = "Hash cell group cell time";
+    public static final String DICTIONARY_LOADING_TIME = "Dictionary loading time";
+    public static final String DICTIONARY_WRITING_TIME = "Dictionary writing time";
     public static final String DICTIONARY_ENCODING_TIME = "Dictionary encoding time";
+    public static final String DICTIONARY_DECODING_TIME = "Dictionary decoding time";
+    public static final String DICTIONARY_CLOSING_TIME = "Dictionary closing time";
     /////
     public static final String CHECK_CONS_CELL_GROUPS = "Check consistency of cell groups time";
     /////

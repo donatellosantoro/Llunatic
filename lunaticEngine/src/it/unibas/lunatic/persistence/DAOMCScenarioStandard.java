@@ -1,5 +1,6 @@
 package it.unibas.lunatic.persistence;
 
+import it.unibas.lunatic.persistence.encoding.DictionaryEncoder;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
@@ -41,6 +42,7 @@ public class DAOMCScenarioStandard {
             scenario.setConfiguration(configuration);
             if (configuration.isUseDictionaryEncoding()) {
                 scenario.setValueEncoder(new DictionaryEncoder(DAOUtility.extractScenarioName(fileScenario)));
+                scenario.getValueEncoder().prepareForEncoding();
             }
             //SOURCE
             Element sourceElement = rootElement.getChild("source");
@@ -69,6 +71,9 @@ public class DAOMCScenarioStandard {
             loadQueries(queriesElement, scenario);
             end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.LOAD_TIME, end - start);
+            if (configuration.isUseDictionaryEncoding()) {
+                scenario.getValueEncoder().closeEncoding();
+            }
             return scenario;
         } catch (Throwable ex) {
             logger.error(ex.getLocalizedMessage());
@@ -96,6 +101,7 @@ public class DAOMCScenarioStandard {
             long end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.PARSING_TIME, end - start);
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new DAOException(ex);
         }
     }

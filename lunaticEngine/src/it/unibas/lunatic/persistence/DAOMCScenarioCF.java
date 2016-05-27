@@ -1,5 +1,6 @@
 package it.unibas.lunatic.persistence;
 
+import it.unibas.lunatic.persistence.encoding.DictionaryEncoder;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
@@ -39,6 +40,7 @@ public class DAOMCScenarioCF {
             scenario.setConfiguration(configuration);
             if (configuration.isUseDictionaryEncoding()) {
                 scenario.setValueEncoder(new DictionaryEncoder(DAOUtility.extractScenarioName(fileScenario)));
+                scenario.getValueEncoder().prepareForEncoding();
             }
             //SOURCE
             Element sourceElement = rootElement.getChild("source");
@@ -66,6 +68,9 @@ public class DAOMCScenarioCF {
             //QUERIES
             end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.LOAD_TIME, end - start);
+            if (configuration.isUseDictionaryEncoding()) {
+                scenario.getValueEncoder().closeEncoding();
+            }
             return scenario;
         } catch (Throwable ex) {
             logger.error(ex.getLocalizedMessage());
@@ -79,6 +84,7 @@ public class DAOMCScenarioCF {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void loadDependenciesAndQueries(Element dependenciesElement, Element queriesElement, Scenario scenario) throws DAOException {
         StringBuilder dependenciesAndQueries = new StringBuilder();
         if (dependenciesElement != null) {
@@ -99,10 +105,11 @@ public class DAOMCScenarioCF {
             }
         }
         if (queriesElement != null) {
-            Element queryFileElement = queriesElement.getChild("queryFile");
-            if (queryFileElement != null) {
+            dependenciesAndQueries.append("Queries:\n");
+            List<Element> queryListElement = queriesElement.getChildren("queryFile");
+            for (Element queryFileElement : queryListElement) {
                 String content = DAOUtility.loadFileContent(queryFileElement.getText(), scenario.getFileName());
-                dependenciesAndQueries.append("Queries:\n").append(content).append("\n");
+                dependenciesAndQueries.append(content).append("\n");
             }
         }
         if (logger.isDebugEnabled()) logger.debug(dependenciesAndQueries.toString());

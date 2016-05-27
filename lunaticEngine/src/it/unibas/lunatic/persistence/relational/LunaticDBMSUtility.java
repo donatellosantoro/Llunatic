@@ -1,5 +1,6 @@
 package it.unibas.lunatic.persistence.relational;
 
+import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.model.database.lazyloading.DBMSTupleLoader;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
@@ -14,6 +15,7 @@ import speedy.model.database.TupleOID;
 import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
+import speedy.utility.DBMSUtility;
 
 public class LunaticDBMSUtility {
 
@@ -112,6 +114,13 @@ public class LunaticDBMSUtility {
             schemaName += SpeedyConstants.SUFFIX_SEPARATOR + scenario.getSuffix();
         }
         return schemaName;
+    }
+
+    public static String convertDataSourceTypeToDBType(String attributeType, LunaticConfiguration configuration) {
+        if (configuration.isUseDictionaryEncoding()) {
+            return "bigint";
+        }
+        return DBMSUtility.convertDataSourceTypeToDBType(attributeType);
     }
 
 }

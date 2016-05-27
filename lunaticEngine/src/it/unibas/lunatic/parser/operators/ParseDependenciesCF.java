@@ -125,7 +125,9 @@ public class ParseDependenciesCF {
         if (scenario.getValueEncoder() == null) {
             return "\"" + symbol + "\"";
         }
-        return scenario.getValueEncoder().encode(symbol);
+        String encodedSymbol = scenario.getValueEncoder().encode(symbol);
+        if (logger.isDebugEnabled()) logger.debug("Encoding symbol: " + symbol + " in " + encodedSymbol);
+        return encodedSymbol;
     }
 
 }
