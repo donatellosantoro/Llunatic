@@ -8,7 +8,7 @@
     </appender>
     <appender name="file" class="ch.qos.logback.core.FileAppender">
         <Append>false</Append>
-        <File>${user.home}/Temp/logLunatic.txt</File>
+        <File>${user.home}/.temp/logLunatic.log</File>
         <encoder>
             <pattern>%m%n</pattern>
         </encoder>
