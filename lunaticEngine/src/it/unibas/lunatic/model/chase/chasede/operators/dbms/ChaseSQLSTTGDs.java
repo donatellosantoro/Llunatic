@@ -63,10 +63,24 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
         result.append("\nCOMMIT;\n");
         result.append("--DROP SCHEMA ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(" CASCADE;\n");
         if (logger.isDebugEnabled()) logger.debug("----Script for STTGDs: " + result);
-        QueryManager.executeScript(result.toString(), accessConfiguration, true, true, true, false);
+        executeScript(result.toString(), accessConfiguration);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.STTGD_TIME, end - start);
         if (LunaticConfiguration.isPrintSteps()) System.out.println("****Chase for s-t tgds completed in " + (end - start) + "ms");
+    }
+
+    private void executeScript(String script, AccessConfiguration accessConfiguration) {
+        try {
+            QueryManager.executeScript(script, accessConfiguration, true, true, true, false);
+        } catch (DBMSException ex) {
+            if (ex.getMessage().contains("ERROR: function bigint_skolem(text) does not exist")
+                    || ex.getMessage().contains("ERROR: function double_skolem(text) does not exist")) {
+                logger.warn("Some functions are missing in the current C3p0 thread. Retrying...");
+                executeScript(script, accessConfiguration);
+                return;
+            }
+            throw ex;
+        }
     }
 
     private Set<Dependency> findDependenciesToMaterialize(List<Dependency> stTgds, Scenario scenario) {
