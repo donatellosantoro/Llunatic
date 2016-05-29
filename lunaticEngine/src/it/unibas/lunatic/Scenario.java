@@ -18,8 +18,10 @@ import speedy.model.database.AttributeRef;
 import speedy.model.database.EmptyDB;
 import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
+import speedy.model.database.dbms.DBMSVirtualDB;
 import speedy.model.database.dbms.SQLQueryString;
 import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.mainmemory.MainMemoryVirtualDB;
 import speedy.model.database.operators.dbms.IValueEncoder;
 import speedy.utility.SpeedyUtility;
 
@@ -263,12 +265,12 @@ public class Scenario {
 
     public boolean isMainMemory() {
         return (this.source == null || this.source instanceof MainMemoryDB || this.source instanceof EmptyDB)
-                && (this.target instanceof MainMemoryDB || this.target instanceof EmptyDB);
+                && (this.target instanceof MainMemoryDB || this.target instanceof MainMemoryVirtualDB || this.target instanceof EmptyDB);
     }
 
     public boolean isDBMS() {
         return (this.source == null || this.source instanceof EmptyDB || this.source instanceof DBMSDB)
-                && (this.target instanceof DBMSDB);
+                && (this.target instanceof DBMSDB || this.target instanceof DBMSVirtualDB);
     }
 
     public DependencyStratification getStratification() {
