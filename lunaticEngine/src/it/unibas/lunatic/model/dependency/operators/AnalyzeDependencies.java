@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.commons.operators.GenerateStatsForScenario;
 import it.unibas.lunatic.model.dependency.AttributesInSameCellGroups;
 import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -8,7 +9,6 @@ import it.unibas.lunatic.model.dependency.ExtendedEGD;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.EGDStratum;
 import it.unibas.lunatic.model.dependency.RewriteSTTGDs;
-import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.Comparator;
 import java.util.List;
@@ -35,6 +35,7 @@ public class AnalyzeDependencies {
     private final FindAttributesInSameCellGroup attributeInSameCellGroupFinder = new FindAttributesInSameCellGroup();
     private final FindInclusionDependencies inclusionDependencyFinder = new FindInclusionDependencies();
     private final FindFunctionalDependencies functionalDependencyFinder = new FindFunctionalDependencies();
+    private final GenerateStatsForScenario statGenerator = new GenerateStatsForScenario();
 
     public void analyzeDependencies(Scenario scenario) {
         if (scenario.getStratification() != null) {
@@ -63,8 +64,9 @@ public class AnalyzeDependencies {
         tgdStratificationBuilder.buildTGDStratification(scenario.getExtTGDs(), stratification);
         scenario.setStratification(stratification);
         checkAuthoritativeSources(scenario.getExtEGDs(), scenario);
-        inclusionDependencyFinder.findInclusionDependencies(scenario);
-        functionalDependencyFinder.findFunctionalDepenendcies(scenario);
+        inclusionDependencyFinder.findInclusionDependenciesAndLinearTgds(scenario);
+        functionalDependencyFinder.findFunctionalDependencies(scenario);
+        statGenerator.generateStats(scenario);
     }
 
     private void findAllQueriedAttributesForEGDs(List<Dependency> dependencies) {

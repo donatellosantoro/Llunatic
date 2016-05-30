@@ -16,7 +16,6 @@ import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import speedy.model.expressions.Expression;
-import it.unibas.lunatic.utility.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

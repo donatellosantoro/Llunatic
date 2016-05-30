@@ -5,7 +5,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.persistence.DAOMCScenarioStandard;
 import it.unibas.spicy.model.mapping.rewriting.operators.RewriteAndExportSTTgds;
 import it.unibas.spicy.persistence.DAOException;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

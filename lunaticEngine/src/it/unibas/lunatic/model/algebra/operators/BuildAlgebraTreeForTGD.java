@@ -6,7 +6,7 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

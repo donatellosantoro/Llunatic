@@ -2,8 +2,6 @@ package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,21 +9,27 @@ public class FindInclusionDependencies {
 
     private final static Logger logger = LoggerFactory.getLogger(FindInclusionDependencies.class);
 
-    public void findInclusionDependencies(Scenario scenario) {
+    public void findInclusionDependenciesAndLinearTgds(Scenario scenario) {
         for (Dependency extTGD : scenario.getExtTGDs()) {
             extTGD.setInclusionDependency(isInclusionDependency(extTGD));
-            if (logger.isDebugEnabled()) logger.debug("TGD: " + extTGD.toLogicalString() + "\n Linear: " + extTGD.isInclusionDependency());
+            if (logger.isDebugEnabled()) logger.debug("TGD: " + extTGD.toLogicalString() + "\n Inclusion dep.: " + extTGD.isInclusionDependency());
+            extTGD.setLinearTgd(isLinearTgd(extTGD));
+            if (logger.isDebugEnabled()) logger.debug("TGD: " + extTGD.toLogicalString() + "\n Linear: " + extTGD.isLinearTgd());
         }
     }
 
-    private boolean isInclusionDependency(Dependency extTGD) {
-        List<VariableEquivalenceClass> equivalenceClasses = extTGD.getPremise().getLocalVariableEquivalenceClasses();
-        for (VariableEquivalenceClass equivalenceClass : equivalenceClasses) {
-            if (equivalenceClass.getPremiseRelationalOccurrences().size() > 1) {
-                return false;
-            }
+    private boolean isInclusionDependency(Dependency tgd) {
+        if (!DependencyUtility.hasSingleAtom(tgd.getPremise()) || !DependencyUtility.hasSingleAtom(tgd.getConclusion())) {
+            return false;
         }
-        return true;
+        return DependencyUtility.allVariablesHaveSingletonOccurrences(tgd);
     }
 
+    private boolean isLinearTgd(Dependency tgd) {
+        if (!DependencyUtility.hasSingleAtom(tgd.getPremise()) || !DependencyUtility.hasSingleAtom(tgd.getConclusion())) {
+            return false;
+        }
+        return DependencyUtility.allVariablesHaveSingletonOccurrences(tgd);
+    }
+    
 }

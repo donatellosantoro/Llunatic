@@ -2,7 +2,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;

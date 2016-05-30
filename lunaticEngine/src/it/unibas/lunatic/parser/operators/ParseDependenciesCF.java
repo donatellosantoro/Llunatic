@@ -6,7 +6,7 @@ import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.parser.ParserOutput;
 import it.unibas.lunatic.parser.output.DependenciesCFLexer;
 import it.unibas.lunatic.parser.output.DependenciesCFParser;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.runtime.ANTLRStringStream;

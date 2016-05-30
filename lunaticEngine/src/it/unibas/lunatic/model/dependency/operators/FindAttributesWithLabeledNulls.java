@@ -5,7 +5,6 @@ import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
-import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;

@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.dependency;
 
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

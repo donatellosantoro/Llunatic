@@ -2,7 +2,6 @@ package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.Comparator;
 
 class DependencyComparator implements Comparator<Dependency> {

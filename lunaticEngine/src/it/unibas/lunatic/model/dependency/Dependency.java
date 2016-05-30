@@ -27,6 +27,7 @@ public class Dependency implements Cloneable {
     private boolean overlapBetweenAffectedAndQueried;
     private FunctionalDependency functionalDependency;
     private boolean inclusionDependency;
+    private boolean linearTgd;
 
     public Dependency() {
     }
@@ -173,6 +174,14 @@ public class Dependency implements Cloneable {
         this.inclusionDependency = inclusionDependency;
     }
 
+    public boolean isLinearTgd() {
+        return linearTgd;
+    }
+
+    public void setLinearTgd(boolean linearTgd) {
+        this.linearTgd = linearTgd;
+    }
+
     public boolean isFunctionalDependency() {
         return this.functionalDependency != null;
     }
@@ -240,6 +249,7 @@ public class Dependency implements Cloneable {
         result.append("  Has Symmetric Atoms: ").append(hasSymmetricChase()).append("\n");
         result.append("  Join Graph Is Cyclic: ").append(joinGraphIsCyclic).append("\n");
         result.append("  Inclusion dependency: ").append(inclusionDependency).append("\n");
+        result.append("  Linear tgd: ").append(linearTgd).append("\n");
         result.append("  Functional dependency: ").append(isFunctionalDependency()).append("\n");
 //        result.append("  Extended dependencies:\n");
 //        for (ExtendedDependency extendedDependency : extendedDependencies) {

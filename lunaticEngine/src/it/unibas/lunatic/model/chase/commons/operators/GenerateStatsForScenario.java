@@ -14,9 +14,6 @@ public class GenerateStatsForScenario {
     private final static Logger logger = LoggerFactory.getLogger(GenerateStatsForScenario.class);
 
     public void generateStats(Scenario scenario) {
-//    public static final String NUMBER_OF_INCLUSION_DEPS = "#INC-DEPs";
-//    public static final String NUMBER_OF_EXTGDS_FDS = "#Ex-GDS-FDs";
-//    public static final String NUMBER_OF_EGDS_FDS = "#EGDS-FDs";
         // schemas
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_SOURCE_TABLES, scenario.getSource().getTableNames().size());
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_SOURCE_ATTRIBUTES, countAttributes(scenario.getSource()));
@@ -24,12 +21,16 @@ public class GenerateStatsForScenario {
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_TARGET_ATTRIBUTES, countAttributes(scenario.getTarget()));
         // dependencies
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_STTGDS, scenario.getSTTgds().size());
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EGDS, scenario.getEGDs().size());
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_INCLUSION_DEPS, countInclusionDependencies(scenario.getExtTGDs()));
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_LINEAR_TGDS, countLinearTgds(scenario.getExtTGDs()));
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXTGDS, scenario.getExtTGDs().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EGDS, scenario.getEGDs().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EGDS_FDS, countFunctionalDependencies(scenario.getEGDs()));
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXTEGDS, scenario.getExtEGDs().size());
+        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXTEGDS_FDS, countFunctionalDependencies(scenario.getExtEGDs()));
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DCS, scenario.getDCs().size());
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_QUERIES, scenario.getQueries().size());
+        // deds
         if (scenario.isDEDScenario()) {
             ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DED_STTGDS, scenario.getDEDstTGDs().size());
             ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DED_EGDS, scenario.getDEDEGDs().size());
@@ -47,10 +48,30 @@ public class GenerateStatsForScenario {
         return counter;
     }
 
-    private long countInclusionDependencies(List<Dependency> extTGDs) {
+    private long countInclusionDependencies(List<Dependency> tgds) {
         int counter = 0;
-        for (Dependency tgd : extTGDs) {
+        for (Dependency tgd : tgds) {
             if (tgd.isInclusionDependency()) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    private long countLinearTgds(List<Dependency> tgds) {
+        int counter = 0;
+        for (Dependency tgd : tgds) {
+            if (tgd.isLinearTgd()) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    private long countFunctionalDependencies(List<Dependency> egds) {
+        int counter = 0;
+        for (Dependency egd : egds) {
+            if (egd.isFunctionalDependency()) {
                 counter++;
             }
         }

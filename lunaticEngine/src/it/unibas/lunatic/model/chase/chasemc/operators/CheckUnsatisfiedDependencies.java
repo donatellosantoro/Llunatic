@@ -14,7 +14,7 @@ import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Arrays;

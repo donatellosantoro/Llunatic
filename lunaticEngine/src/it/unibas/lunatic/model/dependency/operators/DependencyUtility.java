@@ -1,4 +1,4 @@
-package it.unibas.lunatic.utility;
+package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.operators.AlgebraUtility;
@@ -11,6 +11,7 @@ import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
 import it.unibas.lunatic.model.dependency.operators.FindSourceAtoms;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -281,12 +282,29 @@ public class DependencyUtility {
         return !findAuthoritativeAtoms(egd, scenario).isEmpty();
     }
 
-    public static boolean isLav(Dependency stTgd) {
-        return stTgd.getPremise().getPositiveFormula().getAtoms().size() == 1;
+    public static boolean isLav(Dependency tgd) {
+//        return stTgd.getPremise().getPositiveFormula().getAtoms().size() == 1;
+          return hasSingleAtom(tgd.getPremise());
     }
 
-    public static boolean isGav(Dependency stTgd) {
-        return stTgd.getConclusion().getPositiveFormula().getAtoms().size() == 1;
+    public static boolean isGav(Dependency tgd) {
+//        return stTgd.getConclusion().getPositiveFormula().getAtoms().size() == 1;
+          return hasSingleAtom(tgd.getConclusion());
+    }
+
+    public static boolean hasSingleAtom(IFormula formula) {
+        return formula.getPositiveFormula().getAtoms().size() == 1 &&
+                formula.getNegatedSubFormulas().isEmpty();
+    }
+
+    public static boolean allVariablesHaveSingletonOccurrences(Dependency tgd) {
+        List<VariableEquivalenceClass> equivalenceClasses = tgd.getPremise().getLocalVariableEquivalenceClasses();
+        for (VariableEquivalenceClass equivalenceClass : equivalenceClasses) {
+            if (equivalenceClass.getPremiseRelationalOccurrences().size() > 1) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static String clean(String expressionString) {

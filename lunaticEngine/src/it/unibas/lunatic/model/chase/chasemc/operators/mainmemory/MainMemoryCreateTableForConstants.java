@@ -4,7 +4,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ICreateTablesForConstants;
 import it.unibas.lunatic.model.dependency.AllConstantsInFormula;
 import it.unibas.lunatic.model.dependency.ConstantInFormula;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.List;
 import org.slf4j.Logger;

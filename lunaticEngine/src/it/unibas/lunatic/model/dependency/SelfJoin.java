@@ -5,19 +5,25 @@ import speedy.model.database.TableAlias;
 
 public class SelfJoin {
 
-    private List<TableAlias> atoms;
+    private final List<TableAlias> atoms;
+    private final VariableEquivalenceClass variableEquivalenceClass;
 
-    public SelfJoin(List<TableAlias> atoms) {
+    public SelfJoin(List<TableAlias> atoms, VariableEquivalenceClass variableEquivalenceClass) {
         this.atoms = atoms;
+        this.variableEquivalenceClass = variableEquivalenceClass;
     }
 
     public List<TableAlias> getAtoms() {
         return atoms;
     }
 
+    public VariableEquivalenceClass getVariableEquivalenceClass() {
+        return variableEquivalenceClass;
+    }
+
     @Override
     public String toString() {
-        return "SelfJoin{" + "atoms=" + atoms + '}';
+        return "SelfJoin{" + "atoms=" + atoms + " - variables: " + variableEquivalenceClass + '}';
     }
 
     @Override
