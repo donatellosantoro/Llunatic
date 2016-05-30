@@ -104,24 +104,24 @@ public class BuildAlgebraTree {
         return root;
     }
 
-    private IAlgebraOperator buildStandardTreeForFormulaWithNegationsWithJoin(Dependency dependency, IFormula formula, Scenario scenario, boolean premise, boolean addOidInequality) {
-        IAlgebraOperator root = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, formula.getPositiveFormula(), premise, addOidInequality);
-        for (IFormula negatedFormula : formula.getNegatedSubFormulas()) {
-            root = addStandardDifferences(dependency, root, (FormulaWithNegations) negatedFormula, scenario, premise, addOidInequality);
-        }
-        return root;
-    }
-
-    private IAlgebraOperator addStandardDifferences(Dependency dependency, IAlgebraOperator root, FormulaWithNegations negatedFormula, Scenario scenario, boolean premise, boolean addOidInequality) {
-        IAlgebraOperator negatedRoot = buildStandardTreeForFormulaWithNegations(dependency, negatedFormula, scenario, premise, addOidInequality);
-        IAlgebraOperator joinRoot = addJoinForDifference(root, negatedRoot, negatedFormula);
-        IAlgebraOperator project = new Project(SpeedyUtility.createProjectionAttributes(root.getAttributes(scenario.getSource(), scenario.getTarget())));
-        project.addChild(joinRoot);
-        IAlgebraOperator difference = new Difference();
-        difference.addChild(root);
-        difference.addChild(project);
-        return difference;
-    }
+//    private IAlgebraOperator buildStandardTreeForFormulaWithNegationsWithJoin(Dependency dependency, IFormula formula, Scenario scenario, boolean premise, boolean addOidInequality) {
+//        IAlgebraOperator root = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, formula.getPositiveFormula(), premise, addOidInequality);
+//        for (IFormula negatedFormula : formula.getNegatedSubFormulas()) {
+//            root = addStandardDifferences(dependency, root, (FormulaWithNegations) negatedFormula, scenario, premise, addOidInequality);
+//        }
+//        return root;
+//    }
+//
+//    private IAlgebraOperator addStandardDifferences(Dependency dependency, IAlgebraOperator root, FormulaWithNegations negatedFormula, Scenario scenario, boolean premise, boolean addOidInequality) {
+//        IAlgebraOperator negatedRoot = buildStandardTreeForFormulaWithNegations(dependency, negatedFormula, scenario, premise, addOidInequality);
+//        IAlgebraOperator joinRoot = addJoinForDifference(root, negatedRoot, negatedFormula);
+//        IAlgebraOperator project = new Project(SpeedyUtility.createProjectionAttributes(root.getAttributes(scenario.getSource(), scenario.getTarget())));
+//        project.addChild(joinRoot);
+//        IAlgebraOperator difference = new Difference();
+//        difference.addChild(root);
+//        difference.addChild(project);
+//        return difference;
+//    }
 
     private IAlgebraOperator addJoinForDifference(IAlgebraOperator root, IAlgebraOperator negatedRoot, FormulaWithNegations negatedFormula) {
         List<DifferenceEquality> differenceEqualities = findDifferenceEqualities(negatedFormula);
