@@ -11,7 +11,7 @@ public class LunaticConfiguration {
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;
     private boolean deScenario = false; //MCProxy for DE chase
-    private boolean rewriteTGDs = true;
+    private boolean rewriteTGDs = false;
     private boolean checkGroundSolutions = false;
     private boolean checkSolutions = false;
     private boolean checkSolutionsQuery = false;

@@ -19,7 +19,6 @@ import it.unibas.lunatic.model.chase.commons.IChaseState;
 import it.unibas.lunatic.model.chase.commons.ImmutableChaseState;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies;
-import it.unibas.lunatic.model.dependency.operators.FindInclusionDependencies;
 import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +72,7 @@ public class ChaseDEScenario implements IDEChaser {
         analyzeSourceDatabase(scenario);
         long start = new Date().getTime();
         try {
+            dependencyAnalyzer.analyzeDependencies(scenario);
             stChaser.doChase(scenario, false);
             IDatabase targetDB = scenario.getTarget();
             if (logger.isDebugEnabled()) logger.debug("-------------------Chasing dependencies on mc scenario: " + scenario);

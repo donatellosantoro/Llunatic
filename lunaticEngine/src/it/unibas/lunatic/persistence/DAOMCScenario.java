@@ -16,7 +16,6 @@ public class DAOMCScenario {
     private final DAOXmlUtility daoUtility = new DAOXmlUtility();
     private final DAOMCScenarioStandard daoStandard = new DAOMCScenarioStandard();
     private final DAOMCScenarioCF daoCF = new DAOMCScenarioCF();
-    private final AnalyzeDependencies dependencyAnalyzer = new AnalyzeDependencies();
 
     public Scenario loadScenario(String fileScenario) throws DAOException {
         return loadScenario(fileScenario, null);
@@ -35,7 +34,6 @@ public class DAOMCScenario {
         } else {
             scenario = daoCF.loadScenario(fileScenario, suffix);
         }
-        dependencyAnalyzer.analyzeDependencies(scenario);
         return scenario;
     }
 
