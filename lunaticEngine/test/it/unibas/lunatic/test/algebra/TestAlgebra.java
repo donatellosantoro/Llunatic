@@ -22,6 +22,7 @@ import speedy.model.algebra.Project;
 import speedy.model.algebra.Scan;
 import speedy.model.algebra.Select;
 import speedy.model.algebra.SelectIn;
+import speedy.model.algebra.SelectNotIn;
 import speedy.model.algebra.aggregatefunctions.CountAggregateFunction;
 import speedy.model.algebra.aggregatefunctions.IAggregateFunction;
 import speedy.model.algebra.aggregatefunctions.ValueAggregateFunction;
@@ -100,6 +101,28 @@ public class TestAlgebra extends TestCase {
         String stringResult = LunaticUtility.printTupleIterator(result);
         if (logger.isTraceEnabled()) logger.debug(stringResult);
         Assert.assertTrue(stringResult.startsWith("Number of tuples: 1\n"));
+    }
+
+    public void testSelectNotIn() {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_plain);
+        TableAlias innerTableAlias = new TableAlias("IBLBookSet", true);
+        List<AttributeRef> attributeToProject = new ArrayList<AttributeRef>();
+        attributeToProject.add(new AttributeRef(innerTableAlias, "title"));
+        Project project = new Project(SpeedyUtility.createProjectionAttributes(attributeToProject));
+        project.addChild(new Scan(innerTableAlias));
+        TableAlias tableAlias = new TableAlias("IBDBookSet", true);
+        List<AttributeRef> attributesToSelect = new ArrayList<AttributeRef>();
+        attributesToSelect.add(new AttributeRef(tableAlias, "title"));
+        List<IAlgebraOperator> selectionOperators = new ArrayList<IAlgebraOperator>();
+        selectionOperators.add(project);
+        SelectNotIn selectIn = new SelectNotIn(attributesToSelect, selectionOperators);
+        Scan scan = new Scan(tableAlias);
+        selectIn.addChild(scan);
+        if (logger.isTraceEnabled()) logger.debug(selectIn.toString());
+        Iterator<Tuple> result = selectIn.execute(scenario.getSource(), scenario.getTarget());
+        String stringResult = LunaticUtility.printTupleIterator(result);
+        if (logger.isTraceEnabled()) logger.debug(stringResult);
+        Assert.assertTrue(stringResult.startsWith("Number of tuples: 2\n"));
     }
 
     public void testProjectSingleAttribute() {

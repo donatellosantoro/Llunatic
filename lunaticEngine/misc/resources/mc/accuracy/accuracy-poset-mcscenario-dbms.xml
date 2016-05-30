@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <source>
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:accuracy</uri>
+            <schema>source</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+
+create table masterdata (
+  oid serial,
+  fn varchar(50),
+  ln varchar(50),
+  league varchar(50),
+  season varchar(50),
+  team varchar(50)
+);
+
+insert into masterdata (fn, ln, league, season, team) values ('Michael', 'Jordan', 'NBA', '1994-95', 'Chicago Bulls');
+insert into masterdata (fn, ln, league, season, team) values ('David', 'Robinson', 'NBA', '1994-95', 'San Antonio Spurs');
+]]>
+        </init-db>
+    </source>
+    <target> 
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:accuracy</uri>
+            <schema>target</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table stat (
+  oid serial,
+  id varchar(50),
+  fn varchar(50),
+  mn varchar(50),
+  ln varchar(50),
+  rnds varchar(50),
+  totalpts varchar(50),
+  j varchar(50),
+  league varchar(50),
+  team varchar(50),
+  arena varchar(50)
+);
+
+insert into stat (id, fn, mn, ln, rnds, totalpts, j, league, team, arena) values ('1', 'MJ',      null,    null,   '16',  '424', '45', 'NBA', 'Chicago',           'Chicago Stadium');
+insert into stat (id, fn, mn, ln, rnds, totalpts, j, league, team, arena) values ('1', 'Michael', null,    'Jordan', '27',  '772', '23', 'NBA', 'Chicago Bulls',     'United Center');
+insert into stat (id, fn, mn, ln, rnds, totalpts, j, league, team, arena) values ('1', 'Michael', null,    'Jordan', '1',   '19',  '45', 'NBA', 'Chicago Bulls',     'United Center');
+insert into stat (id, fn, mn, ln, rnds, totalpts, j, league, team, arena) values ('1', 'Michael', 'Jeffrey', 'Jordan', '127', '51',  '45', 'SL',  'Birmingham Barons', 'Regions Park');
+]]>
+        </init-db>
+    </target>
+    <dependencies>
+<![CDATA[
+ExtEGDs:
+//(ID) -> FN
+e1: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league1, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league2, team: $team2, arena: $arena2) 
+      -> $fn1 == $fn2.
+//(ID, FN) -> MN
+e2: stat(id: $id, fn: $fn, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league1, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league2, team: $team2, arena: $arena2) 
+      -> $mn1 == $mn2.
+//(ID) -> LN
+e3: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league1, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league2, team: $team2, arena: $arena2) 
+      -> $ln1 == $ln2.
+//(ID, J, LEAGUE) -> RNDS
+e4: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j, league: $league, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j, league: $league, team: $team2, arena: $arena2) 
+      -> $rnds1 == $rnds2.
+//(ID, LEAGUE) -> TOTPNTS
+e5: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league, team: $team2, arena: $arena2) 
+      -> $totalpts1 == $totalpts2.
+//(ID, LEAGUE) -> J
+e6: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league, team: $team2, arena: $arena2) 
+      -> $j1 == $j2.
+//(ID, LEAGUE) -> TEAM
+e7: stat(id: $id, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league, team: $team1, arena: $arena1),
+     stat(id: $id, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league, team: $team2, arena: $arena2) 
+      -> $team1 == $team2.
+//(ID, LEAGUE, TEAM) -> ARENA
+e8: stat(id: $id1, fn: $fn1, mn: $mn1, ln: $ln1, rnds: $rnds1, totalpts: $totalpts1, j: $j1, league: $league, team: $team, arena: $arena1),
+     stat(id: $id2, fn: $fn2, mn: $mn2, ln: $ln2, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league, team: $team, arena: $arena2) 
+      -> $arena1 == $arena2.
+
+//Master Data
+//masterdata(fn: $fn, ln: $ln, league: $league1, season: $season, team: $team1),
+//    consttable_md1(season: $season),
+//    stat(id: $id, fn: $fn, mn: $mn2, ln: $ln, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league2, team: $team2, arena: $arena2) 
+//-> $league1 == $league2.
+md1: masterdata(fn: $fn, ln: $ln, league: $league, season: $season, team: $team1),
+   stat(id: $id, fn: $fn, mn: $mn2, ln: $ln, rnds: $rnds2, totalpts: $totalpts2, j: $j2, league: $league, team: $team2, arena: $arena2) 
+-> $team1 == $team2.
+
+//ExtTGDs:
+//stat(id: $id, fn: $fn, mn: $mn, ln: $ln, rnds: $rnds, totalpts: $totalpts, j: $j, league: $league, team: $team, arena: $arena) ->
+//result(id: $id, fn: $fn, mn: $mn, ln: $ln, rnds: $rnds, totalpts: $totalpts, league: $league, team: $team).
+]]>
+    </dependencies>
+    <orderingAttributes>
+        <orderingAttribute>
+            <attribute>stat.fn</attribute>
+            <associatedAttribute>stat.mn</associatedAttribute>
+            <valueComparator sort="DESC"/>
+        </orderingAttribute>
+        <orderingAttribute>
+            <attribute>stat.j</attribute>
+            <associatedAttribute>stat.rnds</associatedAttribute>
+            <valueComparator sort="DESC">
+                <floatComparator/>
+            </valueComparator>
+        </orderingAttribute>
+        <orderingAttribute>
+            <attribute>stat.totalpts</attribute>
+            <associatedAttribute>stat.rnds</associatedAttribute>
+            <valueComparator sort="DESC">
+                <floatComparator/>
+            </valueComparator>
+        </orderingAttribute>
+        <orderingAttribute>
+            <attribute>stat.rnds</attribute>
+            <associatedAttribute>stat.rnds</associatedAttribute>
+            <valueComparator sort="DESC">
+                <floatComparator/>
+            </valueComparator>
+        </orderingAttribute>
+    </orderingAttributes>
+  <authoritativeSources>
+    <source>masterdata</source>
+  </authoritativeSources>
+    <partialOrder>
+        <type>Frequency</type>
+    </partialOrder>
+    <costManager>
+        <type>Standard</type>
+        <doBackward>false</doBackward>
+    </costManager>
+</scenario>
