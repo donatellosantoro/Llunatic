@@ -66,6 +66,9 @@ public class ChaseMCScenario {
         long start = new Date().getTime();
         try {
             dependencyAnalyzer.analyzeDependencies(scenario);
+            if (scenario.getConfiguration().isPrintStatsOnly()) {
+                return new ChaseTree(scenario);
+            }
             // s-t tgds are chased in the standard way; this works fine as long as there are no authoritative sources
             // in place of null cells + justifications, new cells with values are generated
             stChaser.doChase(scenario, false);

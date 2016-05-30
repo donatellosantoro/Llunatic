@@ -73,7 +73,9 @@ public class ChaseDEScenario implements IDEChaser {
         long start = new Date().getTime();
         try {
             dependencyAnalyzer.analyzeDependencies(scenario);
-            if (true) return scenario.getTarget();
+            if (scenario.getConfiguration().isPrintStatsOnly()) {
+                return scenario.getTarget();
+            }
             stChaser.doChase(scenario, false);
             IDatabase targetDB = scenario.getTarget();
             if (logger.isDebugEnabled()) logger.debug("-------------------Chasing dependencies on mc scenario: " + scenario);
