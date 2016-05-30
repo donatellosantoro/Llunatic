@@ -152,6 +152,7 @@ public class ChaseStats {
         appendStat(NUMBER_OF_EXTEGDS, "", sb, printedStats);
         appendStat(NUMBER_OF_EXTEGDS_FDS, "", sb, printedStats);
         appendStat(NUMBER_OF_DCS, "", sb, printedStats);
+        appendStat(NUMBER_OF_QUERIES, "", sb, printedStats);
         appendStat(NUMBER_OF_DED_STTGDS, "", sb, printedStats);
         appendStat(NUMBER_OF_DED_EXTGDS, "", sb, printedStats);
         appendStat(NUMBER_OF_DED_EGDS, "", sb, printedStats);

@@ -28,6 +28,7 @@ class FindFunctionalDependencies {
 
     private void findFunctionalDependenciesInEgds(List<Dependency> egds) {
         for (Dependency egd : egds) {
+            if (logger.isDebugEnabled()) logger.debug("Checking if egd " + egd + "\nis a functional dependency...");
             if (egd.hasNegations()) {
                 continue;
             }
@@ -42,6 +43,7 @@ class FindFunctionalDependencies {
             List<String> rightAttributes = extractRightAttributes(egd);
             FunctionalDependency fd = new FunctionalDependency(table, leftAttributes, rightAttributes);
             egd.setFunctionalDependency(fd);
+            if (logger.isDebugEnabled()) logger.debug("Functional dependency: " + fd);
         }
     }
 

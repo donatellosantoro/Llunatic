@@ -26,7 +26,7 @@ public class FindInclusionDependencies {
     }
 
     private boolean isLinearTgd(Dependency tgd) {
-        if (!DependencyUtility.hasSingleAtom(tgd.getPremise()) || !DependencyUtility.hasSingleAtom(tgd.getConclusion())) {
+        if (!DependencyUtility.hasSingleAtom(tgd.getPremise())) {
             return false;
         }
         return DependencyUtility.allVariablesHaveSingletonOccurrences(tgd);
