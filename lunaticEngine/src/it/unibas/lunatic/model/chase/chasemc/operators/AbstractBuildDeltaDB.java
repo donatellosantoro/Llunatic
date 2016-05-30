@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.chase.commons.IBuildDeltaDB;
+import it.unibas.lunatic.model.chase.commons.operators.IBuildDeltaDB;
 import it.unibas.lunatic.Scenario;
 import speedy.model.database.AttributeRef;
 import it.unibas.lunatic.model.dependency.Dependency;

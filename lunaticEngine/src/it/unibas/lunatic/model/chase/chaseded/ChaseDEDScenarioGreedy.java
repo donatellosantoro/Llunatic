@@ -7,9 +7,9 @@ import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.exceptions.ChaseFailedException;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
-import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
-import it.unibas.lunatic.model.chase.commons.control.IChaseState;
-import it.unibas.lunatic.model.chase.commons.control.ImmutableChaseState;
+import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
+import it.unibas.lunatic.model.chase.commons.IChaseState;
+import it.unibas.lunatic.model.chase.commons.ImmutableChaseState;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.DED;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -55,9 +55,6 @@ public class ChaseDEDScenarioGreedy implements IDEDChaser {
         if (dedScenarios.isEmpty()) {
             throw new ChaseException("The given scenario does not contains any DED dependency");
         }
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DED_STTGDS, scenario.getDEDstTGDs().size());
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DED_EGDS, scenario.getDEDEGDs().size());
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DED_EXTGDS, scenario.getDEDextTGDs().size());
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_GREEDY_SCENARIOS, dedScenarios.size());
         ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXECUTED_GREEDY_SCENARIOS, 0);
         if (logger.isDebugEnabled()) printDEDScenarios(dedScenarios);

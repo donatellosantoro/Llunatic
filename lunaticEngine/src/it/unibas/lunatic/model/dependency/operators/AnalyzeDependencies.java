@@ -33,8 +33,10 @@ public class AnalyzeDependencies {
     private final FindAttributesWithLabeledNulls attributeWithNullsFinder = new FindAttributesWithLabeledNulls();
     private final BuildEGDStratification egdStratificationBuilder = new BuildEGDStratification();
     private final FindAttributesInSameCellGroup attributeInSameCellGroupFinder = new FindAttributesInSameCellGroup();
+    private final FindInclusionDependencies inclusionDependencyFinder = new FindInclusionDependencies();
+    private final FindFunctionalDependencies functionalDependencyFinder = new FindFunctionalDependencies();
 
-    public void prepareDependenciesAndGenerateStratification(Scenario scenario) {
+    public void analyzeDependencies(Scenario scenario) {
         if (scenario.getStratification() != null) {
             return;
         }
@@ -61,6 +63,8 @@ public class AnalyzeDependencies {
         tgdStratificationBuilder.buildTGDStratification(scenario.getExtTGDs(), stratification);
         scenario.setStratification(stratification);
         checkAuthoritativeSources(scenario.getExtEGDs(), scenario);
+        inclusionDependencyFinder.findInclusionDependencies(scenario);
+        functionalDependencyFinder.findFunctionalDepenendcies(scenario);
     }
 
     private void findAllQueriedAttributesForEGDs(List<Dependency> dependencies) {

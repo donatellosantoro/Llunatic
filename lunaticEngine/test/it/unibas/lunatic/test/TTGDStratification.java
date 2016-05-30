@@ -45,7 +45,7 @@ public class TTGDStratification extends TestCase {
 //    }
     public void testTGD1() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/tgd1-mcscenario.xml");
-        stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
+        stratificationBuilder.analyzeDependencies(scenario);
         DependencyStratification stratification = scenario.getStratification();
         List<TGDStratum> tgdStrata = stratification.getTGDStrata();
         for (TGDStratum tGDStratum : tgdStrata) {

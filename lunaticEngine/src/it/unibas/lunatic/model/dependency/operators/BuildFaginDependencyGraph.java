@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.dependency.operators;
 
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaAttribute;
 import it.unibas.lunatic.model.dependency.FormulaVariable;

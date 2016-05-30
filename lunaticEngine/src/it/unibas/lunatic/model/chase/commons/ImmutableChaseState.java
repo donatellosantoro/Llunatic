@@ -1,4 +1,4 @@
-package it.unibas.lunatic.model.chase.commons.control;
+package it.unibas.lunatic.model.chase.commons;
 
 public class ImmutableChaseState implements IChaseState {
 

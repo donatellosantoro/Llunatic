@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.chase.chasede.operators;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChangeCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.exceptions.DBMSException;

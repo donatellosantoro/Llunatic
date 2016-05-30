@@ -6,9 +6,9 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasede.operators.ChaseDEScenario;
 import it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.IInsertFromSelectNaive;
-import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
-import it.unibas.lunatic.model.chase.commons.IBuildDeltaDB;
-import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
+import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.operators.IBuildDeltaDB;
+import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
 import speedy.model.database.operators.IAnalyzeDatabase;
 import speedy.model.database.operators.IRunQuery;
 

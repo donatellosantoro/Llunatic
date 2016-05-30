@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.LunaticConstants;
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.CellRef;
 import speedy.model.database.IDatabase;

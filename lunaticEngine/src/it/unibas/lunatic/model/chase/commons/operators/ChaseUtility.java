@@ -1,4 +1,4 @@
-package it.unibas.lunatic.model.chase.commons;
+package it.unibas.lunatic.model.chase.commons.operators;
 
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.LunaticConstants;
@@ -10,7 +10,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 
-import it.unibas.lunatic.model.chase.commons.control.IChaseState;
+import it.unibas.lunatic.model.chase.commons.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupUtility;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;

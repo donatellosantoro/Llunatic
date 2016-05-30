@@ -7,18 +7,18 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PartitionLinearTGDs {
+public class FindInclusionDependencies {
 
-    private final static Logger logger = LoggerFactory.getLogger(PartitionLinearTGDs.class);
+    private final static Logger logger = LoggerFactory.getLogger(FindInclusionDependencies.class);
 
-    public void findLinearTGD(Scenario scenario) {
+    public void findInclusionDependencies(Scenario scenario) {
         for (Dependency extTGD : scenario.getExtTGDs()) {
-            extTGD.setLinearTGD(isLinearTGD(extTGD));
-            if (logger.isDebugEnabled()) logger.debug("TGD: " + extTGD.toLogicalString() + "\n Linear: " + extTGD.isLinearTGD());
+            extTGD.setInclusionDependency(isInclusionDependency(extTGD));
+            if (logger.isDebugEnabled()) logger.debug("TGD: " + extTGD.toLogicalString() + "\n Linear: " + extTGD.isInclusionDependency());
         }
     }
 
-    private boolean isLinearTGD(Dependency extTGD) {
+    private boolean isInclusionDependency(Dependency extTGD) {
         List<VariableEquivalenceClass> equivalenceClasses = extTGD.getPremise().getLocalVariableEquivalenceClasses();
         for (VariableEquivalenceClass equivalenceClass : equivalenceClasses) {
             if (equivalenceClass.getPremiseRelationalOccurrences().size() > 1) {
