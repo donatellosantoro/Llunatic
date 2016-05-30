@@ -6,7 +6,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.TGDEquivalenceClassCells;
 import speedy.model.database.IValue;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import speedy.utility.combinatorics.GenericCombinationsGenerator;
 import speedy.utility.combinatorics.GenericListGenerator;

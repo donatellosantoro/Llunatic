@@ -12,7 +12,7 @@ import speedy.model.database.IDatabase;
 import speedy.model.database.ITable;
 import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.expressions.Expression;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Arrays;

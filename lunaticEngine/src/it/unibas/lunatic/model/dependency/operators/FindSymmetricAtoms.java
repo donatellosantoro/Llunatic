@@ -34,7 +34,7 @@ import speedy.model.database.TableAlias;
 
 public class FindSymmetricAtoms {
 
-    private static Logger logger = LoggerFactory.getLogger(FindSymmetricAtoms.class);
+    private static final Logger logger = LoggerFactory.getLogger(FindSymmetricAtoms.class);
 
     public void findSymmetricAtoms(List<Dependency> dependencies, Scenario scenario) {
         if (!scenario.getConfiguration().isUseSymmetricOptimization()) {
@@ -138,7 +138,7 @@ public class FindSymmetricAtoms {
                 if (selfJoinTables.size() < 2) {
                     continue;
                 }
-                SelfJoin selfJoin = new SelfJoin(selfJoinTables);
+                SelfJoin selfJoin = new SelfJoin(selfJoinTables, variable);
                 LunaticUtility.addIfNotContained(result, selfJoin);
             }
         }

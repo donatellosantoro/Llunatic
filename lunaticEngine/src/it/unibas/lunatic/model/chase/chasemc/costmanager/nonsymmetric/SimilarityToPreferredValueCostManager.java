@@ -17,7 +17,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.database.IValue;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

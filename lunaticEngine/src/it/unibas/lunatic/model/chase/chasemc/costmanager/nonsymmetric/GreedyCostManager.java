@@ -12,7 +12,7 @@ import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
 import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.GreedyPartialOrder;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

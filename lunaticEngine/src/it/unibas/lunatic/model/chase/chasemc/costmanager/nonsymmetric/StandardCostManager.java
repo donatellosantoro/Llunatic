@@ -15,7 +15,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpg
 import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.database.IDatabase;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.spicy.utility.GenericPowersetGenerator;
 import speedy.utility.combinatorics.GenericListGenerator;

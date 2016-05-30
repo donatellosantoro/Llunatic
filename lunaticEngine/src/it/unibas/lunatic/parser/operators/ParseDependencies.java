@@ -6,7 +6,7 @@ import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.parser.ParserOutput;
 import it.unibas.lunatic.parser.output.DependenciesLexer;
 import it.unibas.lunatic.parser.output.DependenciesParser;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;

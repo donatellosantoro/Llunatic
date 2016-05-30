@@ -7,7 +7,7 @@ import speedy.model.database.dbms.DBMSTable;
 import it.unibas.lunatic.model.dependency.AllConstantsInFormula;
 import it.unibas.lunatic.model.dependency.ConstantInFormula;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

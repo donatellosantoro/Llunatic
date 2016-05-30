@@ -15,7 +15,7 @@ import speedy.model.database.dbms.DBMSVirtualDB;
 import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.expressions.Expression;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;

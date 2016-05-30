@@ -8,7 +8,7 @@ import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

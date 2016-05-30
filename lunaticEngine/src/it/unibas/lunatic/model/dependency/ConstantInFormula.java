@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.dependency;
 
 import speedy.model.database.AttributeRef;
-import it.unibas.lunatic.utility.DependencyUtility;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import java.util.List;
 
 public class ConstantInFormula {

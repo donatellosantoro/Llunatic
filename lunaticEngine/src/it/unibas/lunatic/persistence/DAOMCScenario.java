@@ -2,6 +2,7 @@ package it.unibas.lunatic.persistence;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
+import it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies;
 import java.io.File;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -15,6 +16,7 @@ public class DAOMCScenario {
     private final DAOXmlUtility daoUtility = new DAOXmlUtility();
     private final DAOMCScenarioStandard daoStandard = new DAOMCScenarioStandard();
     private final DAOMCScenarioCF daoCF = new DAOMCScenarioCF();
+    private final AnalyzeDependencies dependencyAnalyzer = new AnalyzeDependencies();
 
     public Scenario loadScenario(String fileScenario) throws DAOException {
         return loadScenario(fileScenario, null);
@@ -27,11 +29,14 @@ public class DAOMCScenario {
         }
         Document document = daoUtility.buildDOM(fileScenario);
         Element rootElement = document.getRootElement();
+        Scenario scenario = null;
         if (isStandardScenario(rootElement)) {
-            return daoStandard.loadScenario(fileScenario, suffix);
+            scenario = daoStandard.loadScenario(fileScenario, suffix);
         } else {
-            return daoCF.loadScenario(fileScenario, suffix);
+            scenario = daoCF.loadScenario(fileScenario, suffix);
         }
+        dependencyAnalyzer.analyzeDependencies(scenario);
+        return scenario;
     }
 
     private boolean isStandardScenario(Element rootElement) {

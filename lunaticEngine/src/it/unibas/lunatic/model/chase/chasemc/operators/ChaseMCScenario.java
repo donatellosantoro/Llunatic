@@ -67,8 +67,6 @@ public class ChaseMCScenario {
         try {
             // s-t tgds are chased in the standard way; this works fine as long as there are no authoritative sources
             // in place of null cells + justifications, new cells with values are generated
-            //Generate stratification (must be first step because affects other steps)
-            dependencyAnalyzer.analyzeDependencies(scenario);
             stChaser.doChase(scenario, false);
             ChaseTree chaseTree = new ChaseTree(scenario);
             IDatabase targetDB = scenario.getTarget();
