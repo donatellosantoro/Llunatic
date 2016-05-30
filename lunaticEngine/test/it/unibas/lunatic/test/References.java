@@ -170,6 +170,7 @@ public class References {
 
     public static final String accuracy = "mc/accuracy/accuracy-mcscenario.xml";
     public static final String accuracy_poset = "mc/accuracy/accuracy-poset-mcscenario.xml";
+    public static final String accuracy_poset_dbms = "mc/accuracy/accuracy-poset-mcscenario-dbms.xml";
 
     //DEDs
     public static final String deds_rs = "deds/RS/RS-mcscenario.xml";

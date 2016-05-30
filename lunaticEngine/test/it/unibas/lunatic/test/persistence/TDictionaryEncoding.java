@@ -4,7 +4,7 @@ import it.unibas.lunatic.persistence.encoding.DictionaryEncoder;
 import junit.framework.TestCase;
 import speedy.model.database.operators.dbms.IValueEncoder;
 
-public class TestDictionaryEncoding extends TestCase {
+public class TDictionaryEncoding extends TestCase {
 
 //    public void testEncode() {
 //        IValueEncoder valueEncoder = new DictionaryEncoder("iBench-Ontology-256-mcscenario-dbms.xml");

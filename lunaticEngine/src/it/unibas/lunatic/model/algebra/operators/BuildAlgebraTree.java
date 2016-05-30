@@ -11,6 +11,7 @@ import it.unibas.lunatic.model.dependency.IFormula;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.utility.DependencyUtility;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import speedy.model.algebra.Difference;
 import speedy.model.algebra.Join;
 import speedy.model.algebra.Project;
 import speedy.model.algebra.ProjectionAttribute;
+import speedy.model.algebra.SelectNotIn;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.TableAlias;
 import speedy.utility.SpeedyUtility;
@@ -81,6 +83,28 @@ public class BuildAlgebraTree {
     ////////
     ////////////////////////////////////////////////////////////////////////////////////////
     private IAlgebraOperator buildStandardTreeForFormulaWithNegations(Dependency dependency, IFormula formula, Scenario scenario, boolean premise, boolean addOidInequality) {
+        IAlgebraOperator root = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, formula.getPositiveFormula(), premise, addOidInequality);
+        for (IFormula negatedFormula : formula.getNegatedSubFormulas()) {
+            List<DifferenceEquality> differenceEqualities = findDifferenceEqualities((FormulaWithNegations) negatedFormula);
+            List<AttributeRef> attributesInPositiveFormula = new ArrayList<AttributeRef>();
+            List<AttributeRef> attributesInNegatedFormula = new ArrayList<AttributeRef>();
+            for (DifferenceEquality differenceEquality : differenceEqualities) {
+                attributesInPositiveFormula.add(differenceEquality.leftAttribute);
+                attributesInNegatedFormula.add(differenceEquality.rightAttribute);
+            }
+            if (logger.isDebugEnabled()) logger.debug("Attributes in negated formula: " + attributesInNegatedFormula);
+            IAlgebraOperator negatedFormulaOperator = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, negatedFormula.getPositiveFormula(), premise, addOidInequality);
+            IAlgebraOperator project = new Project(SpeedyUtility.createProjectionAttributes(attributesInNegatedFormula));
+            project.addChild(negatedFormulaOperator);
+            SelectNotIn selectNotIn = new SelectNotIn(attributesInPositiveFormula, Arrays.asList(new IAlgebraOperator[]{project}));
+            selectNotIn.addChild(root);
+            root = selectNotIn;
+        }
+        if (logger.isDebugEnabled()) logger.debug("Standard tree for dependency \n" + dependency.toLogicalString() + "\nOperator:\n" + root.toString());
+        return root;
+    }
+
+    private IAlgebraOperator buildStandardTreeForFormulaWithNegationsWithJoin(Dependency dependency, IFormula formula, Scenario scenario, boolean premise, boolean addOidInequality) {
         IAlgebraOperator root = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, formula.getPositiveFormula(), premise, addOidInequality);
         for (IFormula negatedFormula : formula.getNegatedSubFormulas()) {
             root = addStandardDifferences(dependency, root, (FormulaWithNegations) negatedFormula, scenario, premise, addOidInequality);
@@ -174,6 +198,7 @@ public class BuildAlgebraTree {
         return new DifferenceEquality(leftAttribute, rightAttribute);
 
     }
+
 }
 
 class DifferenceEquality {
