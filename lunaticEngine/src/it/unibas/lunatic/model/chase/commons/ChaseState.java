@@ -1,4 +1,4 @@
-package it.unibas.lunatic.model.chase.commons.control;
+package it.unibas.lunatic.model.chase.commons;
 
 import java.util.Observable;
 

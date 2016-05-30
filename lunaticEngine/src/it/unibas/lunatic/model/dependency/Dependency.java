@@ -25,7 +25,8 @@ public class Dependency implements Cloneable {
     private SymmetricAtoms symmetricAtoms = new SymmetricAtoms();
     private boolean joinGraphIsCyclic; // R(v1, v1)
     private boolean overlapBetweenAffectedAndQueried;
-    private boolean linearTGD;
+    private FunctionalDependency functionalDependency;
+    private boolean inclusionDependency;
 
     public Dependency() {
     }
@@ -164,12 +165,24 @@ public class Dependency implements Cloneable {
         return !this.premise.getNegatedSubFormulas().isEmpty();
     }
 
-    public boolean isLinearTGD() {
-        return linearTGD;
+    public boolean isInclusionDependency() {
+        return inclusionDependency;
     }
 
-    public void setLinearTGD(boolean linearTGD) {
-        this.linearTGD = linearTGD;
+    public void setInclusionDependency(boolean inclusionDependency) {
+        this.inclusionDependency = inclusionDependency;
+    }
+
+    public boolean isFunctionalDependency() {
+        return this.functionalDependency != null;
+    }
+    
+    public FunctionalDependency getFunctionalDependency() {
+        return functionalDependency;
+    }
+
+    public void setFunctionalDependency(FunctionalDependency functionalDependency) {
+        this.functionalDependency = functionalDependency;
     }
 
     @Override
@@ -226,7 +239,8 @@ public class Dependency implements Cloneable {
         result.append("  Symmetric atoms: ").append(symmetricAtoms).append("\n");
         result.append("  Has Symmetric Atoms: ").append(hasSymmetricChase()).append("\n");
         result.append("  Join Graph Is Cyclic: ").append(joinGraphIsCyclic).append("\n");
-        result.append("  Linear TGD: ").append(linearTGD).append("\n");
+        result.append("  Inclusion dependency: ").append(inclusionDependency).append("\n");
+        result.append("  Functional dependency: ").append(isFunctionalDependency()).append("\n");
 //        result.append("  Extended dependencies:\n");
 //        for (ExtendedDependency extendedDependency : extendedDependencies) {
 //            result.append("      ").append(extendedDependency.toString());

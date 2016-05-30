@@ -6,7 +6,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.similarity.SimilarityConfiguration;
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import java.util.ArrayList;
 import speedy.model.database.IValue;
 import java.util.HashMap;

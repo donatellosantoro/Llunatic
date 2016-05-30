@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chasede.operators;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.commons.control.IChaseState;
+import it.unibas.lunatic.model.chase.commons.IChaseState;
 import it.unibas.lunatic.model.chase.commons.thread.ThreadManager;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.TGDStratum;

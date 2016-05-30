@@ -1,8 +1,9 @@
-package it.unibas.lunatic.model.chase.commons;
+package it.unibas.lunatic.model.chase.commons.operators;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.commons.control.IChaseState;
+import it.unibas.lunatic.model.chase.commons.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.Date;

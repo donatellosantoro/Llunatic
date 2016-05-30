@@ -6,7 +6,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.CorrectCellGroupID;
 import it.unibas.lunatic.model.chase.chasemc.operators.ICorrectCellGroupID;
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.HashMap;
 import java.util.Map;

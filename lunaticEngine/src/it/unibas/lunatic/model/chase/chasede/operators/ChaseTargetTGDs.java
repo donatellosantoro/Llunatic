@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.chase.chasede.operators;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForStandardChase;
-import it.unibas.lunatic.model.chase.commons.control.IChaseState;
+import it.unibas.lunatic.model.chase.commons.IChaseState;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.TGDStratum;

@@ -1,7 +1,7 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.chase.commons.IBuildDeltaDB;
-import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.operators.IBuildDeltaDB;
+import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
@@ -11,12 +11,12 @@ import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForEGD;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForTGD;
 import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.ChaseDeltaDCs;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseDeltaDCs;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
-import it.unibas.lunatic.model.chase.commons.control.IChaseState;
-import it.unibas.lunatic.model.chase.commons.control.ImmutableChaseState;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
+import it.unibas.lunatic.model.chase.commons.IChaseState;
+import it.unibas.lunatic.model.chase.commons.ImmutableChaseState;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies;
@@ -41,7 +41,7 @@ public class ChaseMCScenario {
     private final ChaseDeltaDCs dChaser;
     private final ChaseDeltaExtEGDs egdChaser;
     private final IBuildDeltaDB deltaBuilder;
-    private final AnalyzeDependencies stratificationBuilder = new AnalyzeDependencies();
+    private final AnalyzeDependencies dependencyAnalyzer = new AnalyzeDependencies();
     private final CheckRedundancy redundancyChecker = new CheckRedundancy();
     private final CheckSolution solutionChecker;
     private final RankSolutions solutionRanker = new RankSolutions();
@@ -68,7 +68,7 @@ public class ChaseMCScenario {
             // s-t tgds are chased in the standard way; this works fine as long as there are no authoritative sources
             // in place of null cells + justifications, new cells with values are generated
             //Generate stratification (must be first step because affects other steps)
-            stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
+            dependencyAnalyzer.analyzeDependencies(scenario);
             stChaser.doChase(scenario, false);
             ChaseTree chaseTree = new ChaseTree(scenario);
             IDatabase targetDB = scenario.getTarget();
@@ -107,10 +107,6 @@ public class ChaseMCScenario {
         if (scenario.isDEDScenario()) {
             throw new ChaseException("ChaseMCScenario cannot handle scenarios with deds");
         }
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_STTGDS, scenario.getSTTgds().size());
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXTEGDS, scenario.getExtEGDs().size());
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXTGDS, scenario.getExtTGDs().size());
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DCS, scenario.getDCs().size());
         if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
         Map<Dependency, IAlgebraOperator> egdQueryMap = treeBuilderForEGD.buildPremiseAlgebraTreesForEGDs(scenario.getExtEGDs(), scenario);
         Map<Dependency, IAlgebraOperator> tgdQueryMap = treeBuilderForTGD.buildAlgebraTreesForTGDViolationsChase(scenario.getExtTGDs(), scenario);

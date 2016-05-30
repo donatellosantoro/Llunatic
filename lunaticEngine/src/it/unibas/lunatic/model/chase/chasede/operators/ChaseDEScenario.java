@@ -10,16 +10,16 @@ import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaserResult;
-import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
-import it.unibas.lunatic.model.chase.commons.IBuildDeltaDB;
+import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
-import it.unibas.lunatic.model.chase.commons.control.IChaseState;
-import it.unibas.lunatic.model.chase.commons.control.ImmutableChaseState;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
+import it.unibas.lunatic.model.chase.commons.IChaseState;
+import it.unibas.lunatic.model.chase.commons.ImmutableChaseState;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies;
-import it.unibas.lunatic.model.dependency.operators.PartitionLinearTGDs;
+import it.unibas.lunatic.model.dependency.operators.FindInclusionDependencies;
 import it.unibas.lunatic.persistence.relational.ExportChaseStepResultsCSV;
 import java.util.Date;
 import java.util.List;
@@ -39,8 +39,7 @@ public class ChaseDEScenario implements IDEChaser {
 
     public static final int ITERATION_LIMIT = 10;
     private final static Logger logger = LoggerFactory.getLogger(ChaseDEScenario.class);
-    private final AnalyzeDependencies stratificationBuilder = new AnalyzeDependencies();
-    private final PartitionLinearTGDs linearTGDPartitioner = new PartitionLinearTGDs();
+    private final AnalyzeDependencies dependencyAnalyzer = new AnalyzeDependencies();
     private final ExportChaseStepResultsCSV resultExporter = new ExportChaseStepResultsCSV();
     private final BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
     private final ComputeDatabaseSize databaseSizeCalculator = new ComputeDatabaseSize();
@@ -66,10 +65,6 @@ public class ChaseDEScenario implements IDEChaser {
     }
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_STTGDS, scenario.getSTTgds().size());
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EGDS, scenario.getEGDs().size());
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_EXTGDS, scenario.getExtTGDs().size());
-        ChaseStats.getInstance().addStat(ChaseStats.NUMBER_OF_DCS, scenario.getDCs().size());
         if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
         List<Dependency> egds = scenario.getEGDs();
         scenario.setEGDs(new ArrayList<Dependency>());
@@ -78,13 +73,12 @@ public class ChaseDEScenario implements IDEChaser {
         analyzeSourceDatabase(scenario);
         long start = new Date().getTime();
         try {
-            stratificationBuilder.prepareDependenciesAndGenerateStratification(scenario);
+            dependencyAnalyzer.analyzeDependencies(scenario);
             stChaser.doChase(scenario, false);
             IDatabase targetDB = scenario.getTarget();
             if (logger.isDebugEnabled()) logger.debug("-------------------Chasing dependencies on mc scenario: " + scenario);
-            linearTGDPartitioner.findLinearTGD(scenario);
             Map<Dependency, IAlgebraOperator> egdQueryMap = treeBuilderForEGD.buildPremiseAlgebraTreesForEGDs(scenario.getExtEGDs(), scenario);
-            boolean allLinearTGDs = checkIfAllTGDsAreLinear(scenario.getExtTGDs());
+            boolean allInclusionDependencies = checkIfAllTargetTGDsAreInclusionDependencies(scenario.getExtTGDs());
             tgdChaser.doChase(scenario, chaseState);
             List<Dependency> satisfiedEGDs = findSatisfiedEGDs(scenario, targetDB);
             if (!scenario.getExtEGDs().isEmpty() && satisfiedEGDs.size() < scenario.getExtEGDs().size()) {
@@ -106,7 +100,7 @@ public class ChaseDEScenario implements IDEChaser {
                     DeltaChaseStep lastStep = getLastStep(chaseTree.getRoot());
                     targetDB = databaseBuilder.extractDatabaseWithDistinct(lastStep.getId(), lastStep.getDeltaDB(), lastStep.getOriginalDB(), scenario);
                     scenario.setTarget(targetDB);
-                    if (allLinearTGDs) {
+                    if (allInclusionDependencies) {
                         break;
                     }
                     boolean newTuples = tgdChaser.doChase(scenario, chaseState);
@@ -213,9 +207,9 @@ public class ChaseDEScenario implements IDEChaser {
         return satisfiedEGDs;
     }
 
-    private boolean checkIfAllTGDsAreLinear(List<Dependency> extTGDs) {
+    private boolean checkIfAllTargetTGDsAreInclusionDependencies(List<Dependency> extTGDs) {
         for (Dependency extTGD : extTGDs) {
-            if (!extTGD.isLinearTGD()) {
+            if (!extTGD.isInclusionDependency()) {
                 return false;
             }
         }

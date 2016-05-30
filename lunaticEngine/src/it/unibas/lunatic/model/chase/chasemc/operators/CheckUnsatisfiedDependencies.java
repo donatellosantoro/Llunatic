@@ -1,12 +1,12 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForEGD;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForTGD;
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;

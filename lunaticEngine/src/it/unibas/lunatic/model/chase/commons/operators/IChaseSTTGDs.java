@@ -1,4 +1,4 @@
-package it.unibas.lunatic.model.chase.commons;
+package it.unibas.lunatic.model.chase.commons.operators;
 
 import it.unibas.lunatic.Scenario;
 

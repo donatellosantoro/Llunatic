@@ -8,7 +8,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
-import it.unibas.lunatic.model.chase.commons.ChaserFactory;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;
 import it.unibas.lunatic.persistence.DAOAccessConfiguration;
 import it.unibas.lunatic.persistence.DAOLunaticConfiguration;
 import it.unibas.lunatic.persistence.DAOMCScenario;

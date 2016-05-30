@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.ArrayList;

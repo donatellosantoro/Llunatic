@@ -5,7 +5,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
 import it.unibas.lunatic.model.algebra.sql.GenerateTargetInsert;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
-import it.unibas.lunatic.model.chase.commons.IChaseSTTGDs;
+import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.utility.DependencyUtility;

@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators.dbms;
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.IExportSolution;
 import java.util.HashSet;
 import java.util.Set;

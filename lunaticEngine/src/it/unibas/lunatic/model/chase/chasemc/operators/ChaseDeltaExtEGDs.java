@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -8,8 +8,8 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
-import it.unibas.lunatic.model.chase.commons.ChaseUtility;
-import it.unibas.lunatic.model.chase.commons.control.IChaseState;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
+import it.unibas.lunatic.model.chase.commons.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
 import it.unibas.lunatic.model.dependency.Dependency;

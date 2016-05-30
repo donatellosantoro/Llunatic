@@ -1,6 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.chase.commons.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import speedy.model.database.IDatabase;
