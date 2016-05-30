@@ -3,7 +3,7 @@ package it.unibas.lunatic.test.mc.dbms;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.ChaserFactory;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -31,7 +31,7 @@ public class TestSQLAccuracy extends CheckExpectedSolutionsTest {
     }
 
     public void testScenarioOrderingAttributeNonSymmetric() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.accuracy_poset);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.accuracy_poset, true);
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setUseSymmetricOptimization(false);
         scenario.getConfiguration().setDiscardDuplicateTuples(true);
