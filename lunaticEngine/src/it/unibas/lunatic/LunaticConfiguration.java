@@ -34,6 +34,7 @@ public class LunaticConfiguration {
     private String exportSolutionsType;
     private boolean exportChanges = false;
     private String exportChangesPath;
+    private boolean printStatsOnly = false;
 
     private boolean autoSelectBestNumberOfThreads = true;
     private int maxNumberOfThreads = 1;
@@ -336,6 +337,14 @@ public class LunaticConfiguration {
         this.rewriteTGDs = rewriteTGDs;
     }
 
+    public boolean isPrintStatsOnly() {
+        return printStatsOnly;
+    }
+
+    public void setPrintStatsOnly(boolean printStatsOnly) {
+        this.printStatsOnly = printStatsOnly;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
@@ -364,6 +373,7 @@ public class LunaticConfiguration {
                 + "\n\t ExportSolutionsPath: " + exportSolutionsPath
                 + "\n\t ExportSolutionsType: " + exportSolutionsType
                 + "\n\t Cache type: " + cacheType
-                + "\n\t DeChaser: " + deChaser;
+                + "\n\t DeChaser: " + deChaser
+                + "\n\t PrintStatsOnly: " + printStatsOnly;
     }
 }
