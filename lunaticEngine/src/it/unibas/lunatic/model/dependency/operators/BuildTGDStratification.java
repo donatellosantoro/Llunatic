@@ -43,7 +43,7 @@ public class BuildTGDStratification {
         for (TGDStratum stratum : stratification.getTGDStrata()) {
             stratum.setId(++counter + "");
         }
-        if (logger.isDebugEnabled()) logger.debug(stratification.getTGDStrata().toString());
+        if (logger.isDebugEnabled()) logger.debug(stratification.toString());
         DirectedGraph<TGDStratum, DefaultEdge> strataGraph = buildStrataGraph(chaseGraph, stratification.getTGDStrata());
         stratification.setStrataGraph(strataGraph);
     }

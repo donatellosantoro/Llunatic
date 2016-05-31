@@ -23,6 +23,7 @@ public class TestSQLEmployees extends CheckTest {
 
     public void testScenarioEGD() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_egd_dbms, true);
+        scenario.getConfiguration().setRewriteTGDs(false);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

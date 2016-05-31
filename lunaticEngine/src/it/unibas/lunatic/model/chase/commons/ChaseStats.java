@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 
 public class ChaseStats {
 
-    public static final String TOTAL_TIME = "Chasing Time";
-    public static final String LOAD_TIME = "Loading Time";
-    public static final String WRITE_TIME = "Writing Time";
+    public static final String CHASE_TIME = "Chase Time";
+    public static final String LOAD_TIME = "Scenario Load Time";
+    public static final String WRITE_TIME = "Export DB Time";
     public static final String BUILD_SOLUTION_TIME = "Building Final Solution Time";
     public static final String FINAL_QUERY_TIME = "Final Query Time";
     public static final String EGD_TIME = "EGD Time";
@@ -159,9 +159,10 @@ public class ChaseStats {
         appendStat(NUMBER_OF_EXECUTED_GREEDY_SCENARIOS, "", sb, printedStats);
         appendStat(NUMBER_OF_FAILED_GREEDY_SCENARIOS, "", sb, printedStats);
         sb.append("------ CHASE STATS ------").append("\n");
-        appendStat(TOTAL_TIME, "ms", sb, printedStats);
         appendStat(LOAD_TIME, "ms", sb, printedStats);
         appendStat(INIT_DB_TIME, "ms", sb, printedStats);
+        appendStat(CHASE_TIME, "ms", sb, printedStats);
+        appendStat(WRITE_TIME, "ms", sb, printedStats);
         appendStat(BUILD_SOLUTION_TIME, "ms", sb, printedStats);
         appendStat(FINAL_QUERY_TIME, "ms", sb, printedStats);
         appendStat(STTGD_TIME, "ms", sb, printedStats);
@@ -184,7 +185,6 @@ public class ChaseStats {
         appendStat(REMOVE_DUPLICATE_TIME, "ms", sb, printedStats);
         appendStat(COMPUTE_SIMILARITY_TIME, "ms", sb, printedStats);
         appendStat(CHECK_REDUNDANCY_TIME, "ms", sb, printedStats);
-        appendStat(WRITE_TIME, "ms", sb, printedStats);
         sb.append("-------------------------").append("\n");
         if (!dependencyStats.isEmpty()) {
             sb.append("------ DEPENDENCIES STATS ------").append("\n");

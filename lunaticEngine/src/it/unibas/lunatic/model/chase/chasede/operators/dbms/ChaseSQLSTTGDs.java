@@ -50,7 +50,6 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
         }
         if (LunaticConfiguration.isPrintSteps()) System.out.println("****Chasing scenario for s-t tgds...");
         Set<Dependency> dependenciesToMaterialize = findDependenciesToMaterialize(scenario.getSTTgds(), scenario);
-//        Set<Dependency> dependenciesToMaterialize = new HashSet<Dependency>(scenario.getSTTgds());
         if (logger.isDebugEnabled()) logger.debug("Dependencies to materialize: " + dependenciesToMaterialize);
         StringBuilder result = new StringBuilder();
         result.append("BEGIN TRANSACTION;\n");

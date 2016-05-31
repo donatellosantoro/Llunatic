@@ -48,7 +48,6 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
 
     private String generateInsertScript(Dependency dependency, String selectQuery, DBMSDB target, Scenario scenario) {
         StringBuilder result = new StringBuilder();
-        result.append("BEGIN TRANSACTION;\n");
         String targetSchemaName = DBMSUtility.getSchemaNameAndDot(target.getAccessConfiguration());
         for (IFormulaAtom atom : dependency.getConclusion().getAtoms()) {
             RelationalAtom relationalAtom = (RelationalAtom) atom;
@@ -65,7 +64,6 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
             result.append(generateSelectForInsert(relationalAtom, dependency, selectQuery, scenario));
             result.append(";\n\n");
         }
-        result.append("COMMIT TRANSACTION;\n");
         return result.toString();
     }
 

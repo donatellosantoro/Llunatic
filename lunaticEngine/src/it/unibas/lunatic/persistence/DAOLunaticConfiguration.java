@@ -138,9 +138,16 @@ public class DAOLunaticConfiguration {
         if (exportChangesPathElement != null) {
             configuration.setExportChangesPath(exportChangesPathElement.getValue());
         }
+        Element autoSelectBestNumberOfThreadsElement = configurationElement.getChild("autoSelectBestNumberOfThreads");
+        if (autoSelectBestNumberOfThreadsElement != null) {
+            configuration.setAutoSelectBestNumberOfThreads(Boolean.parseBoolean(autoSelectBestNumberOfThreadsElement.getValue()));
+        }
         Element maxNumberOfThreadsElement = configurationElement.getChild("maxNumberOfThreads");
         if (maxNumberOfThreadsElement != null) {
             configuration.setMaxNumberOfThreads(Integer.parseInt(maxNumberOfThreadsElement.getValue()));
+        }
+        if (configuration.isAutoSelectBestNumberOfThreads()) {
+            selectBestNumberOfThreads(configuration);
         }
         return configuration;
     }
@@ -397,6 +404,13 @@ public class DAOLunaticConfiguration {
             throw new it.unibas.lunatic.exceptions.DAOException("Unable to parse attribute " + stringAttributeRef);
         }
         return new AttributeRef(tokens[0], tokens[1]);
+    }
+
+    private void selectBestNumberOfThreads(LunaticConfiguration configuration) {
+        int cores = Runtime.getRuntime().availableProcessors();
+        int threads = (cores * 2) - 1;
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("Using " + threads + " threads");
+        configuration.setMaxNumberOfThreads(threads);
     }
 
 }

@@ -802,8 +802,12 @@ public class JEP implements Cloneable {
         return new ExpressionToString().toStringWithSlashes(this);
     }
     
-    public String toStringWithDollars() {
-        return new ExpressionToString().toStringWithDollars(this);
+    public String toStringWithDollarsAndUnderscore() {
+        return new ExpressionToString().toStringWithDollarsAndUnderscore(this);
+    }
+    
+    public String toStringWithDollarsAndBrackets() {
+        return new ExpressionToString().toStringWithDollarsAndBrackets(this);
     }
 }
 

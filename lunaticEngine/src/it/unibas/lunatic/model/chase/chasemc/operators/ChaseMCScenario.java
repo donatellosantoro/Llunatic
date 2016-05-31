@@ -77,7 +77,7 @@ public class ChaseMCScenario {
             DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);
             DeltaChaseStep result = doChase(root, scenario, chaseState);
             long end = new Date().getTime();
-            ChaseStats.getInstance().addStat(ChaseStats.TOTAL_TIME, end - start);
+            ChaseStats.getInstance().addStat(ChaseStats.CHASE_TIME, end - start);
             chaseTree.setRoot(result);
             if (ChaseUtility.hasChaseStats(scenario)) {
                 solutionRanker.rankSolutions(chaseTree);
@@ -171,7 +171,7 @@ public class ChaseMCScenario {
         if (chaseTree.getRankedSolutions() != null && !chaseTree.getRankedSolutions().isEmpty()) {
             System.out.println(solutionPrinter.toString(chaseTree));
         }
-        PrintUtility.printSuccess("*** Chase complete in " + ChaseStats.getInstance().getStat(ChaseStats.TOTAL_TIME) + " ms");
+        PrintUtility.printSuccess("*** Chase complete in " + ChaseStats.getInstance().getStat(ChaseStats.CHASE_TIME) + " ms");
         Long loadTime = ChaseStats.getInstance().getStat(ChaseStats.LOAD_TIME);
         if (loadTime == null) {
             loadTime = 0L;

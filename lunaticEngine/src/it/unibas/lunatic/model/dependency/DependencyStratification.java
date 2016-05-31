@@ -82,7 +82,7 @@ public class DependencyStratification {
         } else {
             result.append("TGD Stratification (").append(tgdStrata.size()).append(") {\n");
             for (TGDStratum stratum : tgdStrata) {
-                result.append(stratum).append("\n");
+                result.append(stratum.toLongString()).append("\n");
             }
             result.append("}\n");
         }

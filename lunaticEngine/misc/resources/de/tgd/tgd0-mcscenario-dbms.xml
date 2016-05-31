@@ -51,7 +51,16 @@ create table t1(
     b text,
     c text
 );
-
+create table w1(
+    oid serial,
+    a text,
+    b text
+);
+create table w2(
+    oid serial,
+    a text,
+    b text
+);
 ]]>
 </init-db>
     </target>
@@ -59,10 +68,13 @@ create table t1(
         <![CDATA[
 STTGDs:
 s(a: $a, b: $b, c: $c) -> t1(a: $a, b: $b, c: $c).
+s(a: $a, b: $b, c: $c) -> w1(a: $a, b: $b).
 ExtTGDs:
 t1(a: $a, b: $b, c: $c) -> t2(a: $a, b: $b).
 t2(a: $a, b: $b) -> t3(a: $a, b: $b, c: $c).
 t3(a: $a, b: $b, c: $c) -> t2(a: $b, b: $b).
+w1(a: $a, b: $b) -> w2(a: $a, b: $b).
+w2(a: $a, b: $b) -> w1(a: $b, b: $b).
 ]]>
 </dependencies>
 </scenario>

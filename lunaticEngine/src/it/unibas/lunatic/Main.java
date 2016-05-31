@@ -59,7 +59,6 @@ public class Main {
                 System.out.println(scenario);
             }
             System.out.println("*** Chasing scenario (" + df.format(new Date()) + ")...");
-            long start = new Date().getTime();
             if (scenario.isDEDScenario()) {
                 chaseDEDScenario(scenario);
             } else if (scenario.isDEScenario()) {
@@ -69,9 +68,6 @@ public class Main {
             } else {
                 throw new IllegalArgumentException("Scenario non supported!");
             }
-            long end = new Date().getTime();
-            double executionTime = (end - start) / 1000.0;
-            System.out.println("*** Execution time: " + executionTime + " sec");
             if (scenario.isDBMS()) {
                 System.out.println("*** Check results on DBMS");
             }

@@ -24,6 +24,7 @@ public class RewriteSTTGDs {
                 return;
             }
             String originalTGDs = buildTGDStringToRewrite(scenario);
+            if (logger.isDebugEnabled()) logger.debug("Original ST-TGDs: \n" + originalTGDs);
             String rewrittenTGDs = rewriteTGDs(originalTGDs);
             if (logger.isDebugEnabled()) logger.debug("Rewritten ST-TGDs: \n" + rewrittenTGDs);
             Scenario rewrittenScenario = new Scenario(scenario.getFileName(), scenario.getSuffix());

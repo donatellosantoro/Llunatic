@@ -18,14 +18,15 @@
         <!--<appender-ref ref="file"/>-->
     </root>
     <!--TEST-->     
-    <!--<logger name="it.unibas.lunatic.test" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.test" level="TRACE"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.QueryStatManager" level="DEBUG"/>-->
-    <!--<logger name="speedy.persistence.relational.QueryManager" level="DEBUG"/>-->
+    <!--<logger name="speedy.persistence.relational.QueryManager" level="TRACE"/>-->
 
     <!--     MODEL     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager" level="INFO"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.BuildTGDStratification" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.PartitionLinearTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chasemc.partialorder.AbstractPartialOrder" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseEGDEquivalenceClass" level="DEBUG"/>-->
@@ -50,11 +51,13 @@
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.CheckWeaklyAcyclicityInTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.RewriteSTTGDs" level="DEBUG"/>-->
 
     <!--     ALGEBRA     -->
     <!--<logger name="speedy.model.algebra.Difference" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.Join" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.GroupBy" level="DEBUG"/>-->
+    <!--<logger name="speedy.model.algebra.SelectIn" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.mainmemory.InsertTuple" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->
@@ -84,6 +87,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDStratumThread" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryInsertTuplesForTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseDeltaDCs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseTargetTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseTargetTGDStratumThread" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ExecuteFinalQueries" level="DEBUG"/>-->

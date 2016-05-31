@@ -11,7 +11,7 @@ public class LunaticConfiguration {
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;
     private boolean deScenario = false; //MCProxy for DE chase
-    private boolean rewriteTGDs = false;
+    private boolean rewriteTGDs = true;
     private boolean checkGroundSolutions = false;
     private boolean checkSolutions = false;
     private boolean checkSolutionsQuery = false;
@@ -35,6 +35,7 @@ public class LunaticConfiguration {
     private boolean exportChanges = false;
     private String exportChangesPath;
 
+    private boolean autoSelectBestNumberOfThreads = true;
     private int maxNumberOfThreads = 1;
 
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
@@ -303,6 +304,14 @@ public class LunaticConfiguration {
         this.cleanSchemasOnStartForDEScenarios = cleanSchemasOnStartForDEScenarios;
     }
 
+    public boolean isAutoSelectBestNumberOfThreads() {
+        return autoSelectBestNumberOfThreads;
+    }
+
+    public void setAutoSelectBestNumberOfThreads(boolean autoSelectBestNumberOfThreads) {
+        this.autoSelectBestNumberOfThreads = autoSelectBestNumberOfThreads;
+    }
+
     public int getMaxNumberOfThreads() {
         return maxNumberOfThreads;
     }
@@ -345,6 +354,7 @@ public class LunaticConfiguration {
                 + "\n\t UseSymmetricOptimization: " + useSymmetricOptimization
                 + "\n\t NumberCellsWeightForRanking: " + numberCellsWeightForRanking
                 + "\n\t DiscardDuplicateTuples: " + discardDuplicateTuples
+                + "\n\t AutoSelectBestNumberOfThreads: " + autoSelectBestNumberOfThreads
                 + "\n\t MaxNumberOfThreads: " + maxNumberOfThreads
                 + "\n\t UseBatchInsert: " + useBatchInsert
                 + "\n\t UseUnloggedWorkTables: " + useUnloggedWorkTables

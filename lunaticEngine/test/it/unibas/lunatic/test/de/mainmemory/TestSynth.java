@@ -14,6 +14,7 @@ public class TestSynth extends TestCase {
 
     public void testScenarioST() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources("/de/synt/synt25-mcscenario-0k.xml");
+        scenario.getConfiguration().setRewriteTGDs(false);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
     }

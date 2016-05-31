@@ -5,7 +5,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.IChaseState;
-import it.unibas.lunatic.model.chase.commons.thread.IBackgroundThread;
+import speedy.model.thread.IBackgroundThread;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.TGDStratum;
 import java.util.HashSet;
