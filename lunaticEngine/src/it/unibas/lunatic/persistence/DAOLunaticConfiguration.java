@@ -103,9 +103,13 @@ public class DAOLunaticConfiguration {
         if (useDictionaryEncodingElement != null) {
             configuration.setUseDictionaryEncoding(Boolean.parseBoolean(useDictionaryEncodingElement.getValue()));
         }
-        Element rewriteTGDsElement = configurationElement.getChild("rewriteTGDs");
-        if (rewriteTGDsElement != null) {
-            configuration.setRewriteTGDs(Boolean.parseBoolean(rewriteTGDsElement.getValue()));
+        Element optimizeTGDsElement = configurationElement.getChild("optimizeSTTGDs");
+        if (optimizeTGDsElement != null) {
+            configuration.setOptimizeSTTGDs(Boolean.parseBoolean(optimizeTGDsElement.getValue()));
+        }
+        Element rewriteSTTGDOverlapsElement = configurationElement.getChild("rewriteSTTGDOverlaps");
+        if (rewriteSTTGDOverlapsElement != null) {
+            configuration.setRewriteSTTGDOverlaps(Boolean.parseBoolean(rewriteSTTGDOverlapsElement.getValue()));
         }
         Element removeDuplicatesElement = configurationElement.getChild("removeDuplicates");
         if (removeDuplicatesElement != null) {

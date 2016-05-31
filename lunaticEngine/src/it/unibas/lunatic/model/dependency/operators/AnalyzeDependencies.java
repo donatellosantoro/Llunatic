@@ -41,7 +41,7 @@ public class AnalyzeDependencies {
         if (scenario.getStratification() != null) {
             return;
         }
-        rewriter.rewrite(scenario);
+//        rewriter.rewrite(scenario);
         DirectedGraph<AttributeRef, ExtendedEdge> faginDependencyGraph = faginDependencyGraphBuilder.buildGraph(scenario.getExtTGDs());
         if (logger.isDebugEnabled()) logger.debug("Fagin Dependency graph " + faginDependencyGraph);
         weaklyAcyclicityChecker.check(faginDependencyGraph, scenario.getExtTGDs());
@@ -55,17 +55,22 @@ public class AnalyzeDependencies {
         scenario.setAttributesInSameCellGroups(attributesInSameCellGroups);
         findAllQueriedAttributesForEGDs(scenario.getExtEGDs());
         findAllQueriedAttributesForTGDs(scenario.getExtTGDs());
+        //EGDs
         DependencyStratification stratification = egdStratificationBuilder.generateStratification(scenario);
         findDependenciesForAttributes(stratification, scenario.getExtEGDs());
         findDependenciesForAttributes(stratification, scenario.getExtTGDs());
         symmetryFinder.findSymmetricAtoms(scenario.getExtEGDs(), scenario);
         findAllAffectedAttributes(scenario.getExtEGDs());
-        assignAdditionalAttributes(scenario.getExtEGDs(), scenario);
-        tgdStratificationBuilder.buildTGDStratification(scenario.getExtTGDs(), stratification);
-        scenario.setStratification(stratification);
-        checkAuthoritativeSources(scenario.getExtEGDs(), scenario);
-        inclusionDependencyFinder.findInclusionDependenciesAndLinearTgds(scenario);
         functionalDependencyFinder.findFunctionalDependencies(scenario);
+        assignAdditionalAttributes(scenario.getExtEGDs(), scenario);
+        // S-T TGD Rewriting
+        rewriter.rewrite(scenario);
+        // T-TGD Stratification
+        tgdStratificationBuilder.buildTGDStratification(scenario.getExtTGDs(), stratification);
+        inclusionDependencyFinder.findInclusionDependenciesAndLinearTgds(scenario);
+        scenario.setStratification(stratification);
+        // FINAL
+        checkAuthoritativeSources(scenario.getExtEGDs(), scenario);
         statGenerator.generateStats(scenario);
     }
 

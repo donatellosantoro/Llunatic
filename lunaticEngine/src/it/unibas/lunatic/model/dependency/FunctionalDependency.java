@@ -36,8 +36,8 @@ public class FunctionalDependency {
         }
         SpeedyUtility.removeChars(", ".length(), result);
         result.append(" -> ");
-        for (String leftAttribute : leftAttributes) {
-            result.append(leftAttribute).append(", ");
+        for (String rightAttribute : rightAttributes) {
+            result.append(rightAttribute).append(", ");
         }
         SpeedyUtility.removeChars(", ".length(), result);
         return result.toString();
