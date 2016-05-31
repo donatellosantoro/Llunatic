@@ -21,7 +21,7 @@ public class TestDoctors extends CheckExpectedSolutionsTest {
 //        DependencyUtility.findDependency("md1", scenario.getExtEGDs()).setDoBackward(false);
         scenario.getCostManagerConfiguration().setRequestMajorityInSimilarityCostManager(true);
         setConfigurationForTest(scenario);
-        scenario.getConfiguration().setRewriteTGDs(false);
+        scenario.getConfiguration().setOptimizeSTTGDs(false);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
 //        if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());

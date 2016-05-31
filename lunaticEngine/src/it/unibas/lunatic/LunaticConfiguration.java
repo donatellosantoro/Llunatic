@@ -11,7 +11,8 @@ public class LunaticConfiguration {
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;
     private boolean deScenario = false; //MCProxy for DE chase
-    private boolean rewriteTGDs = true;
+    private boolean optimizeSTTGDs = true;
+    private boolean rewriteSTTGDOverlaps = true;
     private boolean checkGroundSolutions = false;
     private boolean checkSolutions = false;
     private boolean checkSolutionsQuery = false;
@@ -329,12 +330,20 @@ public class LunaticConfiguration {
         this.useDictionaryEncoding = useDictionaryEncoding;
     }
 
-    public boolean isRewriteTGDs() {
-        return rewriteTGDs;
+    public boolean isOptimizeSTTGDs() {
+        return optimizeSTTGDs;
     }
 
-    public void setRewriteTGDs(boolean rewriteTGDs) {
-        this.rewriteTGDs = rewriteTGDs;
+    public void setOptimizeSTTGDs(boolean optimizeSTTGDs) {
+        this.optimizeSTTGDs = optimizeSTTGDs;
+    }
+
+    public boolean isRewriteSTTGDOverlaps() {
+        return rewriteSTTGDOverlaps;
+    }
+
+    public void setRewriteSTTGDOverlaps(boolean rewriteSTTGDOverlaps) {
+        this.rewriteSTTGDOverlaps = rewriteSTTGDOverlaps;
     }
 
     public boolean isPrintStatsOnly() {
@@ -353,7 +362,8 @@ public class LunaticConfiguration {
                 + "\n\t RecreateDBOnStart: " + recreateDBOnStart
                 + "\n\t UseLimit1: " + useLimit1ForEGDs
                 + "\n\t DEProxyMode: " + deScenario
-                + "\n\t RewriteTGDs: " + rewriteTGDs
+                + "\n\t RewriteTGDs: " + optimizeSTTGDs
+                + "\n\t RewriteTGDOverlaps: " + rewriteSTTGDOverlaps
                 + "\n\t CheckSolutions: " + checkSolutions
                 + "\n\t CheckSolutionsQuery: " + checkSolutionsQuery
                 + "\n\t CheckGroundSolutions: " + checkGroundSolutions

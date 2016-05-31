@@ -59,7 +59,7 @@ public class LunaticConstants {
     public static final String COST_MANAGER_GREEDY = "Greedy";
 
     //
-    public static int MAX_NUM_STTGDS_TO_REWRITE = 100;
+    public static int MAX_NUM_STTGDS_TO_REWRITE = 500;
 
     ///////////////    DEBUG MODE     ///////////////////
 //    public static final boolean DBMS_DEBUG = true;

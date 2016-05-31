@@ -6,26 +6,30 @@ import it.unibas.lunatic.persistence.DAOMCScenarioStandard;
 import it.unibas.spicy.model.mapping.rewriting.operators.RewriteAndExportSTTgds;
 import it.unibas.spicy.persistence.DAOException;
 import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
+import it.unibas.spicy.model.mapping.rewriting.RewritingConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RewriteSTTGDs {
 
     private final static Logger logger = LoggerFactory.getLogger(RewriteSTTGDs.class);
-    private RewriteAndExportSTTgds rewriter = new RewriteAndExportSTTgds();
-    private DAOMCScenarioStandard daoMCScenario = new DAOMCScenarioStandard();
+    private final RewriteAndExportSTTgds rewriter = new RewriteAndExportSTTgds();
+    private final DAOMCScenarioStandard daoMCScenario = new DAOMCScenarioStandard();
 
     public void rewrite(Scenario scenario) {
         try {
-            if (!scenario.getConfiguration().isRewriteTGDs()
+            if (!scenario.getConfiguration().isOptimizeSTTGDs()
                     || scenario.getSTTgds().isEmpty()
                     || scenario.getSTTgds().size() > LunaticConstants.MAX_NUM_STTGDS_TO_REWRITE
                     || (scenario.getEGDs().isEmpty() && scenario.getExtEGDs().isEmpty())) {
                 return;
             }
+            RewritingConfiguration config = createConfig(scenario);
             String originalTGDs = buildTGDStringToRewrite(scenario);
             if (logger.isDebugEnabled()) logger.debug("Original ST-TGDs: \n" + originalTGDs);
-            String rewrittenTGDs = rewriteTGDs(originalTGDs);
+            String fdString = buildFDString(scenario);
+            if (logger.isDebugEnabled()) logger.debug("FDs: \n" + fdString);
+            String rewrittenTGDs = getRewrittenTGDString(originalTGDs, fdString, config);
             if (logger.isDebugEnabled()) logger.debug("Rewritten ST-TGDs: \n" + rewrittenTGDs);
             Scenario rewrittenScenario = new Scenario(scenario.getFileName(), scenario.getSuffix());
             rewrittenScenario.setSource(scenario.getSource());
@@ -40,6 +44,17 @@ public class RewriteSTTGDs {
         }
     }
 
+    private RewritingConfiguration createConfig(Scenario scenario) {
+        RewritingConfiguration config = new RewritingConfiguration();
+        config.setRewriteSubsumptions(scenario.getConfiguration().isOptimizeSTTGDs());
+        config.setRewriteCoverages(scenario.getConfiguration().isOptimizeSTTGDs());
+        config.setRewriteSelfJoins(false);
+        config.setRewriteOnlyProperHomomorphisms(false);
+        config.setRewriteOverlaps(scenario.getConfiguration().isRewriteSTTGDOverlaps());
+        config.setUseLocalSkolems(true);
+        return config;
+    }
+
     private String buildTGDStringToRewrite(Scenario scenario) {
         StringBuilder sb = new StringBuilder();
         for (Dependency stTgd : scenario.getSTTgds()) {
@@ -48,8 +63,22 @@ public class RewriteSTTGDs {
         return sb.toString();
     }
 
-    private String rewriteTGDs(String originalTGDs) throws DAOException {
-        String rewrittenTGDs = rewriter.rewriteAndExport(originalTGDs);
+    private String buildFDString(Scenario scenario) {
+        if (!scenario.getConfiguration().isRewriteSTTGDOverlaps()) {
+            return "";
+        }
+        StringBuilder result = new StringBuilder();
+        for (Dependency egd : scenario.getExtEGDs()) {
+            if (!egd.isFunctionalDependency()) {
+                continue;
+            }
+            result.append(egd.getFunctionalDependency().toString()).append("\n");
+        }
+        return result.toString();
+    }
+
+    private String getRewrittenTGDString(String originalTGDs, String fdString, RewritingConfiguration config) throws DAOException {
+        String rewrittenTGDs = rewriter.rewriteAndExport(originalTGDs, fdString, config);
         StringBuilder stTGDsString = new StringBuilder();
         stTGDsString.append("STTGDs:\n");
         stTGDsString.append(rewrittenTGDs);
