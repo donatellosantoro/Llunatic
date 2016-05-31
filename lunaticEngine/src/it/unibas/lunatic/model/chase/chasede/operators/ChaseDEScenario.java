@@ -149,12 +149,12 @@ public class ChaseDEScenario implements IDEChaser {
         preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.INIT_DB_TIME));
         preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.ANALYZE_DB));
         preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.LOAD_TIME));
-        preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.DELTA_DB_BUILDER));
-        preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.STEP_DB_BUILDER));
+//        preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.DELTA_DB_BUILDER));
+//        preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.STEP_DB_BUILDER));
         //Chasing
         chasingTime = LunaticUtility.increaseIfNotNull(chasingTime, ChaseStats.getInstance().getStat(ChaseStats.CHASE_TIME));
-        chasingTime = LunaticUtility.decreaseIfNotNull(chasingTime, ChaseStats.getInstance().getStat(ChaseStats.DELTA_DB_BUILDER));
-        chasingTime = LunaticUtility.decreaseIfNotNull(chasingTime, ChaseStats.getInstance().getStat(ChaseStats.STEP_DB_BUILDER));
+//        chasingTime = LunaticUtility.decreaseIfNotNull(chasingTime, ChaseStats.getInstance().getStat(ChaseStats.DELTA_DB_BUILDER));
+//        chasingTime = LunaticUtility.decreaseIfNotNull(chasingTime, ChaseStats.getInstance().getStat(ChaseStats.STEP_DB_BUILDER));
         //Post Processing
         postProcessingTime = LunaticUtility.increaseIfNotNull(postProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.WRITE_TIME));
 //        postProcessingTime = LunaticUtility.increaseIfNotNull(postProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.REMOVE_DUPLICATE_TIME));
@@ -204,9 +204,6 @@ public class ChaseDEScenario implements IDEChaser {
 
     private List<Dependency> findSatisfiedEGDs(Scenario scenario, IDatabase targetDB) {
         List<Dependency> satisfiedEGDs = Collections.synchronizedList(new ArrayList<Dependency>());
-        if (scenario.getExtEGDs().size() > LunaticConstants.MAX_NUM_EGDS_TO_CHECK_VIOLATIONS) {
-            return satisfiedEGDs;
-        }
         int numberOfThreads = scenario.getConfiguration().getMaxNumberOfThreads();
         ThreadManager threadManager = new ThreadManager(numberOfThreads);
         for (Dependency extEGD : scenario.getExtEGDs()) {
