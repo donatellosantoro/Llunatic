@@ -142,7 +142,9 @@ public class ChaseDEScenario implements IDEChaser {
         }
         if (LunaticConfiguration.isPrintSteps()) System.out.println(ChaseStats.getInstance().toString());
         if (conf.isPrintQueryResultsOnly()) {
+            PrintUtility.printInformation("----------------------------------------------------");
             PrintUtility.printInformation("*** Query time: " + ChaseStats.getInstance().getStat(ChaseStats.FINAL_QUERY_TIME) + " ms");
+            PrintUtility.printInformation("----------------------------------------------------");
             return;
         }
         long preProcessingTime = 0L;

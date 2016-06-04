@@ -44,6 +44,5 @@ public class MainExpImport {
         if (scenario.getValueEncoder() != null) {
             scenario.getValueEncoder().waitingForEnding();
         }
-        System.out.println(ChaseStats.getInstance().toString());
     }
 }

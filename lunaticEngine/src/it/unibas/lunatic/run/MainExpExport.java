@@ -1,7 +1,6 @@
 package it.unibas.lunatic.run;
 
 import it.unibas.lunatic.LunaticConfiguration;
-import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.persistence.DAODatabaseConfiguration;
 import it.unibas.lunatic.persistence.DAOLunaticConfiguration;
 import it.unibas.lunatic.persistence.DAOUtility;
@@ -33,7 +32,6 @@ public class MainExpExport {
         IValueEncoder valueEncoder = getValueEncoder(configuration, fileScenario);
         IDatabase targetDB = daoDatabaseConfiguration.loadDatabase(targetElement, "", fileScenario, valueEncoder);
         resultExporter.exportSolutionInSeparateFiles(targetDB, valueEncoder, configuration.getExportSolutionsPath(), configuration.getMaxNumberOfThreads());
-        System.out.println(ChaseStats.getInstance().toString());
     }
 
     private static IValueEncoder getValueEncoder(LunaticConfiguration configuration, String fileScenario) {

@@ -1,7 +1,7 @@
 # DEFAULT CACHE REGION
 jcs.default=DC
 jcs.default.cacheattributes=org.apache.commons.jcs.engine.CompositeCacheAttributes
-jcs.default.cacheattributes.MaxObjects=1000000
+jcs.default.cacheattributes.MaxObjects=100000000
 jcs.default.cacheattributes.MemoryCacheName=org.apache.commons.jcs.engine.memory.lru.LRUMemoryCache
 jcs.default.cacheattributes.UseMemoryShrinker=false
 #jcs.default.cacheattributes.MaxMemoryIdleTimeSeconds=3600

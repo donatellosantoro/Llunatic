@@ -1,6 +1,7 @@
 package it.unibas.lunatic.run;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import it.unibas.lunatic.model.chase.chaseded.DEDChaserFactory;
 import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;

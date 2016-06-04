@@ -34,28 +34,35 @@ public class MainExp {
         String fileScenario = confFile.getAbsolutePath();
         try {
             //LOAD
+            boolean errorsInLoad = false;
             long startLoad = new Date().getTime();
-            if (!chaseOnly) exec(MainExpImport.class, fileScenario);
+            if (!chaseOnly) {
+                errorsInLoad = exec(MainExpImport.class, fileScenario);
+            }
             long endLoad = new Date().getTime();
             long loadTime = endLoad - startLoad;
             PrintUtility.printMessage("PreProcessing time: " + loadTime + " ms");
             //RUN
+            boolean errorsInRun = false;
             long startRun = new Date().getTime();
-            exec(MainExpRun.class, fileScenario);
+            errorsInRun = exec(MainExpRun.class, fileScenario);
             long endRun = new Date().getTime();
             long runTime = endRun - startRun;
             PrintUtility.printMessage("Chase and Query time: " + runTime + " ms");
             //EXPORT
+            boolean errorsInExport = false;
             long startExport = new Date().getTime();
-            if (!chaseOnly) exec(MainExpExport.class, fileScenario);
+            if (!chaseOnly) {
+                errorsInExport = exec(MainExpExport.class, fileScenario);
+            }
             long endExport = new Date().getTime();
             long exportTime = endExport - startExport;
             PrintUtility.printMessage("PostProcessing time: " + exportTime + " ms");
             //Results
             PrintUtility.printInformation("------------------------------------------");
-            PrintUtility.printInformation("*** PreProcessing time:   " + loadTime + " ms");
-            PrintUtility.printInformation("*** Chase and Query time: " + runTime + " ms");
-            PrintUtility.printInformation("*** PostProcessing time:  " + exportTime + " ms");
+            PrintUtility.printInformation("*** PreProcessing time:   " + (errorsInLoad ? "ERRORS" : loadTime + " ms"));
+            PrintUtility.printInformation("*** Chase and Query time: " + (errorsInRun ? "ERRORS" : runTime + " ms"));
+            PrintUtility.printInformation("*** PostProcessing time:  " + (errorsInExport ? "ERRORS" : exportTime + " ms"));
             PrintUtility.printInformation("*** TOTAL TIME:           " + (loadTime + runTime + exportTime) + " ms");
             PrintUtility.printInformation("------------------------------------------");
         } catch (Exception ex) {
@@ -63,7 +70,7 @@ public class MainExp {
         }
     }
 
-    public static int exec(Class klass, String fileScenario) throws Exception {
+    public static boolean exec(Class klass, String fileScenario) throws Exception {
         String javaHome = System.getProperty("java.home");
         String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         if (logger.isDebugEnabled()) logger.debug("VM: " + javaBin);
@@ -82,6 +89,7 @@ public class MainExp {
         builder.redirectError(ProcessBuilder.Redirect.INHERIT);
         Process process = builder.start();
         process.waitFor();
-        return process.exitValue();
+        int exitValue = process.exitValue();
+        return (exitValue != 0); //Return true if errors
     }
 }
