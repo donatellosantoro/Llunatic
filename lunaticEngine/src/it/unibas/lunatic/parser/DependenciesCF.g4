@@ -1,27 +1,23 @@
 grammar DependenciesCF;
 
-options {
-output=AST;
-ASTLabelType=CommonTree; // type of $stat.tree ref etc...
-}
-
 @lexer::header {
 package it.unibas.lunatic.parser.output;
 }
 
-@header {
+@parser::header {
 package it.unibas.lunatic.parser.output;
 
 import it.unibas.lunatic.LunaticConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Stack;
 import it.unibas.lunatic.parser.operators.ParseDependenciesCF;
 import it.unibas.lunatic.model.dependency.*;
 import speedy.model.database.AttributeRef;
 import speedy.model.expressions.Expression;
 }
 
-@members {
+@parser::members {
 private static Logger logger = LoggerFactory.getLogger(DependenciesParser.class);
 
 private ParseDependenciesCF generator = new ParseDependenciesCF();
@@ -53,13 +49,13 @@ public void emitErrorMessage(String msg) {
 }
 }
 
-prog: dependencies { if (logger.isDebugEnabled()) logger.debug($dependencies.tree.toStringTree()); }  ;
+prog: dependencies {  }  ;
 
 dependencies:    
-	         ('ST-TGDs:' sttgd+ { counter = 0;} )?
-	         ('T-TGDs:' etgd+ { counter = 0;} )?
-	         ('EGDs:' egd+ { counter = 0;} )?
-	         ('Queries:' query+ { counter = 0;} )?;
+	         ('ST-TGDs:' sttgd+ { counter = 1;} )?
+	         ('T-TGDs:' etgd+ { counter = 1;} )?
+	         ('EGDs:' egd+ { counter = 1;} )?
+	         ('Queries:' query+ { counter = 1;} )?;
 
 sttgd:	 	 { stTGD = true; } dependency { dependency.setType(LunaticConstants.STTGD); dependency.setId("m" + counter++); generator.addSTTGD(dependency); } ;
 
@@ -74,7 +70,7 @@ dependency:	 (id = IDENTIFIER':')? {  dependency = new Dependency();
                     formulaStack.push(formulaWN);
                     dependency.setPremise(formulaWN);
                     inPremise = true;
-                    if(id!=null) dependency.setId(id.getText()); }
+                    if(((DependencyContext)_localctx).id!=null) dependency.setId(((DependencyContext)_localctx).id.getText()); }
 		 positiveFormula '->' 
 		 ({  formulaStack.clear(); inPremise = false;} 
                   conclusionFormula) '.' ;  
@@ -85,7 +81,7 @@ querydependency	: (id = IDENTIFIER':')? {  dependency = new Dependency();
                     formulaStack.push(formulaWN);
                     dependency.setPremise(formulaWN);
                     inPremise = false;
-                    if(id!=null) dependency.setId(id.getText()); }
+                    if(((QuerydependencyContext)_localctx).id!=null) dependency.setId(((QuerydependencyContext)_localctx).id.getText()); }
 		 conclusionQueryFormula '<-' 
 		 ({   inPremise = true;} 
                   positiveFormula) '.' ;  
@@ -105,14 +101,14 @@ conclusionQueryFormula: {  positiveFormula = new PositiveFormula();
 
 atom	:	 relationalAtom | builtin | comparison;	
 
-relationalAtom:	 name=IDENTIFIER { atom = new RelationalAtom(generator.cleanTableName(name.getText())); attributePosition = 0; } '(' attribute (',' attribute)* ')'
+relationalAtom:	 name=IDENTIFIER { atom = new RelationalAtom(generator.cleanTableName(((RelationalAtomContext)_localctx).name.getText())); attributePosition = 0; } '(' attribute (',' attribute)* ')'
 		 {  positiveFormula.addAtom(atom); atom.setFormula(positiveFormula); };
 		 
-queryAtom:	 name=IDENTIFIER { atom = new QueryAtom(name.getText()); attributePosition = 0; } '(' queryattribute (',' queryattribute)* ')'
+queryAtom:	 name=IDENTIFIER { atom = new QueryAtom(((QueryAtomContext)_localctx).name.getText()); attributePosition = 0; } '(' queryattribute (',' queryattribute)* ')'
 		 {  positiveFormula.addAtom(atom); atom.setFormula(positiveFormula); };
 
 builtin	:	 expression=EXPRESSION  
-                 {  atom = new BuiltInAtom(positiveFormula, new Expression(generator.clean(expression.getText()))); 
+                 {  atom = new BuiltInAtom(positiveFormula, new Expression(generator.clean(((BuiltinContext)_localctx).expression.getText()))); 
                     positiveFormula.addAtom(atom);  } ;         
 
 comparison :	 {   expressionString = new StringBuilder(); 
@@ -120,7 +116,7 @@ comparison :	 {   expressionString = new StringBuilder();
 		     rightConstant = null;}
                  leftargument 
                  oper=OPERATOR { 
-                 	String operatorText = oper.getText();
+                 	String operatorText = ((ComparisonContext)_localctx).oper.getText();
                  	if(operatorText.equals("=")){
                  	   operatorText = "==";
                  	}
@@ -128,15 +124,15 @@ comparison :	 {   expressionString = new StringBuilder();
                  }
                  rightargument 
                  {  Expression expression = new Expression(expressionString.toString()); 
-                    atom = new ComparisonAtom(positiveFormula, expression, leftConstant, rightConstant, oper.getText()); 
+                    atom = new ComparisonAtom(positiveFormula, expression, leftConstant, rightConstant, ((ComparisonContext)_localctx).oper.getText()); 
                     positiveFormula.addAtom(atom); } ;
 
-leftargument:	 ('\?'var=IDENTIFIER { expressionString.append(var.getText()); } |
-                 constant=(STRING | NUMBER | IDENTIFIER) { expressionString.append(constant.getText()); leftConstant = constant.getText();}
+leftargument:	 ('?'var=IDENTIFIER { expressionString.append(((LeftargumentContext)_localctx).var.getText()); } |
+                 constant=(STRING | NUMBER | IDENTIFIER) { expressionString.append(((LeftargumentContext)_localctx).constant.getText()); leftConstant = ((LeftargumentContext)_localctx).constant.getText();}
                  );
                  
-rightargument:	 ('\?'var=IDENTIFIER { expressionString.append(var.getText()); } |
-                 constant=(STRING | NUMBER | IDENTIFIER) { expressionString.append(constant.getText()); rightConstant = constant.getText();}
+rightargument:	 ('?'var=IDENTIFIER { expressionString.append(((RightargumentContext)_localctx).var.getText()); } |
+                 constant=(STRING | NUMBER | IDENTIFIER) { expressionString.append(((RightargumentContext)_localctx).constant.getText()); rightConstant = ((RightargumentContext)_localctx).constant.getText();}
                  );
                  
 attribute:	 { String attributeName = generator.findAttributeName(((RelationalAtom)atom).getTableName(), attributePosition, inPremise, stTGD); 
@@ -147,22 +143,22 @@ queryattribute:	 { String attributeName = "a" + attributePosition;
                    attribute = new FormulaAttribute(attributeName); attributePosition++;} queryvalue
 		 { ((QueryAtom)atom).addAttribute(attribute); } ;
 		 
-value	:	 '\?'var=IDENTIFIER { attribute.setValue(new FormulaVariableOccurrence(new AttributeRef(((RelationalAtom)atom).getTableName(), attribute.getAttributeName()), var.getText())); } |
-                 constant=(STRING | NUMBER) { attribute.setValue(new FormulaConstant(constant.getText())); } |
-                 symbol=(IDENTIFIER) { attribute.setValue(new FormulaSymbol(generator.convertSymbol(symbol.getText()))); } |
-                 nullValue=NULL { attribute.setValue(new FormulaConstant(nullValue.getText(), true)); } |
-                 expression=EXPRESSION { attribute.setValue(new FormulaExpression(new Expression(generator.clean(expression.getText())))); };
+value	:	 '?'var=IDENTIFIER { attribute.setValue(new FormulaVariableOccurrence(new AttributeRef(((RelationalAtom)atom).getTableName(), attribute.getAttributeName()), ((ValueContext)_localctx).var.getText())); } |
+                 constant=(STRING | NUMBER) { attribute.setValue(new FormulaConstant(generator.convertValue(((ValueContext)_localctx).constant.getText()))); } |
+                 symbol=IDENTIFIER { attribute.setValue(new FormulaSymbol(generator.convertValue(((ValueContext)_localctx).symbol.getText()))); } |
+                 nullValue=NULL { attribute.setValue(new FormulaConstant(((ValueContext)_localctx).nullValue.getText(), true)); } |
+                 expression=EXPRESSION { attribute.setValue(new FormulaExpression(new Expression(generator.clean(((ValueContext)_localctx).expression.getText())))); };
 
 
-queryvalue:	 '\?'var=IDENTIFIER { attribute.setValue(new FormulaVariableOccurrence(new AttributeRef(((QueryAtom)atom).getQueryId(), attribute.getAttributeName()), var.getText())); } |
-                 constant=(STRING | NUMBER) { attribute.setValue(new FormulaConstant(constant.getText())); } |
-                 symbol=(IDENTIFIER) { attribute.setValue(new FormulaSymbol(generator.convertSymbol(symbol.getText()))); } |
-                 nullValue=NULL { attribute.setValue(new FormulaConstant(nullValue.getText(), true)); } |
-                 expression=EXPRESSION { attribute.setValue(new FormulaExpression(new Expression(generator.clean(expression.getText())))); };
+queryvalue:	 '?'var=IDENTIFIER { attribute.setValue(new FormulaVariableOccurrence(new AttributeRef(((QueryAtom)atom).getQueryId(), attribute.getAttributeName()), ((QueryvalueContext)_localctx).var.getText())); } |
+                 constant=(STRING | NUMBER) { attribute.setValue(new FormulaConstant(generator.convertValue(((QueryvalueContext)_localctx).constant.getText()))); } |
+                 symbol=IDENTIFIER { attribute.setValue(new FormulaSymbol(generator.convertValue(((QueryvalueContext)_localctx).symbol.getText()))); } |
+                 nullValue=NULL { attribute.setValue(new FormulaConstant(((QueryvalueContext)_localctx).nullValue.getText(), true)); } |
+                 expression=EXPRESSION { attribute.setValue(new FormulaExpression(new Expression(generator.clean(((QueryvalueContext)_localctx).expression.getText())))); };
 
 OPERATOR:	 '=' | '!=' | '>' | '<' | '>=' | '<=';
 
-IDENTIFIER  :    (LETTER) (LETTER | DIGIT | '_' | '-' )*;
+IDENTIFIER  :    ((LETTER) (LETTER | DIGIT | '_' | '-' )*);
 
 //STRING  :  	 '"' (LETTER | DIGIT| '-' | '.' | ' ' | '_' | '*' | '/' )+ '"';
 STRING  :         '"' ~('\r' | '\n' | '"')* '"';
@@ -172,4 +168,4 @@ fragment DIGIT:  '0'..'9' ;
 fragment LETTER: 'a'..'z'|'A'..'Z' ;
 WHITESPACE : 	 ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ { skip(); } ;
 LINE_COMMENT :   '//' ~( '\r' | '\n' )* { skip(); } ;
-EXPRESSION:      '{'(.)*'}';
+EXPRESSION:      '{'(.)*?'}';

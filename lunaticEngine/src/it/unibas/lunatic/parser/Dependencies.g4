@@ -1,15 +1,10 @@
 grammar Dependencies;
 
-options {
-output=AST;
-ASTLabelType=CommonTree; // type of $stat.tree ref etc...
-}
-
 @lexer::header {
 package it.unibas.lunatic.parser.output;
 }
 
-@header {
+@parser::header {
 package it.unibas.lunatic.parser.output;
 
 import it.unibas.lunatic.LunaticConstants;
@@ -19,9 +14,10 @@ import it.unibas.lunatic.parser.operators.ParseDependencies;
 import it.unibas.lunatic.model.dependency.*;
 import speedy.model.database.AttributeRef;
 import speedy.model.expressions.Expression;
+import java.util.Stack;
 }
 
-@members {
+@parser::members {
 private static Logger logger = LoggerFactory.getLogger(DependenciesParser.class);
 
 private ParseDependencies generator = new ParseDependencies();
@@ -52,7 +48,7 @@ public void emitErrorMessage(String msg) {
 }
 }
 
-prog: dependencies { if (logger.isDebugEnabled()) logger.debug($dependencies.tree.toStringTree()); }  ;
+prog: dependencies {  }  ;
 
 dependencies:    
 	         ('STTGDs:' sttgd+ { counter = 0;} |
@@ -84,7 +80,7 @@ dependency:	 (id = IDENTIFIER':')? {  dependency = new Dependency();
                     formulaWN = new FormulaWithNegations(); 
                     formulaStack.push(formulaWN);
                     dependency.setPremise(formulaWN);
-                    if(id!=null) dependency.setId(id.getText()); }
+                    if(((DependencyContext)_localctx).id!=null) dependency.setId(((DependencyContext)_localctx).id.getText()); }
 		 positiveFormula  ( negatedFormula   )* '->' 
 		 ('#fail' 
 		 {  formulaStack.clear(); 
@@ -126,38 +122,38 @@ conclusionFormula: {  positiveFormula = new PositiveFormula();
 
 atom	:	 relationalAtom | builtin | comparison;	
 
-relationalAtom:	 name=IDENTIFIER { atom = new RelationalAtom(name.getText()); } '(' attribute (',' attribute)* ')'
+relationalAtom:	 name=IDENTIFIER { atom = new RelationalAtom(((RelationalAtomContext)_localctx).name.getText()); } '(' attribute (',' attribute)* ')'
 		 {  positiveFormula.addAtom(atom); atom.setFormula(positiveFormula); };
 
 builtin	:	 expression=EXPRESSION  
-                 {  atom = new BuiltInAtom(positiveFormula, new Expression(generator.clean(expression.getText()))); 
+                 {  atom = new BuiltInAtom(positiveFormula, new Expression(generator.clean(((BuiltinContext)_localctx).expression.getText()))); 
                     positiveFormula.addAtom(atom);  } ;         
 
 comparison :	 {   expressionString = new StringBuilder(); 
 		     leftConstant = null;
 		     rightConstant = null;}
                  leftargument 
-                 oper=OPERATOR { expressionString.append(" ").append(oper.getText()); }
+                 oper=OPERATOR { expressionString.append(" ").append(((ComparisonContext)_localctx).oper.getText()); }
                  rightargument 
                  {  Expression expression = new Expression(expressionString.toString()); 
-                    atom = new ComparisonAtom(positiveFormula, expression, leftConstant, rightConstant, oper.getText()); 
+                    atom = new ComparisonAtom(positiveFormula, expression, leftConstant, rightConstant, ((ComparisonContext)_localctx).oper.getText()); 
                     positiveFormula.addAtom(atom); } ;
 
-leftargument:	 ('\$'var=IDENTIFIER { expressionString.append(var.getText()); } |
-                 constant=(STRING | NUMBER) { expressionString.append(constant.getText()); leftConstant = constant.getText();}
+leftargument:	 ('$'var=IDENTIFIER { expressionString.append(((LeftargumentContext)_localctx).var.getText()); } |
+                 constant=(STRING | NUMBER) { expressionString.append(((LeftargumentContext)_localctx).constant.getText()); leftConstant = ((LeftargumentContext)_localctx).constant.getText();}
                  );
                  
-rightargument:	 ('\$'var=IDENTIFIER { expressionString.append(var.getText()); } |
-                 constant=(STRING | NUMBER) { expressionString.append(constant.getText()); rightConstant = constant.getText();}
+rightargument:	 ('$'var=IDENTIFIER { expressionString.append(((RightargumentContext)_localctx).var.getText()); } |
+                 constant=(STRING | NUMBER) { expressionString.append(((RightargumentContext)_localctx).constant.getText()); rightConstant = ((RightargumentContext)_localctx).constant.getText();}
                  );
 
-attribute:	 attr=IDENTIFIER ':' { attribute = new FormulaAttribute(attr.getText()); } value
+attribute:	 attr=IDENTIFIER ':' { attribute = new FormulaAttribute(((AttributeContext)_localctx).attr.getText()); } value
 		 { ((RelationalAtom)atom).addAttribute(attribute); } ;
 
-value	:	 '\$'var=IDENTIFIER { attribute.setValue(new FormulaVariableOccurrence(new AttributeRef(((RelationalAtom)atom).getTableName(), attribute.getAttributeName()), var.getText())); } |
-                 constant=(STRING | NUMBER) { attribute.setValue(new FormulaConstant(constant.getText())); } |
-                 nullValue=NULL { attribute.setValue(new FormulaConstant(nullValue.getText(), true)); } |
-                 expression=EXPRESSION { attribute.setValue(new FormulaExpression(new Expression(generator.clean(expression.getText())))); };
+value	:	 '$'var=IDENTIFIER { attribute.setValue(new FormulaVariableOccurrence(new AttributeRef(((RelationalAtom)atom).getTableName(), attribute.getAttributeName()), ((ValueContext)_localctx).var.getText())); } |
+                 constant=(STRING | NUMBER) { attribute.setValue(new FormulaConstant(((ValueContext)_localctx).constant.getText())); } |
+                 nullValue=NULL { attribute.setValue(new FormulaConstant(((ValueContext)_localctx).nullValue.getText(), true)); } |
+                 expression=EXPRESSION { attribute.setValue(new FormulaExpression(new Expression(generator.clean(((ValueContext)_localctx).expression.getText())))); };
 
 OPERATOR:	 '==' | '!=' | '>' | '<' | '>=' | '<=';
 
@@ -171,4 +167,4 @@ fragment DIGIT:  '0'..'9' ;
 fragment LETTER: 'a'..'z'|'A'..'Z' ;
 WHITESPACE : 	 ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ { skip(); } ;
 LINE_COMMENT :   '//' ~( '\r' | '\n' )* { skip(); } ;
-EXPRESSION:      '{'(.)*'}';
+EXPRESSION:      '{'(.)*?'}';

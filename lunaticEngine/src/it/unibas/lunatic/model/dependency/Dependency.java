@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.dependency;
 
 import it.unibas.lunatic.model.dependency.operators.CloneDependency;
+import it.unibas.lunatic.model.dependency.operators.DependencyToCFString;
 import it.unibas.lunatic.model.dependency.operators.DependencyToString;
 import it.unibas.lunatic.model.dependency.operators.IFormulaVisitor;
 import it.unibas.lunatic.model.generators.IValueGenerator;
@@ -234,6 +235,10 @@ public class Dependency implements Cloneable {
 
     public String toSaveString() {
         return new DependencyToString().toSaveString(this);
+    }
+
+    public String toCFString() {
+        return new DependencyToCFString().toCFString(this);
     }
 
     public String toLongString() {

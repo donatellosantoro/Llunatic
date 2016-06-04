@@ -20,7 +20,8 @@
             <pathelement location="${lib.dir}/postgresql-9.1-903.jdbc3.jar" />
             <pathelement location="${lib.dir}/jdom.jar" />
             <pathelement location="${lib.dir}/xerces-2.8.0.jar" />
-            <pathelement location="${lib.dir}/antlr-3.1.1-runtime.jar" />            
+            <pathelement location="${lib.dir}/antlr-runtime-${antlr.ver}.jar" />    
+            <pathelement location="${lib.dir}/antlr-3.1.1-runtime.jar" /> <!--spicy dependency-->                
             <pathelement location="${lib.dir}/mybatis-3.1.1.jar" />
             <pathelement location="${lib.dir}/jep-${jep.ver}.jar" />    
             <pathelement location="${lib.dir}/js.jar" />  

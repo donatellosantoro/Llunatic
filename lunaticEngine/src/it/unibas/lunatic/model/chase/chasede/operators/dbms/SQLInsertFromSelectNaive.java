@@ -31,15 +31,15 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
     private FormulaAttributeToSQL attributeGenerator = new FormulaAttributeToSQL();
 
     public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target, Scenario scenario) {
+//                LunaticDBMSUtility.createFunctionsForNumericalSkolem(((DBMSDB) target).getAccessConfiguration());
         try {
-//        LunaticDBMSUtility.createFunctionsForNumericalSkolem(((DBMSDB) target).getAccessConfiguration());
             String selectQuery = queryBuilder.treeToSQL(sourceQuery, source, target, SpeedyConstants.INDENT + SpeedyConstants.INDENT);
             String insertQuery = generateInsertScript(dependency, selectQuery, (DBMSDB) target, scenario);
             return QueryManager.executeInsertOrDelete(insertQuery, ((DBMSDB) target).getAccessConfiguration());
         } catch (DBMSException ex) {
             if (ex.getMessage().contains("ERROR: function bigint_skolem(text) does not exist")
                     || ex.getMessage().contains("ERROR: function double_skolem(text) does not exist")) {
-                logger.warn("Some functions are missing in the current C3p0 thread. Retrying...");
+                if (logger.isDebugEnabled()) logger.debug("Some functions are missing in the current C3p0 thread. Retrying...");
                 return execute(dependency, sourceQuery, source, target, scenario);
             }
             throw ex;

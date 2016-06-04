@@ -7,6 +7,7 @@ import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +27,11 @@ public class GenerateTargetInsert {
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
     private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
 
-    public String generateScript(Scenario scenario, Set<Dependency> dependenciesToMaterialize) {
+    public String generateScript(Collection<Dependency> sttgds, Set<Dependency> dependenciesToMaterialize, Scenario scenario) {
         StringBuilder result = new StringBuilder();
         result.append("----- Generating target insert -----\n");
         Map<String, List<String>> insertMap = new HashMap<String, List<String>>();
-        for (Dependency stTgd : scenario.getSTTgds()) {
+        for (Dependency stTgd : sttgds) {
             generateScriptDependency(stTgd, insertMap, dependenciesToMaterialize, scenario);
         }
         result.append(generateScriptFromMap(scenario, insertMap));

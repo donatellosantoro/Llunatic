@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import speedy.model.database.TableAlias;
 import speedy.model.expressions.Expression;
+import speedy.utility.SpeedyUtility;
 
 public class QueryAtom extends RelationalAtom implements IFormulaAtom, Cloneable {
 
@@ -84,6 +85,32 @@ public class QueryAtom extends RelationalAtom implements IFormulaAtom, Cloneable
         return result.toString();
     }
 
+    @Override
+    public String toSaveString() {
+        StringBuilder result = new StringBuilder();
+        result.append(queryId).append("(");
+        for (FormulaAttribute attribute : attributes) {
+            result.append(attribute.toSaveString()).append(", ");
+        }
+        result.deleteCharAt(result.length() - 1);
+        result.deleteCharAt(result.length() - 1);
+        result.append(")");
+        return result.toString();
+    }
+
+    @Override
+    public String toCFString() {
+        StringBuilder result = new StringBuilder();
+        result.append(queryId).append("(");
+        for (FormulaAttribute attribute : attributes) {
+            result.append(attribute.toCFString()).append(", ");
+        }
+        SpeedyUtility.removeChars(", ".length(), result);
+        result.append(")");
+        return result.toString();
+    }
+
+    @Override
     public String toLongString() {
         StringBuilder result = new StringBuilder();
         result.append(queryId).append("\n");

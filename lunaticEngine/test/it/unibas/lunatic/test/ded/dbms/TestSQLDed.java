@@ -15,6 +15,7 @@ public class TestSQLDed extends CheckTest {
 
     public void test() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.deds_rs_dbms, true);
+        scenario.getConfiguration().setOptimizeSTTGDs(false);
         IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
@@ -22,6 +23,7 @@ public class TestSQLDed extends CheckTest {
     
     public void testRSSTTGDs() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.deds_rs_sttgds_dbms, true);
+        scenario.getConfiguration().setOptimizeSTTGDs(false);
         IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

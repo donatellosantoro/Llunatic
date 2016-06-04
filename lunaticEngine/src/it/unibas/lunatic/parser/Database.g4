@@ -1,23 +1,19 @@
 grammar Database;
 
-options {
-output=AST;
-ASTLabelType=CommonTree; // type of $stat.tree ref etc...
-}
-
 @lexer::header {
 package it.unibas.lunatic.parser.output;
 }
 
-@header {
+@parser::header {
 package it.unibas.lunatic.parser.output;
 
 import speedy.model.expressions.Expression;
 import it.unibas.lunatic.parser.operators.ParseDatabase;
 import it.unibas.lunatic.parser.*;
+import java.util.Stack;
 }
 
-@members {
+@parser::members {
 private static org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory.getLog(DatabaseParser.class.getName());
 private ParseDatabase generator;
 
@@ -37,21 +33,21 @@ public void emitErrorMessage(String msg) {
 }
 }
 
-prog: database { if (logger.isDebugEnabled()) logger.debug($database.tree.toStringTree()); }  ;
+prog: database {  }  ;
 
 database:     schema instance? ;
 
 schema:	       'SCHEMA:' { currentSchema = new ParserSchema(); } relation+ { generator.setSchema(currentSchema); };
 
-relation:	set=IDENTIFIER { currentTable = new ParserTable(set.getText()); } '(' attrName (',' attrName)* ')' { currentSchema.addTable(currentTable); };
+relation:	set=IDENTIFIER { currentTable = new ParserTable(((RelationContext)_localctx).set.getText()); } '(' attrName (',' attrName)* ')' { currentSchema.addTable(currentTable); };
 
-attrName:	attr=IDENTIFIER { currentTable.addAttribute(new ParserAttribute(attr.getText(), null));  };
+attrName:	attr=IDENTIFIER { currentTable.addAttribute(new ParserAttribute(((AttrNameContext)_localctx).attr.getText(), null));  };
 
 instance:      'INSTANCE:' { currentInstance = new ParserInstance(); } fact+ { generator.setInstance(currentInstance); }   ;
 
-fact:	       set=IDENTIFIER { currentFact = new ParserFact(set.getText()); } '(' attrValue (',' attrValue)* ')' { currentInstance.addFact(currentFact); };
+fact:	       set=IDENTIFIER { currentFact = new ParserFact(((FactContext)_localctx).set.getText()); } '(' attrValue (',' attrValue)* ')' { currentInstance.addFact(currentFact); };
 
-attrValue:	attr=IDENTIFIER ':' val=(NULL | STRING | NUMBER) { currentFact.addAttribute(new ParserAttribute(attr.getText(), val.getText()));  };
+attrValue:	attr=IDENTIFIER ':' val=(NULL | STRING | NUMBER) { currentFact.addAttribute(new ParserAttribute(((AttrValueContext)_localctx).attr.getText(), ((AttrValueContext)_localctx).val.getText()));  };
 
 IDENTIFIER  :   (LETTER) (LETTER | DIGIT | '_' | '.' | '-' )*;
 

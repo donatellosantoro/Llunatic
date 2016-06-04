@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g 2016-05-30 19:32:46
+// Generated from Dependencies.g4 by ANTLR 4.5.3
 
 package it.unibas.lunatic.parser.output;
 
@@ -9,82 +9,98 @@ import it.unibas.lunatic.parser.operators.ParseDependencies;
 import it.unibas.lunatic.model.dependency.*;
 import speedy.model.database.AttributeRef;
 import speedy.model.expressions.Expression;
-
-
-import org.antlr.runtime.*;
 import java.util.Stack;
+
+import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
+import org.antlr.v4.runtime.tree.*;
 import java.util.List;
+import java.util.Iterator;
 import java.util.ArrayList;
 
-import org.antlr.runtime.tree.*;
-
-
-@SuppressWarnings("all")
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class DependenciesParser extends Parser {
-	public static final String[] tokenNames = new String[] {
-		"<invalid>", "<EOR>", "<DOWN>", "<UP>", "DIGIT", "EXPRESSION", "IDENTIFIER", 
-		"LETTER", "LINE_COMMENT", "NULL", "NUMBER", "OPERATOR", "STRING", "WHITESPACE", 
-		"'#fail'", "'('", "')'", "','", "'->'", "'.'", "':'", "'DCs:'", "'DED-EGDs:'", 
-		"'DED-ExtTGDs:'", "'DED-STTGDs:'", "'EGDs:'", "'ExtEGDs:'", "'ExtTGDs:'", 
-		"'STTGDs:'", "'['", "'\\$'", "']'", "'and not exists'", "'|'"
+	static { RuntimeMetaData.checkVersion("4.5.3", RuntimeMetaData.VERSION); }
+
+	protected static final DFA[] _decisionToDFA;
+	protected static final PredictionContextCache _sharedContextCache =
+		new PredictionContextCache();
+	public static final int
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
+		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
+		T__17=18, T__18=19, T__19=20, OPERATOR=21, IDENTIFIER=22, STRING=23, NUMBER=24, 
+		NULL=25, WHITESPACE=26, LINE_COMMENT=27, EXPRESSION=28;
+	public static final int
+		RULE_prog = 0, RULE_dependencies = 1, RULE_sttgd = 2, RULE_etgd = 3, RULE_dc = 4, 
+		RULE_egd = 5, RULE_eegd = 6, RULE_dedstgd = 7, RULE_dedetgd = 8, RULE_dedegd = 9, 
+		RULE_dependency = 10, RULE_ded = 11, RULE_dedConclusion = 12, RULE_positiveFormula = 13, 
+		RULE_negatedFormula = 14, RULE_conclusionFormula = 15, RULE_atom = 16, 
+		RULE_relationalAtom = 17, RULE_builtin = 18, RULE_comparison = 19, RULE_leftargument = 20, 
+		RULE_rightargument = 21, RULE_attribute = 22, RULE_value = 23;
+	public static final String[] ruleNames = {
+		"prog", "dependencies", "sttgd", "etgd", "dc", "egd", "eegd", "dedstgd", 
+		"dedetgd", "dedegd", "dependency", "ded", "dedConclusion", "positiveFormula", 
+		"negatedFormula", "conclusionFormula", "atom", "relationalAtom", "builtin", 
+		"comparison", "leftargument", "rightargument", "attribute", "value"
 	};
-	public static final int EOF=-1;
-	public static final int T__14=14;
-	public static final int T__15=15;
-	public static final int T__16=16;
-	public static final int T__17=17;
-	public static final int T__18=18;
-	public static final int T__19=19;
-	public static final int T__20=20;
-	public static final int T__21=21;
-	public static final int T__22=22;
-	public static final int T__23=23;
-	public static final int T__24=24;
-	public static final int T__25=25;
-	public static final int T__26=26;
-	public static final int T__27=27;
-	public static final int T__28=28;
-	public static final int T__29=29;
-	public static final int T__30=30;
-	public static final int T__31=31;
-	public static final int T__32=32;
-	public static final int T__33=33;
-	public static final int DIGIT=4;
-	public static final int EXPRESSION=5;
-	public static final int IDENTIFIER=6;
-	public static final int LETTER=7;
-	public static final int LINE_COMMENT=8;
-	public static final int NULL=9;
-	public static final int NUMBER=10;
-	public static final int OPERATOR=11;
-	public static final int STRING=12;
-	public static final int WHITESPACE=13;
 
-	// delegates
-	public Parser[] getDelegates() {
-		return new Parser[] {};
+	private static final String[] _LITERAL_NAMES = {
+		null, "'STTGDs:'", "'DED-STTGDs:'", "'ExtTGDs:'", "'DED-ExtTGDs:'", "'EGDs:'", 
+		"'DED-EGDs:'", "'ExtEGDs:'", "'DCs:'", "':'", "'->'", "'#fail'", "'.'", 
+		"'|'", "'['", "','", "']'", "'and not exists'", "'('", "')'", "'$'", null, 
+		null, null, null, "'#NULL#'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, "OPERATOR", "IDENTIFIER", 
+		"STRING", "NUMBER", "NULL", "WHITESPACE", "LINE_COMMENT", "EXPRESSION"
+	};
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
 	}
 
-	// delegators
-
-
-	public DependenciesParser(TokenStream input) {
-		this(input, new RecognizerSharedState());
-	}
-	public DependenciesParser(TokenStream input, RecognizerSharedState state) {
-		super(input, state);
+	@Override
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
 	}
 
-	protected TreeAdaptor adaptor = new CommonTreeAdaptor();
+	@Override
 
-	public void setTreeAdaptor(TreeAdaptor adaptor) {
-		this.adaptor = adaptor;
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
 	}
-	public TreeAdaptor getTreeAdaptor() {
-		return adaptor;
-	}
-	@Override public String[] getTokenNames() { return DependenciesParser.tokenNames; }
-	@Override public String getGrammarFileName() { return "/Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g"; }
+
+	@Override
+	public String getGrammarFileName() { return "Dependencies.g4"; }
+
+	@Override
+	public String[] getRuleNames() { return ruleNames; }
+
+	@Override
+	public String getSerializedATN() { return _serializedATN; }
+
+	@Override
+	public ATN getATN() { return _ATN; }
 
 
 	private static Logger logger = LoggerFactory.getLogger(DependenciesParser.class);
@@ -110,2473 +126,1730 @@ public class DependenciesParser extends Parser {
 	}
 
 
-
-	public static class prog_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public DependenciesParser(TokenStream input) {
+		super(input);
+		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
+	}
+	public static class ProgContext extends ParserRuleContext {
+		public DependenciesContext dependencies() {
+			return getRuleContext(DependenciesContext.class,0);
+		}
+		public ProgContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_prog; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterProg(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitProg(this);
+		}
+	}
 
-
-	// $ANTLR start "prog"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:55:1: prog : dependencies ;
-	public final DependenciesParser.prog_return prog() throws RecognitionException {
-		DependenciesParser.prog_return retval = new DependenciesParser.prog_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		ParserRuleReturnScope dependencies1 =null;
-
-
+	public final ProgContext prog() throws RecognitionException {
+		ProgContext _localctx = new ProgContext(_ctx, getState());
+		enterRule(_localctx, 0, RULE_prog);
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:55:5: ( dependencies )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:55:7: dependencies
+			enterOuterAlt(_localctx, 1);
 			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			pushFollow(FOLLOW_dependencies_in_prog54);
-			dependencies1=dependencies();
-			state._fsp--;
-
-			adaptor.addChild(root_0, dependencies1.getTree());
-
-			 if (logger.isDebugEnabled()) logger.debug((dependencies1!=null?((CommonTree)dependencies1.getTree()):null).toStringTree()); 
+			setState(48);
+			dependencies();
+			  
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "prog"
 
-
-	public static class dependencies_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public static class DependenciesContext extends ParserRuleContext {
+		public List<SttgdContext> sttgd() {
+			return getRuleContexts(SttgdContext.class);
+		}
+		public SttgdContext sttgd(int i) {
+			return getRuleContext(SttgdContext.class,i);
+		}
+		public List<DedstgdContext> dedstgd() {
+			return getRuleContexts(DedstgdContext.class);
+		}
+		public DedstgdContext dedstgd(int i) {
+			return getRuleContext(DedstgdContext.class,i);
+		}
+		public List<EtgdContext> etgd() {
+			return getRuleContexts(EtgdContext.class);
+		}
+		public EtgdContext etgd(int i) {
+			return getRuleContext(EtgdContext.class,i);
+		}
+		public List<DedetgdContext> dedetgd() {
+			return getRuleContexts(DedetgdContext.class);
+		}
+		public DedetgdContext dedetgd(int i) {
+			return getRuleContext(DedetgdContext.class,i);
+		}
+		public List<EgdContext> egd() {
+			return getRuleContexts(EgdContext.class);
+		}
+		public EgdContext egd(int i) {
+			return getRuleContext(EgdContext.class,i);
+		}
+		public List<DedegdContext> dedegd() {
+			return getRuleContexts(DedegdContext.class);
+		}
+		public DedegdContext dedegd(int i) {
+			return getRuleContext(DedegdContext.class,i);
+		}
+		public List<EegdContext> eegd() {
+			return getRuleContexts(EegdContext.class);
+		}
+		public EegdContext eegd(int i) {
+			return getRuleContext(EegdContext.class,i);
+		}
+		public List<DcContext> dc() {
+			return getRuleContexts(DcContext.class);
+		}
+		public DcContext dc(int i) {
+			return getRuleContext(DcContext.class,i);
+		}
+		public DependenciesContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_dependencies; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "dependencies"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:57:1: dependencies : ( 'STTGDs:' ( sttgd )+ | 'DED-STTGDs:' ( dedstgd )+ )? ( 'ExtTGDs:' ( etgd )+ | 'DED-ExtTGDs:' ( dedetgd )+ )? ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )? ( 'DCs:' ( dc )+ )? ;
-	public final DependenciesParser.dependencies_return dependencies() throws RecognitionException {
-		DependenciesParser.dependencies_return retval = new DependenciesParser.dependencies_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token string_literal2=null;
-		Token string_literal4=null;
-		Token string_literal6=null;
-		Token string_literal8=null;
-		Token string_literal10=null;
-		Token string_literal12=null;
-		Token string_literal14=null;
-		Token string_literal16=null;
-		ParserRuleReturnScope sttgd3 =null;
-		ParserRuleReturnScope dedstgd5 =null;
-		ParserRuleReturnScope etgd7 =null;
-		ParserRuleReturnScope dedetgd9 =null;
-		ParserRuleReturnScope egd11 =null;
-		ParserRuleReturnScope dedegd13 =null;
-		ParserRuleReturnScope eegd15 =null;
-		ParserRuleReturnScope dc17 =null;
-
-		CommonTree string_literal2_tree=null;
-		CommonTree string_literal4_tree=null;
-		CommonTree string_literal6_tree=null;
-		CommonTree string_literal8_tree=null;
-		CommonTree string_literal10_tree=null;
-		CommonTree string_literal12_tree=null;
-		CommonTree string_literal14_tree=null;
-		CommonTree string_literal16_tree=null;
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:57:13: ( ( 'STTGDs:' ( sttgd )+ | 'DED-STTGDs:' ( dedstgd )+ )? ( 'ExtTGDs:' ( etgd )+ | 'DED-ExtTGDs:' ( dedetgd )+ )? ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )? ( 'DCs:' ( dc )+ )? )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:58:11: ( 'STTGDs:' ( sttgd )+ | 'DED-STTGDs:' ( dedstgd )+ )? ( 'ExtTGDs:' ( etgd )+ | 'DED-ExtTGDs:' ( dedetgd )+ )? ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )? ( 'DCs:' ( dc )+ )?
-			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:58:11: ( 'STTGDs:' ( sttgd )+ | 'DED-STTGDs:' ( dedstgd )+ )?
-			int alt3=3;
-			int LA3_0 = input.LA(1);
-			if ( (LA3_0==28) ) {
-				alt3=1;
-			}
-			else if ( (LA3_0==24) ) {
-				alt3=2;
-			}
-			switch (alt3) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:58:12: 'STTGDs:' ( sttgd )+
-					{
-					string_literal2=(Token)match(input,28,FOLLOW_28_in_dependencies80); 
-					string_literal2_tree = (CommonTree)adaptor.create(string_literal2);
-					adaptor.addChild(root_0, string_literal2_tree);
-
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:58:22: ( sttgd )+
-					int cnt1=0;
-					loop1:
-					while (true) {
-						int alt1=2;
-						int LA1_0 = input.LA(1);
-						if ( (LA1_0==IDENTIFIER) ) {
-							alt1=1;
-						}
-
-						switch (alt1) {
-						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:58:22: sttgd
-							{
-							pushFollow(FOLLOW_sttgd_in_dependencies82);
-							sttgd3=sttgd();
-							state._fsp--;
-
-							adaptor.addChild(root_0, sttgd3.getTree());
-
-							}
-							break;
-
-						default :
-							if ( cnt1 >= 1 ) break loop1;
-							EarlyExitException eee = new EarlyExitException(1, input);
-							throw eee;
-						}
-						cnt1++;
-					}
-
-					 counter = 0;
-					}
-					break;
-				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:59:12: 'DED-STTGDs:' ( dedstgd )+
-					{
-					string_literal4=(Token)match(input,24,FOLLOW_24_in_dependencies100); 
-					string_literal4_tree = (CommonTree)adaptor.create(string_literal4);
-					adaptor.addChild(root_0, string_literal4_tree);
-
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:59:26: ( dedstgd )+
-					int cnt2=0;
-					loop2:
-					while (true) {
-						int alt2=2;
-						int LA2_0 = input.LA(1);
-						if ( (LA2_0==IDENTIFIER) ) {
-							alt2=1;
-						}
-
-						switch (alt2) {
-						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:59:26: dedstgd
-							{
-							pushFollow(FOLLOW_dedstgd_in_dependencies102);
-							dedstgd5=dedstgd();
-							state._fsp--;
-
-							adaptor.addChild(root_0, dedstgd5.getTree());
-
-							}
-							break;
-
-						default :
-							if ( cnt2 >= 1 ) break loop2;
-							EarlyExitException eee = new EarlyExitException(2, input);
-							throw eee;
-						}
-						cnt2++;
-					}
-
-					counter = 0;
-					}
-					break;
-
-			}
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:60:11: ( 'ExtTGDs:' ( etgd )+ | 'DED-ExtTGDs:' ( dedetgd )+ )?
-			int alt6=3;
-			int LA6_0 = input.LA(1);
-			if ( (LA6_0==27) ) {
-				alt6=1;
-			}
-			else if ( (LA6_0==23) ) {
-				alt6=2;
-			}
-			switch (alt6) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:60:12: 'ExtTGDs:' ( etgd )+
-					{
-					string_literal6=(Token)match(input,27,FOLLOW_27_in_dependencies121); 
-					string_literal6_tree = (CommonTree)adaptor.create(string_literal6);
-					adaptor.addChild(root_0, string_literal6_tree);
-
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:60:23: ( etgd )+
-					int cnt4=0;
-					loop4:
-					while (true) {
-						int alt4=2;
-						int LA4_0 = input.LA(1);
-						if ( (LA4_0==IDENTIFIER) ) {
-							alt4=1;
-						}
-
-						switch (alt4) {
-						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:60:23: etgd
-							{
-							pushFollow(FOLLOW_etgd_in_dependencies123);
-							etgd7=etgd();
-							state._fsp--;
-
-							adaptor.addChild(root_0, etgd7.getTree());
-
-							}
-							break;
-
-						default :
-							if ( cnt4 >= 1 ) break loop4;
-							EarlyExitException eee = new EarlyExitException(4, input);
-							throw eee;
-						}
-						cnt4++;
-					}
-
-					 counter = 0;
-					}
-					break;
-				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:61:12: 'DED-ExtTGDs:' ( dedetgd )+
-					{
-					string_literal8=(Token)match(input,23,FOLLOW_23_in_dependencies141); 
-					string_literal8_tree = (CommonTree)adaptor.create(string_literal8);
-					adaptor.addChild(root_0, string_literal8_tree);
-
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:61:27: ( dedetgd )+
-					int cnt5=0;
-					loop5:
-					while (true) {
-						int alt5=2;
-						int LA5_0 = input.LA(1);
-						if ( (LA5_0==IDENTIFIER) ) {
-							alt5=1;
-						}
-
-						switch (alt5) {
-						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:61:27: dedetgd
-							{
-							pushFollow(FOLLOW_dedetgd_in_dependencies143);
-							dedetgd9=dedetgd();
-							state._fsp--;
-
-							adaptor.addChild(root_0, dedetgd9.getTree());
-
-							}
-							break;
-
-						default :
-							if ( cnt5 >= 1 ) break loop5;
-							EarlyExitException eee = new EarlyExitException(5, input);
-							throw eee;
-						}
-						cnt5++;
-					}
-
-					counter = 0;
-					}
-					break;
-
-			}
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:11: ( 'EGDs:' ( egd )+ | 'DED-EGDs:' ( dedegd )+ | 'ExtEGDs:' ( eegd )+ )?
-			int alt10=4;
-			switch ( input.LA(1) ) {
-				case 25:
-					{
-					alt10=1;
-					}
-					break;
-				case 22:
-					{
-					alt10=2;
-					}
-					break;
-				case 26:
-					{
-					alt10=3;
-					}
-					break;
-			}
-			switch (alt10) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:12: 'EGDs:' ( egd )+
-					{
-					string_literal10=(Token)match(input,25,FOLLOW_25_in_dependencies162); 
-					string_literal10_tree = (CommonTree)adaptor.create(string_literal10);
-					adaptor.addChild(root_0, string_literal10_tree);
-
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:20: ( egd )+
-					int cnt7=0;
-					loop7:
-					while (true) {
-						int alt7=2;
-						int LA7_0 = input.LA(1);
-						if ( (LA7_0==IDENTIFIER) ) {
-							alt7=1;
-						}
-
-						switch (alt7) {
-						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:62:20: egd
-							{
-							pushFollow(FOLLOW_egd_in_dependencies164);
-							egd11=egd();
-							state._fsp--;
-
-							adaptor.addChild(root_0, egd11.getTree());
-
-							}
-							break;
-
-						default :
-							if ( cnt7 >= 1 ) break loop7;
-							EarlyExitException eee = new EarlyExitException(7, input);
-							throw eee;
-						}
-						cnt7++;
-					}
-
-					 counter = 0;
-					}
-					break;
-				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:63:12: 'DED-EGDs:' ( dedegd )+
-					{
-					string_literal12=(Token)match(input,22,FOLLOW_22_in_dependencies182); 
-					string_literal12_tree = (CommonTree)adaptor.create(string_literal12);
-					adaptor.addChild(root_0, string_literal12_tree);
-
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:63:24: ( dedegd )+
-					int cnt8=0;
-					loop8:
-					while (true) {
-						int alt8=2;
-						int LA8_0 = input.LA(1);
-						if ( (LA8_0==IDENTIFIER) ) {
-							alt8=1;
-						}
-
-						switch (alt8) {
-						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:63:24: dedegd
-							{
-							pushFollow(FOLLOW_dedegd_in_dependencies184);
-							dedegd13=dedegd();
-							state._fsp--;
-
-							adaptor.addChild(root_0, dedegd13.getTree());
-
-							}
-							break;
-
-						default :
-							if ( cnt8 >= 1 ) break loop8;
-							EarlyExitException eee = new EarlyExitException(8, input);
-							throw eee;
-						}
-						cnt8++;
-					}
-
-					counter = 0;
-					}
-					break;
-				case 3 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:64:12: 'ExtEGDs:' ( eegd )+
-					{
-					string_literal14=(Token)match(input,26,FOLLOW_26_in_dependencies203); 
-					string_literal14_tree = (CommonTree)adaptor.create(string_literal14);
-					adaptor.addChild(root_0, string_literal14_tree);
-
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:64:23: ( eegd )+
-					int cnt9=0;
-					loop9:
-					while (true) {
-						int alt9=2;
-						int LA9_0 = input.LA(1);
-						if ( (LA9_0==IDENTIFIER) ) {
-							alt9=1;
-						}
-
-						switch (alt9) {
-						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:64:23: eegd
-							{
-							pushFollow(FOLLOW_eegd_in_dependencies205);
-							eegd15=eegd();
-							state._fsp--;
-
-							adaptor.addChild(root_0, eegd15.getTree());
-
-							}
-							break;
-
-						default :
-							if ( cnt9 >= 1 ) break loop9;
-							EarlyExitException eee = new EarlyExitException(9, input);
-							throw eee;
-						}
-						cnt9++;
-					}
-
-					 counter = 0;
-					}
-					break;
-
-			}
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:65:11: ( 'DCs:' ( dc )+ )?
-			int alt12=2;
-			int LA12_0 = input.LA(1);
-			if ( (LA12_0==21) ) {
-				alt12=1;
-			}
-			switch (alt12) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:65:12: 'DCs:' ( dc )+
-					{
-					string_literal16=(Token)match(input,21,FOLLOW_21_in_dependencies224); 
-					string_literal16_tree = (CommonTree)adaptor.create(string_literal16);
-					adaptor.addChild(root_0, string_literal16_tree);
-
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:65:19: ( dc )+
-					int cnt11=0;
-					loop11:
-					while (true) {
-						int alt11=2;
-						int LA11_0 = input.LA(1);
-						if ( (LA11_0==IDENTIFIER) ) {
-							alt11=1;
-						}
-
-						switch (alt11) {
-						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:65:19: dc
-							{
-							pushFollow(FOLLOW_dc_in_dependencies226);
-							dc17=dc();
-							state._fsp--;
-
-							adaptor.addChild(root_0, dc17.getTree());
-
-							}
-							break;
-
-						default :
-							if ( cnt11 >= 1 ) break loop11;
-							EarlyExitException eee = new EarlyExitException(11, input);
-							throw eee;
-						}
-						cnt11++;
-					}
-
-					 counter = 0;
-					}
-					break;
-
-			}
-
-			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterDependencies(this);
 		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitDependencies(this);
 		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
 	}
-	// $ANTLR end "dependencies"
 
-
-	public static class sttgd_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "sttgd"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:67:1: sttgd : dependency ;
-	public final DependenciesParser.sttgd_return sttgd() throws RecognitionException {
-		DependenciesParser.sttgd_return retval = new DependenciesParser.sttgd_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		ParserRuleReturnScope dependency18 =null;
-
-
+	public final DependenciesContext dependencies() throws RecognitionException {
+		DependenciesContext _localctx = new DependenciesContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_dependencies);
+		int _la;
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:67:6: ( dependency )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:67:11: dependency
+			enterOuterAlt(_localctx, 1);
 			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			pushFollow(FOLLOW_dependency_in_sttgd242);
-			dependency18=dependency();
-			state._fsp--;
-
-			adaptor.addChild(root_0, dependency18.getTree());
-
-			  dependency.setType(LunaticConstants.STTGD); dependency.setId("m" + counter++); generator.addSTTGD(dependency); 
+			setState(67);
+			switch (_input.LA(1)) {
+			case T__0:
+				{
+				setState(51);
+				match(T__0);
+				setState(53); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				do {
+					{
+					{
+					setState(52);
+					sttgd();
+					}
+					}
+					setState(55); 
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ( _la==IDENTIFIER );
+				 counter = 0;
+				}
+				break;
+			case T__1:
+				{
+				setState(59);
+				match(T__1);
+				setState(61); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				do {
+					{
+					{
+					setState(60);
+					dedstgd();
+					}
+					}
+					setState(63); 
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ( _la==IDENTIFIER );
+				counter = 0;
+				}
+				break;
+			case EOF:
+			case T__2:
+			case T__3:
+			case T__4:
+			case T__5:
+			case T__6:
+			case T__7:
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
-		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
-		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
-	}
-	// $ANTLR end "sttgd"
-
-
-	public static class etgd_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "etgd"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:69:1: etgd : dependency ;
-	public final DependenciesParser.etgd_return etgd() throws RecognitionException {
-		DependenciesParser.etgd_return retval = new DependenciesParser.etgd_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		ParserRuleReturnScope dependency19 =null;
-
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:69:5: ( dependency )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:69:10: dependency
-			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			pushFollow(FOLLOW_dependency_in_etgd255);
-			dependency19=dependency();
-			state._fsp--;
-
-			adaptor.addChild(root_0, dependency19.getTree());
-
-			  dependency.setType(LunaticConstants.ExtTGD); dependency.setId("t" + counter++); generator.addExtTGD(dependency); 
+			setState(85);
+			switch (_input.LA(1)) {
+			case T__2:
+				{
+				setState(69);
+				match(T__2);
+				setState(71); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				do {
+					{
+					{
+					setState(70);
+					etgd();
+					}
+					}
+					setState(73); 
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ( _la==IDENTIFIER );
+				 counter = 0;
+				}
+				break;
+			case T__3:
+				{
+				setState(77);
+				match(T__3);
+				setState(79); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				do {
+					{
+					{
+					setState(78);
+					dedetgd();
+					}
+					}
+					setState(81); 
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ( _la==IDENTIFIER );
+				counter = 0;
+				}
+				break;
+			case EOF:
+			case T__4:
+			case T__5:
+			case T__6:
+			case T__7:
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
-		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
-		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
-	}
-	// $ANTLR end "etgd"
-
-
-	public static class dc_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "dc"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:71:1: dc : dependency ;
-	public final DependenciesParser.dc_return dc() throws RecognitionException {
-		DependenciesParser.dc_return retval = new DependenciesParser.dc_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		ParserRuleReturnScope dependency20 =null;
-
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:71:3: ( dependency )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:71:8: dependency
-			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			pushFollow(FOLLOW_dependency_in_dc268);
-			dependency20=dependency();
-			state._fsp--;
-
-			adaptor.addChild(root_0, dependency20.getTree());
-
-			  dependency.setType(LunaticConstants.DC); dependency.setId("d" + counter++); generator.addDC(dependency); 
+			setState(111);
+			switch (_input.LA(1)) {
+			case T__4:
+				{
+				setState(87);
+				match(T__4);
+				setState(89); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				do {
+					{
+					{
+					setState(88);
+					egd();
+					}
+					}
+					setState(91); 
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ( _la==IDENTIFIER );
+				 counter = 0;
+				}
+				break;
+			case T__5:
+				{
+				setState(95);
+				match(T__5);
+				setState(97); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				do {
+					{
+					{
+					setState(96);
+					dedegd();
+					}
+					}
+					setState(99); 
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ( _la==IDENTIFIER );
+				counter = 0;
+				}
+				break;
+			case T__6:
+				{
+				setState(103);
+				match(T__6);
+				setState(105); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				do {
+					{
+					{
+					setState(104);
+					eegd();
+					}
+					}
+					setState(107); 
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ( _la==IDENTIFIER );
+				 counter = 0;
+				}
+				break;
+			case EOF:
+			case T__7:
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
-		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
-		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
-	}
-	// $ANTLR end "dc"
-
-
-	public static class egd_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "egd"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:73:1: egd : dependency ;
-	public final DependenciesParser.egd_return egd() throws RecognitionException {
-		DependenciesParser.egd_return retval = new DependenciesParser.egd_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		ParserRuleReturnScope dependency21 =null;
-
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:73:4: ( dependency )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:73:9: dependency
-			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			pushFollow(FOLLOW_dependency_in_egd281);
-			dependency21=dependency();
-			state._fsp--;
-
-			adaptor.addChild(root_0, dependency21.getTree());
-
-			  dependency.setType(LunaticConstants.EGD); dependency.setId("e" + counter++); generator.addEGD(dependency); 
-			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
-		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
-		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
-	}
-	// $ANTLR end "egd"
-
-
-	public static class eegd_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "eegd"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:75:1: eegd : dependency ;
-	public final DependenciesParser.eegd_return eegd() throws RecognitionException {
-		DependenciesParser.eegd_return retval = new DependenciesParser.eegd_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		ParserRuleReturnScope dependency22 =null;
-
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:75:5: ( dependency )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:75:10: dependency
-			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			pushFollow(FOLLOW_dependency_in_eegd300);
-			dependency22=dependency();
-			state._fsp--;
-
-			adaptor.addChild(root_0, dependency22.getTree());
-
-			  dependency.setType(LunaticConstants.ExtEGD); dependency.setId("e" + counter++); generator.addExtEGD(dependency); 
-			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
-		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
-		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
-	}
-	// $ANTLR end "eegd"
-
-
-	public static class dedstgd_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "dedstgd"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:77:1: dedstgd : ded ;
-	public final DependenciesParser.dedstgd_return dedstgd() throws RecognitionException {
-		DependenciesParser.dedstgd_return retval = new DependenciesParser.dedstgd_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		ParserRuleReturnScope ded23 =null;
-
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:77:8: ( ded )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:77:11: ded
-			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			pushFollow(FOLLOW_ded_in_dedstgd317);
-			ded23=ded();
-			state._fsp--;
-
-			adaptor.addChild(root_0, ded23.getTree());
-
-			  ded.setType(LunaticConstants.STTGD); ded.setId("ded_m" + counter++); generator.addDEDSTTGD(ded); 
-			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
-		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
-		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
-	}
-	// $ANTLR end "dedstgd"
-
-
-	public static class dedetgd_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "dedetgd"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:79:1: dedetgd : ded ;
-	public final DependenciesParser.dedetgd_return dedetgd() throws RecognitionException {
-		DependenciesParser.dedetgd_return retval = new DependenciesParser.dedetgd_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		ParserRuleReturnScope ded24 =null;
-
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:79:8: ( ded )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:79:11: ded
-			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			pushFollow(FOLLOW_ded_in_dedetgd340);
-			ded24=ded();
-			state._fsp--;
-
-			adaptor.addChild(root_0, ded24.getTree());
-
-			  ded.setType(LunaticConstants.ExtTGD); ded.setId("ded_t" + counter++); generator.addDEDExtTGD(ded); 
-			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
-		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
-		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
-	}
-	// $ANTLR end "dedetgd"
-
-
-	public static class dedegd_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "dedegd"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:81:1: dedegd : ded ;
-	public final DependenciesParser.dedegd_return dedegd() throws RecognitionException {
-		DependenciesParser.dedegd_return retval = new DependenciesParser.dedegd_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		ParserRuleReturnScope ded25 =null;
-
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:81:7: ( ded )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:81:18: ded
-			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			pushFollow(FOLLOW_ded_in_dedegd365);
-			ded25=ded();
-			state._fsp--;
-
-			adaptor.addChild(root_0, ded25.getTree());
-
-			  ded.setType(LunaticConstants.EGD); ded.setId("ded_e" + counter++); generator.addDEDExtEGD(ded); 
-			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
-		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
-		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
-	}
-	// $ANTLR end "dedegd"
-
-
-	public static class dependency_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "dependency"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:83:1: dependency : (id= IDENTIFIER ':' )? positiveFormula ( negatedFormula )* '->' ( '#fail' | conclusionFormula ) '.' ;
-	public final DependenciesParser.dependency_return dependency() throws RecognitionException {
-		DependenciesParser.dependency_return retval = new DependenciesParser.dependency_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token id=null;
-		Token char_literal26=null;
-		Token string_literal29=null;
-		Token string_literal30=null;
-		Token char_literal32=null;
-		ParserRuleReturnScope positiveFormula27 =null;
-		ParserRuleReturnScope negatedFormula28 =null;
-		ParserRuleReturnScope conclusionFormula31 =null;
-
-		CommonTree id_tree=null;
-		CommonTree char_literal26_tree=null;
-		CommonTree string_literal29_tree=null;
-		CommonTree string_literal30_tree=null;
-		CommonTree char_literal32_tree=null;
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:83:11: ( (id= IDENTIFIER ':' )? positiveFormula ( negatedFormula )* '->' ( '#fail' | conclusionFormula ) '.' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:83:14: (id= IDENTIFIER ':' )? positiveFormula ( negatedFormula )* '->' ( '#fail' | conclusionFormula ) '.'
-			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:83:14: (id= IDENTIFIER ':' )?
-			int alt13=2;
-			int LA13_0 = input.LA(1);
-			if ( (LA13_0==IDENTIFIER) ) {
-				int LA13_1 = input.LA(2);
-				if ( (LA13_1==20) ) {
-					alt13=1;
+			setState(121);
+			_la = _input.LA(1);
+			if (_la==T__7) {
+				{
+				setState(113);
+				match(T__7);
+				setState(115); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				do {
+					{
+					{
+					setState(114);
+					dc();
+					}
+					}
+					setState(117); 
+					_errHandler.sync(this);
+					_la = _input.LA(1);
+				} while ( _la==IDENTIFIER );
+				 counter = 0;
 				}
 			}
-			switch (alt13) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:83:15: id= IDENTIFIER ':'
-					{
-					id=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_dependency387); 
-					id_tree = (CommonTree)adaptor.create(id);
-					adaptor.addChild(root_0, id_tree);
-
-					char_literal26=(Token)match(input,20,FOLLOW_20_in_dependency388); 
-					char_literal26_tree = (CommonTree)adaptor.create(char_literal26);
-					adaptor.addChild(root_0, char_literal26_tree);
-
-					}
-					break;
 
 			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
 
+	public static class SttgdContext extends ParserRuleContext {
+		public DependencyContext dependency() {
+			return getRuleContext(DependencyContext.class,0);
+		}
+		public SttgdContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_sttgd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterSttgd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitSttgd(this);
+		}
+	}
+
+	public final SttgdContext sttgd() throws RecognitionException {
+		SttgdContext _localctx = new SttgdContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_sttgd);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(123);
+			dependency();
+			  dependency.setType(LunaticConstants.STTGD); dependency.setId("m" + counter++); generator.addSTTGD(dependency); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class EtgdContext extends ParserRuleContext {
+		public DependencyContext dependency() {
+			return getRuleContext(DependencyContext.class,0);
+		}
+		public EtgdContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_etgd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterEtgd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitEtgd(this);
+		}
+	}
+
+	public final EtgdContext etgd() throws RecognitionException {
+		EtgdContext _localctx = new EtgdContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_etgd);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(126);
+			dependency();
+			  dependency.setType(LunaticConstants.ExtTGD); dependency.setId("t" + counter++); generator.addExtTGD(dependency); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DcContext extends ParserRuleContext {
+		public DependencyContext dependency() {
+			return getRuleContext(DependencyContext.class,0);
+		}
+		public DcContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_dc; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterDc(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitDc(this);
+		}
+	}
+
+	public final DcContext dc() throws RecognitionException {
+		DcContext _localctx = new DcContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_dc);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(129);
+			dependency();
+			  dependency.setType(LunaticConstants.DC); dependency.setId("d" + counter++); generator.addDC(dependency); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class EgdContext extends ParserRuleContext {
+		public DependencyContext dependency() {
+			return getRuleContext(DependencyContext.class,0);
+		}
+		public EgdContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_egd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterEgd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitEgd(this);
+		}
+	}
+
+	public final EgdContext egd() throws RecognitionException {
+		EgdContext _localctx = new EgdContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_egd);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(132);
+			dependency();
+			  dependency.setType(LunaticConstants.EGD); dependency.setId("e" + counter++); generator.addEGD(dependency); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class EegdContext extends ParserRuleContext {
+		public DependencyContext dependency() {
+			return getRuleContext(DependencyContext.class,0);
+		}
+		public EegdContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_eegd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterEegd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitEegd(this);
+		}
+	}
+
+	public final EegdContext eegd() throws RecognitionException {
+		EegdContext _localctx = new EegdContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_eegd);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(135);
+			dependency();
+			  dependency.setType(LunaticConstants.ExtEGD); dependency.setId("e" + counter++); generator.addExtEGD(dependency); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DedstgdContext extends ParserRuleContext {
+		public DedContext ded() {
+			return getRuleContext(DedContext.class,0);
+		}
+		public DedstgdContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_dedstgd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterDedstgd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitDedstgd(this);
+		}
+	}
+
+	public final DedstgdContext dedstgd() throws RecognitionException {
+		DedstgdContext _localctx = new DedstgdContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_dedstgd);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(138);
+			ded();
+			  ded.setType(LunaticConstants.STTGD); ded.setId("ded_m" + counter++); generator.addDEDSTTGD(ded); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DedetgdContext extends ParserRuleContext {
+		public DedContext ded() {
+			return getRuleContext(DedContext.class,0);
+		}
+		public DedetgdContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_dedetgd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterDedetgd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitDedetgd(this);
+		}
+	}
+
+	public final DedetgdContext dedetgd() throws RecognitionException {
+		DedetgdContext _localctx = new DedetgdContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_dedetgd);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(141);
+			ded();
+			  ded.setType(LunaticConstants.ExtTGD); ded.setId("ded_t" + counter++); generator.addDEDExtTGD(ded); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DedegdContext extends ParserRuleContext {
+		public DedContext ded() {
+			return getRuleContext(DedContext.class,0);
+		}
+		public DedegdContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_dedegd; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterDedegd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitDedegd(this);
+		}
+	}
+
+	public final DedegdContext dedegd() throws RecognitionException {
+		DedegdContext _localctx = new DedegdContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_dedegd);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(144);
+			ded();
+			  ded.setType(LunaticConstants.EGD); ded.setId("ded_e" + counter++); generator.addDEDExtEGD(ded); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DependencyContext extends ParserRuleContext {
+		public Token id;
+		public PositiveFormulaContext positiveFormula() {
+			return getRuleContext(PositiveFormulaContext.class,0);
+		}
+		public ConclusionFormulaContext conclusionFormula() {
+			return getRuleContext(ConclusionFormulaContext.class,0);
+		}
+		public List<NegatedFormulaContext> negatedFormula() {
+			return getRuleContexts(NegatedFormulaContext.class);
+		}
+		public NegatedFormulaContext negatedFormula(int i) {
+			return getRuleContext(NegatedFormulaContext.class,i);
+		}
+		public TerminalNode IDENTIFIER() { return getToken(DependenciesParser.IDENTIFIER, 0); }
+		public DependencyContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_dependency; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterDependency(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitDependency(this);
+		}
+	}
+
+	public final DependencyContext dependency() throws RecognitionException {
+		DependencyContext _localctx = new DependencyContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_dependency);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(149);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
+			case 1:
+				{
+				setState(147);
+				((DependencyContext)_localctx).id = match(IDENTIFIER);
+				setState(148);
+				match(T__8);
+				}
+				break;
+			}
 			  dependency = new Dependency(); 
 			                    formulaWN = new FormulaWithNegations(); 
 			                    formulaStack.push(formulaWN);
 			                    dependency.setPremise(formulaWN);
-			                    if(id!=null) dependency.setId(id.getText()); 
-			pushFollow(FOLLOW_positiveFormula_in_dependency397);
-			positiveFormula27=positiveFormula();
-			state._fsp--;
-
-			adaptor.addChild(root_0, positiveFormula27.getTree());
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:88:21: ( negatedFormula )*
-			loop14:
-			while (true) {
-				int alt14=2;
-				int LA14_0 = input.LA(1);
-				if ( (LA14_0==32) ) {
-					alt14=1;
+			                    if(((DependencyContext)_localctx).id!=null) dependency.setId(((DependencyContext)_localctx).id.getText()); 
+			setState(152);
+			positiveFormula();
+			setState(156);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__16) {
+				{
+				{
+				setState(153);
+				negatedFormula();
 				}
-
-				switch (alt14) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:88:23: negatedFormula
-					{
-					pushFollow(FOLLOW_negatedFormula_in_dependency402);
-					negatedFormula28=negatedFormula();
-					state._fsp--;
-
-					adaptor.addChild(root_0, negatedFormula28.getTree());
-
-					}
-					break;
-
-				default :
-					break loop14;
 				}
+				setState(158);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
 			}
-
-			string_literal29=(Token)match(input,18,FOLLOW_18_in_dependency409); 
-			string_literal29_tree = (CommonTree)adaptor.create(string_literal29);
-			adaptor.addChild(root_0, string_literal29_tree);
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:89:4: ( '#fail' | conclusionFormula )
-			int alt15=2;
-			int LA15_0 = input.LA(1);
-			if ( (LA15_0==14) ) {
-				alt15=1;
+			setState(159);
+			match(T__9);
+			setState(164);
+			switch (_input.LA(1)) {
+			case T__10:
+				{
+				setState(160);
+				match(T__10);
+				  formulaStack.clear(); 
+				                    dependency.setConclusion(NullFormula.getInstance());
+				}
+				break;
+			case T__19:
+			case IDENTIFIER:
+			case STRING:
+			case NUMBER:
+			case EXPRESSION:
+				{
+				  formulaStack.clear(); 
+				setState(163);
+				conclusionFormula();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
-			else if ( ((LA15_0 >= EXPRESSION && LA15_0 <= IDENTIFIER)||LA15_0==NUMBER||LA15_0==STRING||LA15_0==30) ) {
-				alt15=2;
+			setState(166);
+			match(T__11);
 			}
-
-			else {
-				NoViableAltException nvae =
-					new NoViableAltException("", 15, 0, input);
-				throw nvae;
-			}
-
-			switch (alt15) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:89:5: '#fail'
-					{
-					string_literal30=(Token)match(input,14,FOLLOW_14_in_dependency416); 
-					string_literal30_tree = (CommonTree)adaptor.create(string_literal30);
-					adaptor.addChild(root_0, string_literal30_tree);
-
-					  formulaStack.clear(); 
-					                    dependency.setConclusion(NullFormula.getInstance());
-					}
-					break;
-				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:93:4: conclusionFormula
-					{
-					  formulaStack.clear(); 
-					pushFollow(FOLLOW_conclusionFormula_in_dependency453);
-					conclusionFormula31=conclusionFormula();
-					state._fsp--;
-
-					adaptor.addChild(root_0, conclusionFormula31.getTree());
-
-					}
-					break;
-
-			}
-
-			char_literal32=(Token)match(input,19,FOLLOW_19_in_dependency456); 
-			char_literal32_tree = (CommonTree)adaptor.create(char_literal32);
-			adaptor.addChild(root_0, char_literal32_tree);
-
-			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "dependency"
 
-
-	public static class ded_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public static class DedContext extends ParserRuleContext {
+		public PositiveFormulaContext positiveFormula() {
+			return getRuleContext(PositiveFormulaContext.class,0);
+		}
+		public List<DedConclusionContext> dedConclusion() {
+			return getRuleContexts(DedConclusionContext.class);
+		}
+		public DedConclusionContext dedConclusion(int i) {
+			return getRuleContext(DedConclusionContext.class,i);
+		}
+		public List<NegatedFormulaContext> negatedFormula() {
+			return getRuleContexts(NegatedFormulaContext.class);
+		}
+		public NegatedFormulaContext negatedFormula(int i) {
+			return getRuleContext(NegatedFormulaContext.class,i);
+		}
+		public DedContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_ded; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterDed(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitDed(this);
+		}
+	}
 
-
-	// $ANTLR start "ded"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:96:1: ded : positiveFormula ( negatedFormula )* '->' dedConclusion ( '|' dedConclusion )* '.' ;
-	public final DependenciesParser.ded_return ded() throws RecognitionException {
-		DependenciesParser.ded_return retval = new DependenciesParser.ded_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token string_literal35=null;
-		Token char_literal37=null;
-		Token char_literal39=null;
-		ParserRuleReturnScope positiveFormula33 =null;
-		ParserRuleReturnScope negatedFormula34 =null;
-		ParserRuleReturnScope dedConclusion36 =null;
-		ParserRuleReturnScope dedConclusion38 =null;
-
-		CommonTree string_literal35_tree=null;
-		CommonTree char_literal37_tree=null;
-		CommonTree char_literal39_tree=null;
-
+	public final DedContext ded() throws RecognitionException {
+		DedContext _localctx = new DedContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_ded);
+		int _la;
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:96:4: ( positiveFormula ( negatedFormula )* '->' dedConclusion ( '|' dedConclusion )* '.' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:96:15: positiveFormula ( negatedFormula )* '->' dedConclusion ( '|' dedConclusion )* '.'
+			enterOuterAlt(_localctx, 1);
 			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
 			  ded = new DED(); 
 			                    formulaWN = new FormulaWithNegations(); 
 			                    formulaStack.push(formulaWN);
 			                    dedPremise = formulaWN;
-			pushFollow(FOLLOW_positiveFormula_in_ded484);
-			positiveFormula33=positiveFormula();
-			state._fsp--;
-
-			adaptor.addChild(root_0, positiveFormula33.getTree());
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:100:21: ( negatedFormula )*
-			loop16:
-			while (true) {
-				int alt16=2;
-				int LA16_0 = input.LA(1);
-				if ( (LA16_0==32) ) {
-					alt16=1;
+			setState(169);
+			positiveFormula();
+			setState(173);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__16) {
+				{
+				{
+				setState(170);
+				negatedFormula();
 				}
-
-				switch (alt16) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:100:23: negatedFormula
-					{
-					pushFollow(FOLLOW_negatedFormula_in_ded489);
-					negatedFormula34=negatedFormula();
-					state._fsp--;
-
-					adaptor.addChild(root_0, negatedFormula34.getTree());
-
-					}
-					break;
-
-				default :
-					break loop16;
 				}
+				setState(175);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
 			}
-
-			string_literal35=(Token)match(input,18,FOLLOW_18_in_ded496); 
-			string_literal35_tree = (CommonTree)adaptor.create(string_literal35);
-			adaptor.addChild(root_0, string_literal35_tree);
-
-			pushFollow(FOLLOW_dedConclusion_in_ded502);
-			dedConclusion36=dedConclusion();
-			state._fsp--;
-
-			adaptor.addChild(root_0, dedConclusion36.getTree());
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:101:18: ( '|' dedConclusion )*
-			loop17:
-			while (true) {
-				int alt17=2;
-				int LA17_0 = input.LA(1);
-				if ( (LA17_0==33) ) {
-					alt17=1;
+			setState(176);
+			match(T__9);
+			setState(177);
+			dedConclusion();
+			setState(182);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__12) {
+				{
+				{
+				setState(178);
+				match(T__12);
+				setState(179);
+				dedConclusion();
 				}
-
-				switch (alt17) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:101:19: '|' dedConclusion
-					{
-					char_literal37=(Token)match(input,33,FOLLOW_33_in_ded505); 
-					char_literal37_tree = (CommonTree)adaptor.create(char_literal37);
-					adaptor.addChild(root_0, char_literal37_tree);
-
-					pushFollow(FOLLOW_dedConclusion_in_ded507);
-					dedConclusion38=dedConclusion();
-					state._fsp--;
-
-					adaptor.addChild(root_0, dedConclusion38.getTree());
-
-					}
-					break;
-
-				default :
-					break loop17;
 				}
+				setState(184);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
 			}
-
-			char_literal39=(Token)match(input,19,FOLLOW_19_in_ded511); 
-			char_literal39_tree = (CommonTree)adaptor.create(char_literal39);
-			adaptor.addChild(root_0, char_literal39_tree);
-
+			setState(185);
+			match(T__11);
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "ded"
 
-
-	public static class dedConclusion_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public static class DedConclusionContext extends ParserRuleContext {
+		public List<AtomContext> atom() {
+			return getRuleContexts(AtomContext.class);
+		}
+		public AtomContext atom(int i) {
+			return getRuleContext(AtomContext.class,i);
+		}
+		public DedConclusionContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_dedConclusion; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterDedConclusion(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitDedConclusion(this);
+		}
+	}
 
-
-	// $ANTLR start "dedConclusion"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:103:1: dedConclusion : '[' atom ( ',' atom )* ']' ;
-	public final DependenciesParser.dedConclusion_return dedConclusion() throws RecognitionException {
-		DependenciesParser.dedConclusion_return retval = new DependenciesParser.dedConclusion_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token char_literal40=null;
-		Token char_literal42=null;
-		Token char_literal44=null;
-		ParserRuleReturnScope atom41 =null;
-		ParserRuleReturnScope atom43 =null;
-
-		CommonTree char_literal40_tree=null;
-		CommonTree char_literal42_tree=null;
-		CommonTree char_literal44_tree=null;
-
+	public final DedConclusionContext dedConclusion() throws RecognitionException {
+		DedConclusionContext _localctx = new DedConclusionContext(_ctx, getState());
+		enterRule(_localctx, 24, RULE_dedConclusion);
+		int _la;
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:103:14: ( '[' atom ( ',' atom )* ']' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:103:19: '[' atom ( ',' atom )* ']'
+			enterOuterAlt(_localctx, 1);
 			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			char_literal40=(Token)match(input,29,FOLLOW_29_in_dedConclusion521); 
-			char_literal40_tree = (CommonTree)adaptor.create(char_literal40);
-			adaptor.addChild(root_0, char_literal40_tree);
-
+			setState(187);
+			match(T__13);
 			 formulaStack.clear(); 
 			                        dependency = new Dependency();
 			                        ded.addAssociatedDependency(dependency);                        
 			                        dependency.setPremise(dedPremise.clone());
 						positiveFormula = new PositiveFormula(); 
 			                        dependency.setConclusion(positiveFormula); 
-			pushFollow(FOLLOW_atom_in_dedConclusion543);
-			atom41=atom();
-			state._fsp--;
-
-			adaptor.addChild(root_0, atom41.getTree());
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:109:24: ( ',' atom )*
-			loop18:
-			while (true) {
-				int alt18=2;
-				int LA18_0 = input.LA(1);
-				if ( (LA18_0==17) ) {
-					alt18=1;
+			setState(189);
+			atom();
+			setState(194);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__14) {
+				{
+				{
+				setState(190);
+				match(T__14);
+				setState(191);
+				atom();
 				}
-
-				switch (alt18) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:109:25: ',' atom
-					{
-					char_literal42=(Token)match(input,17,FOLLOW_17_in_dedConclusion546); 
-					char_literal42_tree = (CommonTree)adaptor.create(char_literal42);
-					adaptor.addChild(root_0, char_literal42_tree);
-
-					pushFollow(FOLLOW_atom_in_dedConclusion548);
-					atom43=atom();
-					state._fsp--;
-
-					adaptor.addChild(root_0, atom43.getTree());
-
-					}
-					break;
-
-				default :
-					break loop18;
 				}
+				setState(196);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
 			}
-
-			char_literal44=(Token)match(input,31,FOLLOW_31_in_dedConclusion553); 
-			char_literal44_tree = (CommonTree)adaptor.create(char_literal44);
-			adaptor.addChild(root_0, char_literal44_tree);
-
+			setState(197);
+			match(T__15);
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "dedConclusion"
 
-
-	public static class positiveFormula_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public static class PositiveFormulaContext extends ParserRuleContext {
+		public RelationalAtomContext relationalAtom() {
+			return getRuleContext(RelationalAtomContext.class,0);
+		}
+		public List<AtomContext> atom() {
+			return getRuleContexts(AtomContext.class);
+		}
+		public AtomContext atom(int i) {
+			return getRuleContext(AtomContext.class,i);
+		}
+		public PositiveFormulaContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_positiveFormula; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterPositiveFormula(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitPositiveFormula(this);
+		}
+	}
 
-
-	// $ANTLR start "positiveFormula"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:111:1: positiveFormula : relationalAtom ( ',' atom )* ;
-	public final DependenciesParser.positiveFormula_return positiveFormula() throws RecognitionException {
-		DependenciesParser.positiveFormula_return retval = new DependenciesParser.positiveFormula_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token char_literal46=null;
-		ParserRuleReturnScope relationalAtom45 =null;
-		ParserRuleReturnScope atom47 =null;
-
-		CommonTree char_literal46_tree=null;
-
+	public final PositiveFormulaContext positiveFormula() throws RecognitionException {
+		PositiveFormulaContext _localctx = new PositiveFormulaContext(_ctx, getState());
+		enterRule(_localctx, 26, RULE_positiveFormula);
+		int _la;
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:111:16: ( relationalAtom ( ',' atom )* )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:111:18: relationalAtom ( ',' atom )*
+			enterOuterAlt(_localctx, 1);
 			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
 			  positiveFormula = new PositiveFormula(); 
 			                    positiveFormula.setFather(formulaStack.peek()); 
 			                    formulaStack.peek().setPositiveFormula(positiveFormula); 
-			pushFollow(FOLLOW_relationalAtom_in_positiveFormula607);
-			relationalAtom45=relationalAtom();
-			state._fsp--;
-
-			adaptor.addChild(root_0, relationalAtom45.getTree());
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:114:34: ( ',' atom )*
-			loop19:
-			while (true) {
-				int alt19=2;
-				int LA19_0 = input.LA(1);
-				if ( (LA19_0==17) ) {
-					alt19=1;
+			setState(200);
+			relationalAtom();
+			setState(205);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__14) {
+				{
+				{
+				setState(201);
+				match(T__14);
+				setState(202);
+				atom();
 				}
-
-				switch (alt19) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:114:35: ',' atom
-					{
-					char_literal46=(Token)match(input,17,FOLLOW_17_in_positiveFormula610); 
-					char_literal46_tree = (CommonTree)adaptor.create(char_literal46);
-					adaptor.addChild(root_0, char_literal46_tree);
-
-					pushFollow(FOLLOW_atom_in_positiveFormula612);
-					atom47=atom();
-					state._fsp--;
-
-					adaptor.addChild(root_0, atom47.getTree());
-
-					}
-					break;
-
-				default :
-					break loop19;
 				}
+				setState(207);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
 			}
-
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "positiveFormula"
 
-
-	public static class negatedFormula_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public static class NegatedFormulaContext extends ParserRuleContext {
+		public PositiveFormulaContext positiveFormula() {
+			return getRuleContext(PositiveFormulaContext.class,0);
+		}
+		public List<NegatedFormulaContext> negatedFormula() {
+			return getRuleContexts(NegatedFormulaContext.class);
+		}
+		public NegatedFormulaContext negatedFormula(int i) {
+			return getRuleContext(NegatedFormulaContext.class,i);
+		}
+		public NegatedFormulaContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_negatedFormula; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterNegatedFormula(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitNegatedFormula(this);
+		}
+	}
 
-
-	// $ANTLR start "negatedFormula"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:116:1: negatedFormula : 'and not exists' '(' ( positiveFormula ( negatedFormula )* ) ')' ;
-	public final DependenciesParser.negatedFormula_return negatedFormula() throws RecognitionException {
-		DependenciesParser.negatedFormula_return retval = new DependenciesParser.negatedFormula_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token string_literal48=null;
-		Token char_literal49=null;
-		Token char_literal52=null;
-		ParserRuleReturnScope positiveFormula50 =null;
-		ParserRuleReturnScope negatedFormula51 =null;
-
-		CommonTree string_literal48_tree=null;
-		CommonTree char_literal49_tree=null;
-		CommonTree char_literal52_tree=null;
-
+	public final NegatedFormulaContext negatedFormula() throws RecognitionException {
+		NegatedFormulaContext _localctx = new NegatedFormulaContext(_ctx, getState());
+		enterRule(_localctx, 28, RULE_negatedFormula);
+		int _la;
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:116:15: ( 'and not exists' '(' ( positiveFormula ( negatedFormula )* ) ')' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:116:18: 'and not exists' '(' ( positiveFormula ( negatedFormula )* ) ')'
+			enterOuterAlt(_localctx, 1);
 			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
 			  formulaWN = new FormulaWithNegations(); 
 					    formulaWN.setFather(formulaStack.peek());
 					    formulaStack.peek().addNegatedFormula(formulaWN);
 			                    formulaStack.push(formulaWN); 
-			string_literal48=(Token)match(input,32,FOLLOW_32_in_negatedFormula643); 
-			string_literal48_tree = (CommonTree)adaptor.create(string_literal48);
-			adaptor.addChild(root_0, string_literal48_tree);
-
-			char_literal49=(Token)match(input,15,FOLLOW_15_in_negatedFormula644); 
-			char_literal49_tree = (CommonTree)adaptor.create(char_literal49);
-			adaptor.addChild(root_0, char_literal49_tree);
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:120:38: ( positiveFormula ( negatedFormula )* )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:120:40: positiveFormula ( negatedFormula )*
+			setState(209);
+			match(T__16);
+			setState(210);
+			match(T__17);
 			{
-			pushFollow(FOLLOW_positiveFormula_in_negatedFormula648);
-			positiveFormula50=positiveFormula();
-			state._fsp--;
-
-			adaptor.addChild(root_0, positiveFormula50.getTree());
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:120:56: ( negatedFormula )*
-			loop20:
-			while (true) {
-				int alt20=2;
-				int LA20_0 = input.LA(1);
-				if ( (LA20_0==32) ) {
-					alt20=1;
+			setState(211);
+			positiveFormula();
+			setState(215);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__16) {
+				{
+				{
+				setState(212);
+				negatedFormula();
 				}
-
-				switch (alt20) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:120:58: negatedFormula
-					{
-					pushFollow(FOLLOW_negatedFormula_in_negatedFormula652);
-					negatedFormula51=negatedFormula();
-					state._fsp--;
-
-					adaptor.addChild(root_0, negatedFormula51.getTree());
-
-					}
-					break;
-
-				default :
-					break loop20;
 				}
+				setState(217);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
 			}
-
 			}
-
-			char_literal52=(Token)match(input,16,FOLLOW_16_in_negatedFormula659); 
-			char_literal52_tree = (CommonTree)adaptor.create(char_literal52);
-			adaptor.addChild(root_0, char_literal52_tree);
-
+			setState(218);
+			match(T__18);
 			  formulaStack.pop(); 
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "negatedFormula"
 
-
-	public static class conclusionFormula_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public static class ConclusionFormulaContext extends ParserRuleContext {
+		public List<AtomContext> atom() {
+			return getRuleContexts(AtomContext.class);
+		}
+		public AtomContext atom(int i) {
+			return getRuleContext(AtomContext.class,i);
+		}
+		public ConclusionFormulaContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_conclusionFormula; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterConclusionFormula(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitConclusionFormula(this);
+		}
+	}
 
-
-	// $ANTLR start "conclusionFormula"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:123:1: conclusionFormula : atom ( ',' atom )* ;
-	public final DependenciesParser.conclusionFormula_return conclusionFormula() throws RecognitionException {
-		DependenciesParser.conclusionFormula_return retval = new DependenciesParser.conclusionFormula_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token char_literal54=null;
-		ParserRuleReturnScope atom53 =null;
-		ParserRuleReturnScope atom55 =null;
-
-		CommonTree char_literal54_tree=null;
-
+	public final ConclusionFormulaContext conclusionFormula() throws RecognitionException {
+		ConclusionFormulaContext _localctx = new ConclusionFormulaContext(_ctx, getState());
+		enterRule(_localctx, 30, RULE_conclusionFormula);
+		int _la;
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:123:18: ( atom ( ',' atom )* )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:123:20: atom ( ',' atom )*
+			enterOuterAlt(_localctx, 1);
 			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
 			  positiveFormula = new PositiveFormula(); 
 			                      dependency.setConclusion(positiveFormula); 
-			pushFollow(FOLLOW_atom_in_conclusionFormula705);
-			atom53=atom();
-			state._fsp--;
-
-			adaptor.addChild(root_0, atom53.getTree());
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:125:24: ( ',' atom )*
-			loop21:
-			while (true) {
-				int alt21=2;
-				int LA21_0 = input.LA(1);
-				if ( (LA21_0==17) ) {
-					alt21=1;
+			setState(222);
+			atom();
+			setState(227);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__14) {
+				{
+				{
+				setState(223);
+				match(T__14);
+				setState(224);
+				atom();
 				}
-
-				switch (alt21) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:125:25: ',' atom
-					{
-					char_literal54=(Token)match(input,17,FOLLOW_17_in_conclusionFormula708); 
-					char_literal54_tree = (CommonTree)adaptor.create(char_literal54);
-					adaptor.addChild(root_0, char_literal54_tree);
-
-					pushFollow(FOLLOW_atom_in_conclusionFormula710);
-					atom55=atom();
-					state._fsp--;
-
-					adaptor.addChild(root_0, atom55.getTree());
-
-					}
-					break;
-
-				default :
-					break loop21;
 				}
+				setState(229);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
 			}
-
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "conclusionFormula"
 
-
-	public static class atom_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public static class AtomContext extends ParserRuleContext {
+		public RelationalAtomContext relationalAtom() {
+			return getRuleContext(RelationalAtomContext.class,0);
+		}
+		public BuiltinContext builtin() {
+			return getRuleContext(BuiltinContext.class,0);
+		}
+		public ComparisonContext comparison() {
+			return getRuleContext(ComparisonContext.class,0);
+		}
+		public AtomContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_atom; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterAtom(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitAtom(this);
+		}
+	}
 
-
-	// $ANTLR start "atom"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:127:1: atom : ( relationalAtom | builtin | comparison );
-	public final DependenciesParser.atom_return atom() throws RecognitionException {
-		DependenciesParser.atom_return retval = new DependenciesParser.atom_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		ParserRuleReturnScope relationalAtom56 =null;
-		ParserRuleReturnScope builtin57 =null;
-		ParserRuleReturnScope comparison58 =null;
-
-
+	public final AtomContext atom() throws RecognitionException {
+		AtomContext _localctx = new AtomContext(_ctx, getState());
+		enterRule(_localctx, 32, RULE_atom);
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:127:6: ( relationalAtom | builtin | comparison )
-			int alt22=3;
-			switch ( input.LA(1) ) {
+			setState(233);
+			switch (_input.LA(1)) {
 			case IDENTIFIER:
+				enterOuterAlt(_localctx, 1);
 				{
-				alt22=1;
+				setState(230);
+				relationalAtom();
 				}
 				break;
 			case EXPRESSION:
+				enterOuterAlt(_localctx, 2);
 				{
-				alt22=2;
+				setState(231);
+				builtin();
 				}
 				break;
-			case NUMBER:
+			case T__19:
 			case STRING:
-			case 30:
+			case NUMBER:
+				enterOuterAlt(_localctx, 3);
 				{
-				alt22=3;
+				setState(232);
+				comparison();
 				}
 				break;
 			default:
-				NoViableAltException nvae =
-					new NoViableAltException("", 22, 0, input);
-				throw nvae;
+				throw new NoViableAltException(this);
 			}
-			switch (alt22) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:127:9: relationalAtom
-					{
-					root_0 = (CommonTree)adaptor.nil();
-
-
-					pushFollow(FOLLOW_relationalAtom_in_atom723);
-					relationalAtom56=relationalAtom();
-					state._fsp--;
-
-					adaptor.addChild(root_0, relationalAtom56.getTree());
-
-					}
-					break;
-				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:127:26: builtin
-					{
-					root_0 = (CommonTree)adaptor.nil();
-
-
-					pushFollow(FOLLOW_builtin_in_atom727);
-					builtin57=builtin();
-					state._fsp--;
-
-					adaptor.addChild(root_0, builtin57.getTree());
-
-					}
-					break;
-				case 3 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:127:36: comparison
-					{
-					root_0 = (CommonTree)adaptor.nil();
-
-
-					pushFollow(FOLLOW_comparison_in_atom731);
-					comparison58=comparison();
-					state._fsp--;
-
-					adaptor.addChild(root_0, comparison58.getTree());
-
-					}
-					break;
-
-			}
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "atom"
 
-
-	public static class relationalAtom_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public static class RelationalAtomContext extends ParserRuleContext {
+		public Token name;
+		public List<AttributeContext> attribute() {
+			return getRuleContexts(AttributeContext.class);
+		}
+		public AttributeContext attribute(int i) {
+			return getRuleContext(AttributeContext.class,i);
+		}
+		public TerminalNode IDENTIFIER() { return getToken(DependenciesParser.IDENTIFIER, 0); }
+		public RelationalAtomContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_relationalAtom; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterRelationalAtom(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitRelationalAtom(this);
+		}
+	}
 
-
-	// $ANTLR start "relationalAtom"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:129:1: relationalAtom : name= IDENTIFIER '(' attribute ( ',' attribute )* ')' ;
-	public final DependenciesParser.relationalAtom_return relationalAtom() throws RecognitionException {
-		DependenciesParser.relationalAtom_return retval = new DependenciesParser.relationalAtom_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token name=null;
-		Token char_literal59=null;
-		Token char_literal61=null;
-		Token char_literal63=null;
-		ParserRuleReturnScope attribute60 =null;
-		ParserRuleReturnScope attribute62 =null;
-
-		CommonTree name_tree=null;
-		CommonTree char_literal59_tree=null;
-		CommonTree char_literal61_tree=null;
-		CommonTree char_literal63_tree=null;
-
+	public final RelationalAtomContext relationalAtom() throws RecognitionException {
+		RelationalAtomContext _localctx = new RelationalAtomContext(_ctx, getState());
+		enterRule(_localctx, 34, RULE_relationalAtom);
+		int _la;
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:129:15: (name= IDENTIFIER '(' attribute ( ',' attribute )* ')' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:129:18: name= IDENTIFIER '(' attribute ( ',' attribute )* ')'
+			enterOuterAlt(_localctx, 1);
 			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			name=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_relationalAtom742); 
-			name_tree = (CommonTree)adaptor.create(name);
-			adaptor.addChild(root_0, name_tree);
-
-			 atom = new RelationalAtom(name.getText()); 
-			char_literal59=(Token)match(input,15,FOLLOW_15_in_relationalAtom746); 
-			char_literal59_tree = (CommonTree)adaptor.create(char_literal59);
-			adaptor.addChild(root_0, char_literal59_tree);
-
-			pushFollow(FOLLOW_attribute_in_relationalAtom748);
-			attribute60=attribute();
-			state._fsp--;
-
-			adaptor.addChild(root_0, attribute60.getTree());
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:129:95: ( ',' attribute )*
-			loop23:
-			while (true) {
-				int alt23=2;
-				int LA23_0 = input.LA(1);
-				if ( (LA23_0==17) ) {
-					alt23=1;
+			setState(235);
+			((RelationalAtomContext)_localctx).name = match(IDENTIFIER);
+			 atom = new RelationalAtom(((RelationalAtomContext)_localctx).name.getText()); 
+			setState(237);
+			match(T__17);
+			setState(238);
+			attribute();
+			setState(243);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__14) {
+				{
+				{
+				setState(239);
+				match(T__14);
+				setState(240);
+				attribute();
 				}
-
-				switch (alt23) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:129:96: ',' attribute
-					{
-					char_literal61=(Token)match(input,17,FOLLOW_17_in_relationalAtom751); 
-					char_literal61_tree = (CommonTree)adaptor.create(char_literal61);
-					adaptor.addChild(root_0, char_literal61_tree);
-
-					pushFollow(FOLLOW_attribute_in_relationalAtom753);
-					attribute62=attribute();
-					state._fsp--;
-
-					adaptor.addChild(root_0, attribute62.getTree());
-
-					}
-					break;
-
-				default :
-					break loop23;
 				}
+				setState(245);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
 			}
-
-			char_literal63=(Token)match(input,16,FOLLOW_16_in_relationalAtom757); 
-			char_literal63_tree = (CommonTree)adaptor.create(char_literal63);
-			adaptor.addChild(root_0, char_literal63_tree);
-
+			setState(246);
+			match(T__18);
 			  positiveFormula.addAtom(atom); atom.setFormula(positiveFormula); 
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "relationalAtom"
 
-
-	public static class builtin_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public static class BuiltinContext extends ParserRuleContext {
+		public Token expression;
+		public TerminalNode EXPRESSION() { return getToken(DependenciesParser.EXPRESSION, 0); }
+		public BuiltinContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_builtin; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterBuiltin(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitBuiltin(this);
+		}
+	}
 
-
-	// $ANTLR start "builtin"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:132:1: builtin : expression= EXPRESSION ;
-	public final DependenciesParser.builtin_return builtin() throws RecognitionException {
-		DependenciesParser.builtin_return retval = new DependenciesParser.builtin_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token expression=null;
-
-		CommonTree expression_tree=null;
-
+	public final BuiltinContext builtin() throws RecognitionException {
+		BuiltinContext _localctx = new BuiltinContext(_ctx, getState());
+		enterRule(_localctx, 36, RULE_builtin);
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:132:9: (expression= EXPRESSION )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:132:12: expression= EXPRESSION
+			enterOuterAlt(_localctx, 1);
 			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			expression=(Token)match(input,EXPRESSION,FOLLOW_EXPRESSION_in_builtin773); 
-			expression_tree = (CommonTree)adaptor.create(expression);
-			adaptor.addChild(root_0, expression_tree);
-
-			  atom = new BuiltInAtom(positiveFormula, new Expression(generator.clean(expression.getText()))); 
+			setState(249);
+			((BuiltinContext)_localctx).expression = match(EXPRESSION);
+			  atom = new BuiltInAtom(positiveFormula, new Expression(generator.clean(((BuiltinContext)_localctx).expression.getText()))); 
 			                    positiveFormula.addAtom(atom);  
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "builtin"
 
-
-	public static class comparison_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public static class ComparisonContext extends ParserRuleContext {
+		public Token oper;
+		public LeftargumentContext leftargument() {
+			return getRuleContext(LeftargumentContext.class,0);
+		}
+		public RightargumentContext rightargument() {
+			return getRuleContext(RightargumentContext.class,0);
+		}
+		public TerminalNode OPERATOR() { return getToken(DependenciesParser.OPERATOR, 0); }
+		public ComparisonContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_comparison; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterComparison(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitComparison(this);
+		}
+	}
 
-
-	// $ANTLR start "comparison"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:136:1: comparison : leftargument oper= OPERATOR rightargument ;
-	public final DependenciesParser.comparison_return comparison() throws RecognitionException {
-		DependenciesParser.comparison_return retval = new DependenciesParser.comparison_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token oper=null;
-		ParserRuleReturnScope leftargument64 =null;
-		ParserRuleReturnScope rightargument65 =null;
-
-		CommonTree oper_tree=null;
-
+	public final ComparisonContext comparison() throws RecognitionException {
+		ComparisonContext _localctx = new ComparisonContext(_ctx, getState());
+		enterRule(_localctx, 38, RULE_comparison);
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:136:12: ( leftargument oper= OPERATOR rightargument )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:136:15: leftargument oper= OPERATOR rightargument
+			enterOuterAlt(_localctx, 1);
 			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
 			   expressionString = new StringBuilder(); 
 					     leftConstant = null;
 					     rightConstant = null;
-			pushFollow(FOLLOW_leftargument_in_comparison832);
-			leftargument64=leftargument();
-			state._fsp--;
-
-			adaptor.addChild(root_0, leftargument64.getTree());
-
-			oper=(Token)match(input,OPERATOR,FOLLOW_OPERATOR_in_comparison854); 
-			oper_tree = (CommonTree)adaptor.create(oper);
-			adaptor.addChild(root_0, oper_tree);
-
-			 expressionString.append(" ").append(oper.getText()); 
-			pushFollow(FOLLOW_rightargument_in_comparison875);
-			rightargument65=rightargument();
-			state._fsp--;
-
-			adaptor.addChild(root_0, rightargument65.getTree());
-
+			setState(253);
+			leftargument();
+			setState(254);
+			((ComparisonContext)_localctx).oper = match(OPERATOR);
+			 expressionString.append(" ").append(((ComparisonContext)_localctx).oper.getText()); 
+			setState(256);
+			rightargument();
 			  Expression expression = new Expression(expressionString.toString()); 
-			                    atom = new ComparisonAtom(positiveFormula, expression, leftConstant, rightConstant, oper.getText()); 
+			                    atom = new ComparisonAtom(positiveFormula, expression, leftConstant, rightConstant, ((ComparisonContext)_localctx).oper.getText()); 
 			                    positiveFormula.addAtom(atom); 
 			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "comparison"
 
-
-	public static class leftargument_return extends ParserRuleReturnScope {
-		CommonTree tree;
+	public static class LeftargumentContext extends ParserRuleContext {
+		public Token var;
+		public Token constant;
+		public TerminalNode IDENTIFIER() { return getToken(DependenciesParser.IDENTIFIER, 0); }
+		public TerminalNode STRING() { return getToken(DependenciesParser.STRING, 0); }
+		public TerminalNode NUMBER() { return getToken(DependenciesParser.NUMBER, 0); }
+		public LeftargumentContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_leftargument; }
 		@Override
-		public CommonTree getTree() { return tree; }
-	};
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterLeftargument(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitLeftargument(this);
+		}
+	}
 
-
-	// $ANTLR start "leftargument"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:146:1: leftargument : ( '\\$' var= IDENTIFIER |constant= ( STRING | NUMBER ) ) ;
-	public final DependenciesParser.leftargument_return leftargument() throws RecognitionException {
-		DependenciesParser.leftargument_return retval = new DependenciesParser.leftargument_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token var=null;
-		Token constant=null;
-		Token char_literal66=null;
-
-		CommonTree var_tree=null;
-		CommonTree constant_tree=null;
-		CommonTree char_literal66_tree=null;
-
+	public final LeftargumentContext leftargument() throws RecognitionException {
+		LeftargumentContext _localctx = new LeftargumentContext(_ctx, getState());
+		enterRule(_localctx, 40, RULE_leftargument);
+		int _la;
 		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:146:13: ( ( '\\$' var= IDENTIFIER |constant= ( STRING | NUMBER ) ) )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:146:16: ( '\\$' var= IDENTIFIER |constant= ( STRING | NUMBER ) )
+			enterOuterAlt(_localctx, 1);
 			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:146:16: ( '\\$' var= IDENTIFIER |constant= ( STRING | NUMBER ) )
-			int alt24=2;
-			int LA24_0 = input.LA(1);
-			if ( (LA24_0==30) ) {
-				alt24=1;
-			}
-			else if ( (LA24_0==NUMBER||LA24_0==STRING) ) {
-				alt24=2;
-			}
-
-			else {
-				NoViableAltException nvae =
-					new NoViableAltException("", 24, 0, input);
-				throw nvae;
-			}
-
-			switch (alt24) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:146:17: '\\$' var= IDENTIFIER
-					{
-					char_literal66=(Token)match(input,30,FOLLOW_30_in_leftargument905); 
-					char_literal66_tree = (CommonTree)adaptor.create(char_literal66);
-					adaptor.addChild(root_0, char_literal66_tree);
-
-					var=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_leftargument908); 
-					var_tree = (CommonTree)adaptor.create(var);
-					adaptor.addChild(root_0, var_tree);
-
-					 expressionString.append(var.getText()); 
-					}
-					break;
-				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:147:18: constant= ( STRING | NUMBER )
-					{
-					constant=input.LT(1);
-					if ( input.LA(1)==NUMBER||input.LA(1)==STRING ) {
-						input.consume();
-						adaptor.addChild(root_0, (CommonTree)adaptor.create(constant));
-						state.errorRecovery=false;
-					}
-					else {
-						MismatchedSetException mse = new MismatchedSetException(null,input);
-						throw mse;
-					}
-					 expressionString.append(constant.getText()); leftConstant = constant.getText();
-					}
-					break;
-
-			}
-
-			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
-		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
-		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
-	}
-	// $ANTLR end "leftargument"
-
-
-	public static class rightargument_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "rightargument"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:150:1: rightargument : ( '\\$' var= IDENTIFIER |constant= ( STRING | NUMBER ) ) ;
-	public final DependenciesParser.rightargument_return rightargument() throws RecognitionException {
-		DependenciesParser.rightargument_return retval = new DependenciesParser.rightargument_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token var=null;
-		Token constant=null;
-		Token char_literal67=null;
-
-		CommonTree var_tree=null;
-		CommonTree constant_tree=null;
-		CommonTree char_literal67_tree=null;
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:150:14: ( ( '\\$' var= IDENTIFIER |constant= ( STRING | NUMBER ) ) )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:150:17: ( '\\$' var= IDENTIFIER |constant= ( STRING | NUMBER ) )
-			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:150:17: ( '\\$' var= IDENTIFIER |constant= ( STRING | NUMBER ) )
-			int alt25=2;
-			int LA25_0 = input.LA(1);
-			if ( (LA25_0==30) ) {
-				alt25=1;
-			}
-			else if ( (LA25_0==NUMBER||LA25_0==STRING) ) {
-				alt25=2;
-			}
-
-			else {
-				NoViableAltException nvae =
-					new NoViableAltException("", 25, 0, input);
-				throw nvae;
-			}
-
-			switch (alt25) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:150:18: '\\$' var= IDENTIFIER
-					{
-					char_literal67=(Token)match(input,30,FOLLOW_30_in_rightargument986); 
-					char_literal67_tree = (CommonTree)adaptor.create(char_literal67);
-					adaptor.addChild(root_0, char_literal67_tree);
-
-					var=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_rightargument989); 
-					var_tree = (CommonTree)adaptor.create(var);
-					adaptor.addChild(root_0, var_tree);
-
-					 expressionString.append(var.getText()); 
-					}
-					break;
-				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:151:18: constant= ( STRING | NUMBER )
-					{
-					constant=input.LT(1);
-					if ( input.LA(1)==NUMBER||input.LA(1)==STRING ) {
-						input.consume();
-						adaptor.addChild(root_0, (CommonTree)adaptor.create(constant));
-						state.errorRecovery=false;
-					}
-					else {
-						MismatchedSetException mse = new MismatchedSetException(null,input);
-						throw mse;
-					}
-					 expressionString.append(constant.getText()); rightConstant = constant.getText();
-					}
-					break;
-
-			}
-
-			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
-		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
-		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
-	}
-	// $ANTLR end "rightargument"
-
-
-	public static class attribute_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "attribute"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:154:1: attribute : attr= IDENTIFIER ':' value ;
-	public final DependenciesParser.attribute_return attribute() throws RecognitionException {
-		DependenciesParser.attribute_return retval = new DependenciesParser.attribute_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token attr=null;
-		Token char_literal68=null;
-		ParserRuleReturnScope value69 =null;
-
-		CommonTree attr_tree=null;
-		CommonTree char_literal68_tree=null;
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:154:10: (attr= IDENTIFIER ':' value )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:154:13: attr= IDENTIFIER ':' value
-			{
-			root_0 = (CommonTree)adaptor.nil();
-
-
-			attr=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_attribute1051); 
-			attr_tree = (CommonTree)adaptor.create(attr);
-			adaptor.addChild(root_0, attr_tree);
-
-			char_literal68=(Token)match(input,20,FOLLOW_20_in_attribute1053); 
-			char_literal68_tree = (CommonTree)adaptor.create(char_literal68);
-			adaptor.addChild(root_0, char_literal68_tree);
-
-			 attribute = new FormulaAttribute(attr.getText()); 
-			pushFollow(FOLLOW_value_in_attribute1057);
-			value69=value();
-			state._fsp--;
-
-			adaptor.addChild(root_0, value69.getTree());
-
-			 ((RelationalAtom)atom).addAttribute(attribute); 
-			}
-
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
-		}
-		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
-		}
-		finally {
-			// do for sure before leaving
-		}
-		return retval;
-	}
-	// $ANTLR end "attribute"
-
-
-	public static class value_return extends ParserRuleReturnScope {
-		CommonTree tree;
-		@Override
-		public CommonTree getTree() { return tree; }
-	};
-
-
-	// $ANTLR start "value"
-	// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:157:1: value : ( '\\$' var= IDENTIFIER |constant= ( STRING | NUMBER ) |nullValue= NULL |expression= EXPRESSION );
-	public final DependenciesParser.value_return value() throws RecognitionException {
-		DependenciesParser.value_return retval = new DependenciesParser.value_return();
-		retval.start = input.LT(1);
-
-		CommonTree root_0 = null;
-
-		Token var=null;
-		Token constant=null;
-		Token nullValue=null;
-		Token expression=null;
-		Token char_literal70=null;
-
-		CommonTree var_tree=null;
-		CommonTree constant_tree=null;
-		CommonTree nullValue_tree=null;
-		CommonTree expression_tree=null;
-		CommonTree char_literal70_tree=null;
-
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:157:7: ( '\\$' var= IDENTIFIER |constant= ( STRING | NUMBER ) |nullValue= NULL |expression= EXPRESSION )
-			int alt26=4;
-			switch ( input.LA(1) ) {
-			case 30:
+			setState(264);
+			switch (_input.LA(1)) {
+			case T__19:
 				{
-				alt26=1;
+				setState(259);
+				match(T__19);
+				setState(260);
+				((LeftargumentContext)_localctx).var = match(IDENTIFIER);
+				 expressionString.append(((LeftargumentContext)_localctx).var.getText()); 
 				}
 				break;
-			case NUMBER:
 			case STRING:
+			case NUMBER:
 				{
-				alt26=2;
+				setState(262);
+				((LeftargumentContext)_localctx).constant = _input.LT(1);
+				_la = _input.LA(1);
+				if ( !(_la==STRING || _la==NUMBER) ) {
+					((LeftargumentContext)_localctx).constant = (Token)_errHandler.recoverInline(this);
+				} else {
+					consume();
 				}
-				break;
-			case NULL:
-				{
-				alt26=3;
-				}
-				break;
-			case EXPRESSION:
-				{
-				alt26=4;
+				 expressionString.append(((LeftargumentContext)_localctx).constant.getText()); leftConstant = ((LeftargumentContext)_localctx).constant.getText();
 				}
 				break;
 			default:
-				NoViableAltException nvae =
-					new NoViableAltException("", 26, 0, input);
-				throw nvae;
+				throw new NoViableAltException(this);
 			}
-			switch (alt26) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:157:10: '\\$' var= IDENTIFIER
-					{
-					root_0 = (CommonTree)adaptor.nil();
-
-
-					char_literal70=(Token)match(input,30,FOLLOW_30_in_value1072); 
-					char_literal70_tree = (CommonTree)adaptor.create(char_literal70);
-					adaptor.addChild(root_0, char_literal70_tree);
-
-					var=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_value1075); 
-					var_tree = (CommonTree)adaptor.create(var);
-					adaptor.addChild(root_0, var_tree);
-
-					 attribute.setValue(new FormulaVariableOccurrence(new AttributeRef(((RelationalAtom)atom).getTableName(), attribute.getAttributeName()), var.getText())); 
-					}
-					break;
-				case 2 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:158:18: constant= ( STRING | NUMBER )
-					{
-					root_0 = (CommonTree)adaptor.nil();
-
-
-					constant=input.LT(1);
-					if ( input.LA(1)==NUMBER||input.LA(1)==STRING ) {
-						input.consume();
-						adaptor.addChild(root_0, (CommonTree)adaptor.create(constant));
-						state.errorRecovery=false;
-					}
-					else {
-						MismatchedSetException mse = new MismatchedSetException(null,input);
-						throw mse;
-					}
-					 attribute.setValue(new FormulaConstant(constant.getText())); 
-					}
-					break;
-				case 3 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:159:18: nullValue= NULL
-					{
-					root_0 = (CommonTree)adaptor.nil();
-
-
-					nullValue=(Token)match(input,NULL,FOLLOW_NULL_in_value1131); 
-					nullValue_tree = (CommonTree)adaptor.create(nullValue);
-					adaptor.addChild(root_0, nullValue_tree);
-
-					 attribute.setValue(new FormulaConstant(nullValue.getText(), true)); 
-					}
-					break;
-				case 4 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Dependencies.g:160:18: expression= EXPRESSION
-					{
-					root_0 = (CommonTree)adaptor.nil();
-
-
-					expression=(Token)match(input,EXPRESSION,FOLLOW_EXPRESSION_in_value1156); 
-					expression_tree = (CommonTree)adaptor.create(expression);
-					adaptor.addChild(root_0, expression_tree);
-
-					 attribute.setValue(new FormulaExpression(new Expression(generator.clean(expression.getText())))); 
-					}
-					break;
-
 			}
-			retval.stop = input.LT(-1);
-
-			retval.tree = (CommonTree)adaptor.rulePostProcessing(root_0);
-			adaptor.setTokenBoundaries(retval.tree, retval.start, retval.stop);
-
 		}
 		catch (RecognitionException re) {
-			reportError(re);
-			recover(input,re);
-			retval.tree = (CommonTree)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
 		}
 		finally {
-			// do for sure before leaving
+			exitRule();
 		}
-		return retval;
+		return _localctx;
 	}
-	// $ANTLR end "value"
 
-	// Delegated rules
+	public static class RightargumentContext extends ParserRuleContext {
+		public Token var;
+		public Token constant;
+		public TerminalNode IDENTIFIER() { return getToken(DependenciesParser.IDENTIFIER, 0); }
+		public TerminalNode STRING() { return getToken(DependenciesParser.STRING, 0); }
+		public TerminalNode NUMBER() { return getToken(DependenciesParser.NUMBER, 0); }
+		public RightargumentContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_rightargument; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterRightargument(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitRightargument(this);
+		}
+	}
 
+	public final RightargumentContext rightargument() throws RecognitionException {
+		RightargumentContext _localctx = new RightargumentContext(_ctx, getState());
+		enterRule(_localctx, 42, RULE_rightargument);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(271);
+			switch (_input.LA(1)) {
+			case T__19:
+				{
+				setState(266);
+				match(T__19);
+				setState(267);
+				((RightargumentContext)_localctx).var = match(IDENTIFIER);
+				 expressionString.append(((RightargumentContext)_localctx).var.getText()); 
+				}
+				break;
+			case STRING:
+			case NUMBER:
+				{
+				setState(269);
+				((RightargumentContext)_localctx).constant = _input.LT(1);
+				_la = _input.LA(1);
+				if ( !(_la==STRING || _la==NUMBER) ) {
+					((RightargumentContext)_localctx).constant = (Token)_errHandler.recoverInline(this);
+				} else {
+					consume();
+				}
+				 expressionString.append(((RightargumentContext)_localctx).constant.getText()); rightConstant = ((RightargumentContext)_localctx).constant.getText();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
 
+	public static class AttributeContext extends ParserRuleContext {
+		public Token attr;
+		public ValueContext value() {
+			return getRuleContext(ValueContext.class,0);
+		}
+		public TerminalNode IDENTIFIER() { return getToken(DependenciesParser.IDENTIFIER, 0); }
+		public AttributeContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_attribute; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterAttribute(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitAttribute(this);
+		}
+	}
 
-	public static final BitSet FOLLOW_dependencies_in_prog54 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_28_in_dependencies80 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_sttgd_in_dependencies82 = new BitSet(new long[]{0x000000000EE00042L});
-	public static final BitSet FOLLOW_24_in_dependencies100 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_dedstgd_in_dependencies102 = new BitSet(new long[]{0x000000000EE00042L});
-	public static final BitSet FOLLOW_27_in_dependencies121 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_etgd_in_dependencies123 = new BitSet(new long[]{0x0000000006600042L});
-	public static final BitSet FOLLOW_23_in_dependencies141 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_dedetgd_in_dependencies143 = new BitSet(new long[]{0x0000000006600042L});
-	public static final BitSet FOLLOW_25_in_dependencies162 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_egd_in_dependencies164 = new BitSet(new long[]{0x0000000000200042L});
-	public static final BitSet FOLLOW_22_in_dependencies182 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_dedegd_in_dependencies184 = new BitSet(new long[]{0x0000000000200042L});
-	public static final BitSet FOLLOW_26_in_dependencies203 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_eegd_in_dependencies205 = new BitSet(new long[]{0x0000000000200042L});
-	public static final BitSet FOLLOW_21_in_dependencies224 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_dc_in_dependencies226 = new BitSet(new long[]{0x0000000000000042L});
-	public static final BitSet FOLLOW_dependency_in_sttgd242 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_dependency_in_etgd255 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_dependency_in_dc268 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_dependency_in_egd281 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_dependency_in_eegd300 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ded_in_dedstgd317 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ded_in_dedetgd340 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ded_in_dedegd365 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_IDENTIFIER_in_dependency387 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_20_in_dependency388 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_positiveFormula_in_dependency397 = new BitSet(new long[]{0x0000000100040000L});
-	public static final BitSet FOLLOW_negatedFormula_in_dependency402 = new BitSet(new long[]{0x0000000100040000L});
-	public static final BitSet FOLLOW_18_in_dependency409 = new BitSet(new long[]{0x0000000040005460L});
-	public static final BitSet FOLLOW_14_in_dependency416 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_conclusionFormula_in_dependency453 = new BitSet(new long[]{0x0000000000080000L});
-	public static final BitSet FOLLOW_19_in_dependency456 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_positiveFormula_in_ded484 = new BitSet(new long[]{0x0000000100040000L});
-	public static final BitSet FOLLOW_negatedFormula_in_ded489 = new BitSet(new long[]{0x0000000100040000L});
-	public static final BitSet FOLLOW_18_in_ded496 = new BitSet(new long[]{0x0000000020000000L});
-	public static final BitSet FOLLOW_dedConclusion_in_ded502 = new BitSet(new long[]{0x0000000200080000L});
-	public static final BitSet FOLLOW_33_in_ded505 = new BitSet(new long[]{0x0000000020000000L});
-	public static final BitSet FOLLOW_dedConclusion_in_ded507 = new BitSet(new long[]{0x0000000200080000L});
-	public static final BitSet FOLLOW_19_in_ded511 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_29_in_dedConclusion521 = new BitSet(new long[]{0x0000000040001460L});
-	public static final BitSet FOLLOW_atom_in_dedConclusion543 = new BitSet(new long[]{0x0000000080020000L});
-	public static final BitSet FOLLOW_17_in_dedConclusion546 = new BitSet(new long[]{0x0000000040001460L});
-	public static final BitSet FOLLOW_atom_in_dedConclusion548 = new BitSet(new long[]{0x0000000080020000L});
-	public static final BitSet FOLLOW_31_in_dedConclusion553 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_relationalAtom_in_positiveFormula607 = new BitSet(new long[]{0x0000000000020002L});
-	public static final BitSet FOLLOW_17_in_positiveFormula610 = new BitSet(new long[]{0x0000000040001460L});
-	public static final BitSet FOLLOW_atom_in_positiveFormula612 = new BitSet(new long[]{0x0000000000020002L});
-	public static final BitSet FOLLOW_32_in_negatedFormula643 = new BitSet(new long[]{0x0000000000008000L});
-	public static final BitSet FOLLOW_15_in_negatedFormula644 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_positiveFormula_in_negatedFormula648 = new BitSet(new long[]{0x0000000100010000L});
-	public static final BitSet FOLLOW_negatedFormula_in_negatedFormula652 = new BitSet(new long[]{0x0000000100010000L});
-	public static final BitSet FOLLOW_16_in_negatedFormula659 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_atom_in_conclusionFormula705 = new BitSet(new long[]{0x0000000000020002L});
-	public static final BitSet FOLLOW_17_in_conclusionFormula708 = new BitSet(new long[]{0x0000000040001460L});
-	public static final BitSet FOLLOW_atom_in_conclusionFormula710 = new BitSet(new long[]{0x0000000000020002L});
-	public static final BitSet FOLLOW_relationalAtom_in_atom723 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_builtin_in_atom727 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_comparison_in_atom731 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_IDENTIFIER_in_relationalAtom742 = new BitSet(new long[]{0x0000000000008000L});
-	public static final BitSet FOLLOW_15_in_relationalAtom746 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_attribute_in_relationalAtom748 = new BitSet(new long[]{0x0000000000030000L});
-	public static final BitSet FOLLOW_17_in_relationalAtom751 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_attribute_in_relationalAtom753 = new BitSet(new long[]{0x0000000000030000L});
-	public static final BitSet FOLLOW_16_in_relationalAtom757 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_EXPRESSION_in_builtin773 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_leftargument_in_comparison832 = new BitSet(new long[]{0x0000000000000800L});
-	public static final BitSet FOLLOW_OPERATOR_in_comparison854 = new BitSet(new long[]{0x0000000040001400L});
-	public static final BitSet FOLLOW_rightargument_in_comparison875 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_30_in_leftargument905 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_IDENTIFIER_in_leftargument908 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_set_in_leftargument933 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_30_in_rightargument986 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_IDENTIFIER_in_rightargument989 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_set_in_rightargument1014 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_IDENTIFIER_in_attribute1051 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_20_in_attribute1053 = new BitSet(new long[]{0x0000000040001620L});
-	public static final BitSet FOLLOW_value_in_attribute1057 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_30_in_value1072 = new BitSet(new long[]{0x0000000000000040L});
-	public static final BitSet FOLLOW_IDENTIFIER_in_value1075 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_set_in_value1100 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_NULL_in_value1131 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_EXPRESSION_in_value1156 = new BitSet(new long[]{0x0000000000000002L});
+	public final AttributeContext attribute() throws RecognitionException {
+		AttributeContext _localctx = new AttributeContext(_ctx, getState());
+		enterRule(_localctx, 44, RULE_attribute);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(273);
+			((AttributeContext)_localctx).attr = match(IDENTIFIER);
+			setState(274);
+			match(T__8);
+			 attribute = new FormulaAttribute(((AttributeContext)_localctx).attr.getText()); 
+			setState(276);
+			value();
+			 ((RelationalAtom)atom).addAttribute(attribute); 
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ValueContext extends ParserRuleContext {
+		public Token var;
+		public Token constant;
+		public Token nullValue;
+		public Token expression;
+		public TerminalNode IDENTIFIER() { return getToken(DependenciesParser.IDENTIFIER, 0); }
+		public TerminalNode STRING() { return getToken(DependenciesParser.STRING, 0); }
+		public TerminalNode NUMBER() { return getToken(DependenciesParser.NUMBER, 0); }
+		public TerminalNode NULL() { return getToken(DependenciesParser.NULL, 0); }
+		public TerminalNode EXPRESSION() { return getToken(DependenciesParser.EXPRESSION, 0); }
+		public ValueContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_value; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).enterValue(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof DependenciesListener ) ((DependenciesListener)listener).exitValue(this);
+		}
+	}
+
+	public final ValueContext value() throws RecognitionException {
+		ValueContext _localctx = new ValueContext(_ctx, getState());
+		enterRule(_localctx, 46, RULE_value);
+		int _la;
+		try {
+			setState(288);
+			switch (_input.LA(1)) {
+			case T__19:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(279);
+				match(T__19);
+				setState(280);
+				((ValueContext)_localctx).var = match(IDENTIFIER);
+				 attribute.setValue(new FormulaVariableOccurrence(new AttributeRef(((RelationalAtom)atom).getTableName(), attribute.getAttributeName()), ((ValueContext)_localctx).var.getText())); 
+				}
+				break;
+			case STRING:
+			case NUMBER:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(282);
+				((ValueContext)_localctx).constant = _input.LT(1);
+				_la = _input.LA(1);
+				if ( !(_la==STRING || _la==NUMBER) ) {
+					((ValueContext)_localctx).constant = (Token)_errHandler.recoverInline(this);
+				} else {
+					consume();
+				}
+				 attribute.setValue(new FormulaConstant(((ValueContext)_localctx).constant.getText())); 
+				}
+				break;
+			case NULL:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(284);
+				((ValueContext)_localctx).nullValue = match(NULL);
+				 attribute.setValue(new FormulaConstant(((ValueContext)_localctx).nullValue.getText(), true)); 
+				}
+				break;
+			case EXPRESSION:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(286);
+				((ValueContext)_localctx).expression = match(EXPRESSION);
+				 attribute.setValue(new FormulaExpression(new Expression(generator.clean(((ValueContext)_localctx).expression.getText())))); 
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static final String _serializedATN =
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\36\u0125\4\2\t\2"+
+		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
+		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
+		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
+		"\3\2\3\2\3\2\3\3\3\3\6\38\n\3\r\3\16\39\3\3\3\3\3\3\3\3\6\3@\n\3\r\3\16"+
+		"\3A\3\3\3\3\5\3F\n\3\3\3\3\3\6\3J\n\3\r\3\16\3K\3\3\3\3\3\3\3\3\6\3R\n"+
+		"\3\r\3\16\3S\3\3\3\3\5\3X\n\3\3\3\3\3\6\3\\\n\3\r\3\16\3]\3\3\3\3\3\3"+
+		"\3\3\6\3d\n\3\r\3\16\3e\3\3\3\3\3\3\3\3\6\3l\n\3\r\3\16\3m\3\3\3\3\5\3"+
+		"r\n\3\3\3\3\3\6\3v\n\3\r\3\16\3w\3\3\3\3\5\3|\n\3\3\4\3\4\3\4\3\5\3\5"+
+		"\3\5\3\6\3\6\3\6\3\7\3\7\3\7\3\b\3\b\3\b\3\t\3\t\3\t\3\n\3\n\3\n\3\13"+
+		"\3\13\3\13\3\f\3\f\5\f\u0098\n\f\3\f\3\f\3\f\7\f\u009d\n\f\f\f\16\f\u00a0"+
+		"\13\f\3\f\3\f\3\f\3\f\3\f\5\f\u00a7\n\f\3\f\3\f\3\r\3\r\3\r\7\r\u00ae"+
+		"\n\r\f\r\16\r\u00b1\13\r\3\r\3\r\3\r\3\r\7\r\u00b7\n\r\f\r\16\r\u00ba"+
+		"\13\r\3\r\3\r\3\16\3\16\3\16\3\16\3\16\7\16\u00c3\n\16\f\16\16\16\u00c6"+
+		"\13\16\3\16\3\16\3\17\3\17\3\17\3\17\7\17\u00ce\n\17\f\17\16\17\u00d1"+
+		"\13\17\3\20\3\20\3\20\3\20\3\20\7\20\u00d8\n\20\f\20\16\20\u00db\13\20"+
+		"\3\20\3\20\3\20\3\21\3\21\3\21\3\21\7\21\u00e4\n\21\f\21\16\21\u00e7\13"+
+		"\21\3\22\3\22\3\22\5\22\u00ec\n\22\3\23\3\23\3\23\3\23\3\23\3\23\7\23"+
+		"\u00f4\n\23\f\23\16\23\u00f7\13\23\3\23\3\23\3\23\3\24\3\24\3\24\3\25"+
+		"\3\25\3\25\3\25\3\25\3\25\3\25\3\26\3\26\3\26\3\26\3\26\5\26\u010b\n\26"+
+		"\3\27\3\27\3\27\3\27\3\27\5\27\u0112\n\27\3\30\3\30\3\30\3\30\3\30\3\30"+
+		"\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\3\31\5\31\u0123\n\31\3\31\2\2"+
+		"\32\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\2\3\3\2\31\32\u012d"+
+		"\2\62\3\2\2\2\4E\3\2\2\2\6}\3\2\2\2\b\u0080\3\2\2\2\n\u0083\3\2\2\2\f"+
+		"\u0086\3\2\2\2\16\u0089\3\2\2\2\20\u008c\3\2\2\2\22\u008f\3\2\2\2\24\u0092"+
+		"\3\2\2\2\26\u0097\3\2\2\2\30\u00aa\3\2\2\2\32\u00bd\3\2\2\2\34\u00c9\3"+
+		"\2\2\2\36\u00d2\3\2\2\2 \u00df\3\2\2\2\"\u00eb\3\2\2\2$\u00ed\3\2\2\2"+
+		"&\u00fb\3\2\2\2(\u00fe\3\2\2\2*\u010a\3\2\2\2,\u0111\3\2\2\2.\u0113\3"+
+		"\2\2\2\60\u0122\3\2\2\2\62\63\5\4\3\2\63\64\b\2\1\2\64\3\3\2\2\2\65\67"+
+		"\7\3\2\2\668\5\6\4\2\67\66\3\2\2\289\3\2\2\29\67\3\2\2\29:\3\2\2\2:;\3"+
+		"\2\2\2;<\b\3\1\2<F\3\2\2\2=?\7\4\2\2>@\5\20\t\2?>\3\2\2\2@A\3\2\2\2A?"+
+		"\3\2\2\2AB\3\2\2\2BC\3\2\2\2CD\b\3\1\2DF\3\2\2\2E\65\3\2\2\2E=\3\2\2\2"+
+		"EF\3\2\2\2FW\3\2\2\2GI\7\5\2\2HJ\5\b\5\2IH\3\2\2\2JK\3\2\2\2KI\3\2\2\2"+
+		"KL\3\2\2\2LM\3\2\2\2MN\b\3\1\2NX\3\2\2\2OQ\7\6\2\2PR\5\22\n\2QP\3\2\2"+
+		"\2RS\3\2\2\2SQ\3\2\2\2ST\3\2\2\2TU\3\2\2\2UV\b\3\1\2VX\3\2\2\2WG\3\2\2"+
+		"\2WO\3\2\2\2WX\3\2\2\2Xq\3\2\2\2Y[\7\7\2\2Z\\\5\f\7\2[Z\3\2\2\2\\]\3\2"+
+		"\2\2][\3\2\2\2]^\3\2\2\2^_\3\2\2\2_`\b\3\1\2`r\3\2\2\2ac\7\b\2\2bd\5\24"+
+		"\13\2cb\3\2\2\2de\3\2\2\2ec\3\2\2\2ef\3\2\2\2fg\3\2\2\2gh\b\3\1\2hr\3"+
+		"\2\2\2ik\7\t\2\2jl\5\16\b\2kj\3\2\2\2lm\3\2\2\2mk\3\2\2\2mn\3\2\2\2no"+
+		"\3\2\2\2op\b\3\1\2pr\3\2\2\2qY\3\2\2\2qa\3\2\2\2qi\3\2\2\2qr\3\2\2\2r"+
+		"{\3\2\2\2su\7\n\2\2tv\5\n\6\2ut\3\2\2\2vw\3\2\2\2wu\3\2\2\2wx\3\2\2\2"+
+		"xy\3\2\2\2yz\b\3\1\2z|\3\2\2\2{s\3\2\2\2{|\3\2\2\2|\5\3\2\2\2}~\5\26\f"+
+		"\2~\177\b\4\1\2\177\7\3\2\2\2\u0080\u0081\5\26\f\2\u0081\u0082\b\5\1\2"+
+		"\u0082\t\3\2\2\2\u0083\u0084\5\26\f\2\u0084\u0085\b\6\1\2\u0085\13\3\2"+
+		"\2\2\u0086\u0087\5\26\f\2\u0087\u0088\b\7\1\2\u0088\r\3\2\2\2\u0089\u008a"+
+		"\5\26\f\2\u008a\u008b\b\b\1\2\u008b\17\3\2\2\2\u008c\u008d\5\30\r\2\u008d"+
+		"\u008e\b\t\1\2\u008e\21\3\2\2\2\u008f\u0090\5\30\r\2\u0090\u0091\b\n\1"+
+		"\2\u0091\23\3\2\2\2\u0092\u0093\5\30\r\2\u0093\u0094\b\13\1\2\u0094\25"+
+		"\3\2\2\2\u0095\u0096\7\30\2\2\u0096\u0098\7\13\2\2\u0097\u0095\3\2\2\2"+
+		"\u0097\u0098\3\2\2\2\u0098\u0099\3\2\2\2\u0099\u009a\b\f\1\2\u009a\u009e"+
+		"\5\34\17\2\u009b\u009d\5\36\20\2\u009c\u009b\3\2\2\2\u009d\u00a0\3\2\2"+
+		"\2\u009e\u009c\3\2\2\2\u009e\u009f\3\2\2\2\u009f\u00a1\3\2\2\2\u00a0\u009e"+
+		"\3\2\2\2\u00a1\u00a6\7\f\2\2\u00a2\u00a3\7\r\2\2\u00a3\u00a7\b\f\1\2\u00a4"+
+		"\u00a5\b\f\1\2\u00a5\u00a7\5 \21\2\u00a6\u00a2\3\2\2\2\u00a6\u00a4\3\2"+
+		"\2\2\u00a7\u00a8\3\2\2\2\u00a8\u00a9\7\16\2\2\u00a9\27\3\2\2\2\u00aa\u00ab"+
+		"\b\r\1\2\u00ab\u00af\5\34\17\2\u00ac\u00ae\5\36\20\2\u00ad\u00ac\3\2\2"+
+		"\2\u00ae\u00b1\3\2\2\2\u00af\u00ad\3\2\2\2\u00af\u00b0\3\2\2\2\u00b0\u00b2"+
+		"\3\2\2\2\u00b1\u00af\3\2\2\2\u00b2\u00b3\7\f\2\2\u00b3\u00b8\5\32\16\2"+
+		"\u00b4\u00b5\7\17\2\2\u00b5\u00b7\5\32\16\2\u00b6\u00b4\3\2\2\2\u00b7"+
+		"\u00ba\3\2\2\2\u00b8\u00b6\3\2\2\2\u00b8\u00b9\3\2\2\2\u00b9\u00bb\3\2"+
+		"\2\2\u00ba\u00b8\3\2\2\2\u00bb\u00bc\7\16\2\2\u00bc\31\3\2\2\2\u00bd\u00be"+
+		"\7\20\2\2\u00be\u00bf\b\16\1\2\u00bf\u00c4\5\"\22\2\u00c0\u00c1\7\21\2"+
+		"\2\u00c1\u00c3\5\"\22\2\u00c2\u00c0\3\2\2\2\u00c3\u00c6\3\2\2\2\u00c4"+
+		"\u00c2\3\2\2\2\u00c4\u00c5\3\2\2\2\u00c5\u00c7\3\2\2\2\u00c6\u00c4\3\2"+
+		"\2\2\u00c7\u00c8\7\22\2\2\u00c8\33\3\2\2\2\u00c9\u00ca\b\17\1\2\u00ca"+
+		"\u00cf\5$\23\2\u00cb\u00cc\7\21\2\2\u00cc\u00ce\5\"\22\2\u00cd\u00cb\3"+
+		"\2\2\2\u00ce\u00d1\3\2\2\2\u00cf\u00cd\3\2\2\2\u00cf\u00d0\3\2\2\2\u00d0"+
+		"\35\3\2\2\2\u00d1\u00cf\3\2\2\2\u00d2\u00d3\b\20\1\2\u00d3\u00d4\7\23"+
+		"\2\2\u00d4\u00d5\7\24\2\2\u00d5\u00d9\5\34\17\2\u00d6\u00d8\5\36\20\2"+
+		"\u00d7\u00d6\3\2\2\2\u00d8\u00db\3\2\2\2\u00d9\u00d7\3\2\2\2\u00d9\u00da"+
+		"\3\2\2\2\u00da\u00dc\3\2\2\2\u00db\u00d9\3\2\2\2\u00dc\u00dd\7\25\2\2"+
+		"\u00dd\u00de\b\20\1\2\u00de\37\3\2\2\2\u00df\u00e0\b\21\1\2\u00e0\u00e5"+
+		"\5\"\22\2\u00e1\u00e2\7\21\2\2\u00e2\u00e4\5\"\22\2\u00e3\u00e1\3\2\2"+
+		"\2\u00e4\u00e7\3\2\2\2\u00e5\u00e3\3\2\2\2\u00e5\u00e6\3\2\2\2\u00e6!"+
+		"\3\2\2\2\u00e7\u00e5\3\2\2\2\u00e8\u00ec\5$\23\2\u00e9\u00ec\5&\24\2\u00ea"+
+		"\u00ec\5(\25\2\u00eb\u00e8\3\2\2\2\u00eb\u00e9\3\2\2\2\u00eb\u00ea\3\2"+
+		"\2\2\u00ec#\3\2\2\2\u00ed\u00ee\7\30\2\2\u00ee\u00ef\b\23\1\2\u00ef\u00f0"+
+		"\7\24\2\2\u00f0\u00f5\5.\30\2\u00f1\u00f2\7\21\2\2\u00f2\u00f4\5.\30\2"+
+		"\u00f3\u00f1\3\2\2\2\u00f4\u00f7\3\2\2\2\u00f5\u00f3\3\2\2\2\u00f5\u00f6"+
+		"\3\2\2\2\u00f6\u00f8\3\2\2\2\u00f7\u00f5\3\2\2\2\u00f8\u00f9\7\25\2\2"+
+		"\u00f9\u00fa\b\23\1\2\u00fa%\3\2\2\2\u00fb\u00fc\7\36\2\2\u00fc\u00fd"+
+		"\b\24\1\2\u00fd\'\3\2\2\2\u00fe\u00ff\b\25\1\2\u00ff\u0100\5*\26\2\u0100"+
+		"\u0101\7\27\2\2\u0101\u0102\b\25\1\2\u0102\u0103\5,\27\2\u0103\u0104\b"+
+		"\25\1\2\u0104)\3\2\2\2\u0105\u0106\7\26\2\2\u0106\u0107\7\30\2\2\u0107"+
+		"\u010b\b\26\1\2\u0108\u0109\t\2\2\2\u0109\u010b\b\26\1\2\u010a\u0105\3"+
+		"\2\2\2\u010a\u0108\3\2\2\2\u010b+\3\2\2\2\u010c\u010d\7\26\2\2\u010d\u010e"+
+		"\7\30\2\2\u010e\u0112\b\27\1\2\u010f\u0110\t\2\2\2\u0110\u0112\b\27\1"+
+		"\2\u0111\u010c\3\2\2\2\u0111\u010f\3\2\2\2\u0112-\3\2\2\2\u0113\u0114"+
+		"\7\30\2\2\u0114\u0115\7\13\2\2\u0115\u0116\b\30\1\2\u0116\u0117\5\60\31"+
+		"\2\u0117\u0118\b\30\1\2\u0118/\3\2\2\2\u0119\u011a\7\26\2\2\u011a\u011b"+
+		"\7\30\2\2\u011b\u0123\b\31\1\2\u011c\u011d\t\2\2\2\u011d\u0123\b\31\1"+
+		"\2\u011e\u011f\7\33\2\2\u011f\u0123\b\31\1\2\u0120\u0121\7\36\2\2\u0121"+
+		"\u0123\b\31\1\2\u0122\u0119\3\2\2\2\u0122\u011c\3\2\2\2\u0122\u011e\3"+
+		"\2\2\2\u0122\u0120\3\2\2\2\u0123\61\3\2\2\2\349AEKSW]emqw{\u0097\u009e"+
+		"\u00a6\u00af\u00b8\u00c4\u00cf\u00d9\u00e5\u00eb\u00f5\u010a\u0111\u0122";
+	public static final ATN _ATN =
+		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
+	static {
+		_decisionToDFA = new DFA[_ATN.getNumberOfDecisions()];
+		for (int i = 0; i < _ATN.getNumberOfDecisions(); i++) {
+			_decisionToDFA[i] = new DFA(_ATN.getDecisionState(i), i);
+		}
+	}
 }

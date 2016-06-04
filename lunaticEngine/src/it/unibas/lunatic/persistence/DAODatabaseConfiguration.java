@@ -140,9 +140,11 @@ public class DAODatabaseConfiguration {
         long start = new Date().getTime();
         if (scenario.getSource() != null && (scenario.getSource() instanceof DBMSDB)) {
             DBMSDB dbmsdb = (DBMSDB) scenario.getSource();
+            dbmsdb.getInitDBConfiguration().setNumOfThreads(scenario.getConfiguration().getMaxNumberOfThreads());
             dbmsdb.initDBMS();
         }
         DBMSDB dbmsdb = (DBMSDB) scenario.getTarget();
+        dbmsdb.getInitDBConfiguration().setNumOfThreads(scenario.getConfiguration().getMaxNumberOfThreads());
         dbmsdb.initDBMS();
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.INIT_DB_TIME, end - start);

@@ -2,7 +2,6 @@ package it.unibas.lunatic.persistence;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
-import it.unibas.lunatic.model.dependency.operators.AnalyzeDependencies;
 import java.io.File;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -18,10 +17,16 @@ public class DAOMCScenario {
     private final DAOMCScenarioCF daoCF = new DAOMCScenarioCF();
 
     public Scenario loadScenario(String fileScenario) throws DAOException {
-        return loadScenario(fileScenario, null);
+        return loadScenario(fileScenario, new DAOConfiguration());
     }
 
     public Scenario loadScenario(String fileScenario, String suffix) throws DAOException {
+        DAOConfiguration config = new DAOConfiguration();
+        config.setSuffix(suffix);
+        return loadScenario(fileScenario, config);
+    }
+
+    public Scenario loadScenario(String fileScenario, DAOConfiguration daoConfiguration) throws DAOException {
         File file = new File(fileScenario);
         if (!file.exists()) {
             throw new DAOException("File " + fileScenario + " not found");
@@ -30,9 +35,9 @@ public class DAOMCScenario {
         Element rootElement = document.getRootElement();
         Scenario scenario = null;
         if (isStandardScenario(rootElement)) {
-            scenario = daoStandard.loadScenario(fileScenario, suffix);
+            scenario = daoStandard.loadScenario(fileScenario, daoConfiguration);
         } else {
-            scenario = daoCF.loadScenario(fileScenario, suffix);
+            scenario = daoCF.loadScenario(fileScenario, daoConfiguration);
         }
         return scenario;
     }

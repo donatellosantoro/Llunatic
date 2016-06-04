@@ -21,7 +21,7 @@
     <!--<logger name="it.unibas.lunatic.test" level="TRACE"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.QueryStatManager" level="DEBUG"/>-->
-    <!--<logger name="speedy.persistence.relational.QueryManager" level="TRACE"/>-->
+    <!--<logger name="speedy.persistence.relational.QueryManager" level="DEBUG"/>-->
 
     <!--     MODEL     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager" level="INFO"/>-->
@@ -39,6 +39,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDsWithThreads" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.CheckVariablesInExpressions" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.FindVariableEquivalenceClasses" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.GenerateSymmetricPremise" level="DEBUG"/>-->

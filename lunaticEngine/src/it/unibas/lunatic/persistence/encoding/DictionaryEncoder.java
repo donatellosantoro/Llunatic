@@ -8,10 +8,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
@@ -28,34 +29,46 @@ public class DictionaryEncoder implements IValueEncoder {
     private Map<String, Long> encodingMap;
     private Map<Long, String> decodingMap;
 
+    private Lock lock = new java.util.concurrent.locks.ReentrantLock();
+
     public DictionaryEncoder(String scenarioName) {
         this.scenarioName = scenarioName;
     }
 
     public String encode(String original) {
-        if (encodingMap == null) {
-            loadEncodingMap();
-        }
-        long start = new Date().getTime();
-        Long encoded = encodingMap.get(original);
-        if (encoded == null) {
-            encoded = nextValue();
-            encodingMap.put(original, encoded);
-        }
-        if (original.equals("")) {
+        try {
+            lock.lock();
+            if (encodingMap == null) {
+                loadEncodingMap();
+            }
+            long start = new Date().getTime();
+            Long encoded = encodingMap.get(original);
+            if (encoded == null) {
+                encoded = nextValue();
+                encodingMap.put(original, encoded);
+            }
+            if (original.equals("")) {
 
+            }
+            long end = new Date().getTime();
+            ChaseStats.getInstance().addStat(ChaseStats.DICTIONARY_ENCODING_TIME, end - start);
+            return encoded + "";
+        } finally {
+            lock.unlock();
         }
-        long end = new Date().getTime();
-        ChaseStats.getInstance().addStat(ChaseStats.DICTIONARY_ENCODING_TIME, end - start);
-        return encoded + "";
     }
 
     public String decode(String encoded) {
-        long start = new Date().getTime();
-        String decodedValue = decodeValueUsingCache(encoded);
-        long end = new Date().getTime();
-        ChaseStats.getInstance().addStat(ChaseStats.DICTIONARY_DECODING_TIME, end - start);
-        return decodedValue;
+        try {
+            lock.lock();
+            long start = new Date().getTime();
+            String decodedValue = decodeValueUsingCache(encoded);
+            long end = new Date().getTime();
+            ChaseStats.getInstance().addStat(ChaseStats.DICTIONARY_DECODING_TIME, end - start);
+            return decodedValue;
+        } finally {
+            lock.unlock();
+        }
     }
 
     private String decodeValueUsingCache(String encoded) {
@@ -70,7 +83,7 @@ public class DictionaryEncoder implements IValueEncoder {
             if (SpeedyUtility.isSkolem(encoded) || SpeedyUtility.isVariable(encoded)) {
                 return encoded;
             }
-            throw new DAOException("Unable to decode value " + encodedValue);
+            throw new DAOException("Unable to decode value " + encodedValue + "\n Current map:" + SpeedyUtility.printMap(decodingMap));
         }
         return decoded;
     }
@@ -98,7 +111,7 @@ public class DictionaryEncoder implements IValueEncoder {
     private void loadEncodingMap() {
         File mapFile = new File(getFileForEncoding());
         if (!mapFile.canRead()) {
-            encodingMap = new HashMap<String, Long>();
+            encodingMap = Collections.synchronizedMap(new HashMap<String, Long>());
             return;
         }
         loadMapFromFile(mapFile);
@@ -110,7 +123,7 @@ public class DictionaryEncoder implements IValueEncoder {
         try {
             inStream = new ObjectInputStream(new FileInputStream(mapFile));
             int size = inStream.readInt();
-            encodingMap = new HashMap<String, Long>(size);
+            encodingMap = Collections.synchronizedMap(new HashMap<String, Long>(size));
             for (int i = 0; i < size; i++) {
                 String key = inStream.readUTF();
                 Long value = inStream.readLong();
@@ -130,49 +143,59 @@ public class DictionaryEncoder implements IValueEncoder {
     }
 
     public void closeEncoding() {
-        if (encodingMap == null) {
-            return;
+        try {
+            lock.lock();
+            if (encodingMap == null) {
+                return;
+            }
+            writingThread = new WritingThread(encodingMap, getFileForEncoding());
+            writingThread.start();
+            encodingMap = null;
+        } finally {
+            lock.unlock();
         }
-        writingThread = new WritingThread(encodingMap, getFileForEncoding());
-        writingThread.start();
-        encodingMap = null;
     }
 
     public void prepareForDecoding() {
-        if (writingInProgress) {
-            try {
-                writingThread.join();
-            } catch (InterruptedException ex) {
-            }
-        }
-        File mapFile = new File(getFileForEncoding());
-        if (!mapFile.canRead()) {
-            throw new DAOException("Unable to load encoding map file " + mapFile);
-        }
-        ObjectInputStream inStream = null;
         try {
-            inStream = new ObjectInputStream(new FileInputStream(mapFile));
-            int size = inStream.readInt();
-            decodingMap = new HashMap<Long, String>(size);
-            for (int i = 0; i < size; i++) {
-                String key = inStream.readUTF();
-                Long value = inStream.readLong();
-                if (logger.isTraceEnabled()) {
-                    if (decodingMap.containsKey(value)) {
-                        throw new IllegalArgumentException("Value " + value + " for key " + key + " was already used");
-                    }
+            lock.lock();
+            if (writingInProgress) {
+                try {
+                    writingThread.join();
+                } catch (InterruptedException ex) {
                 }
-                decodingMap.put(value, key);
             }
-        } catch (Exception e) {
-            throw new DAOException("Unable to load map from file " + mapFile + ".\n" + e.getLocalizedMessage());
-        } finally {
+            File mapFile = new File(getFileForEncoding());
+            if (!mapFile.canRead()) {
+                throw new DAOException("Unable to load encoding map file " + mapFile);
+            }
+            ObjectInputStream inStream = null;
             try {
-                if (inStream != null) {
-                    inStream.close();
+                inStream = new ObjectInputStream(new FileInputStream(mapFile));
+                int size = inStream.readInt();
+                decodingMap = Collections.synchronizedMap(new HashMap<Long, String>(size));
+                for (int i = 0; i < size; i++) {
+                    String key = inStream.readUTF();
+                    Long value = inStream.readLong();
+                    if (logger.isTraceEnabled()) {
+                        if (decodingMap.containsKey(value)) {
+                            throw new IllegalArgumentException("Value " + value + " for key " + key + " was already used");
+                        }
+                    }
+                    decodingMap.put(value, key);
                 }
-            } catch (IOException ioe) {
+            } catch (Exception e) {
+                throw new DAOException("Unable to load map from file " + mapFile + ".\n" + e.getLocalizedMessage());
+            } finally {
+                try {
+                    if (inStream != null) {
+                        inStream.close();
+                    }
+                } catch (IOException ioe) {
+                }
             }
+        } finally {
+            lock.unlock();
         }
     }
 

@@ -18,6 +18,7 @@ public class TestSQLDedWorkers extends CheckTest {
 
     public void testSolution() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.deds_workers_1_dbms, true);
+        scenario.getConfiguration().setOptimizeSTTGDs(false);
 //        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         IDatabase result = DEDChaserFactory.getChaser(scenario).doChase(scenario);
         Assert.assertNotNull(result);
@@ -88,6 +89,7 @@ public class TestSQLDedWorkers extends CheckTest {
 
     private void testAllSolutions(String fileScenario, boolean recreateDB) {
         Scenario scenario = UtilityTest.loadScenarioFromResources(fileScenario, recreateDB);
+        scenario.getConfiguration().setOptimizeSTTGDs(false);
         scenario.getConfiguration().setChaseDEDGreedyExecuteAllScenarios(true);
 //        scenario.getConfiguration().setDeChaser(LunaticConstants.CLASSIC_DE_CHASER);
         try {

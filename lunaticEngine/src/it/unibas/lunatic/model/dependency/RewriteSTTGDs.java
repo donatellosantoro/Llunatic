@@ -6,6 +6,7 @@ import it.unibas.lunatic.persistence.DAOMCScenarioStandard;
 import it.unibas.spicy.model.mapping.rewriting.operators.RewriteAndExportSTTgds;
 import it.unibas.spicy.persistence.DAOException;
 import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
+import it.unibas.lunatic.persistence.DAOConfiguration;
 import it.unibas.spicy.model.mapping.rewriting.RewritingConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class RewriteSTTGDs {
             Scenario rewrittenScenario = new Scenario(scenario.getFileName(), scenario.getSuffix());
             rewrittenScenario.setSource(scenario.getSource());
             rewrittenScenario.setTarget(scenario.getTarget());
-            daoMCScenario.loadDependencies(rewrittenTGDs, rewrittenScenario);
+            daoMCScenario.loadDependencies(rewrittenTGDs, new DAOConfiguration(), rewrittenScenario);
             scenario.getSTTgds().clear();
             scenario.getSTTgds().addAll(rewrittenScenario.getSTTgds());
             if (logger.isDebugEnabled()) logger.debug(DependencyUtility.printDependencies(scenario.getSTTgds()));

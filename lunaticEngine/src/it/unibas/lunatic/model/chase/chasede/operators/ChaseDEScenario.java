@@ -125,7 +125,7 @@ public class ChaseDEScenario implements IDEChaser {
                 resultExporter.exportSolutionInSeparateFiles(targetDB, scenario);
             }
             finalQueryExecutor.executeFinalQueries(targetDB, scenario);
-            printResult(targetDB);
+            printResult(targetDB, scenario.getConfiguration());
             scenario.setExtEGDs(new ArrayList<Dependency>());
             scenario.setEGDs(egds);
             return targetDB;
@@ -136,11 +136,15 @@ public class ChaseDEScenario implements IDEChaser {
         }
     }
 
-    private void printResult(IDatabase targetDB) {
+    private void printResult(IDatabase targetDB, LunaticConfiguration conf) {
         if (!LunaticConfiguration.isPrintResults()) {
             return;
         }
         if (LunaticConfiguration.isPrintSteps()) System.out.println(ChaseStats.getInstance().toString());
+        if (conf.isPrintQueryResultsOnly()) {
+            PrintUtility.printInformation("*** Query time: " + ChaseStats.getInstance().getStat(ChaseStats.FINAL_QUERY_TIME) + " ms");
+            return;
+        }
         long preProcessingTime = 0L;
         long chasingTime = 0L;
         long postProcessingTime = 0L;

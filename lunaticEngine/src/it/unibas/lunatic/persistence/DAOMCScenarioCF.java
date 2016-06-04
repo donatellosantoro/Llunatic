@@ -5,16 +5,23 @@ import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
+import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.ProcessDependencies;
 import it.unibas.lunatic.parser.ParserOutput;
 import it.unibas.lunatic.parser.operators.ParseDependenciesCF;
+import it.unibas.lunatic.persistence.encoding.DummyEncoder;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
 import speedy.model.database.IDatabase;
+import speedy.model.database.operators.dbms.IValueEncoder;
 import speedy.persistence.xml.DAOXmlUtility;
 
 public class DAOMCScenarioCF {
@@ -25,10 +32,10 @@ public class DAOMCScenarioCF {
     private final DAODatabaseConfiguration daoDatabaseConfiguration = new DAODatabaseConfiguration();
     private final ProcessDependencies dependencyProcessor = new ProcessDependencies();
 
-    public Scenario loadScenario(String fileScenario, String suffix) throws DAOException {
+    public Scenario loadScenario(String fileScenario, DAOConfiguration config) throws DAOException {
         long start = new Date().getTime();
         try {
-            Scenario scenario = new Scenario(fileScenario, suffix);
+            Scenario scenario = new Scenario(fileScenario, config.getSuffix());
             long startLoadXML = new Date().getTime();
             Document document = daoUtility.buildDOM(fileScenario);
             long endLoadXML = new Date().getTime();
@@ -39,8 +46,12 @@ public class DAOMCScenarioCF {
             LunaticConfiguration configuration = daoConfiguration.loadConfiguration(configurationElement);
             scenario.setConfiguration(configuration);
             if (configuration.isUseDictionaryEncoding()) {
-                scenario.setValueEncoder(new DictionaryEncoder(DAOUtility.extractScenarioName(fileScenario)));
-                scenario.getValueEncoder().prepareForEncoding();
+                if (config.isImportData()) {
+                    scenario.setValueEncoder(new DictionaryEncoder(DAOUtility.extractScenarioName(fileScenario)));
+                    scenario.getValueEncoder().prepareForEncoding();
+                }else{
+                    scenario.setValueEncoder(new DummyEncoder()); 
+                }
             }
             //SOURCE
             Element sourceElement = rootElement.getChild("source");
@@ -48,12 +59,14 @@ public class DAOMCScenarioCF {
             scenario.setSource(sourceDatabase);
             //TARGET
             Element targetElement = rootElement.getChild("target");
-            IDatabase targetDatabase = daoDatabaseConfiguration.loadDatabase(targetElement, suffix, fileScenario, scenario.getValueEncoder());
+            IDatabase targetDatabase = daoDatabaseConfiguration.loadDatabase(targetElement, config.getSuffix(), fileScenario, scenario.getValueEncoder());
             scenario.setTarget(targetDatabase);
             long end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.LOAD_TIME, end - start);
             //InitDB (out of LOAD_TIME stat)
-            daoDatabaseConfiguration.initDatabase(scenario);
+            if (config.isImportData()) {
+                daoDatabaseConfiguration.initDatabase(scenario);
+            }
             start = new Date().getTime();
             //AUTHORITATIVE SOURCES
             Element authoritativeSourcesElement = rootElement.getChild("authoritativeSources");
@@ -62,14 +75,16 @@ public class DAOMCScenarioCF {
             //DEPENDENCIES
             Element dependenciesElement = rootElement.getChild("dependencies");
             Element queriesElement = rootElement.getChild("queries");
-            loadDependenciesAndQueries(dependenciesElement, queriesElement, scenario);
+            loadDependenciesAndQueries(dependenciesElement, queriesElement, config, scenario);
             //CONFIGURATION
             daoConfiguration.loadOtherScenarioElements(rootElement, scenario);
             //QUERIES
             end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.LOAD_TIME, end - start);
             if (configuration.isUseDictionaryEncoding()) {
-                scenario.getValueEncoder().closeEncoding();
+                if (config.isImportData()) {
+                    scenario.getValueEncoder().closeEncoding();
+                }
             }
             return scenario;
         } catch (Throwable ex) {
@@ -85,31 +100,36 @@ public class DAOMCScenarioCF {
     }
 
     @SuppressWarnings("unchecked")
-    private void loadDependenciesAndQueries(Element dependenciesElement, Element queriesElement, Scenario scenario) throws DAOException {
+    private void loadDependenciesAndQueries(Element dependenciesElement, Element queriesElement, DAOConfiguration config, Scenario scenario) throws DAOException, IOException {
         StringBuilder dependenciesAndQueries = new StringBuilder();
-        if (dependenciesElement != null) {
-            Element stTGDFileElement = dependenciesElement.getChild("sttgdsFile");
-            if (stTGDFileElement != null) {
-                String content = DAOUtility.loadFileContent(stTGDFileElement.getText(), scenario.getFileName());
-                dependenciesAndQueries.append("ST-TGDs:\n").append(content).append("\n");
+        if (config.isUseRewrittenDependencies()) {
+            String filePath = getEncodedDependenciesPath(scenario.getFileName());
+            dependenciesAndQueries.append(FileUtils.readFileToString(new File(filePath)));
+        } else {
+            if (dependenciesElement != null) {
+                Element stTGDFileElement = dependenciesElement.getChild("sttgdsFile");
+                if (stTGDFileElement != null) {
+                    String content = DAOUtility.loadFileContent(stTGDFileElement.getText(), scenario.getFileName());
+                    dependenciesAndQueries.append("ST-TGDs:\n").append(content).append("\n");
+                }
+                Element tTGDFileElement = dependenciesElement.getChild("ttgdsFile");
+                if (tTGDFileElement != null) {
+                    String content = DAOUtility.loadFileContent(tTGDFileElement.getText(), scenario.getFileName());
+                    dependenciesAndQueries.append("T-TGDs:\n").append(content).append("\n");
+                }
+                Element egdsFileElement = dependenciesElement.getChild("egdsFile");
+                if (egdsFileElement != null) {
+                    String content = DAOUtility.loadFileContent(egdsFileElement.getText(), scenario.getFileName());
+                    dependenciesAndQueries.append("EGDs:\n").append(content).append("\n");
+                }
             }
-            Element tTGDFileElement = dependenciesElement.getChild("ttgdsFile");
-            if (tTGDFileElement != null) {
-                String content = DAOUtility.loadFileContent(tTGDFileElement.getText(), scenario.getFileName());
-                dependenciesAndQueries.append("T-TGDs:\n").append(content).append("\n");
-            }
-            Element egdsFileElement = dependenciesElement.getChild("egdsFile");
-            if (egdsFileElement != null) {
-                String content = DAOUtility.loadFileContent(egdsFileElement.getText(), scenario.getFileName());
-                dependenciesAndQueries.append("EGDs:\n").append(content).append("\n");
-            }
-        }
-        if (queriesElement != null) {
-            dependenciesAndQueries.append("Queries:\n");
-            List<Element> queryListElement = queriesElement.getChildren("queryFile");
-            for (Element queryFileElement : queryListElement) {
-                String content = DAOUtility.loadFileContent(queryFileElement.getText(), scenario.getFileName());
-                dependenciesAndQueries.append(content).append("\n");
+            if (queriesElement != null) {
+                dependenciesAndQueries.append("Queries:\n");
+                List<Element> queryListElement = queriesElement.getChildren("queryFile");
+                for (Element queryFileElement : queryListElement) {
+                    String content = DAOUtility.loadFileContent(queryFileElement.getText(), scenario.getFileName());
+                    dependenciesAndQueries.append(content).append("\n");
+                }
             }
         }
         if (logger.isDebugEnabled()) logger.debug(dependenciesAndQueries.toString());
@@ -117,14 +137,57 @@ public class DAOMCScenarioCF {
         try {
             long start = new Date().getTime();
             generator.generateDependencies(dependenciesAndQueries.toString(), scenario);
-            ParserOutput parserOutput = generator.getParserOutput();
-            dependencyProcessor.processDependencies(parserOutput, scenario);
             long end = new Date().getTime();
+            ParserOutput parserOutput = generator.getParserOutput();
             ChaseStats.getInstance().addStat(ChaseStats.PARSING_TIME, end - start);
+            if (config.isProcessDependencies()) {
+                dependencyProcessor.processDependencies(parserOutput, scenario);
+            }
+            if (config.isExportRewrittenDependencies()) {
+                exportRewrittenDependencies(parserOutput, scenario.getFileName());
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new DAOException(ex);
         }
+    }
+
+    private void exportRewrittenDependencies(ParserOutput parserOutput, String scenarioName) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        if (!parserOutput.getStTGDs().isEmpty()) {
+            sb.append("\nST-TGDs:");
+            for (Dependency d : parserOutput.getStTGDs()) {
+                sb.append(d.toCFString());
+            }
+        }
+        if (!parserOutput.geteTGDs().isEmpty()) {
+            sb.append("\nT-TGDs:");
+            for (Dependency d : parserOutput.geteTGDs()) {
+                sb.append(d.toCFString());
+            }
+        }
+        if (!parserOutput.geteEGDs().isEmpty()) {
+            sb.append("\nEGDs:");
+            for (Dependency d : parserOutput.geteEGDs()) {
+                sb.append(d.toCFString());
+            }
+        }
+        if (!parserOutput.getQueries().isEmpty()) {
+            sb.append("\nQueries:");
+            for (Dependency d : parserOutput.getQueries()) {
+                sb.append(d.toCFString());
+            }
+        }
+        String filePath = getEncodedDependenciesPath(scenarioName);
+        if (logger.isDebugEnabled()) logger.debug("Encoded dependencies file: " + filePath);
+        FileUtils.writeStringToFile(new File(filePath), sb.toString());
+    }
+
+    private String getEncodedDependenciesPath(String scenarioPath) {
+        File fileScenario = new File(scenarioPath);
+        String fileName = fileScenario.getName();
+        String homeDir = System.getProperty("user.home");
+        return homeDir + File.separator + SpeedyConstants.WORK_DIR + File.separator + "Encoding" + File.separator + "ENC_" + fileName + ".txt";
     }
 
 }

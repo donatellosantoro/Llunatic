@@ -49,6 +49,13 @@ public class FormulaAttribute implements Cloneable {
         return attributeName + ": " + value.toSaveString();
     }
 
+    public String toCFString() {
+        if (value instanceof FormulaVariableOccurrence) {
+            return "?" + value.toString();
+        }
+        return value.toString();
+    }
+
     public String toLongString() {
         return attributeName + ": " + value.toLongString();
     }

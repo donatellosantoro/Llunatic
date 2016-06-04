@@ -34,15 +34,19 @@ import speedy.model.database.Tuple;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSTable;
 import speedy.model.database.dbms.DBMSVirtualDB;
+import speedy.model.database.dbms.DBMSVirtualTable;
 import speedy.model.database.mainmemory.MainMemoryVirtualDB;
 import speedy.model.database.mainmemory.MainMemoryVirtualTable;
 import speedy.model.database.operators.dbms.IValueEncoder;
+import speedy.persistence.file.operators.ExportCSVFileWithCopy;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.DBMSUtility;
+import speedy.utility.SpeedyUtility;
 
 public class ExportChaseStepResultsCSV {
 
+    private ExportCSVFileWithCopy csvExporter = new ExportCSVFileWithCopy();
     private String CSV_SEPARATOR = ",";
     private String tablePrefix = "#";
     private int counter = 0;
@@ -73,7 +77,7 @@ public class ExportChaseStepResultsCSV {
             IDatabase database = OperatorFactory.getInstance().getDatabaseBuilder(scenario).extractDatabase(step.getId(), step.getDeltaDB(), step.getOriginalDB(), step.getScenario());
             for (String tableName : database.getTableNames()) {
                 ITable table = database.getTable(tableName);
-                exportTable(table, path, scenario);
+                exportTable(table, path, scenario.getValueEncoder());
             }
         }
         if (scenario.getValueEncoder() != null) scenario.getValueEncoder().closeDecoding();
@@ -82,17 +86,32 @@ public class ExportChaseStepResultsCSV {
     }
 
     public void exportSolutionInSeparateFiles(IDatabase database, Scenario scenario) {
-        long start = new Date().getTime();
-        if (scenario.getValueEncoder() != null) scenario.getValueEncoder().prepareForDecoding();
-        String path = scenario.getConfiguration().getExportSolutionsPath();
+        exportSolutionInSeparateFiles(database, scenario.getValueEncoder(), scenario.getConfiguration().getExportSolutionsPath(), scenario.getConfiguration().getMaxNumberOfThreads());
+    }
+
+    public void exportSolutionInSeparateFiles(IDatabase database, IValueEncoder valueEncoder, String path, int numberOfThreads) {
         System.out.println("Exporting solution in " + path);
-        for (String tableName : database.getTableNames()) {
-            ITable table = database.getTable(tableName);
-            exportTable(table, path, scenario);
+        long start = new Date().getTime();
+        if (valueEncoder != null) valueEncoder.prepareForDecoding();
+        if (isDBMS(database)) {
+            csvExporter.exportDatabase(database, valueEncoder, path, numberOfThreads);
+        } else {
+            exportMainMemory(database, valueEncoder, path);
         }
-        if (scenario.getValueEncoder() != null) scenario.getValueEncoder().closeDecoding();
+        if (valueEncoder != null) valueEncoder.closeDecoding();
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.WRITE_TIME, end - start);
+    }
+
+    private boolean isDBMS(IDatabase database) {
+        return (database instanceof DBMSDB) || (database instanceof DBMSVirtualDB);
+    }
+
+    private void exportMainMemory(IDatabase database, IValueEncoder valueEncoder, String path) {
+        for (String tableName : database.getTableNames()) {
+            ITable table = database.getTable(tableName);
+            exportTable(table, path, valueEncoder);
+        }
     }
 
     public void exportChangesInSeparateFiles(ChaseTree chaseTree, Scenario scenario) {
@@ -159,14 +178,14 @@ public class ExportChaseStepResultsCSV {
         }
     }
 
-    private void exportTable(ITable table, String folder, Scenario scenario) {
+    private void exportTable(ITable table, String folder, IValueEncoder valueEncoder) {
         String file = folder + "/" + table.getName() + ".csv";
         File outputFile = new File(file);
         outputFile.getParentFile().mkdirs();
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8")));
-            writeTable(writer, table, scenario.getValueEncoder());
+            writeTable(writer, table, valueEncoder);
         } catch (Exception ex) {
             throw new DAOException("Unable to export database " + ex);
         } finally {
@@ -313,4 +332,5 @@ public class ExportChaseStepResultsCSV {
     private IBuildDatabaseForChaseStep getDatabaseBuilder(Scenario scenario) {
         return OperatorFactory.getInstance().getDatabaseBuilder(scenario);
     }
+
 }

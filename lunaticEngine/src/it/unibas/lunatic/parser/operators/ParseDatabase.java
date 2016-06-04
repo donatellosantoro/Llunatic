@@ -4,9 +4,13 @@ import it.unibas.lunatic.exceptions.ParserException;
 import it.unibas.lunatic.parser.output.*;
 import it.unibas.lunatic.parser.*;
 import it.unibas.lunatic.utility.LunaticUtility;
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
+import java.io.ByteArrayInputStream;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BailErrorStrategy;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.DefaultErrorStrategy;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.atn.PredictionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.IDatabase;
@@ -34,15 +38,24 @@ public class ParseDatabase {
 
     public IDatabase generateDatabase(String text) throws Exception {
         try {
-            DatabaseLexer lex = new DatabaseLexer(new ANTLRStringStream(text));
+            DatabaseLexer lex = new DatabaseLexer(new ANTLRInputStream(new ByteArrayInputStream(text.getBytes())));
             CommonTokenStream tokens = new CommonTokenStream(lex);
-            DatabaseParser g = new DatabaseParser(tokens);
+            DatabaseParser g = new DatabaseParser(tokens);g.getInterpreter().setPredictionMode(PredictionMode.SLL);
+            g.setErrorHandler(new BailErrorStrategy());
+            g.setGenerator(this);
             try {
-                g.setGenerator(this);
-                g.prog();
-            } catch (RecognitionException ex) {
-                logger.error("Unable to load mapping task: " + ex.getMessage());
-                throw new ParserException(ex);
+                g.prog();  // STAGE 1
+            } catch (Exception e) {
+                tokens.reset(); // rewind input stream
+                g.reset();
+                g.getInterpreter().setPredictionMode(PredictionMode.LL);
+                g.setErrorHandler(new DefaultErrorStrategy());
+                try {
+                    g.prog();  // STAGE 2
+                } catch (RecognitionException ex) {
+                    logger.error("Unable to load mapping task: " + ex.getMessage());
+                    throw new ParserException(ex);
+                }
             }
             //Load schema
             INode schemaNode = new TupleNode(PersistenceConstants.DATASOURCE_ROOT_LABEL, oidGenerator.getNextOID());

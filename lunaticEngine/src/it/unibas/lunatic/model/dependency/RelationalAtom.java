@@ -4,6 +4,7 @@ import speedy.model.expressions.Expression;
 import java.util.ArrayList;
 import java.util.List;
 import speedy.model.database.TableAlias;
+import speedy.utility.SpeedyUtility;
 
 public class RelationalAtom implements IFormulaAtom, Cloneable {
 
@@ -133,6 +134,17 @@ public class RelationalAtom implements IFormulaAtom, Cloneable {
         }
         result.deleteCharAt(result.length() - 1);
         result.deleteCharAt(result.length() - 1);
+        result.append(")");
+        return result.toString();
+    }
+
+    public String toCFString() {
+        StringBuilder result = new StringBuilder();
+        result.append(tableAlias.getTableName()).append("(");
+        for (FormulaAttribute attribute : attributes) {
+            result.append(attribute.toCFString()).append(", ");
+        }
+        SpeedyUtility.removeChars(", ".length(), result);
         result.append(")");
         return result.toString();
     }

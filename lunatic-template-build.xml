@@ -2,8 +2,8 @@
 <project name="lunatic-template">
     
     <!-- ***************************************************
-            Inizializzazione delle proprieta'
-      *************************************************** -->
+          Inizializzazione delle proprieta'
+    *************************************************** -->
 
     <property file="./dependent.properties" />
     
@@ -67,16 +67,16 @@
     </target>    
     
     <!-- ***************************************************
-             Clean
-      *************************************************** -->
+           Clean
+    *************************************************** -->
     <target name="clean" depends="init" description="ripulisce le cartelle riproducibili">
         <delete dir="${build.dir}" />
         <delete dir="${test.dir}" />
     </target>
     
     <!-- ***************************************************
-             Preparazione
-      *************************************************** -->    
+           Preparazione
+    *************************************************** -->    
     <target name="-create-misc-dir" depends="init">
         <mkdir dir="${misc.dir}" />
     </target>
@@ -124,8 +124,8 @@
     </target>
     
     <!-- ***************************************************
-                      Compilazione 
-      *************************************************** -->
+                    Compilazione 
+    *************************************************** -->
     <target name="compile" depends="prepare, -prepare-resources, -prepare-conf" description="compila il codice">
         <javac srcdir="${src.dir}"
                destdir="${build.dir}"
@@ -148,8 +148,8 @@
     </target>
     
     <!-- ***************************************************
-                Esecuzione dei test
-      *************************************************** -->
+              Esecuzione dei test
+    *************************************************** -->
     <target name="test" depends="-prepare-test, build" description="esegue i test">
         <junit haltonfailure="false"
                errorProperty="test.failed"
@@ -193,8 +193,8 @@
     </target>
     
     <!-- ***************************************************
-                Build
-      *************************************************** -->
+              Build
+    *************************************************** -->
 
     <target name="build" depends="compile, compile-test" description="compila ed esegue i test">
     </target>
@@ -204,10 +204,18 @@
     
     
     <!-- ***************************************************
-                Build
-      *************************************************** -->
+              Build
+    *************************************************** -->
     <target name="run" depends="compile" description="esegue l'applicazione">
         <java classname="${main.class}" fork="yes" maxmemory="${run.maxmemory}">
+            <classpath refid="compile.classpath" />
+            <jvmarg value="-Djava.util.logging.config.class=it.unibas.lunatic.utility.JavaUtilLoggingConfig"/>
+            <arg value="${arg0}"/>
+        </java>
+    </target> 
+       
+    <target name="run-exp" depends="compile" description="esegue l'applicazione">
+        <java classname="${main-exp.class}" fork="yes" maxmemory="${run.maxmemory}">
             <classpath refid="compile.classpath" />
             <jvmarg value="-Djava.util.logging.config.class=it.unibas.lunatic.utility.JavaUtilLoggingConfig"/>
             <arg value="${arg0}"/>
@@ -215,8 +223,8 @@
     </target>
     
     <!-- ***************************************************
-                Distribuzione
-      *************************************************** -->
+              Distribuzione
+    *************************************************** -->
     <target name="-clean-dist-dir" depends="init">        
         <delete dir="${dist.dir}" />     
     </target>
@@ -323,8 +331,8 @@
     </target>
     
     <!-- ***************************************************
-               Target particolari
-      *************************************************** -->
+             Target particolari
+    *************************************************** -->
 
     <target name="all" depends="deploy">
     </target>
@@ -337,8 +345,8 @@
     </target>
     
     <!-- ***************************************************
-               Target per progetto FreeForm
-      *************************************************** -->
+             Target per progetto FreeForm
+    *************************************************** -->
     <target name="gfp" depends="generate-freeform-properties"/>
 
     <target name="generate-freeform-properties" depends="init, prepare">

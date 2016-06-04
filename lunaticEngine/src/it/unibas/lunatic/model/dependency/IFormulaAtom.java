@@ -20,6 +20,8 @@ public interface IFormulaAtom extends Cloneable {
     public String toLongString();
     
     public String toSaveString();
+    
+    public String toCFString();
 
     // atoms are superficially cloned; see PositiveFormula.clone() for deop cloning
     public IFormulaAtom clone();

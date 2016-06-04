@@ -64,6 +64,7 @@ import it.unibas.lunatic.model.chase.chasede.operators.IRemoveDuplicates;
 import it.unibas.lunatic.model.chase.chasede.operators.OccurrenceHandlerDE;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.BuildSQLDBForChaseStepDE;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.BuildSQLDeltaDBDE;
+import it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDsWithThreads;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectNaive;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLRemoveDuplicates;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.BuildMainMemoryDBForChaseStepDE;
@@ -101,7 +102,8 @@ public class OperatorFactory {
     private IBuildDeltaDB sqlDeltaBuilderDE = new BuildSQLDeltaDBDE();
     //
     private IChaseSTTGDs mainMemorySTTGDsChaser = new ChaseMainMemorySTTGDs();
-    private IChaseSTTGDs sqlSTTGDsChaser = new ChaseSQLSTTGDs();
+    private IChaseSTTGDs sqlSTTGDsChaser = new ChaseSQLSTTGDsWithThreads();
+//    private IChaseSTTGDs sqlSTTGDsChaser = new ChaseSQLSTTGDs();
     //
     private IOIDGenerator mainMemoryOIDGenerator = new MainMemoryOIDGenerator();
     private IOIDGenerator sqlOIDGenerator = SQLOIDGenerator.getInstance();

@@ -1,6 +1,5 @@
 package it.unibas.lunatic.test.de.mainmemory;
 
-import it.unibas.lunatic.test.de.dbms.*;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import speedy.model.database.IDatabase;
@@ -16,10 +15,11 @@ public class TestSQLChaseStExtTgdEgd extends CheckTest {
 
     public void test() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.RS_st_exttgd_egd);
+        scenario.getConfiguration().setOptimizeSTTGDs(false);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
 //        checkExpectedInstances(result, scenario);
     }
-    
+
 }

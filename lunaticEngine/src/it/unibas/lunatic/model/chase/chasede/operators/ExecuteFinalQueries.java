@@ -93,9 +93,10 @@ public class ExecuteFinalQueries {
         }
 
         private long getQueryResult(ITupleIterator it, Dependency query, Scenario scenario) {
-//        if (query.getId().equalsIgnoreCase("q3")) {
-//            return printQueryResult(it, scenario);
-//        }
+//            if (query.getId().equalsIgnoreCase("q1")) {
+//                System.out.println(query.toLogicalString());
+//                return printQueryResult(it, scenario);
+//            }
             return SpeedyUtility.getTupleIteratorSize(it);
         }
 
@@ -108,7 +109,7 @@ public class ExecuteFinalQueries {
                 Tuple tuple = it.next();
                 result.append(printTuple(tuple, scenario)).append("\n");
             }
-            if (logger.isDebugEnabled()) logger.debug(result.toString());
+            System.out.println(result.toString());
             if (scenario.getValueEncoder() != null) scenario.getValueEncoder().closeDecoding();
             return counter;
         }

@@ -1,30 +1,76 @@
-// $ANTLR 3.5.1 /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g 2016-03-10 10:39:35
+// Generated from Database.g4 by ANTLR 4.5.3
 
 package it.unibas.lunatic.parser.output;
 
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.*;
 
-import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
-
-@SuppressWarnings("all")
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class DatabaseLexer extends Lexer {
-	public static final int EOF=-1;
-	public static final int T__12=12;
-	public static final int T__13=13;
-	public static final int T__14=14;
-	public static final int T__15=15;
-	public static final int T__16=16;
-	public static final int T__17=17;
-	public static final int DIGIT=4;
-	public static final int IDENTIFIER=5;
-	public static final int LETTER=6;
-	public static final int LINE_COMMENT=7;
-	public static final int NULL=8;
-	public static final int NUMBER=9;
-	public static final int STRING=10;
-	public static final int WHITESPACE=11;
+	static { RuntimeMetaData.checkVersion("4.5.3", RuntimeMetaData.VERSION); }
+
+	protected static final DFA[] _decisionToDFA;
+	protected static final PredictionContextCache _sharedContextCache =
+		new PredictionContextCache();
+	public static final int
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, IDENTIFIER=7, STRING=8, 
+		NUMBER=9, NULL=10, WHITESPACE=11, LINE_COMMENT=12;
+	public static String[] modeNames = {
+		"DEFAULT_MODE"
+	};
+
+	public static final String[] ruleNames = {
+		"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "IDENTIFIER", "STRING", 
+		"NUMBER", "NULL", "DIGIT", "LETTER", "WHITESPACE", "LINE_COMMENT"
+	};
+
+	private static final String[] _LITERAL_NAMES = {
+		null, "'SCHEMA:'", "'('", "','", "')'", "'INSTANCE:'", "':'", null, null, 
+		null, "'#NULL#'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, null, null, null, null, null, null, "IDENTIFIER", "STRING", "NUMBER", 
+		"NULL", "WHITESPACE", "LINE_COMMENT"
+	};
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
+	}
+
+	@Override
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
+	}
+
+	@Override
+
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
+	}
+
 
 
 	public void emitErrorMessage(String msg) {
@@ -32,875 +78,90 @@ public class DatabaseLexer extends Lexer {
 	}
 
 
-	// delegates
-	// delegators
-	public Lexer[] getDelegates() {
-		return new Lexer[] {};
-	}
-
-	public DatabaseLexer() {} 
 	public DatabaseLexer(CharStream input) {
-		this(input, new RecognizerSharedState());
+		super(input);
+		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
-	public DatabaseLexer(CharStream input, RecognizerSharedState state) {
-		super(input,state);
-	}
-	@Override public String getGrammarFileName() { return "/Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g"; }
-
-	// $ANTLR start "T__12"
-	public final void mT__12() throws RecognitionException {
-		try {
-			int _type = T__12;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:12:7: ( '(' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:12:9: '('
-			{
-			match('('); 
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "T__12"
-
-	// $ANTLR start "T__13"
-	public final void mT__13() throws RecognitionException {
-		try {
-			int _type = T__13;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:13:7: ( ')' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:13:9: ')'
-			{
-			match(')'); 
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "T__13"
-
-	// $ANTLR start "T__14"
-	public final void mT__14() throws RecognitionException {
-		try {
-			int _type = T__14;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:14:7: ( ',' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:14:9: ','
-			{
-			match(','); 
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "T__14"
-
-	// $ANTLR start "T__15"
-	public final void mT__15() throws RecognitionException {
-		try {
-			int _type = T__15;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:15:7: ( ':' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:15:9: ':'
-			{
-			match(':'); 
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "T__15"
-
-	// $ANTLR start "T__16"
-	public final void mT__16() throws RecognitionException {
-		try {
-			int _type = T__16;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:16:7: ( 'INSTANCE:' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:16:9: 'INSTANCE:'
-			{
-			match("INSTANCE:"); 
-
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "T__16"
-
-	// $ANTLR start "T__17"
-	public final void mT__17() throws RecognitionException {
-		try {
-			int _type = T__17;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:17:7: ( 'SCHEMA:' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:17:9: 'SCHEMA:'
-			{
-			match("SCHEMA:"); 
-
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "T__17"
-
-	// $ANTLR start "IDENTIFIER"
-	public final void mIDENTIFIER() throws RecognitionException {
-		try {
-			int _type = IDENTIFIER;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:56:13: ( ( LETTER ) ( LETTER | DIGIT | '_' | '.' | '-' )* )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:56:17: ( LETTER ) ( LETTER | DIGIT | '_' | '.' | '-' )*
-			{
-			if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
-				input.consume();
-			}
-			else {
-				MismatchedSetException mse = new MismatchedSetException(null,input);
-				recover(mse);
-				throw mse;
-			}
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:56:26: ( LETTER | DIGIT | '_' | '.' | '-' )*
-			loop1:
-			while (true) {
-				int alt1=2;
-				int LA1_0 = input.LA(1);
-				if ( ((LA1_0 >= '-' && LA1_0 <= '.')||(LA1_0 >= '0' && LA1_0 <= '9')||(LA1_0 >= 'A' && LA1_0 <= 'Z')||LA1_0=='_'||(LA1_0 >= 'a' && LA1_0 <= 'z')) ) {
-					alt1=1;
-				}
-
-				switch (alt1) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:
-					{
-					if ( (input.LA(1) >= '-' && input.LA(1) <= '.')||(input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
-						input.consume();
-					}
-					else {
-						MismatchedSetException mse = new MismatchedSetException(null,input);
-						recover(mse);
-						throw mse;
-					}
-					}
-					break;
-
-				default :
-					break loop1;
-				}
-			}
-
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "IDENTIFIER"
-
-	// $ANTLR start "STRING"
-	public final void mSTRING() throws RecognitionException {
-		try {
-			int _type = STRING;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:58:9: ( '\"' ( LETTER | DIGIT | '-' | '.' | '@' | ' ' )+ '\"' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:58:13: '\"' ( LETTER | DIGIT | '-' | '.' | '@' | ' ' )+ '\"'
-			{
-			match('\"'); 
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:58:17: ( LETTER | DIGIT | '-' | '.' | '@' | ' ' )+
-			int cnt2=0;
-			loop2:
-			while (true) {
-				int alt2=2;
-				int LA2_0 = input.LA(1);
-				if ( (LA2_0==' '||(LA2_0 >= '-' && LA2_0 <= '.')||(LA2_0 >= '0' && LA2_0 <= '9')||(LA2_0 >= '@' && LA2_0 <= 'Z')||(LA2_0 >= 'a' && LA2_0 <= 'z')) ) {
-					alt2=1;
-				}
-
-				switch (alt2) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:
-					{
-					if ( input.LA(1)==' '||(input.LA(1) >= '-' && input.LA(1) <= '.')||(input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= '@' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
-						input.consume();
-					}
-					else {
-						MismatchedSetException mse = new MismatchedSetException(null,input);
-						recover(mse);
-						throw mse;
-					}
-					}
-					break;
-
-				default :
-					if ( cnt2 >= 1 ) break loop2;
-					EarlyExitException eee = new EarlyExitException(2, input);
-					throw eee;
-				}
-				cnt2++;
-			}
-
-			match('\"'); 
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "STRING"
-
-	// $ANTLR start "NUMBER"
-	public final void mNUMBER() throws RecognitionException {
-		try {
-			int _type = NUMBER;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:59:8: ( ( '-' )? ( DIGIT )+ ( '.' ( DIGIT )+ )? )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:59:11: ( '-' )? ( DIGIT )+ ( '.' ( DIGIT )+ )?
-			{
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:59:11: ( '-' )?
-			int alt3=2;
-			int LA3_0 = input.LA(1);
-			if ( (LA3_0=='-') ) {
-				alt3=1;
-			}
-			switch (alt3) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:59:12: '-'
-					{
-					match('-'); 
-					}
-					break;
-
-			}
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:59:18: ( DIGIT )+
-			int cnt4=0;
-			loop4:
-			while (true) {
-				int alt4=2;
-				int LA4_0 = input.LA(1);
-				if ( ((LA4_0 >= '0' && LA4_0 <= '9')) ) {
-					alt4=1;
-				}
-
-				switch (alt4) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:
-					{
-					if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
-						input.consume();
-					}
-					else {
-						MismatchedSetException mse = new MismatchedSetException(null,input);
-						recover(mse);
-						throw mse;
-					}
-					}
-					break;
-
-				default :
-					if ( cnt4 >= 1 ) break loop4;
-					EarlyExitException eee = new EarlyExitException(4, input);
-					throw eee;
-				}
-				cnt4++;
-			}
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:59:25: ( '.' ( DIGIT )+ )?
-			int alt6=2;
-			int LA6_0 = input.LA(1);
-			if ( (LA6_0=='.') ) {
-				alt6=1;
-			}
-			switch (alt6) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:59:26: '.' ( DIGIT )+
-					{
-					match('.'); 
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:59:30: ( DIGIT )+
-					int cnt5=0;
-					loop5:
-					while (true) {
-						int alt5=2;
-						int LA5_0 = input.LA(1);
-						if ( ((LA5_0 >= '0' && LA5_0 <= '9')) ) {
-							alt5=1;
-						}
-
-						switch (alt5) {
-						case 1 :
-							// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:
-							{
-							if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
-								input.consume();
-							}
-							else {
-								MismatchedSetException mse = new MismatchedSetException(null,input);
-								recover(mse);
-								throw mse;
-							}
-							}
-							break;
-
-						default :
-							if ( cnt5 >= 1 ) break loop5;
-							EarlyExitException eee = new EarlyExitException(5, input);
-							throw eee;
-						}
-						cnt5++;
-					}
-
-					}
-					break;
-
-			}
-
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "NUMBER"
-
-	// $ANTLR start "NULL"
-	public final void mNULL() throws RecognitionException {
-		try {
-			int _type = NULL;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:60:9: ( '#NULL#' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:60:17: '#NULL#'
-			{
-			match("#NULL#"); 
-
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "NULL"
-
-	// $ANTLR start "DIGIT"
-	public final void mDIGIT() throws RecognitionException {
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:61:16: ( '0' .. '9' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:
-			{
-			if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
-				input.consume();
-			}
-			else {
-				MismatchedSetException mse = new MismatchedSetException(null,input);
-				recover(mse);
-				throw mse;
-			}
-			}
-
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "DIGIT"
-
-	// $ANTLR start "LETTER"
-	public final void mLETTER() throws RecognitionException {
-		try {
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:62:17: ( 'a' .. 'z' | 'A' .. 'Z' )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:
-			{
-			if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
-				input.consume();
-			}
-			else {
-				MismatchedSetException mse = new MismatchedSetException(null,input);
-				recover(mse);
-				throw mse;
-			}
-			}
-
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "LETTER"
-
-	// $ANTLR start "WHITESPACE"
-	public final void mWHITESPACE() throws RecognitionException {
-		try {
-			int _type = WHITESPACE;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:63:12: ( ( '\\t' | ' ' | '\\r' | '\\n' | '\\u000C' )+ )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:63:15: ( '\\t' | ' ' | '\\r' | '\\n' | '\\u000C' )+
-			{
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:63:15: ( '\\t' | ' ' | '\\r' | '\\n' | '\\u000C' )+
-			int cnt7=0;
-			loop7:
-			while (true) {
-				int alt7=2;
-				int LA7_0 = input.LA(1);
-				if ( ((LA7_0 >= '\t' && LA7_0 <= '\n')||(LA7_0 >= '\f' && LA7_0 <= '\r')||LA7_0==' ') ) {
-					alt7=1;
-				}
-
-				switch (alt7) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:
-					{
-					if ( (input.LA(1) >= '\t' && input.LA(1) <= '\n')||(input.LA(1) >= '\f' && input.LA(1) <= '\r')||input.LA(1)==' ' ) {
-						input.consume();
-					}
-					else {
-						MismatchedSetException mse = new MismatchedSetException(null,input);
-						recover(mse);
-						throw mse;
-					}
-					}
-					break;
-
-				default :
-					if ( cnt7 >= 1 ) break loop7;
-					EarlyExitException eee = new EarlyExitException(7, input);
-					throw eee;
-				}
-				cnt7++;
-			}
-
-			 skip(); 
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "WHITESPACE"
-
-	// $ANTLR start "LINE_COMMENT"
-	public final void mLINE_COMMENT() throws RecognitionException {
-		try {
-			int _type = LINE_COMMENT;
-			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:64:14: ( '//' (~ ( '\\r' | '\\n' ) )* )
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:64:17: '//' (~ ( '\\r' | '\\n' ) )*
-			{
-			match("//"); 
-
-			// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:64:22: (~ ( '\\r' | '\\n' ) )*
-			loop8:
-			while (true) {
-				int alt8=2;
-				int LA8_0 = input.LA(1);
-				if ( ((LA8_0 >= '\u0000' && LA8_0 <= '\t')||(LA8_0 >= '\u000B' && LA8_0 <= '\f')||(LA8_0 >= '\u000E' && LA8_0 <= '\uFFFF')) ) {
-					alt8=1;
-				}
-
-				switch (alt8) {
-				case 1 :
-					// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:
-					{
-					if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '\t')||(input.LA(1) >= '\u000B' && input.LA(1) <= '\f')||(input.LA(1) >= '\u000E' && input.LA(1) <= '\uFFFF') ) {
-						input.consume();
-					}
-					else {
-						MismatchedSetException mse = new MismatchedSetException(null,input);
-						recover(mse);
-						throw mse;
-					}
-					}
-					break;
-
-				default :
-					break loop8;
-				}
-			}
-
-			 skip(); 
-			}
-
-			state.type = _type;
-			state.channel = _channel;
-		}
-		finally {
-			// do for sure before leaving
-		}
-	}
-	// $ANTLR end "LINE_COMMENT"
 
 	@Override
-	public void mTokens() throws RecognitionException {
-		// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:8: ( T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | IDENTIFIER | STRING | NUMBER | NULL | WHITESPACE | LINE_COMMENT )
-		int alt9=12;
-		switch ( input.LA(1) ) {
-		case '(':
-			{
-			alt9=1;
-			}
+	public String getGrammarFileName() { return "Database.g4"; }
+
+	@Override
+	public String[] getRuleNames() { return ruleNames; }
+
+	@Override
+	public String getSerializedATN() { return _serializedATN; }
+
+	@Override
+	public String[] getModeNames() { return modeNames; }
+
+	@Override
+	public ATN getATN() { return _ATN; }
+
+	@Override
+	public void action(RuleContext _localctx, int ruleIndex, int actionIndex) {
+		switch (ruleIndex) {
+		case 12:
+			WHITESPACE_action((RuleContext)_localctx, actionIndex);
 			break;
-		case ')':
-			{
-			alt9=2;
-			}
+		case 13:
+			LINE_COMMENT_action((RuleContext)_localctx, actionIndex);
 			break;
-		case ',':
-			{
-			alt9=3;
-			}
-			break;
-		case ':':
-			{
-			alt9=4;
-			}
-			break;
-		case 'I':
-			{
-			int LA9_5 = input.LA(2);
-			if ( (LA9_5=='N') ) {
-				int LA9_13 = input.LA(3);
-				if ( (LA9_13=='S') ) {
-					int LA9_15 = input.LA(4);
-					if ( (LA9_15=='T') ) {
-						int LA9_17 = input.LA(5);
-						if ( (LA9_17=='A') ) {
-							int LA9_19 = input.LA(6);
-							if ( (LA9_19=='N') ) {
-								int LA9_21 = input.LA(7);
-								if ( (LA9_21=='C') ) {
-									int LA9_23 = input.LA(8);
-									if ( (LA9_23=='E') ) {
-										int LA9_25 = input.LA(9);
-										if ( (LA9_25==':') ) {
-											alt9=5;
-										}
-
-										else {
-											alt9=7;
-										}
-
-									}
-
-									else {
-										alt9=7;
-									}
-
-								}
-
-								else {
-									alt9=7;
-								}
-
-							}
-
-							else {
-								alt9=7;
-							}
-
-						}
-
-						else {
-							alt9=7;
-						}
-
-					}
-
-					else {
-						alt9=7;
-					}
-
-				}
-
-				else {
-					alt9=7;
-				}
-
-			}
-
-			else {
-				alt9=7;
-			}
-
-			}
-			break;
-		case 'S':
-			{
-			int LA9_6 = input.LA(2);
-			if ( (LA9_6=='C') ) {
-				int LA9_14 = input.LA(3);
-				if ( (LA9_14=='H') ) {
-					int LA9_16 = input.LA(4);
-					if ( (LA9_16=='E') ) {
-						int LA9_18 = input.LA(5);
-						if ( (LA9_18=='M') ) {
-							int LA9_20 = input.LA(6);
-							if ( (LA9_20=='A') ) {
-								int LA9_22 = input.LA(7);
-								if ( (LA9_22==':') ) {
-									alt9=6;
-								}
-
-								else {
-									alt9=7;
-								}
-
-							}
-
-							else {
-								alt9=7;
-							}
-
-						}
-
-						else {
-							alt9=7;
-						}
-
-					}
-
-					else {
-						alt9=7;
-					}
-
-				}
-
-				else {
-					alt9=7;
-				}
-
-			}
-
-			else {
-				alt9=7;
-			}
-
-			}
-			break;
-		case 'A':
-		case 'B':
-		case 'C':
-		case 'D':
-		case 'E':
-		case 'F':
-		case 'G':
-		case 'H':
-		case 'J':
-		case 'K':
-		case 'L':
-		case 'M':
-		case 'N':
-		case 'O':
-		case 'P':
-		case 'Q':
-		case 'R':
-		case 'T':
-		case 'U':
-		case 'V':
-		case 'W':
-		case 'X':
-		case 'Y':
-		case 'Z':
-		case 'a':
-		case 'b':
-		case 'c':
-		case 'd':
-		case 'e':
-		case 'f':
-		case 'g':
-		case 'h':
-		case 'i':
-		case 'j':
-		case 'k':
-		case 'l':
-		case 'm':
-		case 'n':
-		case 'o':
-		case 'p':
-		case 'q':
-		case 'r':
-		case 's':
-		case 't':
-		case 'u':
-		case 'v':
-		case 'w':
-		case 'x':
-		case 'y':
-		case 'z':
-			{
-			alt9=7;
-			}
-			break;
-		case '\"':
-			{
-			alt9=8;
-			}
-			break;
-		case '-':
-		case '0':
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-		case '9':
-			{
-			alt9=9;
-			}
-			break;
-		case '#':
-			{
-			alt9=10;
-			}
-			break;
-		case '\t':
-		case '\n':
-		case '\f':
-		case '\r':
-		case ' ':
-			{
-			alt9=11;
-			}
-			break;
-		case '/':
-			{
-			alt9=12;
-			}
-			break;
-		default:
-			NoViableAltException nvae =
-				new NoViableAltException("", 9, 0, input);
-			throw nvae;
 		}
-		switch (alt9) {
-			case 1 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:10: T__12
-				{
-				mT__12(); 
-
-				}
-				break;
-			case 2 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:16: T__13
-				{
-				mT__13(); 
-
-				}
-				break;
-			case 3 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:22: T__14
-				{
-				mT__14(); 
-
-				}
-				break;
-			case 4 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:28: T__15
-				{
-				mT__15(); 
-
-				}
-				break;
-			case 5 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:34: T__16
-				{
-				mT__16(); 
-
-				}
-				break;
-			case 6 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:40: T__17
-				{
-				mT__17(); 
-
-				}
-				break;
-			case 7 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:46: IDENTIFIER
-				{
-				mIDENTIFIER(); 
-
-				}
-				break;
-			case 8 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:57: STRING
-				{
-				mSTRING(); 
-
-				}
-				break;
-			case 9 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:64: NUMBER
-				{
-				mNUMBER(); 
-
-				}
-				break;
-			case 10 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:71: NULL
-				{
-				mNULL(); 
-
-				}
-				break;
-			case 11 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:76: WHITESPACE
-				{
-				mWHITESPACE(); 
-
-				}
-				break;
-			case 12 :
-				// /Users/donatello/Projects/Llunatic/lunaticEngine/src/it/unibas/lunatic/parser/Database.g:1:87: LINE_COMMENT
-				{
-				mLINE_COMMENT(); 
-
-				}
-				break;
-
+	}
+	private void WHITESPACE_action(RuleContext _localctx, int actionIndex) {
+		switch (actionIndex) {
+		case 0:
+			 skip(); 
+			break;
+		}
+	}
+	private void LINE_COMMENT_action(RuleContext _localctx, int actionIndex) {
+		switch (actionIndex) {
+		case 1:
+			 skip(); 
+			break;
 		}
 	}
 
-
-
+	public static final String _serializedATN =
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\2\16y\b\1\4\2\t\2\4"+
+		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
+		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\3\2\3\2\3\2\3\2\3\2\3\2\3\2\3"+
+		"\2\3\3\3\3\3\4\3\4\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\7"+
+		"\3\7\3\b\3\b\3\b\3\b\7\b>\n\b\f\b\16\bA\13\b\3\t\3\t\3\t\3\t\6\tG\n\t"+
+		"\r\t\16\tH\3\t\3\t\3\n\5\nN\n\n\3\n\6\nQ\n\n\r\n\16\nR\3\n\3\n\6\nW\n"+
+		"\n\r\n\16\nX\5\n[\n\n\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\f\3\f\3\r\3"+
+		"\r\3\16\6\16i\n\16\r\16\16\16j\3\16\3\16\3\17\3\17\3\17\3\17\7\17s\n\17"+
+		"\f\17\16\17v\13\17\3\17\3\17\2\2\20\3\3\5\4\7\5\t\6\13\7\r\b\17\t\21\n"+
+		"\23\13\25\f\27\2\31\2\33\r\35\16\3\2\7\4\2/\60aa\5\2\"\"/\60BB\4\2C\\"+
+		"c|\5\2\13\f\16\17\"\"\4\2\f\f\17\17\u0082\2\3\3\2\2\2\2\5\3\2\2\2\2\7"+
+		"\3\2\2\2\2\t\3\2\2\2\2\13\3\2\2\2\2\r\3\2\2\2\2\17\3\2\2\2\2\21\3\2\2"+
+		"\2\2\23\3\2\2\2\2\25\3\2\2\2\2\33\3\2\2\2\2\35\3\2\2\2\3\37\3\2\2\2\5"+
+		"\'\3\2\2\2\7)\3\2\2\2\t+\3\2\2\2\13-\3\2\2\2\r\67\3\2\2\2\179\3\2\2\2"+
+		"\21B\3\2\2\2\23M\3\2\2\2\25\\\3\2\2\2\27c\3\2\2\2\31e\3\2\2\2\33h\3\2"+
+		"\2\2\35n\3\2\2\2\37 \7U\2\2 !\7E\2\2!\"\7J\2\2\"#\7G\2\2#$\7O\2\2$%\7"+
+		"C\2\2%&\7<\2\2&\4\3\2\2\2\'(\7*\2\2(\6\3\2\2\2)*\7.\2\2*\b\3\2\2\2+,\7"+
+		"+\2\2,\n\3\2\2\2-.\7K\2\2./\7P\2\2/\60\7U\2\2\60\61\7V\2\2\61\62\7C\2"+
+		"\2\62\63\7P\2\2\63\64\7E\2\2\64\65\7G\2\2\65\66\7<\2\2\66\f\3\2\2\2\67"+
+		"8\7<\2\28\16\3\2\2\29?\5\31\r\2:>\5\31\r\2;>\5\27\f\2<>\t\2\2\2=:\3\2"+
+		"\2\2=;\3\2\2\2=<\3\2\2\2>A\3\2\2\2?=\3\2\2\2?@\3\2\2\2@\20\3\2\2\2A?\3"+
+		"\2\2\2BF\7$\2\2CG\5\31\r\2DG\5\27\f\2EG\t\3\2\2FC\3\2\2\2FD\3\2\2\2FE"+
+		"\3\2\2\2GH\3\2\2\2HF\3\2\2\2HI\3\2\2\2IJ\3\2\2\2JK\7$\2\2K\22\3\2\2\2"+
+		"LN\7/\2\2ML\3\2\2\2MN\3\2\2\2NP\3\2\2\2OQ\5\27\f\2PO\3\2\2\2QR\3\2\2\2"+
+		"RP\3\2\2\2RS\3\2\2\2SZ\3\2\2\2TV\7\60\2\2UW\5\27\f\2VU\3\2\2\2WX\3\2\2"+
+		"\2XV\3\2\2\2XY\3\2\2\2Y[\3\2\2\2ZT\3\2\2\2Z[\3\2\2\2[\24\3\2\2\2\\]\7"+
+		"%\2\2]^\7P\2\2^_\7W\2\2_`\7N\2\2`a\7N\2\2ab\7%\2\2b\26\3\2\2\2cd\4\62"+
+		";\2d\30\3\2\2\2ef\t\4\2\2f\32\3\2\2\2gi\t\5\2\2hg\3\2\2\2ij\3\2\2\2jh"+
+		"\3\2\2\2jk\3\2\2\2kl\3\2\2\2lm\b\16\2\2m\34\3\2\2\2no\7\61\2\2op\7\61"+
+		"\2\2pt\3\2\2\2qs\n\6\2\2rq\3\2\2\2sv\3\2\2\2tr\3\2\2\2tu\3\2\2\2uw\3\2"+
+		"\2\2vt\3\2\2\2wx\b\17\3\2x\36\3\2\2\2\r\2=?FHMRXZjt\4\3\16\2\3\17\3";
+	public static final ATN _ATN =
+		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
+	static {
+		_decisionToDFA = new DFA[_ATN.getNumberOfDecisions()];
+		for (int i = 0; i < _ATN.getNumberOfDecisions(); i++) {
+			_decisionToDFA[i] = new DFA(_ATN.getDecisionState(i), i);
+		}
+	}
 }

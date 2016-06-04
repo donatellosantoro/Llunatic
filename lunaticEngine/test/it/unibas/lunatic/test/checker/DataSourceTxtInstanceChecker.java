@@ -1,18 +1,31 @@
 package it.unibas.lunatic.test.checker;
 
+import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.utility.LunaticUtility;
 import it.unibas.lunatic.test.UtilityTest;
 import java.util.*;
 import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
+import speedy.model.algebra.Distinct;
+import speedy.model.algebra.Project;
+import speedy.model.algebra.Scan;
 import speedy.model.algebra.operators.ITupleIterator;
+import speedy.model.database.Attribute;
+import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
 import speedy.model.database.IDatabase;
 import speedy.model.database.ITable;
 import speedy.model.database.IValue;
 import speedy.model.database.NullValue;
+import speedy.model.database.TableAlias;
 import speedy.model.database.Tuple;
+import speedy.model.database.mainmemory.MainMemoryDB;
+import speedy.model.database.mainmemory.MainMemoryVirtualDB;
+import speedy.model.database.operators.IRunQuery;
+import speedy.model.database.operators.dbms.SQLRunQuery;
+import speedy.model.database.operators.mainmemory.MainMemoryRunQuery;
 import speedy.utility.SpeedyUtility;
 
 public class DataSourceTxtInstanceChecker {
@@ -42,14 +55,46 @@ public class DataSourceTxtInstanceChecker {
         }
         TestCase.assertNotNull("Unable to find expected tuples for set: " + tableName + " in " + expectedInstanceFile, expectedTuples);
         List<IExpectedTuple> expectedTuplesClone = new ArrayList<IExpectedTuple>(expectedTuples);
-        ITupleIterator it = table.getTupleIterator();
+//        ITupleIterator it = table.getTupleIterator();
+        ITupleIterator it = getDistinctFromTable(table, database);
         while (it.hasNext()) {
             Tuple instanceTuple = it.next();
             boolean result = checkTupleValues(instanceTuple, expectedTuplesClone);
             TestCase.assertTrue("Extra tuples were generated: " + instanceTuple.toString() + getMessage(expectedInstanceFile, instanceMap, database), result);
         }
         it.close();
-        TestCase.assertEquals("Unable to find tuples: " + expectedTuplesClone + getMessage(expectedInstanceFile, instanceMap, database) , 0, expectedTuplesClone.size());
+        TestCase.assertEquals("Unable to find tuples: " + expectedTuplesClone + getMessage(expectedInstanceFile, instanceMap, database), 0, expectedTuplesClone.size());
+    }
+
+    private ITupleIterator getDistinctFromTable(ITable table, IDatabase database) {
+        Project project = new Project(SpeedyUtility.createProjectionAttributes(buildAttributes(table.getAttributes())));
+        project.addChild(new Scan(new TableAlias(table.getName())));
+        Distinct distinct = new Distinct();
+        distinct.addChild(project);
+        IRunQuery queryRunner;
+        if (database instanceof MainMemoryDB || database instanceof MainMemoryVirtualDB) {
+            queryRunner = new MainMemoryRunQuery();
+        } else {
+            queryRunner = new SQLRunQuery();
+        }
+        return queryRunner.run(distinct, null, database);
+    }
+
+    private List<AttributeRef> buildAttributes(List<Attribute> attributes) {
+        List<AttributeRef> result = new ArrayList<AttributeRef>();
+        for (Attribute attribute : attributes) {
+            if (excludeAttribute(attribute.getName())) {
+                continue;
+            }
+            result.add(new AttributeRef(attribute.getTableName(), attribute.getName()));
+        }
+        return result;
+    }
+
+    private boolean excludeAttribute(String attribute) {
+        return SpeedyConstants.OID.equals(attribute) || SpeedyConstants.TID.equals(attribute);
+//        return false;
+//        return SpeedyConstants.OID.equals(attribute) || SpeedyConstants.TID.equals(attribute) || attribute.endsWith("_" + SpeedyConstants.OID);
     }
 
     private String getMessage(String expectedInstanceFile, Map<String, List<IExpectedTuple>> instanceMap, IDatabase database) {

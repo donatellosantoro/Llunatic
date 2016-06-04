@@ -7,9 +7,13 @@ import it.unibas.lunatic.parser.ParserOutput;
 import it.unibas.lunatic.parser.output.DependenciesLexer;
 import it.unibas.lunatic.parser.output.DependenciesParser;
 import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
+import java.io.ByteArrayInputStream;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BailErrorStrategy;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.DefaultErrorStrategy;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.atn.PredictionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,15 +33,25 @@ public class ParseDependencies {
     public void generateDependencies(String text, Scenario scenario) throws Exception {
         try {
             this.scenario = scenario;
-            DependenciesLexer lex = new DependenciesLexer(new ANTLRStringStream(text));
+            DependenciesLexer lex = new DependenciesLexer(new ANTLRInputStream(new ByteArrayInputStream(text.getBytes())));
             CommonTokenStream tokens = new CommonTokenStream(lex);
             DependenciesParser g = new DependenciesParser(tokens);
+            g.getInterpreter().setPredictionMode(PredictionMode.SLL);
+            g.setErrorHandler(new BailErrorStrategy());
+            g.setGenerator(this);
             try {
-                g.setGenerator(this);
-                g.prog();
-            } catch (RecognitionException ex) {
-                logger.error("Unable to load mapping task: " + ex.getMessage());
-                throw new ParserException(ex);
+                g.prog();  // STAGE 1
+            } catch (Exception e) {
+                tokens.reset(); // rewind input stream
+                g.reset();
+                g.getInterpreter().setPredictionMode(PredictionMode.LL);
+                g.setErrorHandler(new DefaultErrorStrategy());
+                try {
+                    g.prog();  // STAGE 2
+                } catch (RecognitionException ex) {
+                    logger.error("Unable to load mapping task: " + ex.getMessage());
+                    throw new ParserException(ex);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -15,6 +15,7 @@ public class TestChaseUnfolded extends CheckTest {
 
     public void testEmployees() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.unfolding_employees);
+        scenario.getConfiguration().setOptimizeSTTGDs(false);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
 //        checkExpectedInstances(result, scenario);

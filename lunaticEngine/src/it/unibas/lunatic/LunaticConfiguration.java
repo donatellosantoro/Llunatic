@@ -6,6 +6,7 @@ public class LunaticConfiguration {
     private static boolean printSteps = false;
     private static boolean printResults = false;
     private boolean debugMode = false;
+    private boolean printQueryResultsOnly = false;
     private boolean recreateDBOnStart = false;
     private boolean cleanSchemasOnStartForDEScenarios = true;
     private Integer iterationLimit = null;
@@ -91,6 +92,14 @@ public class LunaticConfiguration {
 
     public void setRemoveDuplicates(boolean removeDuplicates) {
         this.removeDuplicates = removeDuplicates;
+    }
+
+    public boolean isPrintQueryResultsOnly() {
+        return printQueryResultsOnly;
+    }
+
+    public void setPrintQueryResultsOnly(boolean printQueryResultsOnly) {
+        this.printQueryResultsOnly = printQueryResultsOnly;
     }
 
     public Integer getIterationLimit() {

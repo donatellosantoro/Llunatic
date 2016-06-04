@@ -1,5 +1,7 @@
-package it.unibas.lunatic;
+package it.unibas.lunatic.run;
 
+import it.unibas.lunatic.LunaticConfiguration;
+import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;

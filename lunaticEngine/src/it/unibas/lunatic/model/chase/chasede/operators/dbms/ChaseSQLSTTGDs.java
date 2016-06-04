@@ -58,7 +58,7 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
         if (cleanTarget) {
             result.append(cleanTargetScript(scenario));
         }
-        result.append(targetInsertQuery.generateScript(scenario, dependenciesToMaterialize));
+        result.append(targetInsertQuery.generateScript(scenario.getSTTgds(), dependenciesToMaterialize, scenario));
         result.append("\nCOMMIT;\n");
         result.append("--DROP SCHEMA ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(" CASCADE;\n");
         if (logger.isDebugEnabled()) logger.debug("----Script for STTGDs: " + result);
@@ -74,7 +74,7 @@ public class ChaseSQLSTTGDs implements IChaseSTTGDs {
         } catch (DBMSException ex) {
             if (ex.getMessage().contains("ERROR: function bigint_skolem(text) does not exist")
                     || ex.getMessage().contains("ERROR: function double_skolem(text) does not exist")) {
-                logger.warn("Some functions are missing in the current C3p0 thread. Retrying...");
+                if (logger.isDebugEnabled()) logger.debug("Some functions are missing in the current C3p0 thread. Retrying...");
                 executeScript(script, accessConfiguration);
                 return;
             }

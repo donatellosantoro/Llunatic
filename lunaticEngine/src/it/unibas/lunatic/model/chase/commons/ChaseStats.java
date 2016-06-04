@@ -33,6 +33,8 @@ public class ChaseStats {
     public static final String DTGD_TIME = "Denial TGD Time";
     public static final String DELTA_DB_BUILDER = "Building Delta DB";
     public static final String STEP_DB_BUILDER = "Building DB for Chase Step";
+    public static final String DROP_EXISTING_DB = "Removing existing db";
+    public static final String CLEAN_EXISTING_DB = "Cleaning existing db";
     public static final String ANALYZE_DB = "Analyze Database Time";
     public static final String REMOVE_DUPLICATE_TIME = "Removing Duplicate Time";
     public static final String DUPLICATE_TIME = "Finding Duplicate Time";

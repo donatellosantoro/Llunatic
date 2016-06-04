@@ -7,17 +7,27 @@ import it.unibas.lunatic.parser.ParserOutput;
 import it.unibas.lunatic.parser.output.DependenciesCFLexer;
 import it.unibas.lunatic.parser.output.DependenciesCFParser;
 import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
+import java.util.Map;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BailErrorStrategy;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.DefaultErrorStrategy;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.atn.PredictionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
 import speedy.model.database.Attribute;
 import speedy.model.database.IDatabase;
 import speedy.model.database.ITable;
+import speedy.model.thread.IBackgroundThread;
+import speedy.model.thread.ThreadManager;
 import speedy.utility.DBMSUtility;
 
 @SuppressWarnings("unchecked")
@@ -28,6 +38,7 @@ public class ParseDependenciesCF {
 
     private final ParserOutput parserOutput = new ParserOutput();
     private Scenario scenario;
+    private Map<TableAndPosition, String> attributeNames = Collections.synchronizedMap(new HashMap<TableAndPosition, String>());
 
     public ParserOutput getParserOutput() {
         return parserOutput;
@@ -36,15 +47,26 @@ public class ParseDependenciesCF {
     public void generateDependencies(String text, Scenario scenario) throws Exception {
         try {
             this.scenario = scenario;
-            DependenciesCFLexer lex = new DependenciesCFLexer(new ANTLRStringStream(text));
+            initAttributeNames();
+            DependenciesCFLexer lex = new DependenciesCFLexer(new ANTLRInputStream(new ByteArrayInputStream(text.getBytes())));
             CommonTokenStream tokens = new CommonTokenStream(lex);
             DependenciesCFParser g = new DependenciesCFParser(tokens);
+            g.getInterpreter().setPredictionMode(PredictionMode.SLL);
+            g.setErrorHandler(new BailErrorStrategy());
+            g.setGenerator(this);
             try {
-                g.setGenerator(this);
-                g.prog();
-            } catch (RecognitionException ex) {
-                logger.error("Unable to load mapping task: " + ex.getMessage());
-                throw new ParserException(ex);
+                g.prog();  // STAGE 1
+            } catch (Exception e) {
+                tokens.reset(); // rewind input stream
+                g.reset();
+                g.getInterpreter().setPredictionMode(PredictionMode.LL);
+                g.setErrorHandler(new DefaultErrorStrategy());
+                try {
+                    g.prog();  // STAGE 2
+                } catch (RecognitionException ex) {
+                    logger.error("Unable to load mapping task: " + ex.getMessage());
+                    throw new ParserException(ex);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,14 +75,51 @@ public class ParseDependenciesCF {
         }
     }
 
-    public String findAttributeName(String tableName, int attributePosition, boolean inPremise, boolean stTGD) {
-        IDatabase database = scenario.getTarget();
-        if (inPremise && stTGD) {
-            database = scenario.getSource();
+    private void initAttributeNames() {
+        long start = new Date().getTime();
+        initAttributeNamesForDatabase(scenario.getSource(), true);
+        initAttributeNamesForDatabase(scenario.getTarget(), false);
+        long end = new Date().getTime();
+        if (logger.isDebugEnabled()) logger.debug("Time to load attribute names " + (end - start) + " ms");
+    }
+
+    private void initAttributeNamesForDatabase(IDatabase database, boolean source) {
+        ThreadManager threadManager = new ThreadManager(scenario.getConfiguration().getMaxNumberOfThreads());
+        for (String tableName : database.getTableNames()) {
+            InitTableSchemaThread execThread = new InitTableSchemaThread(database, tableName, source);
+            threadManager.startThread(execThread);
         }
-        ITable table = database.getTable(tableName);
-        List<Attribute> tableAttributes = getAttributesWithNoOIDs(table.getAttributes());
-        return tableAttributes.get(attributePosition).getName();
+        threadManager.waitForActiveThread();
+    }
+
+    class InitTableSchemaThread implements IBackgroundThread {
+
+        private IDatabase database;
+        private String tableName;
+        private boolean source;
+
+        public InitTableSchemaThread(IDatabase database, String tableName, boolean source) {
+            this.database = database;
+            this.tableName = tableName;
+            this.source = source;
+        }
+
+        public void execute() {
+            ITable table = database.getTable(tableName);
+            List<Attribute> tableAttributes = getAttributesWithNoOIDs(table.getAttributes());
+            for (int i = 0; i < tableAttributes.size(); i++) {
+                Attribute attribute = tableAttributes.get(i);
+                TableAndPosition tableAndPosition = new TableAndPosition(tableName, source, i);
+                attributeNames.put(tableAndPosition, attribute.getName());
+            }
+        }
+
+    }
+
+    public String findAttributeName(String tableName, int attributePosition, boolean inPremise, boolean stTGD) {
+        boolean source = (inPremise && stTGD);
+        TableAndPosition tableAndPosition = new TableAndPosition(tableName, source, attributePosition);
+        return this.attributeNames.get(tableAndPosition);
     }
 
     private List<Attribute> getAttributesWithNoOIDs(List<Attribute> attributes) {
@@ -121,13 +180,45 @@ public class ParseDependenciesCF {
         return DBMSUtility.cleanTableName(tableName);
     }
 
-    public String convertSymbol(String symbol) {
-        if (scenario.getValueEncoder() == null) {
-            return "\"" + symbol + "\"";
+    public String convertValue(String value) {
+        if (value.startsWith("\"") && value.endsWith("\"")) {
+            value = value.substring(1, value.length() - 1);
         }
-        String encodedSymbol = scenario.getValueEncoder().encode(symbol);
-        if (logger.isDebugEnabled()) logger.debug("Encoding symbol: " + symbol + " in " + encodedSymbol);
+        if (scenario.getValueEncoder() == null) {
+            return "\"" + value + "\"";
+        }
+        String encodedSymbol = scenario.getValueEncoder().encode(value);
+        if (logger.isDebugEnabled()) logger.debug("Encoding symbol: " + value + " in " + encodedSymbol);
         return encodedSymbol;
+    }
+
+    class TableAndPosition {
+
+        private String tableName;
+        private boolean source;
+        private int position;
+
+        public TableAndPosition(String tableName, boolean source, int position) {
+            this.tableName = tableName;
+            this.source = source;
+            this.position = position;
+        }
+
+        @Override
+        public int hashCode() {
+            return toString().hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return this.toString().equals(obj.toString());
+        }
+
+        @Override
+        public String toString() {
+            return tableName + "-" + (source ? "S" : "T") + "-" + position;
+        }
+
     }
 
 }

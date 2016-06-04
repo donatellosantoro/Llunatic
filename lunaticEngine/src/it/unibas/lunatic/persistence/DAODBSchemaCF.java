@@ -12,7 +12,6 @@ import java.util.Map;
 import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import speedy.SpeedyConstants;
 import speedy.model.database.Attribute;
 import speedy.utility.DBMSUtility;
 import speedy.utility.SpeedyUtility;
