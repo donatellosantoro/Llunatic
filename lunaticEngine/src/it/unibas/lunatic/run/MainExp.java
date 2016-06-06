@@ -78,9 +78,9 @@ public class MainExp {
         if (logger.isDebugEnabled()) logger.debug("Classpath: " + classpath);
         long memorySize = ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize();
         int mbRam = (int) (memorySize / 1024 / 1024);
-        System.out.println("Total RAM: " + mbRam + "mb");
+        if (logger.isDebugEnabled()) logger.debug("Total RAM: " + mbRam + "mb");
         int vbRam = (int) (mbRam * 0.85);
-        System.out.println("VM RAM: " + vbRam + "mb");
+        if (logger.isDebugEnabled()) logger.debug("VM RAM: " + vbRam + "mb");
         String className = klass.getCanonicalName();
         String vmRamParams = "-Xmx" + vbRam + "m";
         String extraParams = "-Djava.util.logging.config.class=it.unibas.lunatic.utility.JavaUtilLoggingConfig";

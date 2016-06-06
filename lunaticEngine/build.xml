@@ -13,40 +13,43 @@
         <property name="build.sysclasspath" value="ignore" />
         <path id="compile.classpath">
             <pathelement location="${build.dir}" />
-            <pathelement location="${lib.dir}/speedy-${speedy.ver}.jar" />
-            <pathelement location="${lib.dir}/slf4j-api-${slf4j.ver}.jar" />
-            <pathelement location="${lib.dir}/logback-core-${logback.ver}.jar" />
-            <pathelement location="${lib.dir}/logback-classic-${logback.ver}.jar" />
-            <pathelement location="${lib.dir}/postgresql-9.1-903.jdbc3.jar" />
-            <pathelement location="${lib.dir}/jdom.jar" />
-            <pathelement location="${lib.dir}/xerces-2.8.0.jar" />
-            <pathelement location="${lib.dir}/antlr-runtime-${antlr.ver}.jar" />    
-            <pathelement location="${lib.dir}/antlr-3.1.1-runtime.jar" /> <!--spicy dependency-->                
-            <pathelement location="${lib.dir}/mybatis-3.1.1.jar" />
-            <pathelement location="${lib.dir}/jep-${jep.ver}.jar" />    
-            <pathelement location="${lib.dir}/js.jar" />  
-            <pathelement location="${lib.dir}/js-engine.jar" />  
-            <pathelement location="${lib.dir}/simmetrics-1.6.2.jar" />  
-            <pathelement location="${lib.dir}/jgrapht-core-${jgrapht-core.ver}.jar" />  
-            <!--<pathelement location="${lib.dir}/jgraph-${jgraph.ver}.jar" />-->  
-            <pathelement location="${lib.dir}/c3p0-${c3p0.ver}.jar" />  
-            <pathelement location="${lib.dir}/mchange-commons-java-${mchange.ver}.jar" />  
-            <pathelement location="${lib.dir}/commons-io-2.4.jar" />  
-            <pathelement location="${lib.dir}/spicyBenchmark-0.1.jar" />  
-            <pathelement location="${lib.dir}/spicyEngine-1.0.jar" />  
-            <pathelement location="${lib.dir}/commons-jcs-core-${commons-jcs.ver}.jar" />  
-            <pathelement location="${lib.dir}/concurrent.jar" />  
-            <pathelement location="${lib.dir}/commons-logging-${commons-logging.ver}.jar" />
-            <pathelement location="${lib.dir}/commons-lang-${commons-lang.ver}.jar" />
-            <pathelement location="${lib.dir}/jackson-dataformat-csv-${jackson.ver}.jar" />
-            <pathelement location="${lib.dir}/jackson-databind-${jackson.ver}.jar" />
-            <pathelement location="${lib.dir}/jackson-core-${jackson.ver}.jar" />
-            <pathelement location="${lib.dir}/jackson-annotations-${jackson.ver}.jar" />
+            <fileset refid="compile.jar.fileset"/>
         </path>
+        <fileset id="compile.jar.fileset" dir="${lib.dir}">        
+            <include name="speedy-${speedy.ver}.jar" />
+            <include name="slf4j-api-${slf4j.ver}.jar" />
+            <include name="logback-core-${logback.ver}.jar" />
+            <include name="logback-classic-${logback.ver}.jar" />
+            <include name="postgresql-9.1-903.jdbc3.jar" />
+            <include name="jdom.jar" />
+            <include name="xerces-2.8.0.jar" />
+            <include name="antlr-runtime-${antlr.ver}.jar" />    
+            <include name="antlr-3.1.1-runtime.jar" /> <!--spicy dependency-->                
+            <include name="mybatis-3.1.1.jar" />
+            <include name="jep-${jep.ver}.jar" />    
+            <include name="js.jar" />  
+            <include name="js-engine.jar" />  
+            <include name="simmetrics-1.6.2.jar" />  
+            <include name="jgrapht-core-${jgrapht-core.ver}.jar" />  
+            <!--<include name="jgraph-${jgraph.ver}.jar" />-->  
+            <include name="c3p0-${c3p0.ver}.jar" />  
+            <include name="mchange-commons-java-${mchange.ver}.jar" />  
+            <include name="commons-io-2.4.jar" />  
+            <include name="spicyEngine-1.0.jar" />  
+            <include name="commons-jcs-core-${commons-jcs.ver}.jar" />  
+            <include name="concurrent.jar" />  
+            <include name="commons-logging-${commons-logging.ver}.jar" />
+            <include name="commons-lang-${commons-lang.ver}.jar" />
+            <include name="jackson-dataformat-csv-${jackson.ver}.jar" />
+            <include name="jackson-databind-${jackson.ver}.jar" />
+            <include name="jackson-core-${jackson.ver}.jar" />
+            <include name="jackson-annotations-${jackson.ver}.jar" />
+        </fileset>
         <path id="test.classpath">
             <path refid="compile.classpath" />
             <pathelement location="${test.build.dir}" />
             <pathelement location="${lib.dir}/junit.jar" />
+            <pathelement location="${lib.dir}/spicyBenchmark-0.1.jar" />  
             <pathelement location="${lib.dir}/jgrapht-ext-${jgrapht-core.ver}.jar" />
             <pathelement location="${lib.dir}/jgraphx-2.0.0.1.jar" />
         </path>
@@ -83,6 +86,33 @@
             <attribute name="Main-Class" value="${main.class}" />
             <attribute name="Class-Path" value="${run.jar.classpath.manifest}" />
         </manifest>
+    </target>
+       
+    <target name="run-exp" depends="compile" description="esegue l'applicazione">
+        <java classname="${main-exp.class}" fork="yes" maxmemory="${run.maxmemory}">
+            <classpath refid="compile.classpath" />
+            <jvmarg value="-Djava.util.logging.config.class=it.unibas.lunatic.utility.JavaUtilLoggingConfig"/>
+            <arg value="${arg0}"/>
+        </java>
+    </target>
+    
+    <target name="dist-onejar" depends="-clean-dist-dir, rebuild, -init-version, jar" description="crea lo zip distribuibile">
+        <jar destfile="${dist.dir}/${ant.project.name}-${major.version}.${minor.version}-complete.jar" filesetmanifest="skip">
+            <zipgroupfileset dir="dist" includes="${ant.project.name}-${major.version}.${minor.version}.jar"/>
+            <zipgroupfileset refid="compile.jar.fileset"/>
+            <fileset dir="${build.dir}">
+                <include name="**/conf/**" />
+                <include name="logback.xml" />
+            </fileset>
+            <manifest>
+                <attribute name="Main-Class" value="${main-exp.class}"/>
+                <attribute name="Class-Path" value="${mf.classpath}"/>
+                <attribute name="Built-by" value="${user.name}" />
+                <attribute name="Implementation-Version" value="${major.version}.${minor.version}-build${build.number}" />
+            </manifest>
+        </jar>
+        <delete file="${dist.dir}/${ant.project.name}-${major.version}.${minor.version}.jar"/>
+        <delete file="${dist.dir}/MANIFEST.MF"/>
     </target>
     
     <target name="test" depends="-prepare-test, build" description="esegue i test">

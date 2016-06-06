@@ -213,14 +213,6 @@
             <arg value="${arg0}"/>
         </java>
     </target> 
-       
-    <target name="run-exp" depends="compile" description="esegue l'applicazione">
-        <java classname="${main-exp.class}" fork="yes" maxmemory="${run.maxmemory}">
-            <classpath refid="compile.classpath" />
-            <jvmarg value="-Djava.util.logging.config.class=it.unibas.lunatic.utility.JavaUtilLoggingConfig"/>
-            <arg value="${arg0}"/>
-        </java>
-    </target>
     
     <!-- ***************************************************
               Distribuzione
@@ -316,7 +308,7 @@
             <!-- jar -->
             <zipfileset dir="${dist.dir}" prefix="${ant.project.name}-java" includes="*.jar" />
             <!-- jar -->
-            <zipfileset dir="${lib.dir}" prefix="${ant.project.name}-java/lib" includes="co.jar" />
+            <zipfileset refid="compile.jar.fileset" prefix="${ant.project.name}-java/lib" />
             <!-- sorgenti -->
             <zipfileset dir="${src.dir}" prefix="${ant.project.name}-java/src" />
             <!-- test -->
