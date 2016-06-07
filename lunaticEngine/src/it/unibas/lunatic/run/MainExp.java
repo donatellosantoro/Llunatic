@@ -34,27 +34,20 @@ public class MainExp {
         String fileScenario = confFile.getAbsolutePath();
         try {
             //LOAD
-            boolean errorsInLoad = false;
             long startLoad = new Date().getTime();
-            if (!chaseOnly) {
-                errorsInLoad = exec(MainExpImport.class, fileScenario);
-            }
+            boolean errorsInLoad = exec(MainExpImport.class, fileScenario, chaseOnly);
             long endLoad = new Date().getTime();
             long loadTime = endLoad - startLoad;
             PrintUtility.printMessage("PreProcessing time: " + loadTime + " ms");
             //RUN
-            boolean errorsInRun = false;
             long startRun = new Date().getTime();
-            errorsInRun = exec(MainExpRun.class, fileScenario);
+            boolean errorsInRun = exec(MainExpRun.class, fileScenario, false);
             long endRun = new Date().getTime();
             long runTime = endRun - startRun;
             PrintUtility.printMessage("Chase and Query time: " + runTime + " ms");
             //EXPORT
-            boolean errorsInExport = false;
             long startExport = new Date().getTime();
-            if (!chaseOnly) {
-                errorsInExport = exec(MainExpExport.class, fileScenario);
-            }
+            boolean errorsInExport = exec(MainExpExport.class, fileScenario, false);
             long endExport = new Date().getTime();
             long exportTime = endExport - startExport;
             PrintUtility.printMessage("PostProcessing time: " + exportTime + " ms");
@@ -70,7 +63,7 @@ public class MainExp {
         }
     }
 
-    public static boolean exec(Class klass, String fileScenario) throws Exception {
+    public static boolean exec(Class klass, String fileScenario, boolean chaseOnly) throws Exception {
         String javaHome = System.getProperty("java.home");
         String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         if (logger.isDebugEnabled()) logger.debug("VM: " + javaBin);
@@ -84,12 +77,27 @@ public class MainExp {
         String className = klass.getCanonicalName();
         String vmRamParams = "-Xmx" + vbRam + "m";
         String extraParams = "-Djava.util.logging.config.class=it.unibas.lunatic.utility.JavaUtilLoggingConfig";
-        ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpath, vmRamParams, extraParams, className, fileScenario);
+        List<String> commands = new ArrayList<String>();
+        commands.add(javaBin);
+        commands.add("-cp");
+        commands.add(classpath);
+        commands.add(vmRamParams);
+        commands.add(extraParams);
+        commands.add(className);
+        commands.add(fileScenario);
+        if (chaseOnly) {
+            commands.add("-chaseonly");
+        }
+        ProcessBuilder builder = new ProcessBuilder(commands);
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
         builder.redirectError(ProcessBuilder.Redirect.INHERIT);
         Process process = builder.start();
         process.waitFor();
         int exitValue = process.exitValue();
         return (exitValue != 0); //Return true if errors
+    }
+
+    private static void dropDatabase(String fileScenario) {
+        throw new UnsupportedOperationException("Not supported yet."); //TODO Implement method
     }
 }

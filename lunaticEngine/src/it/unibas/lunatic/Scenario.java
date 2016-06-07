@@ -10,7 +10,6 @@ import it.unibas.lunatic.model.chase.chasemc.usermanager.StandardUserManager;
 import it.unibas.lunatic.model.dependency.AttributesInSameCellGroups;
 import it.unibas.lunatic.model.dependency.DED;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
-import it.unibas.lunatic.model.dependency.FunctionalDependency;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.List;

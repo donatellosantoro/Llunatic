@@ -43,6 +43,9 @@ public class DAOMCScenarioStandard {
             if (configuration.isUseDictionaryEncoding()) {
                 if (config.isImportData()) {
                     scenario.setValueEncoder(new DictionaryEncoder(DAOUtility.extractScenarioName(fileScenario)));
+                    if(config.isRemoveExistingDictionary()){
+                        scenario.getValueEncoder().removeExistingEncoding();
+                    }
                     scenario.getValueEncoder().prepareForEncoding();
                 } else {
                     scenario.setValueEncoder(new DummyEncoder());

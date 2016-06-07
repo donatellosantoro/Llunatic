@@ -7,6 +7,7 @@ public class DAOConfiguration {
     private boolean processDependencies = true;
     private boolean exportRewrittenDependencies = false;
     private boolean useRewrittenDependencies = false;
+    private boolean removeExistingDictionary = false;
 
     public String getSuffix() {
         return suffix;
@@ -47,5 +48,15 @@ public class DAOConfiguration {
     public void setUseRewrittenDependencies(boolean useRewrittenDependencies) {
         this.useRewrittenDependencies = useRewrittenDependencies;
     }
+
+    public boolean isRemoveExistingDictionary() {
+        return removeExistingDictionary;
+    }
+
+    public void setRemoveExistingDictionary(boolean removeExistingDictionary) {
+        this.removeExistingDictionary = removeExistingDictionary;
+    }
+    
+    
 
 }

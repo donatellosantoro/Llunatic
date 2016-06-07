@@ -9,7 +9,10 @@ import it.unibas.lunatic.persistence.DAOLunaticConfiguration;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import static it.unibas.lunatic.run.Main.isDEScenario;
 import static it.unibas.lunatic.run.Main.removeExistingDB;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.utility.DBMSUtility;
 
@@ -20,13 +23,25 @@ public class MainExpImport {
     private final static DAOAccessConfiguration daoAccessConfiguration = new DAOAccessConfiguration();
 
     public static void main(String[] args) {
-        String fileScenario = args[0];
+        List<String> options = new ArrayList<String>(Arrays.asList(args));
+        boolean chaseOnly = false;
+        if (options.contains("-chaseonly")) {
+            options.remove("-chaseonly");
+            chaseOnly = true;
+        }
+        String fileScenario = options.get(0);
         LunaticConfiguration conf = daoConfiguration.loadConfiguration(fileScenario);
+        if (chaseOnly) {
+            conf.setRecreateDBOnStart(false);
+            conf.setCleanSchemasOnStartForDEScenarios(true);
+        }
+        DAOConfiguration daoConfig = new DAOConfiguration();
         if (conf.isRecreateDBOnStart()) {
             long start = new Date().getTime();
             removeExistingDB(fileScenario, conf);
             long end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.DROP_EXISTING_DB, (end - start));
+            daoConfig.setRemoveExistingDictionary(true);
         } else if (isDEScenario(fileScenario) && conf.isCleanSchemasOnStartForDEScenarios()) {
             long start = new Date().getTime();
             AccessConfiguration accessConfiguration = daoAccessConfiguration.loadTargetAccessConfiguration(fileScenario, conf);
@@ -35,7 +50,6 @@ public class MainExpImport {
             ChaseStats.getInstance().addStat(ChaseStats.CLEAN_EXISTING_DB, (end - start));
         }
         System.out.println("*** Loading scenario " + fileScenario + "... ");
-        DAOConfiguration daoConfig = new DAOConfiguration();
         daoConfig.setImportData(true);
         daoConfig.setProcessDependencies(false);
         daoConfig.setExportRewrittenDependencies(true);

@@ -46,6 +46,10 @@ public class JSCDictionaryEncoder implements IValueEncoder {
         return decodedValue;
     }
 
+    public void removeExistingEncoding() {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
     private String decodeValueUsingCache(String encoded) {
         Long encodedValue;
         try {

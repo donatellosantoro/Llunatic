@@ -77,6 +77,7 @@ public class ChaseDEScenario implements IDEChaser {
         try {
             dependencyAnalyzer.analyzeDependencies(scenario);
             if (scenario.getConfiguration().isPrintStatsOnly()) {
+                System.out.println(ChaseStats.getInstance().toString());
                 return scenario.getTarget();
             }
             stChaser.doChase(scenario, false);

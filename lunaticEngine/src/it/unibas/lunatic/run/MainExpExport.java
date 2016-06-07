@@ -28,6 +28,9 @@ public class MainExpExport {
         if (!configuration.isExportSolutions()) {
             return;
         }
+        if (!configuration.isPrintStatsOnly()) {
+            return;
+        }
         Element targetElement = rootElement.getChild("target");
         IValueEncoder valueEncoder = getValueEncoder(configuration, fileScenario);
         IDatabase targetDB = daoDatabaseConfiguration.loadDatabase(targetElement, "", fileScenario, valueEncoder);

@@ -29,4 +29,7 @@ public class DummyEncoder implements IValueEncoder {
     public void waitingForEnding() {
     }
 
+    public void removeExistingEncoding() {
+    }
+
 }

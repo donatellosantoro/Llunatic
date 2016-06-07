@@ -7,7 +7,7 @@ public class LunaticConfiguration {
     private static boolean printResults = false;
     private boolean debugMode = false;
     private boolean printQueryResultsOnly = false;
-    private boolean recreateDBOnStart = false;
+    private boolean recreateDBOnStart = true;
     private boolean cleanSchemasOnStartForDEScenarios = true;
     private Integer iterationLimit = null;
     private boolean useLimit1ForEGDs = false;
@@ -29,7 +29,7 @@ public class LunaticConfiguration {
     private double numberCellsWeightForRanking = 0.7;
     private boolean useUnloggedWorkTables = true;
     private boolean useHashForSkolem = true;
-    private boolean useDictionaryEncoding = false;
+    private boolean useDictionaryEncoding = true;
     private boolean useBatchInsert = true;
     private boolean exportSolutions = false;
     private String exportSolutionsPath;

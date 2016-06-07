@@ -108,6 +108,13 @@ public class DictionaryEncoder implements IValueEncoder {
         encodingMap = null;
     }
 
+    public void removeExistingEncoding() {
+        File mapFile = new File(getFileForEncoding());
+        if(mapFile.exists()){
+            mapFile.delete();
+        }
+    }
+
     private void loadEncodingMap() {
         File mapFile = new File(getFileForEncoding());
         if (!mapFile.canRead()) {
