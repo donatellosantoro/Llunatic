@@ -35,7 +35,7 @@ public class CheckWeaklyAcyclicityInTGDs {
             AttributeRef nodej = cycle.get(i + 1);
             ExtendedEdge edge = dependencyGraph.getEdge(nodei, nodej);
             if (edge.isSpecial()) {
-                throw new ChaseException("TGDs are not weacky acyclic. Termination is not guarantee");
+                throw new ChaseException("TGDs are not weakly acyclic. Termination is not guarantee");
             }
         }
     }
