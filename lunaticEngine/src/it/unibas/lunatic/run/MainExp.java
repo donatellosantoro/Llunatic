@@ -38,24 +38,24 @@ public class MainExp {
             boolean errorsInLoad = exec(MainExpImport.class, fileScenario, chaseOnly);
             long endLoad = new Date().getTime();
             long loadTime = endLoad - startLoad;
-            PrintUtility.printMessage("PreProcessing time: " + loadTime + " ms");
+            PrintUtility.printMessage("Import time: " + loadTime + " ms");
             //RUN
             long startRun = new Date().getTime();
             boolean errorsInRun = exec(MainExpRun.class, fileScenario, false);
             long endRun = new Date().getTime();
             long runTime = endRun - startRun;
-            PrintUtility.printMessage("Chase and Query time: " + runTime + " ms");
+            PrintUtility.printMessage("Chase time: " + runTime + " ms");
             //EXPORT
             long startExport = new Date().getTime();
             boolean errorsInExport = exec(MainExpExport.class, fileScenario, false);
             long endExport = new Date().getTime();
             long exportTime = endExport - startExport;
-            PrintUtility.printMessage("PostProcessing time: " + exportTime + " ms");
+            PrintUtility.printMessage("Export and Query time: " + exportTime + " ms");
             //Results
             PrintUtility.printInformation("------------------------------------------");
-            PrintUtility.printInformation("*** PreProcessing time:   " + (errorsInLoad ? "ERRORS" : loadTime + " ms"));
-            PrintUtility.printInformation("*** Chase and Query time: " + (errorsInRun ? "ERRORS" : runTime + " ms"));
-            PrintUtility.printInformation("*** PostProcessing time:  " + (errorsInExport ? "ERRORS" : exportTime + " ms"));
+            PrintUtility.printInformation("*** Import time:   " + (errorsInLoad ? "ERRORS" : loadTime + " ms"));
+            PrintUtility.printInformation("*** Chase time: " + (errorsInRun ? "ERRORS" : runTime + " ms"));
+            PrintUtility.printInformation("*** Export and Query time:  " + (errorsInExport ? "ERRORS" : exportTime + " ms"));
             PrintUtility.printInformation("*** TOTAL TIME:           " + (loadTime + runTime + exportTime) + " ms");
             PrintUtility.printInformation("------------------------------------------");
         } catch (Exception ex) {
@@ -95,9 +95,5 @@ public class MainExp {
         process.waitFor();
         int exitValue = process.exitValue();
         return (exitValue != 0); //Return true if errors
-    }
-
-    private static void dropDatabase(String fileScenario) {
-        throw new UnsupportedOperationException("Not supported yet."); //TODO Implement method
     }
 }

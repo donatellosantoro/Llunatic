@@ -31,6 +31,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.SpeedyConstants;
 import speedy.exceptions.DAOException;
 import speedy.model.database.AttributeRef;
 import speedy.persistence.xml.DAOXmlUtility;
@@ -130,7 +131,22 @@ public class DAOLunaticConfiguration {
         Element exportSolutionsTypeElement = configurationElement.getChild("exportSolutionsType");
         if (exportSolutionsTypeElement != null) {
             configuration.setExportSolutionsType(exportSolutionsTypeElement.getValue());
-            if (!configuration.getExportSolutionsType().equals("CSV")) {
+            if (!configuration.getExportSolutionsType().equals(SpeedyConstants.CSV)) {
+                throw new it.unibas.lunatic.exceptions.DAOException("Export type not supported");
+            }
+        }
+        Element exportQueryResultsElement = configurationElement.getChild("exportQueryResults");
+        if (exportQueryResultsElement != null) {
+            configuration.setExportQueryResults(Boolean.parseBoolean(exportQueryResultsElement.getValue()));
+        }
+        Element exportQueryResultsPathElement = configurationElement.getChild("exportQueryResultsPath");
+        if (exportQueryResultsPathElement != null) {
+            configuration.setExportQueryResultsPath(exportQueryResultsPathElement.getValue());
+        }
+        Element exportQueryResultsTypeElement = configurationElement.getChild("exportQueryResultsType");
+        if (exportQueryResultsTypeElement != null) {
+            configuration.setExportQueryResultsType(exportQueryResultsTypeElement.getValue());
+            if (!configuration.getExportQueryResultsType().equals(SpeedyConstants.CSV)) {
                 throw new it.unibas.lunatic.exceptions.DAOException("Export type not supported");
             }
         }

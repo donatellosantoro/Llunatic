@@ -35,7 +35,8 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
         try {
             String selectQuery = queryBuilder.treeToSQL(sourceQuery, source, target, SpeedyConstants.INDENT + SpeedyConstants.INDENT);
             String insertQuery = generateInsertScript(dependency, selectQuery, (DBMSDB) target, scenario);
-            return QueryManager.executeInsertOrDelete(insertQuery, ((DBMSDB) target).getAccessConfiguration());
+            int affectedRows = QueryManager.executeInsertOrDelete(insertQuery, ((DBMSDB) target).getAccessConfiguration());
+            return affectedRows > 0;
         } catch (DBMSException ex) {
             if (ex.getMessage().contains("ERROR: function bigint_skolem(text) does not exist")
                     || ex.getMessage().contains("ERROR: function double_skolem(text) does not exist")) {

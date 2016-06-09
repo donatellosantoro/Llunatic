@@ -21,7 +21,8 @@
     <!--<logger name="it.unibas.lunatic.test" level="TRACE"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.QueryStatManager" level="DEBUG"/>-->
-    <!--<logger name="speedy.persistence.relational.QueryManager" level="DEBUG"/>-->
+    <!--<logger name="speedy.persistence.relational.QueryManager" level="TRACE"/>-->
+    <!--<logger name="speedy.persistence.file.operators.ExportCSVFileWithCopy" level="TRACE"/>-->
 
     <!--     MODEL     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager" level="INFO"/>-->
@@ -61,6 +62,7 @@
     <!--<logger name="speedy.model.algebra.SelectIn" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.mainmemory.InsertTuple" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForPositiveFormula" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForCertainAnswerQuery" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.BuildAlgebraTreeForSymmetricEGD" level="DEBUG"/>-->
     <!--<logger name="speedy.model.algebra.operators.EvaluateExpression" level="DEBUG"/>-->

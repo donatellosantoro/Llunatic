@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.model.dependency.*;
-import java.util.List;
 import java.util.Stack;
 import speedy.SpeedyConstants;
 

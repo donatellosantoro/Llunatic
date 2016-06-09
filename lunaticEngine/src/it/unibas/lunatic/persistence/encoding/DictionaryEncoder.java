@@ -59,6 +59,9 @@ public class DictionaryEncoder implements IValueEncoder {
     }
 
     public String decode(String encoded) {
+        if(decodingMap==null){
+            throw new IllegalArgumentException("Decoding map not loaded");
+        }
         try {
             lock.lock();
             long start = new Date().getTime();

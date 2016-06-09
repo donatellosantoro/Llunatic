@@ -45,8 +45,9 @@ public class ChaseDEScenario implements IDEChaser {
     private final ExportChaseStepResultsCSV resultExporter = new ExportChaseStepResultsCSV();
     private final BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
     private final ComputeDatabaseSize databaseSizeCalculator = new ComputeDatabaseSize();
+    private final IReplaceDatabase databaseReplacer;
     private final IAnalyzeDatabase databaseAnalyzer;
-    private final ExecuteFinalQueries finalQueryExecutor;
+    private final ExecuteFinalQueries finalQueryExecutor = new ExecuteFinalQueries();
     private final IBuildDeltaDB deltaBuilder;
     private final IBuildDatabaseForChaseStep databaseBuilder;
     private final IChaseSTTGDs stChaser;
@@ -55,15 +56,15 @@ public class ChaseDEScenario implements IDEChaser {
     private final ChaseDCs dChaser;
 
     public ChaseDEScenario(IChaseSTTGDs stChaser, ChaseDeltaEGDs egdChaser, IRunQuery queryRunner, IInsertFromSelectNaive naiveInsert,
-            IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep databaseBuilder, IAnalyzeDatabase databaseAnalyze) {
+            IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep databaseBuilder, IAnalyzeDatabase databaseAnalyze, IReplaceDatabase databaseReplacer) {
         this.stChaser = stChaser;
         this.tgdChaser = new ChaseTargetTGDs(naiveInsert);
         this.egdChaser = egdChaser;
         this.dChaser = new ChaseDCs(queryRunner);
         this.deltaBuilder = deltaBuilder;
         this.databaseBuilder = databaseBuilder;
-        this.finalQueryExecutor = new ExecuteFinalQueries(queryRunner);
         this.databaseAnalyzer = databaseAnalyze;
+        this.databaseReplacer = databaseReplacer;
     }
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
@@ -88,13 +89,14 @@ public class ChaseDEScenario implements IDEChaser {
             tgdChaser.doChase(scenario, chaseState);
             List<Dependency> satisfiedEGDs = findSatisfiedEGDs(scenario, targetDB);
             if (!scenario.getExtEGDs().isEmpty() && satisfiedEGDs.size() < scenario.getExtEGDs().size()) {
+                if (logger.isDebugEnabled()) logger.debug("Applying EGDs on target database...");
                 int iterations = 0;
                 while (true) {
                     if (chaseState.isCancelled()) {
                         ChaseUtility.stopChase(chaseState);
                     }
                     IDatabase deltaDB = deltaBuilder.generate(targetDB, scenario, LunaticConstants.CHASE_STEP_ROOT);
-                    if (logger.isDebugEnabled()) logger.debug("DeltaDB: " + deltaDB);
+                    if (logger.isTraceEnabled()) logger.trace("DeltaDB: " + deltaDB);
                     ChaseTree chaseTree = new ChaseTree(scenario);
                     DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);
                     root.getSatisfiedEGDs().addAll(satisfiedEGDs);
@@ -104,8 +106,8 @@ public class ChaseDEScenario implements IDEChaser {
                         break;
                     }
                     DeltaChaseStep lastStep = getLastStep(chaseTree.getRoot());
-                    targetDB = databaseBuilder.extractDatabaseWithDistinct(lastStep.getId(), lastStep.getDeltaDB(), lastStep.getOriginalDB(), scenario);
-                    scenario.setTarget(targetDB);
+                    IDatabase databaseAfterEGD = databaseBuilder.extractDatabaseWithDistinct(lastStep.getId(), lastStep.getDeltaDB(), lastStep.getOriginalDB(), scenario);
+                    databaseReplacer.replaceTargetDB(databaseAfterEGD, scenario);
                     if (allInclusionDependencies) {
                         break;
                     }
@@ -142,16 +144,10 @@ public class ChaseDEScenario implements IDEChaser {
             return;
         }
         if (LunaticConfiguration.isPrintSteps()) System.out.println(ChaseStats.getInstance().toString());
-        if (conf.isPrintQueryResultsOnly()) {
-            PrintUtility.printInformation("----------------------------------------------------");
-            PrintUtility.printInformation("*** Query time: " + ChaseStats.getInstance().getStat(ChaseStats.FINAL_QUERY_TIME) + " ms");
-            PrintUtility.printInformation("----------------------------------------------------");
-            return;
-        }
+        long queryTime = ChaseStats.getInstance().getStat(ChaseStats.FINAL_QUERY_TIME);
         long preProcessingTime = 0L;
         long chasingTime = 0L;
         long postProcessingTime = 0L;
-        long queryTime = 0L;
         //Pre Processing
         preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.INIT_DB_TIME));
         preProcessingTime = LunaticUtility.increaseIfNotNull(preProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.ANALYZE_DB));
@@ -165,15 +161,13 @@ public class ChaseDEScenario implements IDEChaser {
         //Post Processing
         postProcessingTime = LunaticUtility.increaseIfNotNull(postProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.WRITE_TIME));
 //        postProcessingTime = LunaticUtility.increaseIfNotNull(postProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.REMOVE_DUPLICATE_TIME));
-        //Query
-        queryTime = LunaticUtility.increaseIfNotNull(postProcessingTime, ChaseStats.getInstance().getStat(ChaseStats.FINAL_QUERY_TIME));
         //Total Processing
         long totalTime = preProcessingTime + chasingTime + postProcessingTime;
         PrintUtility.printInformation("----------------------------------------------------");
-        PrintUtility.printInformation("*** PreProcessing time: " + preProcessingTime + " ms");
-        PrintUtility.printInformation("*** Chase time: " + chasingTime + " ms");
-        PrintUtility.printInformation("*** Query time: " + queryTime + " ms");
-        PrintUtility.printInformation("*** PostProcessing time: " + postProcessingTime + " ms");
+        if (preProcessingTime > 0) PrintUtility.printInformation("*** PreProcessing time: " + preProcessingTime + " ms");
+        if (chasingTime > 0) PrintUtility.printInformation("*** Chase time: " + chasingTime + " ms");
+        if (queryTime > 0) PrintUtility.printInformation("*** Query time: " + queryTime + " ms");
+        if (postProcessingTime > 0) PrintUtility.printInformation("*** PostProcessing time: " + postProcessingTime + " ms");
         PrintUtility.printInformation("*** TOTAL TIME: " + totalTime + " ms");
         PrintUtility.printInformation("----------------------------------------------------");
         if (logger.isDebugEnabled()) printTargetStats(targetDB);
@@ -260,6 +254,7 @@ public class ChaseDEScenario implements IDEChaser {
                 if (logger.isDebugEnabled()) logger.debug("EGD " + extEGD + " is violated");
                 return;
             }
+            if (logger.isDebugEnabled()) logger.debug("EGD " + extEGD + " is satisfied");
             satisfiedEGDs.add(extEGD);
         }
 

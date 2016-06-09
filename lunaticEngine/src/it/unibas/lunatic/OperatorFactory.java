@@ -6,7 +6,6 @@ import it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDs;
 import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.IUpdateCell;
 import it.unibas.lunatic.model.chase.chasede.operators.OccurrenceHandlerDEProxy;
-import it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLUpdateCell;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.ChaseMainMemorySTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryUpdateCell;
@@ -61,16 +60,19 @@ import speedy.model.database.operators.mainmemory.MainMemoryDatabaseManager;
 import speedy.model.database.operators.mainmemory.MainMemoryRunQuery;
 import it.unibas.lunatic.model.chase.chasede.operators.IInsertFromSelectNaive;
 import it.unibas.lunatic.model.chase.chasede.operators.IRemoveDuplicates;
+import it.unibas.lunatic.model.chase.chasede.operators.IReplaceDatabase;
 import it.unibas.lunatic.model.chase.chasede.operators.OccurrenceHandlerDE;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.BuildSQLDBForChaseStepDE;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.BuildSQLDeltaDBDE;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDsWithThreads;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectNaive;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLRemoveDuplicates;
+import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLReplaceDatabase;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.BuildMainMemoryDBForChaseStepDE;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.BuildMainMemoryDeltaDBDE;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectNaive;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryRemoveDuplicates;
+import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryReplaceDatabase;
 import speedy.model.database.operators.IAnalyzeDatabase;
 import speedy.model.database.operators.dbms.SQLAnalyzeDatabase;
 import speedy.model.database.operators.mainmemory.MainMemoryAnalyzeDatabase;
@@ -333,6 +335,13 @@ public class OperatorFactory {
             return new MainMemoryAnalyzeDatabase();
         }
         return new SQLAnalyzeDatabase();
+    }
+
+    public IReplaceDatabase getDatabaseReplacer(Scenario scenario) {
+        if (scenario.isMainMemory()) {
+            return new MainMemoryReplaceDatabase();
+        }
+        return new SQLReplaceDatabase();
     }
 
     public IExportSolution getSolutionExporter(Scenario scenario) {

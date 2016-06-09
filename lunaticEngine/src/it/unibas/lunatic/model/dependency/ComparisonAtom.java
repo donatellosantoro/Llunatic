@@ -130,7 +130,7 @@ public class ComparisonAtom implements IFormulaAtom {
     }
 
     public String toCFString() {
-        return expression.toStringWithDollar();
+        return expression.toCFString();
     }
 
     public String toLongString() {

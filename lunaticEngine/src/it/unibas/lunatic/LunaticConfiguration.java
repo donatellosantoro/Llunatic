@@ -1,5 +1,7 @@
 package it.unibas.lunatic;
 
+import speedy.SpeedyConstants;
+
 public class LunaticConfiguration {
 
 //    private static boolean printSteps = true;
@@ -33,7 +35,12 @@ public class LunaticConfiguration {
     private boolean useBatchInsert = true;
     private boolean exportSolutions = false;
     private String exportSolutionsPath;
-    private String exportSolutionsType;
+    private String exportSolutionsType = SpeedyConstants.CSV;
+    private boolean exportSolutionsWithHeader = false;
+    private boolean exportQueryResults = false;
+    private String exportQueryResultsPath;
+    private String exportQueryResultsType = SpeedyConstants.CSV;
+    private boolean exportQueryResultsWithHeader = false;
     private boolean exportChanges = false;
     private String exportChangesPath;
     private boolean printStatsOnly = false;
@@ -289,6 +296,46 @@ public class LunaticConfiguration {
 
     public void setExportSolutionsType(String exportSolutionsType) {
         this.exportSolutionsType = exportSolutionsType;
+    }
+
+    public boolean isExportSolutionsWithHeader() {
+        return exportSolutionsWithHeader;
+    }
+
+    public void setExportSolutionsWithHeader(boolean exportSolutionsWithHeader) {
+        this.exportSolutionsWithHeader = exportSolutionsWithHeader;
+    }
+
+    public boolean isExportQueryResults() {
+        return exportQueryResults;
+    }
+
+    public void setExportQueryResults(boolean exportQueryResults) {
+        this.exportQueryResults = exportQueryResults;
+    }
+
+    public String getExportQueryResultsPath() {
+        return exportQueryResultsPath;
+    }
+
+    public void setExportQueryResultsPath(String exportQueryResultsPath) {
+        this.exportQueryResultsPath = exportQueryResultsPath;
+    }
+
+    public String getExportQueryResultsType() {
+        return exportQueryResultsType;
+    }
+
+    public void setExportQueryResultsType(String exportQueryResultsType) {
+        this.exportQueryResultsType = exportQueryResultsType;
+    }
+
+    public boolean isExportQueryResultsWithHeader() {
+        return exportQueryResultsWithHeader;
+    }
+
+    public void setExportQueryResultsWithHeader(boolean exportQueryResultsWithHeader) {
+        this.exportQueryResultsWithHeader = exportQueryResultsWithHeader;
     }
 
     public boolean isExportChanges() {

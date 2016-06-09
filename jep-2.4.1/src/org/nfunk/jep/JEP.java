@@ -794,6 +794,10 @@ public class JEP implements Cloneable {
         return new ExpressionToSQLString().toSQLString(this);
     }
 
+    public String toCFString() {
+        return new ExpressionToCFString().toCFString(this);
+    }
+
     public String toStringWithAbsolutePaths() {
         return new ExpressionToString().toStringWithAbsolutePaths(this);
     }

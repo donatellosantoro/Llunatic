@@ -6,6 +6,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasede.operators.ChaseDEScenario;
 import it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.IInsertFromSelectNaive;
+import it.unibas.lunatic.model.chase.chasede.operators.IReplaceDatabase;
 import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.commons.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
@@ -30,7 +31,8 @@ public class DEChaserFactory {
         IBuildDeltaDB deltaBuilder = OperatorFactory.getInstance().getDeltaDBBuilderDE(scenario);
         IBuildDatabaseForChaseStep databaseBuilder = OperatorFactory.getInstance().getDatabaseBuilderDE(scenario);
         IAnalyzeDatabase databaseAnalyzer = OperatorFactory.getInstance().getDatabaseAnalyzer(scenario);
-        ChaseDEScenario tgdChaser = new ChaseDEScenario(stChaser, egdChaser, queryRunner, insertFromSelectNaive, deltaBuilder, databaseBuilder, databaseAnalyzer);
+        IReplaceDatabase databaseReplacer = OperatorFactory.getInstance().getDatabaseReplacer(scenario);
+        ChaseDEScenario tgdChaser = new ChaseDEScenario(stChaser, egdChaser, queryRunner, insertFromSelectNaive, deltaBuilder, databaseBuilder, databaseAnalyzer,databaseReplacer);
         return tgdChaser;
     }
 

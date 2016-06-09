@@ -2,7 +2,6 @@ package it.unibas.lunatic.model.dependency;
 
 import java.util.ArrayList;
 import java.util.List;
-import speedy.model.database.TableAlias;
 import speedy.model.expressions.Expression;
 import speedy.utility.SpeedyUtility;
 

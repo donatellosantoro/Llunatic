@@ -34,7 +34,6 @@ import speedy.model.database.Tuple;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSTable;
 import speedy.model.database.dbms.DBMSVirtualDB;
-import speedy.model.database.dbms.DBMSVirtualTable;
 import speedy.model.database.mainmemory.MainMemoryVirtualDB;
 import speedy.model.database.mainmemory.MainMemoryVirtualTable;
 import speedy.model.database.operators.dbms.IValueEncoder;
@@ -42,7 +41,6 @@ import speedy.persistence.file.operators.ExportCSVFileWithCopy;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.DBMSUtility;
-import speedy.utility.SpeedyUtility;
 
 public class ExportChaseStepResultsCSV {
 
@@ -86,15 +84,15 @@ public class ExportChaseStepResultsCSV {
     }
 
     public void exportSolutionInSeparateFiles(IDatabase database, Scenario scenario) {
-        exportSolutionInSeparateFiles(database, scenario.getValueEncoder(), scenario.getConfiguration().getExportSolutionsPath(), scenario.getConfiguration().getMaxNumberOfThreads());
+        exportSolutionInSeparateFiles(database, scenario.getValueEncoder(), scenario.getConfiguration().isExportSolutionsWithHeader(), scenario.getConfiguration().getExportSolutionsPath(), scenario.getConfiguration().getMaxNumberOfThreads());
     }
 
-    public void exportSolutionInSeparateFiles(IDatabase database, IValueEncoder valueEncoder, String path, int numberOfThreads) {
+    public void exportSolutionInSeparateFiles(IDatabase database, IValueEncoder valueEncoder, boolean withHeader, String path, int numberOfThreads) {
         System.out.println("Exporting solution in " + path);
         long start = new Date().getTime();
         if (valueEncoder != null) valueEncoder.prepareForDecoding();
         if (isDBMS(database)) {
-            csvExporter.exportDatabase(database, valueEncoder, path, numberOfThreads);
+            csvExporter.exportDatabase(database, valueEncoder, withHeader, path, numberOfThreads);
         } else {
             exportMainMemory(database, valueEncoder, path);
         }

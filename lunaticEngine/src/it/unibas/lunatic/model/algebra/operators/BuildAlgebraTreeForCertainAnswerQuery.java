@@ -2,10 +2,15 @@ package it.unibas.lunatic.model.algebra.operators;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.dependency.Dependency;
+import it.unibas.lunatic.model.dependency.FormulaAttribute;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
+import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
+import it.unibas.lunatic.model.dependency.QueryAtom;
 import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +23,6 @@ import speedy.model.database.Attribute;
 import speedy.model.database.AttributeRef;
 import speedy.model.expressions.Expression;
 import speedy.persistence.Types;
-import speedy.utility.DBMSUtility;
 import speedy.utility.SpeedyUtility;
 
 public class BuildAlgebraTreeForCertainAnswerQuery {
@@ -46,6 +50,9 @@ public class BuildAlgebraTreeForCertainAnswerQuery {
         IAlgebraOperator premiseOperator = treeBuilder.buildTreeForPremiseWithNoOIDInequality(dependency, scenario);
         List<AttributeRef> universalAttributes = DependencyUtility.getUniversalAttributesInPremise(universalVariables);
         if (logger.isDebugEnabled()) logger.debug("Universal attributes in premise: " + universalAttributes);
+        List<String> orderedVariableIdsInConclusion = extractOrderedVariableIdsInConclusion(dependency);
+        if (logger.isDebugEnabled()) logger.debug("Ordered variable ids: " + orderedVariableIdsInConclusion);
+        Collections.sort(universalAttributes, new AttributeComparatorInQueryAtom(orderedVariableIdsInConclusion, dependency));
         ProjectWithoutOIDs root = new ProjectWithoutOIDs(SpeedyUtility.createProjectionAttributes(universalAttributes));
         root.addChild(premiseOperator);
         return root;
@@ -78,4 +85,44 @@ public class BuildAlgebraTreeForCertainAnswerQuery {
         }
         return expressions;
     }
+
+    private List<String> extractOrderedVariableIdsInConclusion(Dependency dependency) {
+        List<String> result = new ArrayList<String>();
+        QueryAtom queryAtom = (QueryAtom) dependency.getConclusion().getAtoms().get(0);
+        for (int i = 0; i < queryAtom.getAttributes().size(); i++) {
+            FormulaAttribute formulaAttribute = queryAtom.getAttributes().get(i);
+            FormulaVariableOccurrence occurrence = (FormulaVariableOccurrence) formulaAttribute.getValue();
+            result.add(occurrence.getVariableId());
+        }
+        return result;
+    }
+
+    class AttributeComparatorInQueryAtom implements Comparator<AttributeRef> {
+
+        private List<String> orderedVariableIdsInConclusion;
+        private Dependency dependency;
+
+        public AttributeComparatorInQueryAtom(List<String> orderedVariableIdsInConclusion, Dependency dependency) {
+            this.orderedVariableIdsInConclusion = orderedVariableIdsInConclusion;
+            this.dependency = dependency;
+        }
+
+        public int compare(AttributeRef o1, AttributeRef o2) {
+            int pos1 = findPosition(o1);
+            int pos2 = findPosition(o2);
+            return pos1 - pos2;
+        }
+
+        private int findPosition(AttributeRef attribute) {
+            for (FormulaVariable variable : dependency.getPremise().getLocalVariables()) {
+                if (!variable.getAttributeRefs().contains(attribute)) {
+                    continue;
+                }
+                return orderedVariableIdsInConclusion.indexOf(variable.getId());
+            }
+            throw new IllegalArgumentException("Unable to find attribute " + attribute + " query atom");
+        }
+
+    }
+
 }

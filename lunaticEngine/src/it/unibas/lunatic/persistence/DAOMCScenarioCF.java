@@ -4,24 +4,32 @@ import it.unibas.lunatic.persistence.encoding.DictionaryEncoder;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
+import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForCertainAnswerQuery;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.operators.ProcessDependencies;
 import it.unibas.lunatic.parser.ParserOutput;
 import it.unibas.lunatic.parser.operators.ParseDependenciesCF;
 import it.unibas.lunatic.persistence.encoding.DummyEncoder;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
+import speedy.model.algebra.IAlgebraOperator;
+import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
 import speedy.model.database.IDatabase;
-import speedy.model.database.operators.dbms.IValueEncoder;
+import speedy.model.database.dbms.SQLQueryString;
 import speedy.persistence.xml.DAOXmlUtility;
 
 public class DAOMCScenarioCF {
@@ -48,12 +56,12 @@ public class DAOMCScenarioCF {
             if (configuration.isUseDictionaryEncoding()) {
                 if (config.isImportData()) {
                     scenario.setValueEncoder(new DictionaryEncoder(DAOUtility.extractScenarioName(fileScenario)));
-                    if(config.isRemoveExistingDictionary()){
+                    if (config.isRemoveExistingDictionary()) {
                         scenario.getValueEncoder().removeExistingEncoding();
                     }
                     scenario.getValueEncoder().prepareForEncoding();
-                }else{
-                    scenario.setValueEncoder(new DummyEncoder()); 
+                } else {
+                    scenario.setValueEncoder(new DummyEncoder());
                 }
             }
             //SOURCE
@@ -131,6 +139,8 @@ public class DAOMCScenarioCF {
                 List<Element> queryListElement = queriesElement.getChildren("queryFile");
                 for (Element queryFileElement : queryListElement) {
                     String content = DAOUtility.loadFileContent(queryFileElement.getText(), scenario.getFileName());
+                    String queryId = FilenameUtils.getBaseName(queryFileElement.getText());
+                    dependenciesAndQueries.append(queryId).append(": ");
                     dependenciesAndQueries.append(content).append("\n");
                 }
             }
@@ -148,6 +158,7 @@ public class DAOMCScenarioCF {
             }
             if (config.isExportRewrittenDependencies()) {
                 exportRewrittenDependencies(parserOutput, scenario.getFileName());
+                exportRewrittenSQLQueries(parserOutput, scenario);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -169,21 +180,56 @@ public class DAOMCScenarioCF {
                 sb.append(d.toCFString());
             }
         }
-        if (!parserOutput.geteEGDs().isEmpty()) {
+        if (!parserOutput.getEgds().isEmpty()) {
             sb.append("\nEGDs:");
-            for (Dependency d : parserOutput.geteEGDs()) {
+            for (Dependency d : parserOutput.getEgds()) {
                 sb.append(d.toCFString());
             }
         }
-        if (!parserOutput.getQueries().isEmpty()) {
-            sb.append("\nQueries:");
-            for (Dependency d : parserOutput.getQueries()) {
-                sb.append(d.toCFString());
-            }
-        }
+//        if (!parserOutput.getQueries().isEmpty()) {
+//            sb.append("\nQueries:");
+//            for (Dependency d : parserOutput.getQueries()) {
+//                sb.append(d.toCFString());
+//            }
+//        }
         String filePath = getEncodedDependenciesPath(scenarioName);
         if (logger.isDebugEnabled()) logger.debug("Encoded dependencies file: " + filePath);
         FileUtils.writeStringToFile(new File(filePath), sb.toString());
+    }
+
+    private void exportRewrittenSQLQueries(ParserOutput parserOutput, Scenario scenario) {
+        if (parserOutput.getQueries().isEmpty()) {
+            return;
+        }
+        ParserOutput parserOutputQueries = new ParserOutput();
+        parserOutputQueries.getQueries().addAll(parserOutput.getQueries());
+        dependencyProcessor.processDependencies(parserOutputQueries, scenario);
+        BuildAlgebraTreeForCertainAnswerQuery treeBuilder = new BuildAlgebraTreeForCertainAnswerQuery();
+        AlgebraTreeToSQL algebraTreeToSQL = new AlgebraTreeToSQL();
+        List<SQLQueryString> queries = new ArrayList<SQLQueryString>();
+        for (Dependency d : parserOutputQueries.getQueries()) {
+            IAlgebraOperator operator = treeBuilder.generateOperator(d, scenario);
+            String sql = algebraTreeToSQL.treeToSQL(operator, scenario.getSource(), scenario.getTarget(), "");
+            SQLQueryString sqlQuery = new SQLQueryString(d.getId(), sql);
+            queries.add(sqlQuery);
+        }
+        String queryPath = LunaticUtility.getSQLQueriesPath(scenario.getFileName());
+        ObjectOutputStream out = null;
+        try {
+            File queryFile = new File(queryPath);
+            queryFile.getParentFile().mkdirs();
+            out = new ObjectOutputStream(new FileOutputStream(queryFile));
+            out.writeObject(queries);
+            out.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new DAOException("Unable to save sql queries to file " + queryPath + ".\n" + ex.getLocalizedMessage());
+        } finally {
+            try {
+                if (out != null) out.close();
+            } catch (IOException ex) {
+            }
+        }
     }
 
     private String getEncodedDependenciesPath(String scenarioPath) {

@@ -7,6 +7,7 @@ import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -394,6 +395,13 @@ public class LunaticUtility {
             value -= newValue;
         }
         return value;
+    }
+
+    public static String getSQLQueriesPath(String scenarioPath) {
+        File fileScenario = new File(scenarioPath);
+        String fileName = fileScenario.getName();
+        String homeDir = System.getProperty("user.home");
+        return homeDir + File.separator + SpeedyConstants.WORK_DIR + File.separator + "Encoding" + File.separator + "SQLQ_" + fileName + ".dat";
     }
 
 }
