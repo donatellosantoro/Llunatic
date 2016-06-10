@@ -5,9 +5,11 @@ public class DAOConfiguration {
     private String suffix;
     private boolean importData = true;
     private boolean processDependencies = true;
-    private boolean exportRewrittenDependencies = false;
-    private boolean useRewrittenDependencies = false;
+    private boolean exportEncodedDependencies = false;
+    private boolean useEncodedDependencies = false;
     private boolean removeExistingDictionary = false;
+    //Parameters received via commandline that we need to override on the loaded configuration
+    private Boolean useDictionaryEncoding;
 
     public String getSuffix() {
         return suffix;
@@ -33,20 +35,20 @@ public class DAOConfiguration {
         this.processDependencies = processDependencies;
     }
 
-    public boolean isExportRewrittenDependencies() {
-        return exportRewrittenDependencies;
+    public boolean isExportEncodedDependencies() {
+        return exportEncodedDependencies;
     }
 
-    public void setExportRewrittenDependencies(boolean exportRewrittenDependencies) {
-        this.exportRewrittenDependencies = exportRewrittenDependencies;
+    public void setExportEncodedDependencies(boolean exportEncodedDependencies) {
+        this.exportEncodedDependencies = exportEncodedDependencies;
     }
 
-    public boolean isUseRewrittenDependencies() {
-        return useRewrittenDependencies;
+    public boolean isUseEncodedDependencies() {
+        return useEncodedDependencies;
     }
 
-    public void setUseRewrittenDependencies(boolean useRewrittenDependencies) {
-        this.useRewrittenDependencies = useRewrittenDependencies;
+    public void setUseEncodedDependencies(boolean useEncodedDependencies) {
+        this.useEncodedDependencies = useEncodedDependencies;
     }
 
     public boolean isRemoveExistingDictionary() {
@@ -56,7 +58,13 @@ public class DAOConfiguration {
     public void setRemoveExistingDictionary(boolean removeExistingDictionary) {
         this.removeExistingDictionary = removeExistingDictionary;
     }
-    
-    
+
+    public Boolean getUseDictionaryEncoding() {
+        return useDictionaryEncoding;
+    }
+
+    public void setUseDictionaryEncoding(Boolean useDictionaryEncoding) {
+        this.useDictionaryEncoding = useDictionaryEncoding;
+    }
 
 }

@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ ("$#" -ne 1 && "$#" -ne 2) ]]; then
+if [[ ("$#" -eq 0) ]]; then
     echo "Usage: runExp.sh <path_task.xml> [-chaseonly]"
     exit
 fi

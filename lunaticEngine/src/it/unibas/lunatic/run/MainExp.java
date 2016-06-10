@@ -5,6 +5,7 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,16 +17,23 @@ public class MainExp {
 
     public static void main(String[] args) {
         if (args.length < 1 || args.length > 2) {
-            System.out.print("Usage: Usage: runExp.sh <path_task.xml> [-chaseonly]\n");
+            printUsage();
             return;
         }
-        boolean chaseOnly = false;
         List<String> options = new ArrayList<String>(Arrays.asList(args));
-        if (options.contains("-chaseonly")) {
-            options.remove("-chaseonly");
-            chaseOnly = true;
+        String relativePathScenario = null;
+        for (Iterator<String> iterator = options.iterator(); iterator.hasNext();) {
+            String option = iterator.next();
+            if (option.startsWith("-")) {
+                continue;
+            }
+            relativePathScenario = option;
+            iterator.remove();
         }
-        String relativePathScenario = options.get(0);
+        if (relativePathScenario == null) {
+            printUsage();
+            return;
+        }
         File confFile = new File(relativePathScenario).getAbsoluteFile();
         if (!confFile.exists()) {
             System.out.println("Unable to load scenario. File " + relativePathScenario + " not found");
@@ -35,19 +43,19 @@ public class MainExp {
         try {
             //LOAD
             long startLoad = new Date().getTime();
-            boolean errorsInLoad = exec(MainExpImport.class, fileScenario, chaseOnly);
+            boolean errorsInLoad = exec(MainExpImport.class, fileScenario, options);
             long endLoad = new Date().getTime();
             long loadTime = endLoad - startLoad;
             PrintUtility.printMessage("Import time: " + loadTime + " ms");
             //RUN
             long startRun = new Date().getTime();
-            boolean errorsInRun = exec(MainExpRun.class, fileScenario, false);
+            boolean errorsInRun = exec(MainExpRun.class, fileScenario, options);
             long endRun = new Date().getTime();
             long runTime = endRun - startRun;
             PrintUtility.printMessage("Chase time: " + runTime + " ms");
             //EXPORT
             long startExport = new Date().getTime();
-            boolean errorsInExport = exec(MainExpExport.class, fileScenario, false);
+            boolean errorsInExport = exec(MainExpExport.class, fileScenario, options);
             long endExport = new Date().getTime();
             long exportTime = endExport - startExport;
             PrintUtility.printMessage("Export and Query time: " + exportTime + " ms");
@@ -63,7 +71,7 @@ public class MainExp {
         }
     }
 
-    public static boolean exec(Class klass, String fileScenario, boolean chaseOnly) throws Exception {
+    public static boolean exec(Class klass, String fileScenario, List<String> options) throws Exception {
         String javaHome = System.getProperty("java.home");
         String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         if (logger.isDebugEnabled()) logger.debug("VM: " + javaBin);
@@ -85,9 +93,7 @@ public class MainExp {
         commands.add(extraParams);
         commands.add(className);
         commands.add(fileScenario);
-        if (chaseOnly) {
-            commands.add("-chaseonly");
-        }
+        commands.addAll(options);
         ProcessBuilder builder = new ProcessBuilder(commands);
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
         builder.redirectError(ProcessBuilder.Redirect.INHERIT);
@@ -95,5 +101,9 @@ public class MainExp {
         process.waitFor();
         int exitValue = process.exitValue();
         return (exitValue != 0); //Return true if errors
+    }
+
+    private static void printUsage() {
+        System.out.print("Usage: Usage: runExp.sh <path_task.xml> [-chaseonly]\n");
     }
 }

@@ -9,6 +9,7 @@ import it.unibas.lunatic.persistence.DAOLunaticConfiguration;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import static it.unibas.lunatic.run.Main.isDEScenario;
 import static it.unibas.lunatic.run.Main.removeExistingDB;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -31,6 +32,7 @@ public class MainExpImport {
         }
         String fileScenario = options.get(0);
         LunaticConfiguration conf = daoConfiguration.loadConfiguration(fileScenario);
+        LunaticUtility.applyCommandLineOptions(conf, options);
         if (chaseOnly) {
             conf.setRecreateDBOnStart(false);
             conf.setCleanSchemasOnStartForDEScenarios(true);
@@ -52,7 +54,8 @@ public class MainExpImport {
         System.out.println("*** Loading scenario " + fileScenario + "... ");
         daoConfig.setImportData(true);
         daoConfig.setProcessDependencies(false);
-        daoConfig.setExportRewrittenDependencies(true);
+        daoConfig.setExportEncodedDependencies(true);
+        LunaticUtility.applyCommandLineOptions(daoConfig, options);
         Scenario scenario = daoScenario.loadScenario(fileScenario, daoConfig);
         System.out.println(" Scenario loaded!");
         if (scenario.getValueEncoder() != null) {

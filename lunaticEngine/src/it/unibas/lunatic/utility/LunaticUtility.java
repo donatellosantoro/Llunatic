@@ -1,5 +1,6 @@
 package it.unibas.lunatic.utility;
 
+import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
@@ -7,6 +8,7 @@ import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
+import it.unibas.lunatic.persistence.DAOConfiguration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -402,6 +404,54 @@ public class LunaticUtility {
         String fileName = fileScenario.getName();
         String homeDir = System.getProperty("user.home");
         return homeDir + File.separator + SpeedyConstants.WORK_DIR + File.separator + "Encoding" + File.separator + "SQLQ_" + fileName + ".dat";
+    }
+
+    public static void applyCommandLineOptions(LunaticConfiguration conf, List<String> options) {
+        for (String option : options) {
+            if (!option.startsWith("-")) {
+                continue;
+            }
+            if (!option.contains("=")) {
+                continue;
+            }
+            String[] tokens = option.split("=");
+            String key = tokens[0];
+            String value = tokens[1];
+            LunaticUtility.setValue(key, value, conf);
+        }
+    }
+
+    private static void setValue(String key, String stringValue, LunaticConfiguration conf) {
+        if (key.equalsIgnoreCase("-printSteps")) {
+            boolean value = Boolean.parseBoolean(stringValue);
+            LunaticConfiguration.setPrintSteps(value);
+        }
+        if (key.equalsIgnoreCase("-useDictionaryEncoding")) {
+            boolean value = Boolean.parseBoolean(stringValue);
+            conf.setUseDictionaryEncoding(value);
+        }
+    }
+
+    public static void applyCommandLineOptions(DAOConfiguration conf, List<String> options) {
+        for (String option : options) {
+            if (!option.startsWith("-")) {
+                continue;
+            }
+            if (!option.contains("=")) {
+                continue;
+            }
+            String[] tokens = option.split("=");
+            String key = tokens[0];
+            String value = tokens[1];
+            LunaticUtility.setValue(key, value, conf);
+        }
+    }
+
+    private static void setValue(String key, String stringValue, DAOConfiguration conf) {
+        if (key.equalsIgnoreCase("-useDictionaryEncoding")) {
+            boolean value = Boolean.parseBoolean(stringValue);
+            conf.setUseDictionaryEncoding(value);
+        }
     }
 
 }

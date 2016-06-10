@@ -40,10 +40,13 @@ public class DAOMCScenarioStandard {
             Element configurationElement = rootElement.getChild("configuration");
             LunaticConfiguration configuration = daoConfiguration.loadConfiguration(configurationElement);
             scenario.setConfiguration(configuration);
+            if (config.getUseDictionaryEncoding() != null) {
+                configuration.setUseDictionaryEncoding(config.getUseDictionaryEncoding());
+            }
             if (configuration.isUseDictionaryEncoding()) {
                 if (config.isImportData()) {
                     scenario.setValueEncoder(new DictionaryEncoder(DAOUtility.extractScenarioName(fileScenario)));
-                    if(config.isRemoveExistingDictionary()){
+                    if (config.isRemoveExistingDictionary()) {
                         scenario.getValueEncoder().removeExistingEncoding();
                     }
                     scenario.getValueEncoder().prepareForEncoding();

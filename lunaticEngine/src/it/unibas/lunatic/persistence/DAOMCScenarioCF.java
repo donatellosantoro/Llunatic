@@ -53,6 +53,9 @@ public class DAOMCScenarioCF {
             Element configurationElement = rootElement.getChild("configuration");
             LunaticConfiguration configuration = daoConfiguration.loadConfiguration(configurationElement);
             scenario.setConfiguration(configuration);
+            if (config.getUseDictionaryEncoding() != null) {
+                configuration.setUseDictionaryEncoding(config.getUseDictionaryEncoding());
+            }
             if (configuration.isUseDictionaryEncoding()) {
                 if (config.isImportData()) {
                     scenario.setValueEncoder(new DictionaryEncoder(DAOUtility.extractScenarioName(fileScenario)));
@@ -113,7 +116,7 @@ public class DAOMCScenarioCF {
     @SuppressWarnings("unchecked")
     private void loadDependenciesAndQueries(Element dependenciesElement, Element queriesElement, DAOConfiguration config, Scenario scenario) throws DAOException, IOException {
         StringBuilder dependenciesAndQueries = new StringBuilder();
-        if (config.isUseRewrittenDependencies()) {
+        if (config.isUseEncodedDependencies() && scenario.getConfiguration().isUseDictionaryEncoding()) {
             String filePath = getEncodedDependenciesPath(scenario.getFileName());
             dependenciesAndQueries.append(FileUtils.readFileToString(new File(filePath)));
         } else {
@@ -156,8 +159,10 @@ public class DAOMCScenarioCF {
             if (config.isProcessDependencies()) {
                 dependencyProcessor.processDependencies(parserOutput, scenario);
             }
-            if (config.isExportRewrittenDependencies()) {
-                exportRewrittenDependencies(parserOutput, scenario.getFileName());
+            if (config.isExportEncodedDependencies()) {
+                if (scenario.getConfiguration().isUseDictionaryEncoding()) {
+                    exportRewrittenDependencies(parserOutput, scenario.getFileName());
+                }
                 exportRewrittenSQLQueries(parserOutput, scenario);
             }
         } catch (Exception ex) {
