@@ -51,7 +51,7 @@ public class MainExpExport {
         }
         Element targetElement = rootElement.getChild("target");
         IValueEncoder valueEncoder = getValueEncoder(conf, fileScenario);
-        IDatabase targetDB = daoDatabaseConfiguration.loadDatabase(targetElement, "", fileScenario, valueEncoder);
+        IDatabase targetDB = daoDatabaseConfiguration.loadDatabase(targetElement, "", fileScenario, valueEncoder, conf.isUseCompactAttributeName());
         List<SQLQueryString> sqlQueries = loadSQLQueries(fileScenario);
         resultExporter.exportSolutionInSeparateFiles(targetDB, valueEncoder, conf.isExportQueryResultsWithHeader(), conf.getExportSolutionsPath(), conf.getMaxNumberOfThreads());
         long endExportTime = new Date().getTime();
@@ -79,7 +79,7 @@ public class MainExpExport {
         ObjectInputStream in = null;
         try {
             File queryFile = new File(queryPath);
-            if(!queryFile.exists()){
+            if (!queryFile.exists()) {
                 return Collections.EMPTY_LIST;
             }
             in = new ObjectInputStream(new FileInputStream(queryFile));

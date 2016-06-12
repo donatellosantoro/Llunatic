@@ -53,7 +53,7 @@
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.CheckWeaklyAcyclicityInTGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies" level="DEBUG"/>-->
-    <!--<logger name="it.unibas.lunatic.model.dependency.RewriteSTTGDs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.dependency.operators.RewriteSTTGDs" level="DEBUG"/>-->
 
     <!--     ALGEBRA     -->
     <!--<logger name="speedy.model.algebra.Difference" level="DEBUG"/>-->

@@ -2,7 +2,7 @@ package it.unibas.lunatic.test;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.model.dependency.RewriteSTTGDs;
+import it.unibas.lunatic.model.dependency.operators.RewriteSTTGDs;
 import it.unibas.spicy.persistence.DAOException;
 import junit.framework.TestCase;
 

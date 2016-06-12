@@ -9,6 +9,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import speedy.SpeedyConstants;
 import speedy.exceptions.DBMSException;
+import speedy.model.algebra.operators.sql.DBMSEncodeIdentificators;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.TableAlias;
 import speedy.model.database.TupleOID;
@@ -88,7 +89,8 @@ public class LunaticDBMSUtility {
     public static String attributeRefToAliasSQL(AttributeRef attributeRef) {
         StringBuilder sb = new StringBuilder();
         sb.append(LunaticDBMSUtility.tableAliasToSQL(attributeRef.getTableAlias())).append(LunaticConstants.DELTA_TABLE_SEPARATOR).append(attributeRef.getName());
-        return sb.toString();
+        String result = sb.toString();
+        return result;
     }
 
     public static String cleanRelationName(String name) {

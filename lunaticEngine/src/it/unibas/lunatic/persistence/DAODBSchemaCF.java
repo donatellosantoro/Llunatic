@@ -20,14 +20,14 @@ public class DAODBSchemaCF {
 
     private final static Logger logger = LoggerFactory.getLogger(DAODBSchemaCF.class);
 
-    public String getInitDB(Element schemaFileElement, String fileScenario, boolean useDictionaryEncoding) {
+    public String getInitDB(Element schemaFileElement, String fileScenario, boolean useDictionaryEncoding, boolean useCompactAttributeName) {
         String schemaName = schemaFileElement.getAttributeValue("schema");
         if (schemaName == null) {
             throw new DAOException("Unable to load schemaFile. Missing attribute 'schema' in element <schemaFile>");
         }
         boolean isSource = schemaName.equalsIgnoreCase("source");
         File schemaFile = DAOUtility.loadFile(schemaFileElement.getText(), fileScenario);
-        Map<String, List<Attribute>> schemaMap = loadSchema(schemaFile);
+        Map<String, List<Attribute>> schemaMap = loadSchema(schemaFile, useCompactAttributeName);
         if (schemaMap.isEmpty()) {
             throw new DAOException("SchemaFile " + schemaFileElement.getText() + " does not contain any table");
         }
@@ -44,7 +44,7 @@ public class DAODBSchemaCF {
         return initDBScript.toString();
     }
 
-    private Map<String, List<Attribute>> loadSchema(File schemaFile) {
+    private Map<String, List<Attribute>> loadSchema(File schemaFile, boolean useCompactAttributeName) {
         Map<String, List<Attribute>> schemaMap = new HashMap<String, List<Attribute>>();
         BufferedReader reader = null;
         try {
@@ -55,7 +55,7 @@ public class DAODBSchemaCF {
                 if (line.trim().isEmpty()) {
                     continue;
                 }
-                readTable(line, reader, schemaMap);
+                readTable(line, reader, schemaMap, useCompactAttributeName);
             }
         } catch (Exception e) {
             logger.error(e.toString());
@@ -71,7 +71,7 @@ public class DAODBSchemaCF {
         return schemaMap;
     }
 
-    private void readTable(String tableNameLine, BufferedReader reader, Map<String, List<Attribute>> schemaMap) throws IOException {
+    private void readTable(String tableNameLine, BufferedReader reader, Map<String, List<Attribute>> schemaMap, boolean useCompactAttributeName) throws IOException {
         if (!tableNameLine.contains("{")) {
             throw new DAOException("Wrong schema format for table name in line " + tableNameLine);
         }
@@ -80,6 +80,7 @@ public class DAODBSchemaCF {
         if (logger.isDebugEnabled()) logger.debug("Reading table '" + tableName + "'");
         List<Attribute> attributesForTable = new ArrayList<Attribute>();
         String line;
+        int count = 0;
         while (!"}".equals(line = reader.readLine())) {
             if (line.trim().isEmpty()) {
                 continue;
@@ -89,6 +90,10 @@ public class DAODBSchemaCF {
                 throw new DAOException("Wrong schema format for attribute in line " + tableNameLine);
             }
             String attribute = attributeType[0].trim();
+            if (useCompactAttributeName) {
+                count++;
+                attribute = "a" + count;
+            }
             String type = cleanType(attributeType[1].trim());
             if (logger.isDebugEnabled()) logger.debug("Attribute: '" + attribute + "' - Type: " + type);
             attributesForTable.add(new Attribute(tableName, attribute, type));
@@ -104,7 +109,7 @@ public class DAODBSchemaCF {
     }
 
     private void appendTable(String tableName, List<Attribute> attributes, StringBuilder initDBScript, boolean isSource, boolean useDictionaryEncoding) {
-        initDBScript.append("CREATE TABLE ").append(tableName).append(" (");
+        initDBScript.append("CREATE UNLOGGED TABLE ").append(tableName).append(" (");
         initDBScript.append("\n\t  oid serial,");
         for (Attribute attribute : attributes) {
             String attributeType = convertType(attribute.getType(), isSource, useDictionaryEncoding);

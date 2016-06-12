@@ -8,7 +8,6 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedEGD;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.EGDStratum;
-import it.unibas.lunatic.model.dependency.RewriteSTTGDs;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.Comparator;
 import java.util.List;

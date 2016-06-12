@@ -32,7 +32,7 @@ public class DAODatabaseConfiguration {
     private final DAODBSchemaCF daoSchema = new DAODBSchemaCF();
     private final TransformFilePaths filePathTransformator = new TransformFilePaths();
 
-    public IDatabase loadDatabase(Element databaseElement, String suffix, String fileScenario, IValueEncoder valueEncoder) throws DAOException {
+    public IDatabase loadDatabase(Element databaseElement, String suffix, String fileScenario, IValueEncoder valueEncoder, boolean useCompactAttributeName) throws DAOException {
         if (databaseElement == null || databaseElement.getChildren().isEmpty()) {
             return new EmptyDB();
         }
@@ -84,7 +84,7 @@ public class DAODatabaseConfiguration {
             }
             Element schemaFileElement = databaseElement.getChild("schemaFile");
             if (schemaFileElement != null) {
-                database.getInitDBConfiguration().setInitDBScript(daoSchema.getInitDB(schemaFileElement, fileScenario, useDictionaryEncoding));
+                database.getInitDBConfiguration().setInitDBScript(daoSchema.getInitDB(schemaFileElement, fileScenario, useDictionaryEncoding, useCompactAttributeName));
             }
             database.getInitDBConfiguration().setValueEncoder(valueEncoder);
             processImport(databaseElement, database, fileScenario);

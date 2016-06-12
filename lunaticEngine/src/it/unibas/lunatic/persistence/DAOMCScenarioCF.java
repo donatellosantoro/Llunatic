@@ -69,11 +69,11 @@ public class DAOMCScenarioCF {
             }
             //SOURCE
             Element sourceElement = rootElement.getChild("source");
-            IDatabase sourceDatabase = daoDatabaseConfiguration.loadDatabase(sourceElement, null, fileScenario, scenario.getValueEncoder()); //Source schema doesn't need suffix
+            IDatabase sourceDatabase = daoDatabaseConfiguration.loadDatabase(sourceElement, null, fileScenario, scenario.getValueEncoder(), configuration.isUseCompactAttributeName()); //Source schema doesn't need suffix
             scenario.setSource(sourceDatabase);
             //TARGET
             Element targetElement = rootElement.getChild("target");
-            IDatabase targetDatabase = daoDatabaseConfiguration.loadDatabase(targetElement, config.getSuffix(), fileScenario, scenario.getValueEncoder());
+            IDatabase targetDatabase = daoDatabaseConfiguration.loadDatabase(targetElement, config.getSuffix(), fileScenario, scenario.getValueEncoder(), configuration.isUseCompactAttributeName());
             scenario.setTarget(targetDatabase);
             long end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.LOAD_TIME, end - start);

@@ -32,6 +32,7 @@ public class LunaticConfiguration {
     private boolean useHashForSkolem = true;
     private boolean useDictionaryEncoding = true;
     private boolean useBatchInsert = true;
+    private boolean useCompactAttributeName = true;
     private boolean exportSolutions = false;
     private String exportSolutionsPath;
     private String exportSolutionsType = SpeedyConstants.CSV;
@@ -401,6 +402,14 @@ public class LunaticConfiguration {
         this.printStatsOnly = printStatsOnly;
     }
 
+    public boolean isUseCompactAttributeName() {
+        return useCompactAttributeName;
+    }
+
+    public void setUseCompactAttributeName(boolean useCompactAttributeName) {
+        this.useCompactAttributeName = useCompactAttributeName;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
@@ -429,6 +438,7 @@ public class LunaticConfiguration {
                 + "\n\t ExportSolutions: " + exportSolutions
                 + "\n\t ExportSolutionsPath: " + exportSolutionsPath
                 + "\n\t ExportSolutionsType: " + exportSolutionsType
+                + "\n\t UseCompactAttributeName: " + useCompactAttributeName
                 + "\n\t Cache type: " + cacheType
                 + "\n\t DeChaser: " + deChaser
                 + "\n\t PrintStatsOnly: " + printStatsOnly;

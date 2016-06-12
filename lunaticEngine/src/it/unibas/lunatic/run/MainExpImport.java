@@ -61,5 +61,6 @@ public class MainExpImport {
         if (scenario.getValueEncoder() != null) {
             scenario.getValueEncoder().waitingForEnding();
         }
+        if (LunaticConfiguration.isPrintSteps()) System.out.println(ChaseStats.getInstance().toString());
     }
 }

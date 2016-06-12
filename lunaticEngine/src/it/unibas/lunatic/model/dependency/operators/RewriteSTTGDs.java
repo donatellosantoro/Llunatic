@@ -1,7 +1,8 @@
-package it.unibas.lunatic.model.dependency;
+package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.persistence.DAOMCScenarioStandard;
 import it.unibas.spicy.model.mapping.rewriting.operators.RewriteAndExportSTTgds;
 import it.unibas.spicy.persistence.DAOException;

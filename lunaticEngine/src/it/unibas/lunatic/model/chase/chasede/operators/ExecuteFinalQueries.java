@@ -68,6 +68,9 @@ public class ExecuteFinalQueries {
         if (sqlQueries.isEmpty()) {
             return;
         }
+        if (conf.isExportQueryResults()) {
+            System.out.println("Exporting query results in " + conf.getExportQueryResultsPath());
+        }
         int numberOfThreads = conf.getMaxNumberOfThreads();
         Map<String, String> queryResults = Collections.synchronizedMap(new HashMap<String, String>());
         ThreadManager threadManager = new ThreadManager(numberOfThreads);
