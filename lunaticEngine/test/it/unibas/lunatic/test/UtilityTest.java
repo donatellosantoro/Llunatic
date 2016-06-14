@@ -2,6 +2,7 @@ package it.unibas.lunatic.test;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
+import it.unibas.lunatic.persistence.DAOConfiguration;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import java.io.File;
@@ -70,7 +71,10 @@ public class UtilityTest {
         }
         try {
             DAOMCScenario daoScenario = new DAOMCScenario();
-            Scenario scenario = daoScenario.loadScenario(fileScenario, suffix);
+            DAOConfiguration daoConfiguration = new DAOConfiguration();
+            daoConfiguration.setSuffix(suffix);
+            daoConfiguration.setUseDictionaryEncoding(false);
+            Scenario scenario = daoScenario.loadScenario(fileScenario, daoConfiguration);
             scenario.setAbsolutePath(fileScenario);
             return scenario;
         } catch (Exception ex) {

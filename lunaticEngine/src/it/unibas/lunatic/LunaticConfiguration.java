@@ -52,14 +52,11 @@ public class LunaticConfiguration {
 //    private String deChaser = LunaticConstants.PROXY_MC_CHASER;
     private String deChaser = LunaticConstants.DE_OPTIMIZED_CHASER;
 //
-//    private String cacheType = LunaticConstants.NO_CACHE;
-//    private String cacheType = LunaticConstants.LAZY_CACHE;
-//    private String cacheType = LunaticConstants.GREEDY_JCS;
-    private String cacheType = LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE;
-//    private String cacheType = LunaticConstants.GREEDY_SINGLESTEP_SIMPLE_CACHE;
-//    private String cacheType = LunaticConstants.GREEDY_SIMPLE_CACHE;
-//    private String cacheType = LunaticConstants.GREEDY_EHCACHE;
-//    private String cacheType = LunaticConstants.GREEDY_SINGLESTEP_EHCACHE_CACHE;
+    private String cacheTypeForMC = LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE;
+//    private String cacheTypeForMC = LunaticConstants.GREEDY_MULTI_STEP_JCS;
+    
+    private String cacheTypeForDE = LunaticConstants.GREEDY_DE_JCS;
+//    private String cacheTypeForDE = LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE;
 
     public static boolean isPrintSteps() {
         return printSteps;
@@ -157,12 +154,20 @@ public class LunaticConfiguration {
         this.checkSolutions = checkSolutions;
     }
 
-    public String getCacheType() {
-        return cacheType;
+    public String getCacheTypeForMC() {
+        return cacheTypeForMC;
     }
 
-    public void setUseCache(String cacheType) {
-        this.cacheType = cacheType;
+    public void setCacheTypeForMC(String cacheTypeForMC) {
+        this.cacheTypeForMC = cacheTypeForMC;
+    }
+
+    public String getCacheTypeForDE() {
+        return cacheTypeForDE;
+    }
+
+    public void setCacheTypeForDE(String cacheTypeForDE) {
+        this.cacheTypeForDE = cacheTypeForDE;
     }
 
     public boolean isForceMCChaserInTests() {
@@ -439,7 +444,8 @@ public class LunaticConfiguration {
                 + "\n\t ExportSolutionsPath: " + exportSolutionsPath
                 + "\n\t ExportSolutionsType: " + exportSolutionsType
                 + "\n\t UseCompactAttributeName: " + useCompactAttributeName
-                + "\n\t Cache type: " + cacheType
+                + "\n\t Cache type for MC: " + cacheTypeForMC
+                + "\n\t Cache type for DE: " + cacheTypeForDE
                 + "\n\t DeChaser: " + deChaser
                 + "\n\t PrintStatsOnly: " + printStatsOnly;
     }

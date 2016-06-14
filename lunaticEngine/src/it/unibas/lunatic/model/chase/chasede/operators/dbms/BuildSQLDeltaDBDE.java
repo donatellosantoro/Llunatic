@@ -19,6 +19,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
+import speedy.model.database.operators.dbms.SQLAnalyzeDatabase;
+import speedy.model.thread.IBackgroundThread;
+import speedy.model.thread.ThreadManager;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.DBMSUtility;
@@ -42,17 +45,20 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         script.append(createDeltaRelationsSchema(database, deltaTables, accessConfiguration, affectedAttributes, scenario));
         script.append(insertIntoDeltaRelations(database, accessConfiguration, rootName, affectedAttributes, scenario));
         QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true, false);
-        analyzeDeltaTables(deltaTables, accessConfiguration);
+        analyzeDeltaTables(deltaTables, accessConfiguration, scenario.getConfiguration().getMaxNumberOfThreads());
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_BUILDER, end - start);
         return deltaDB;
     }
 
-    private void analyzeDeltaTables(List<String> deltaTables, AccessConfiguration accessConfiguration) {
+    private void analyzeDeltaTables(List<String> deltaTables, AccessConfiguration accessConfiguration, int maxNumberOfThreads) {
         QueryManager.executeScript("ANALYZE " + DBMSUtility.getSchemaNameAndDot(accessConfiguration) + LunaticConstants.CELLGROUP_TABLE, accessConfiguration, true, true, true, false);
+        ThreadManager threadManager = new ThreadManager(maxNumberOfThreads);
         for (String tableName : deltaTables) {
-            QueryManager.executeScript("ANALYZE " + tableName, accessConfiguration, true, true, true, false);
+            AnalyzeTableThread analyzeThread = new AnalyzeTableThread(tableName, accessConfiguration);
+            threadManager.startThread(analyzeThread);
         }
+        threadManager.waitForActiveThread();
     }
 
     private String createCellGroupTable(AccessConfiguration accessConfiguration, Scenario scenario) {
@@ -245,5 +251,23 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         result.append("'").append(attributeName).append("'").append(");\n");
         result.append(indent).append("END IF;").append("\n");
         return result.toString();
+    }
+
+    class AnalyzeTableThread implements IBackgroundThread {
+
+        private String tableName;
+        private AccessConfiguration accessConfiguration;
+
+        public AnalyzeTableThread(String tableName, AccessConfiguration accessConfiguration) {
+            this.tableName = tableName;
+            this.accessConfiguration = accessConfiguration;
+        }
+
+        public void execute() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("ANALYZE ").append(tableName).append(";\n");
+            QueryManager.executeScript(sb.toString(), accessConfiguration, true, true, true, false);
+        }
+
     }
 }

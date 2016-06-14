@@ -169,6 +169,7 @@ public class DAOLunaticConfiguration {
         if (configuration.isAutoSelectBestNumberOfThreads()) {
             selectBestNumberOfThreads(configuration);
         }
+        if (LunaticConfiguration.isPrintSteps()) System.out.println("Using " + configuration.getMaxNumberOfThreads() + " threads");
         return configuration;
     }
 
@@ -410,10 +411,10 @@ public class DAOLunaticConfiguration {
             userManager = new AfterForkUserManager();
         }
         if (USER_MANAGER_AFTER_LLUN.equals(userManagerType)) {
-            userManager = new AfterLLUNUserManager(OperatorFactory.getInstance().getOccurrenceHandler(scenario));
+            userManager = new AfterLLUNUserManager(OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario));
         }
         if (USER_MANAGER_AFTER_LLUN_FORK.equals(userManagerType)) {
-            userManager = new AfterLLUNForkUserManager(OperatorFactory.getInstance().getOccurrenceHandler(scenario));
+            userManager = new AfterLLUNForkUserManager(OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario));
         }
         return userManager;
     }
@@ -429,7 +430,6 @@ public class DAOLunaticConfiguration {
     private void selectBestNumberOfThreads(LunaticConfiguration configuration) {
         int cores = Runtime.getRuntime().availableProcessors();
         int threads = (cores * 2) - 1;
-        if (LunaticConfiguration.isPrintSteps()) System.out.println("Using " + threads + " threads");
         configuration.setMaxNumberOfThreads(threads);
     }
 

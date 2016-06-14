@@ -30,7 +30,7 @@ import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLOIDGenerator;
-import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedyJCSCacheManager;
+import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedyMultiStepJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.ICacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLExportSolution;
@@ -73,6 +73,7 @@ import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.BuildMainMemor
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectNaive;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryRemoveDuplicates;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryReplaceDatabase;
+import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedyDEJCSCacheManager;
 import speedy.model.database.operators.IAnalyzeDatabase;
 import speedy.model.database.operators.dbms.SQLAnalyzeDatabase;
 import speedy.model.database.operators.mainmemory.MainMemoryAnalyzeDatabase;
@@ -227,15 +228,18 @@ public class OperatorFactory {
         return sqlDEDDatabaseManager;
     }
 
-    public IOccurrenceHandler getOccurrenceHandler(Scenario scenario) {
+    public IOccurrenceHandler getOccurrenceHandlerMC(Scenario scenario) {
+        if (!scenario.isMCScenario()) {
+            throw new IllegalArgumentException("Scenario must be MC");
+        }
         IOccurrenceHandler occurrenceHandler = occurrenceHandlerMap.get(scenario);
         if (occurrenceHandler != null) {
             return occurrenceHandler;
         }
-        String cacheType = scenario.getConfiguration().getCacheType();
+        String cacheType = scenario.getConfiguration().getCacheTypeForMC();
         ICacheManager cacheManager;
-        if (cacheType.equals(LunaticConstants.GREEDY_JCS)) {
-            cacheManager = new GreedyJCSCacheManager(getQueryRunner(scenario));
+        if (cacheType.equals(LunaticConstants.GREEDY_MULTI_STEP_JCS)) {
+            cacheManager = new GreedyMultiStepJCSCacheManager(getQueryRunner(scenario));
         } else if (cacheType.equals(LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE)) {
             cacheManager = new GreedySingleStepJCSCacheManager(getQueryRunner(scenario));
         } else {
@@ -255,11 +259,25 @@ public class OperatorFactory {
             throw new IllegalArgumentException("Incompatible operator type for DE Scenario");
         }
         return new ChaseDeltaExtTGDs(getQueryRunner(scenario), getDatabaseBuilder(scenario),
-                getOccurrenceHandler(scenario), getOIDGenerator(scenario), getCellChanger(scenario));
+                getOccurrenceHandlerMC(scenario), getOIDGenerator(scenario), getCellChangerMC(scenario));
     }
 
     public CheckUnsatisfiedDependencies getUnsatisfiedDependenciesChecker(Scenario scenario) {
         return new CheckUnsatisfiedDependencies(getDatabaseBuilder(scenario), getOccurrenceHandler(scenario), getQueryRunner(scenario));
+    }
+
+    private IOccurrenceHandler getOccurrenceHandler(Scenario scenario) throws IllegalArgumentException {
+        IOccurrenceHandler occurrenceHandler;
+        if (scenario.isDEScenario()) {
+            occurrenceHandler = getOccurrenceHandlerDE(scenario);
+        } else if (scenario.isDEDScenario()) {
+            occurrenceHandler = getOccurrenceHandlerDE(scenario);
+        } else if (scenario.isMCScenario()) {
+            occurrenceHandler = getOccurrenceHandlerMC(scenario);
+        } else {
+            throw new IllegalArgumentException("Unknown scenario type");
+        }
+        return occurrenceHandler;
     }
 
     public CheckSolution getSolutionChecker(Scenario scenario) {
@@ -268,8 +286,8 @@ public class OperatorFactory {
 
     public ChaseDeltaExtEGDs getDeltaExtEGDChaser(Scenario scenario) {
         return new ChaseDeltaExtEGDs(getDatabaseBuilder(scenario), getQueryRunner(scenario),
-                getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getCellChanger(scenario),
-                getOccurrenceHandler(scenario), getUnsatisfiedDependenciesChecker(scenario));
+                getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getCellChangerMC(scenario),
+                getOccurrenceHandlerMC(scenario), getUnsatisfiedDependenciesChecker(scenario));
     }
 
     public ChaseDeltaEGDs getDeltaEGDChaser(Scenario scenario) {
@@ -278,28 +296,39 @@ public class OperatorFactory {
                 getOccurrenceHandlerDE(scenario), getUnsatisfiedDependenciesChecker(scenario));
     }
 
-    public IChangeCell getCellChanger(Scenario scenario) {
-        if (scenario.isDEScenario()) {
-            return new ChangeCellDEProxy(getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getOccurrenceHandler(scenario));
+    public IChangeCell getCellChangerMC(Scenario scenario) {
+        if (!scenario.isMCScenario()) {
+            throw new IllegalArgumentException("Incompatible operator type for Scenario");
         }
-        return new ChangeCell(getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getOccurrenceHandler(scenario));
+//        if (scenario.isDEScenario()) {
+//            return new ChangeCellDEProxy(getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getOccurrenceHandlerMC(scenario));
+//        }
+        return new ChangeCell(getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getOccurrenceHandlerMC(scenario));
     }
 
     public IChangeCell getCellChangerDE(Scenario scenario) {
+        if (!scenario.isDEScenario() && !scenario.isDEDScenario()) {
+            throw new IllegalArgumentException("Scenario must be DE");
+        }
         return new ChangeCellDE(getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getOccurrenceHandlerDE(scenario));
     }
 
     public IOccurrenceHandler getOccurrenceHandlerDE(Scenario scenario) {
+        if (!scenario.isDEScenario() && !scenario.isDEDScenario()) {
+            throw new IllegalArgumentException("Scenario must be DE");
+        }
         IOccurrenceHandler occurrenceHandler = occurrenceHandlerMap.get(scenario);
         if (occurrenceHandler != null) {
             return occurrenceHandler;
         }
-        String cacheType = scenario.getConfiguration().getCacheType();
+        String cacheType = scenario.getConfiguration().getCacheTypeForDE();
         ICacheManager cacheManager;
-        if (cacheType.equals(LunaticConstants.GREEDY_JCS)) {
-            cacheManager = new GreedyJCSCacheManager(getQueryRunner(scenario));
+        if (cacheType.equals(LunaticConstants.GREEDY_MULTI_STEP_JCS)) {
+            cacheManager = new GreedyMultiStepJCSCacheManager(getQueryRunner(scenario));
         } else if (cacheType.equals(LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE)) {
             cacheManager = new GreedySingleStepJCSCacheManager(getQueryRunner(scenario));
+        } else if (cacheType.equals(LunaticConstants.GREEDY_DE_JCS)) {
+            cacheManager = new GreedyDEJCSCacheManager(getQueryRunner(scenario));
         } else {
             throw new IllegalArgumentException("Cache manager " + cacheType + " not supported.");
         }
@@ -309,7 +338,10 @@ public class OperatorFactory {
     }
 
     public AddUserNode getUserNodeCreator(Scenario scenario) {
-        return new AddUserNode(getCellChanger(scenario), getOccurrenceHandler(scenario));
+        if (!scenario.isMCScenario()) {
+            throw new IllegalArgumentException("Incompatible operator type for Scenario");
+        }
+        return new AddUserNode(getCellChangerMC(scenario), getOccurrenceHandlerMC(scenario));
     }
 
     public ChaseTreeToString getChaseTreeToString(Scenario scenario) {

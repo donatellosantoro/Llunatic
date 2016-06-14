@@ -14,6 +14,7 @@ public class TestRS extends CheckTest {
 
     public void testTgd0() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources("/de/RS/RS-affected-mcscenario.xml");
+        scenario.getConfiguration().setUseDictionaryEncoding(false);
         scenario.getConfiguration().setOptimizeSTTGDs(false);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());

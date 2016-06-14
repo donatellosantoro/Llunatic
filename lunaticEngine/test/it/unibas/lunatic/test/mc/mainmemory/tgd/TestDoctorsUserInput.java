@@ -52,7 +52,7 @@ public class TestDoctorsUserInput extends CheckTest {
         if (node.isLeaf()) {
             if (changed < 1) {
                 DeltaChaseStep newStep = userNodeCreator.addUserNode(node, scenario);
-                List<CellGroup> cellGroups = OperatorFactory.getInstance().getOccurrenceHandler(scenario).loadAllCellGroupsForDebugging(newStep.getDeltaDB(), newStep.getId(), scenario);
+                List<CellGroup> cellGroups = OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario).loadAllCellGroupsForDebugging(newStep.getDeltaDB(), newStep.getId(), scenario);
                 for (CellGroup cellGroup : cellGroups) {
                     if (cellGroup.getValue() instanceof LLUNValue) {
                         if (logger.isDebugEnabled()) logger.debug("Changing " + cellGroup.getValue() + " to 6666");

@@ -18,7 +18,7 @@ public class ChaserFactory {
         IBuildDatabaseForChaseStep stepBuilder = OperatorFactory.getInstance().getDatabaseBuilder(scenario);
         IRunQuery queryRunner = OperatorFactory.getInstance().getQueryRunner(scenario);
         IInsertTuple insertOperatorForEgds = OperatorFactory.getInstance().getInsertTuple(scenario);
-        IOccurrenceHandler occurrenceHandler = OperatorFactory.getInstance().getOccurrenceHandler(scenario);
+        IOccurrenceHandler occurrenceHandler = OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario);
         IChaseDeltaExtTGDs extTgdChaser = OperatorFactory.getInstance().getExtTgdChaser(scenario);
         CheckSolution solutionChecker = OperatorFactory.getInstance().getSolutionChecker(scenario);
         ChaseDeltaExtEGDs egdChaser = OperatorFactory.getInstance().getDeltaExtEGDChaser(scenario);

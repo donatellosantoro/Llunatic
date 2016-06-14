@@ -27,7 +27,7 @@ public class GreedySingleStepJCSCacheManager extends AbstractGreedyCacheManager 
 
     private final CacheAccess<String, CellGroup> cellGroupCache;
     private final CacheAccess<String, IValue> clusterIdCache;
-    private Set<String> previousCachedStepIds = new HashSet<String>();
+    private final Set<String> previousCachedStepIds = new HashSet<String>();
     private String currentCachedStepId;
 
     public GreedySingleStepJCSCacheManager(IRunQuery queryRunner) {

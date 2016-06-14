@@ -107,7 +107,9 @@ public class ChaseDEScenario implements IDEChaser {
                     }
                     DeltaChaseStep lastStep = getLastStep(chaseTree.getRoot());
                     IDatabase databaseAfterEGD = databaseBuilder.extractDatabaseWithDistinct(lastStep.getId(), lastStep.getDeltaDB(), lastStep.getOriginalDB(), scenario);
+                    if (logger.isDebugEnabled()) logger.debug("Database after egds:\n" + databaseAfterEGD.printInstances());
                     databaseReplacer.replaceTargetDB(databaseAfterEGD, scenario);
+                    targetDB = scenario.getTarget();
                     if (allInclusionDependencies) {
                         break;
                     }

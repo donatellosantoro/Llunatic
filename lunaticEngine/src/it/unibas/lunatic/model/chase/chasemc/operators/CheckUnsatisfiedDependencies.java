@@ -24,7 +24,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
-import speedy.model.algebra.Limit;
 import speedy.model.algebra.operators.ITupleIterator;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
@@ -229,6 +228,7 @@ public class CheckUnsatisfiedDependencies {
                 if (logger.isDebugEnabled()) logger.debug("Dependency " + dependency.getId() + " is satisfied, skipping...");
                 continue;
             }
+            if (logger.isDebugEnabled()) logger.debug("Dependency " + dependency.getId() + " is unsatisfied");
             unsatisfiedDepdendencies.add(dependency);
         }
         if (logger.isDebugEnabled()) logger.info("Unsatisfied:  " + LunaticUtility.printDependencyIds(unsatisfiedDepdendencies));
@@ -266,12 +266,14 @@ public class CheckUnsatisfiedDependencies {
     }
 
     private boolean hasModifiedQueriedAttributes(Set<AttributeRef> affectedAttributes, List<AttributeRef> queriedAttributes) {
-        if (logger.isDebugEnabled()) logger.debug("Checking if dependency is satisfied. Affected attributes: " + affectedAttributes + " - Queried attributes: " + queriedAttributes);
+        if (logger.isDebugEnabled()) logger.debug("Checking if dependency has modified queried attributes. Affected attributes: " + affectedAttributes + " - Queried attributes: " + queriedAttributes);
         for (AttributeRef affectedAttribute : affectedAttributes) {
             if (queriedAttributes.contains(affectedAttribute)) {
+                if (logger.isDebugEnabled()) logger.debug("Return true");
                 return true;
             }
         }
+        if (logger.isDebugEnabled()) logger.debug("Return false");
         return false;
     }
 }

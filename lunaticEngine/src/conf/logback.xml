@@ -18,7 +18,7 @@
         <!--<appender-ref ref="file"/>-->
     </root>
     <!--TEST-->     
-    <!--<logger name="it.unibas.lunatic.test" level="TRACE"/>-->
+    <!--<logger name="it.unibas.lunatic.test" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.QueryStatManager" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.QueryManager" level="TRACE"/>-->

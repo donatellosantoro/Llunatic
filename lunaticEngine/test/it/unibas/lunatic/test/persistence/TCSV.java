@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Date;
 import junit.framework.TestCase;
 
-public class TestCSV extends TestCase {
+public class TCSV extends TestCase {
 
     public void test() throws IOException {
         CsvMapper mapper = new CsvMapper();

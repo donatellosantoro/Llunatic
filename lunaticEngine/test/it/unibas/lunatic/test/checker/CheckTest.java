@@ -33,7 +33,7 @@ public class CheckTest extends TestCase {
     protected CheckConsistencyOfCellGroups validSolutionChecker = new CheckConsistencyOfCellGroups();
 
     protected GenerateModifiedCells getModifiedCellGenerator(Scenario scenario) {
-        return new GenerateModifiedCells(OperatorFactory.getInstance().getOccurrenceHandler(scenario));
+        return new GenerateModifiedCells(OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario));
     }
 
     @Override

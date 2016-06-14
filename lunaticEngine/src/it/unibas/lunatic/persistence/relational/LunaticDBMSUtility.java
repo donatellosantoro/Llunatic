@@ -9,7 +9,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import speedy.SpeedyConstants;
 import speedy.exceptions.DBMSException;
-import speedy.model.algebra.operators.sql.DBMSEncodeIdentificators;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.TableAlias;
 import speedy.model.database.TupleOID;

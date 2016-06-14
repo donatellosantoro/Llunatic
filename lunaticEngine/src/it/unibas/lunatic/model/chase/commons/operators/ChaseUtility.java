@@ -280,7 +280,7 @@ public class ChaseUtility {
         if (father == null) {
             return localId;
         }
-        return father.getId() + "." + localId;
+        return father.getId() + LunaticConstants.CHASE_STEP_SEPARATOR + localId;
     }
 
     public static List<VariableEquivalenceClass> findJoinVariablesInTarget(Dependency egd) {
@@ -327,7 +327,7 @@ public class ChaseUtility {
     }
 
     public static String generateChaseStepIdForEGDs(String egdId, int i, Repair repair) {
-        return egdId + "_" + i + "_" + repair.getChaseModes() + "#";
+        return egdId + "_" + i + "_" + repair.getChaseModes() + LunaticConstants.CHASE_STEP_DELIMITER_EGD;
     }
 
     public static String generateChaseStepIdForTGDs(Dependency eTgd) {

@@ -21,6 +21,8 @@ public class LunaticConstants {
     public static final String CHASE_EDIT_USER = "edit";
     public static final String CHASE_STEP_ROOT = "r";
     public static final String CHASE_STEP_TGD = "t";
+    public static final String CHASE_STEP_DELIMITER_EGD = "#";
+    public static final String CHASE_STEP_SEPARATOR = ".";
 
     public static final String DELTA_TABLE_SEPARATOR = "__";
     public static final String NA_TABLE_SUFFIX = DELTA_TABLE_SEPARATOR + "NA";
@@ -45,7 +47,8 @@ public class LunaticConstants {
     public static final String TYPE_ADDITIONAL = "ADDTL_FOR_";
 
     ///////////////    CACHE STRATEGIES    ///////////////////
-    public static final String GREEDY_JCS = "JCS_GREEDY";
+    public static final String GREEDY_DE_JCS = "GREEDY_DE_JCS";
+    public static final String GREEDY_MULTI_STEP_JCS = "GREEDY_MULTI_STEP_JCS";
     public static final String GREEDY_SINGLESTEP_JCS_CACHE = "GREEDY_JCS_SINGLESTEP";
 
     ///////////////    DE CHASER STRATEGIES    ///////////////////

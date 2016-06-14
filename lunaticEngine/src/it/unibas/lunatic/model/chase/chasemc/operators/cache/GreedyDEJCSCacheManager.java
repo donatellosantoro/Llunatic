@@ -1,8 +1,9 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.cache;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
-import java.util.HashSet;
+import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import java.util.Set;
 import org.apache.commons.jcs.JCS;
 import org.apache.commons.jcs.access.CacheAccess;
@@ -14,19 +15,17 @@ import speedy.model.database.IDatabase;
 import speedy.model.database.IValue;
 import speedy.model.database.operators.IRunQuery;
 
-public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
+public class GreedyDEJCSCacheManager extends AbstractGreedyCacheManager {
 
-    private static Logger logger = LoggerFactory.getLogger(GreedyJCSCacheManager.class);
+    private static Logger logger = LoggerFactory.getLogger(GreedyDEJCSCacheManager.class);
 
     private final CacheAccess<String, CellGroup> cellGroupCache;
-    private final CacheAccess<String, IValue> clusterIdCache;
-    private Set<String> cachedStepIds = new HashSet<String>();
+    private boolean rootCellGroupsLoaded = false;
 
-    public GreedyJCSCacheManager(IRunQuery queryRunner) {
+    public GreedyDEJCSCacheManager(IRunQuery queryRunner) {
         super(queryRunner);
         try {
             this.cellGroupCache = JCS.getInstance("cellgroupcache");
-            this.clusterIdCache = JCS.getInstance("clusteridcache");
         } catch (CacheException ex) {
             logger.error("Unable to create JCS Cache. " + ex.getLocalizedMessage());
             throw new IllegalStateException("Unable to create JCS Cache. " + ex.getLocalizedMessage());
@@ -36,7 +35,8 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
     @Override
     public CellGroup loadCellGroupFromId(IValue value, String stepId, IDatabase deltaDB, Scenario scenario) {
         loadCacheForStep(stepId, deltaDB, scenario);
-        String key = buildKey(value, stepId);
+        //For DE only the Root step is used for the entire chase
+        String key = buildKey(value, LunaticConstants.CHASE_STEP_ROOT);
         CellGroup cellGroup = (CellGroup) cellGroupCache.get(key);
         return cellGroup;
     }
@@ -45,7 +45,7 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
     public void putCellGroup(CellGroup cellGroup, String stepId, IDatabase deltaDB, Scenario scenario) {
         try {
             loadCacheForStep(stepId, deltaDB, scenario);
-            String key = buildKey(cellGroup.getId(), stepId);
+            String key = buildKey(cellGroup.getId(), LunaticConstants.CHASE_STEP_ROOT);
             cellGroupCache.put(key, cellGroup);
         } catch (CacheException ex) {
             logger.error("Unable to add objects to cache. " + ex.getLocalizedMessage());
@@ -55,66 +55,37 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
 
     @Override
     public void removeCellGroup(IValue value, String stepId) {
-        String key = buildKey(value, stepId);
+        String key = buildKey(value, LunaticConstants.CHASE_STEP_ROOT);
         this.cellGroupCache.remove(key);
     }
 
     @Override
     public IValue getClusterId(CellRef cellRef, String stepId, IDatabase deltaDB, Scenario scenario) {
-        loadCacheForStep(stepId, deltaDB, scenario);
-        String key = buildKey(cellRef, stepId);
-        IValue value = (IValue) clusterIdCache.get(key);
-        if (value == null) {
-            return null;
-        }
-        return value;
+        throw new UnsupportedOperationException("Operation not possibile in DE scenarios");
     }
 
     @Override
     public void putClusterId(CellRef cellRef, IValue value, String stepId, IDatabase deltaDB, Scenario scenario) {
-        try {
-            loadCacheForStep(stepId, deltaDB, scenario);
-            String key = buildKey(cellRef, stepId);
-            this.clusterIdCache.put(key, value);
-        } catch (CacheException ex) {
-            logger.error("Unable to add objects to cache. " + ex.getLocalizedMessage());
-            throw new IllegalStateException("Unable to add objects to cache. " + ex.getLocalizedMessage());
-        }
+//        throw new UnsupportedOperationException("Operation not possibile in DE scenarios");
     }
 
     @Override
     public void removeClusterId(CellRef cellRef, String stepId) {
-        try {
-            String key = buildKey(cellRef, stepId);
-            this.clusterIdCache.remove(key);
-        } catch (CacheException ex) {
-            logger.error("Unable to remove objects to cache. " + ex.getLocalizedMessage());
-            throw new IllegalStateException("Unable to remove objects to cache. " + ex.getLocalizedMessage());
-        }
+//        throw new UnsupportedOperationException("Operation not possibile in DE scenarios");
     }
 
     public void reset() {
-        try {
-            //New step to cache... cleaning old step
-            cellGroupCache.clear();
-            clusterIdCache.clear();
-        } catch (CacheException ex) {
-            logger.error("Unable to clear objects to cache. " + ex.getLocalizedMessage());
-            throw new IllegalStateException("Unable to clear objects to cache. " + ex.getLocalizedMessage());
-        }
     }
 
     @Override
     protected void loadCacheForStep(String stepId, IDatabase deltaDB, Scenario scenario) {
-        if (cachedStepIds.contains(stepId)) {
+        if (!stepId.equals(LunaticConstants.CHASE_STEP_ROOT) || rootCellGroupsLoaded) {
             return;
         }
+        rootCellGroupsLoaded = true;
         //LOAD CACHE
-        cachedStepIds.add(stepId);
         loadCellGroups(stepId, deltaDB, scenario);
         if (logger.isDebugEnabled()) logger.debug("Cache loaded...\n"
-                    + "\tStep loaded: " + cachedStepIds.size() + "\n"
-                    + "\tCluster id cache max objects: " + clusterIdCache.getCacheAttributes().getMaxObjects() + "\n"
                     + "\tCellgroup max objects: " + cellGroupCache.getCacheAttributes().getMaxObjects());
     }
 
@@ -125,7 +96,13 @@ public class GreedyJCSCacheManager extends AbstractGreedyCacheManager {
     }
 
     @Override
-    public CellGroup getCellGroup(String key) {
-        return (CellGroup) this.cellGroupCache.get(key);
+    public void generateCellGroupStats(DeltaChaseStep step) {
+        throw new UnsupportedOperationException("Operation not possibile in DE scenarios");
     }
+
+    @Override
+    public CellGroup getCellGroup(String key) {
+        throw new UnsupportedOperationException("Operation not possibile in DE scenarios");
+    }
+
 }

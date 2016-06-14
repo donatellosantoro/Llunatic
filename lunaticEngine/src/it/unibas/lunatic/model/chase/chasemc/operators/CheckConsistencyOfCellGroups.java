@@ -54,6 +54,6 @@ public class CheckConsistencyOfCellGroups {
     }
 
     private void initializeOperators(Scenario scenario) {
-        this.occurrenceHandler = OperatorFactory.getInstance().getOccurrenceHandler(scenario);
+        this.occurrenceHandler = OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario);
     }
 }

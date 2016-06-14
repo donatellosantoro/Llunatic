@@ -20,6 +20,7 @@ public class TestSQLDoctors extends CheckExpectedSolutionsTest {
 //        scenario.getCostManagerConfiguration().addNoBackwardDependency("md1");
 //        DependencyUtility.findDependency("md1", scenario.getExtEGDs()).setDoBackward(false);
         scenario.getCostManagerConfiguration().setRequestMajorityInSimilarityCostManager(true);
+        scenario.getConfiguration().setOptimizeSTTGDs(false);
         setConfigurationForTest(scenario);
         ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
