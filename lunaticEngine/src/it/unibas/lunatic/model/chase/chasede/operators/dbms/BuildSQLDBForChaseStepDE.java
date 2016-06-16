@@ -42,6 +42,8 @@ import speedy.model.algebra.aggregatefunctions.ValueAggregateFunction;
 import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
 import speedy.model.database.TableAlias;
 import speedy.model.database.dbms.DBMSVirtualTable;
+import speedy.model.thread.IBackgroundThread;
+import speedy.model.thread.ThreadManager;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.SpeedyUtility;
@@ -77,14 +79,15 @@ public class BuildSQLDBForChaseStepDE implements IBuildDatabaseForChaseStep {
         for (String tableName : originalDB.getTableNames()) {
             attributeMap.put(tableName, buildAttributeRefs(originalDB.getTable(tableName)));
         }
-        StringBuilder script = new StringBuilder();
         Map<String, String> tableViews = extractDatabase("\"" + stepId + "\"", "", deltaDB, originalDB, attributeMap, true, distinct, scenario);
+        int maxNumberOfThreads = scenario.getConfiguration().getMaxNumberOfThreads();
+        ThreadManager threadManager = new ThreadManager(maxNumberOfThreads);
         for (String tableName : tableViews.keySet()) {
             String viewScript = tableViews.get(tableName);
-            script.append(viewScript).append("\n");
+            ExtractTableThread exThread = new ExtractTableThread(viewScript, ((DBMSDB) originalDB).getAccessConfiguration());
+            threadManager.startThread(exThread);
         }
-        if (logger.isDebugEnabled()) logger.debug("View paramized script:\n" + script);
-        QueryManager.executeScript(script.toString(), ((DBMSDB) originalDB).getAccessConfiguration(), true, true, true, false);
+        threadManager.waitForActiveThread();
         AccessConfiguration accessConfiguration = ((DBMSDB) deltaDB).getAccessConfiguration();
         String cleanStepId = stepId.replaceAll("\\.", "_");
         if (useHash) {
@@ -401,4 +404,20 @@ public class BuildSQLDBForChaseStepDE implements IBuildDatabaseForChaseStep {
         }
     }
 
+    class ExtractTableThread implements IBackgroundThread {
+
+        private String script;
+        private AccessConfiguration accessConfiguration;
+
+        public ExtractTableThread(String script, AccessConfiguration accessConfiguration) {
+            this.script = script;
+            this.accessConfiguration = accessConfiguration;
+        }
+
+        public void execute() {
+            if (logger.isDebugEnabled()) logger.debug("View paramized script:\n" + script);
+            QueryManager.executeScript(script, accessConfiguration, true, true, true, false);
+        }
+
+    }
 }
