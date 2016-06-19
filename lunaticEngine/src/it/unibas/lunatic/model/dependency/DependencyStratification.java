@@ -15,10 +15,11 @@ public class DependencyStratification {
     //EGDs
     private List<EGDStratum> egdStrata = new ArrayList<EGDStratum>();
     private Map<AttributeRef, List<Dependency>> attributeEGDMap = new HashMap<AttributeRef, List<Dependency>>();
+    private DirectedGraph<EGDStratum, DefaultEdge> egdStrataGraph;
     //TGDs
     private List<TGDStratum> tgdStrata = new ArrayList<TGDStratum>();
     private Map<Dependency, Set<Dependency>> affectedTGDsMap;
-    private DirectedGraph<TGDStratum, DefaultEdge> strataGraph;
+    private DirectedGraph<TGDStratum, DefaultEdge> tgdStrataGraph;
 
     public List<EGDStratum> getEGDStrata() {
         return egdStrata;
@@ -41,6 +42,14 @@ public class DependencyStratification {
         dependenciesForAttribute.add(value);
     }
 
+    public DirectedGraph<EGDStratum, DefaultEdge> getEgdStrataGraph() {
+        return egdStrataGraph;
+    }
+
+    public void setEgdStrataGraph(DirectedGraph<EGDStratum, DefaultEdge> egdStrataGraph) {
+        this.egdStrataGraph = egdStrataGraph;
+    }
+
     public Map<Dependency, Set<Dependency>> getAffectedTGDsMap() {
         return affectedTGDsMap;
     }
@@ -57,12 +66,12 @@ public class DependencyStratification {
         this.tgdStrata.add(stratum);
     }
 
-    public DirectedGraph<TGDStratum, DefaultEdge> getStrataGraph() {
-        return strataGraph;
+    public DirectedGraph<TGDStratum, DefaultEdge> getTgdStrataGraph() {
+        return tgdStrataGraph;
     }
 
-    public void setStrataGraph(DirectedGraph<TGDStratum, DefaultEdge> strataGraph) {
-        this.strataGraph = strataGraph;
+    public void setTgdStrataGraph(DirectedGraph<TGDStratum, DefaultEdge> tgdStrataGraph) {
+        this.tgdStrataGraph = tgdStrataGraph;
     }
 
     @Override

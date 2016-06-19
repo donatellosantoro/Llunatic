@@ -3,7 +3,7 @@ package it.unibas.lunatic.test.mc.mainmemory.basicscenarios;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -20,7 +20,7 @@ public class TestSynthetic03 extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario\n" + scenario.toString());
 //        scenario.getConfiguration().setRemoveDuplicates(true);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
 //        if (logger.isDebugEnabled()) logger.debug("DeltaDB: " + result.getDeltaDB().printInstances());
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
@@ -39,7 +39,7 @@ public class TestSynthetic03 extends CheckExpectedSolutionsTest {
         scenario.getConfiguration().setUseSymmetricOptimization(false);
         scenario.getConfiguration().setDiscardDuplicateTuples(true);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
 //        if (logger.isDebugEnabled()) logger.debug("DeltaDB: " + result.getDeltaDB().printInstances());
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());

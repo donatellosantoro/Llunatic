@@ -4,7 +4,7 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
-import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -20,7 +20,7 @@ public class TestSQLPersonFRSPGround extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_fr_sp_ground_dbms, true);
         setConfigurationForTest(scenario);
         scenario.getCostManagerConfiguration().setType(LunaticConstants.COST_MANAGER_SIMILARITY);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.getDeltaDB().printInstances(false));

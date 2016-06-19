@@ -21,7 +21,6 @@ import it.unibas.lunatic.model.chase.chasemc.NewChaseSteps;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerFactory;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
@@ -45,18 +44,19 @@ import speedy.model.database.IValue;
 import speedy.model.database.Tuple;
 import speedy.model.database.TupleOID;
 import speedy.model.database.operators.IRunQuery;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManagerMC;
 
-public class ChaseSymmetricExtEGDEquivalenceClass implements IChaseEGDEquivalenceClass {
+public class ChaseSymmetricExtEGDEquivalenceClass implements IChaseExtEGDEquivalenceClass {
 
     private static final Logger logger = LoggerFactory.getLogger(ChaseSymmetricExtEGDEquivalenceClass.class);
 
     private final IRunQuery queryRunner;
-    private final IOccurrenceHandler occurrenceHandler;
-    private final IChangeCell cellChanger;
+    private final OccurrenceHandlerMC occurrenceHandler;
+    private final ChangeCellMC cellChanger;
     private Tuple lastTuple;
     private boolean lastTupleHandled;
 
-    public ChaseSymmetricExtEGDEquivalenceClass(IRunQuery queryRunner, IOccurrenceHandler occurrenceHandler, IChangeCell cellChanger) {
+    public ChaseSymmetricExtEGDEquivalenceClass(IRunQuery queryRunner, OccurrenceHandlerMC occurrenceHandler, ChangeCellMC cellChanger) {
         this.queryRunner = queryRunner;
         this.occurrenceHandler = occurrenceHandler;
         this.cellChanger = cellChanger;
@@ -84,7 +84,7 @@ public class ChaseSymmetricExtEGDEquivalenceClass implements IChaseEGDEquivalenc
                 if (equivalenceClass == null) {
                     break;
                 }
-                ICostManager costManager = CostManagerFactory.getCostManager(egd, scenario);
+                ICostManagerMC costManager = CostManagerFactory.getCostManagerMC(egd, scenario);
                 long choosingRepairStart = new Date().getTime();
                 List<Repair> repairsForEquivalenceClass = costManager.chooseRepairStrategy(new EquivalenceClassForEGDProxy(equivalenceClass), currentNode.getRoot(), repairsForDependency, scenario, currentNode.getId(), occurrenceHandler);
                 long choosingRepairEnd = new Date().getTime();
@@ -248,8 +248,8 @@ public class ChaseSymmetricExtEGDEquivalenceClass implements IChaseEGDEquivalenc
                 if (logger.isDebugEnabled()) logger.debug("EGD " + egd.getId() + " is satisfied in this step...");
                 newStep.addSatisfiedEGD(egd);
             }
-            newStep.setAffectedAttributesInNode(ChaseUtility.extractAffectedAttributes(repair));
-            newStep.setAffectedAttributesInAncestors(ChaseUtility.findChangedAttributesInAncestors(newStep));
+            newStep.addAllAffectedAttributeInNode(ChaseUtility.extractAffectedAttributes(repair));
+            newStep.addAllAffectedAttributeInAncestors(ChaseUtility.findChangedAttributesInAncestors(newStep));
             if (logger.isDebugEnabled()) logger.debug("Generated step " + newStep.getId() + " for repair: " + repair);
             newChaseSteps.addChaseStep(newStep);
         }

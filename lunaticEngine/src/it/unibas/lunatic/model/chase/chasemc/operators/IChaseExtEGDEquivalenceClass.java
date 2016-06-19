@@ -8,7 +8,7 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.database.IDatabase;
 
-public interface IChaseEGDEquivalenceClass {
+public interface IChaseExtEGDEquivalenceClass {
 
     public NewChaseSteps chaseDependency(DeltaChaseStep currentNode, Dependency egd, IAlgebraOperator premiseQuery, Scenario scenario, IChaseState chaseState, IDatabase databaseForStep);
 

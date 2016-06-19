@@ -3,7 +3,7 @@ package it.unibas.lunatic.test.mc.dbms;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
@@ -19,7 +19,7 @@ public class TestSQLEmployees extends CheckTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_comparisons_dbms, true);
         setConfigurationForTest(scenario);
 //        scenario.getConfiguration().setUseSymmetricOptimization(false);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());
         Assert.assertEquals(47, resultSizer.getSolutions(result));

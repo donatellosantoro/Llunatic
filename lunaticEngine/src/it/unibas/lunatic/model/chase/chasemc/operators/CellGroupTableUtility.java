@@ -149,38 +149,32 @@ public class CellGroupTableUtility {
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////                         DE SCENARIO                                  //////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static IAlgebraOperator buildQueryToExtractCellGroupCellsForStepDE(String stepId) {
+    public static IAlgebraOperator buildQueryToExtractCellGroupCellsForStepDE() {
         TableAlias table = new TableAlias(LunaticConstants.CELLGROUP_TABLE);
         Scan tableScan = new Scan(table);
-        List<Expression> expressions = new ArrayList<Expression>();
-        Expression stepExpression = new Expression("startswith(\"" + stepId + "\", " + SpeedyConstants.STEP + ")");
-        stepExpression.changeVariableDescription(SpeedyConstants.STEP, new AttributeRef(table, SpeedyConstants.STEP));
-        expressions.add(stepExpression);
-        Select stepSelect = new Select(expressions);
-        stepSelect.addChild(tableScan);
-        // select max(step), oid from R_A group by oid
+        // select max(version), oid from R_A group by oid
         AttributeRef cellOid = new AttributeRef(table, LunaticConstants.CELL_OID);
         AttributeRef cellTable = new AttributeRef(table, LunaticConstants.CELL_TABLE);
         AttributeRef cellAttr = new AttributeRef(table, LunaticConstants.CELL_ATTRIBUTE);
-        AttributeRef step = new AttributeRef(table, SpeedyConstants.STEP);
+        AttributeRef version = new AttributeRef(table, SpeedyConstants.VERSION);
         List<AttributeRef> groupingAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{cellOid, cellTable, cellAttr}));
-        IAggregateFunction max = new MaxAggregateFunction(step);
+        IAggregateFunction max = new MaxAggregateFunction(version);
         IAggregateFunction oidAggregateValue = new ValueAggregateFunction(cellOid);
         IAggregateFunction tableAggregateValue = new ValueAggregateFunction(cellTable);
         IAggregateFunction attributeAggregateValue = new ValueAggregateFunction(cellAttr);
         List<IAggregateFunction> aggregateFunctions = new ArrayList<IAggregateFunction>(Arrays.asList(new IAggregateFunction[]{max, oidAggregateValue, tableAggregateValue, attributeAggregateValue}));
         GroupBy groupBy = new GroupBy(groupingAttributes, aggregateFunctions);
-        groupBy.addChild(stepSelect);
+        groupBy.addChild(tableScan);
         // select * from R_A_1
         TableAlias alias = new TableAlias(table.getTableName(), "0");
         Scan aliasScan = new Scan(alias);
-        // select * from (group-by) join R_A_1 on step, celloid, celltable, cellattribute
-        List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{step, cellOid, cellTable, cellAttr}));
+        // select * from (group-by) join R_A_1 on version, celloid, celltable, cellattribute
+        List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{version, cellOid, cellTable, cellAttr}));
         AttributeRef oidInAlias = new AttributeRef(alias, LunaticConstants.CELL_OID);
         AttributeRef tableInAlias = new AttributeRef(alias, LunaticConstants.CELL_TABLE);
         AttributeRef attrInAlias = new AttributeRef(alias, LunaticConstants.CELL_ATTRIBUTE);
-        AttributeRef stepInAlias = new AttributeRef(alias, SpeedyConstants.STEP);
-        List<AttributeRef> rightAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{stepInAlias, oidInAlias, tableInAlias, attrInAlias}));
+        AttributeRef versionInAlias = new AttributeRef(alias, SpeedyConstants.VERSION);
+        List<AttributeRef> rightAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{versionInAlias, oidInAlias, tableInAlias, attrInAlias}));
         Join join = new Join(leftAttributes, rightAttributes);
         join.addChild(groupBy);
         join.addChild(aliasScan);

@@ -148,7 +148,7 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
 
     public void loadCellGroups(String stepId, IDatabase deltaDB, Scenario scenario) {
         if (scenario.getConfiguration().isDeScenario()) {
-            loadCellGroupsForDE(stepId, deltaDB, scenario);
+            loadCellGroupsForDE(deltaDB, scenario);
         } else {
             loadCellGroupsForMC(stepId, deltaDB, scenario);
         }
@@ -238,11 +238,11 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
         return cellGroupCell;
     }
 
-    private void loadCellGroupsForDE(String stepId, IDatabase deltaDB, Scenario scenario) {
+    private void loadCellGroupsForDE(IDatabase deltaDB, Scenario scenario) {
 //        if (isDebug(stepId)) logger.warn("Loading occurrences value for step " + stepId);
-        if (logger.isTraceEnabled()) logger.trace("Loading occurrences value for step " + stepId);
+        if (logger.isTraceEnabled()) logger.trace("Loading cell groups value");
         if (logger.isTraceEnabled()) logger.trace("DeltaDB " + deltaDB.printInstances());
-        IAlgebraOperator query = CellGroupTableUtility.buildQueryToExtractCellGroupCellsForStepDE(stepId);
+        IAlgebraOperator query = CellGroupTableUtility.buildQueryToExtractCellGroupCellsForStepDE();
         if (logger.isDebugEnabled()) logger.debug("QueryToExtractCellGroupIds:\n " + query);
 //        if (isDebug(stepId)) logger.warn(new AlgebraTreeToSQL().treeToSQL(query, null, deltaDB, ""));
         ITupleIterator it = queryRunner.run(query, null, deltaDB);
@@ -250,10 +250,10 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
             Tuple tuple = it.next();
             CellGroupCell cellGroupCell = buildCellGroupCellDE(tuple, scenario);
             IValue cellGroupId = cellGroupCell.getLastSavedCellGroupId();
-            CellGroup cellGroup = loadCellGroupFromId(cellGroupId, stepId, deltaDB, scenario);
+            CellGroup cellGroup = loadCellGroupFromId(cellGroupId, LunaticConstants.CHASE_STEP_ROOT, deltaDB, scenario);
             if (cellGroup == null) { //No cached version
                 cellGroup = new CellGroup(cellGroupId, false);
-                putCellGroup(cellGroup, stepId, deltaDB, scenario);
+                putCellGroup(cellGroup, LunaticConstants.CHASE_STEP_ROOT, deltaDB, scenario);
             }
             addCellGroupCellIntoCellGroup(cellGroupCell, cellGroup);
             if (logger.isDebugEnabled()) logger.debug("Added cellgroup cell " + cellGroupCell + " into cg:\n" + cellGroup.toLongString());

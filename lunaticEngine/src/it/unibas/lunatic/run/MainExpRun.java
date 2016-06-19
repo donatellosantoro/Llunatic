@@ -6,7 +6,7 @@ import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import it.unibas.lunatic.model.chase.chaseded.DEDChaserFactory;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
-import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import it.unibas.lunatic.persistence.DAOConfiguration;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -38,7 +38,7 @@ public class MainExpRun {
         } else if (scenario.isDEScenario()) {
             DEChaserFactory.getChaser(scenario).doChase(scenario);
         } else if (scenario.isMCScenario()) {
-            ChaserFactory.getChaser(scenario).doChase(scenario);
+            ChaserFactoryMC.getChaser(scenario).doChase(scenario);
         } else {
             throw new IllegalArgumentException("Scenario non supported!");
         }

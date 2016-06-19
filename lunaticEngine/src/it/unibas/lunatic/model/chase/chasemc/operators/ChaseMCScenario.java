@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
 import it.unibas.lunatic.model.chase.commons.operators.IBuildDeltaDB;
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
@@ -50,8 +49,8 @@ public class ChaseMCScenario {
     private final ExportChaseStepResultsCSV resultExporter = new ExportChaseStepResultsCSV();
 
     public ChaseMCScenario(IChaseSTTGDs stChaser, IChaseDeltaExtTGDs extTgdChaser,
-            IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
-            IInsertTuple insertOperatorForEgds, IOccurrenceHandler occurrenceHandler,
+            IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStepMC stepBuilder, IRunQuery queryRunner,
+            IInsertTuple insertOperatorForEgds, OccurrenceHandlerMC occurrenceHandler,
             ChaseDeltaExtEGDs egdChaser, CheckSolution solutionChecker) {
         this.stChaser = stChaser;
         this.deltaBuilder = deltaBuilder;

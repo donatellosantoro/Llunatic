@@ -4,7 +4,7 @@ import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.CellGroupCell;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,10 +20,10 @@ public class GenerateModifiedCells {
 
     private static Logger logger = LoggerFactory.getLogger(GenerateModifiedCells.class);
 
-    private IOccurrenceHandler occurrenceHandler;
+    private OccurrenceHandlerMC occurrenceHandler;
     private int counter;
 
-    public GenerateModifiedCells(IOccurrenceHandler occurrenceHandler) {
+    public GenerateModifiedCells(OccurrenceHandlerMC occurrenceHandler) {
         this.occurrenceHandler = occurrenceHandler;
     }
 

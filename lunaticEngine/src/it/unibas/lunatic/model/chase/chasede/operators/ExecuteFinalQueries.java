@@ -42,6 +42,9 @@ public class ExecuteFinalQueries {
 
     private void executeDependencyQueries(IDatabase targetDB, Scenario scenario) {
         int numberOfThreads = scenario.getConfiguration().getMaxNumberOfThreads();
+        if (!scenario.getConfiguration().isUseThreadsForQueries()) {
+            numberOfThreads = 1;
+        }
         Map<String, String> queryResults = Collections.synchronizedMap(new HashMap<String, String>());
         ThreadManager threadManager = new ThreadManager(numberOfThreads);
         for (Dependency query : scenario.getQueries()) {
@@ -72,6 +75,9 @@ public class ExecuteFinalQueries {
             System.out.println("Exporting query results in " + conf.getExportQueryResultsPath());
         }
         int numberOfThreads = conf.getMaxNumberOfThreads();
+        if (!conf.isUseThreadsForQueries()) {
+            numberOfThreads = 1;
+        }
         Map<String, String> queryResults = Collections.synchronizedMap(new HashMap<String, String>());
         ThreadManager threadManager = new ThreadManager(numberOfThreads);
         for (SQLQueryString sqlQuery : sqlQueries) {
@@ -144,6 +150,7 @@ public class ExecuteFinalQueries {
             try {
                 long start = new Date().getTime();
                 long resultSize;
+                if (logger.isDebugEnabled()) logger.debug("Executing SQL Query " + sqlQuery.getId() + "\n" + sqlQuery.getQuery());
                 if (conf.isExportQueryResults()) {
                     resultSize = csvExporter.exportQuery(sqlQuery.getQuery(), sqlQuery.getId(), (DBMSDB) targetDB, valueEncoder, conf.isExportQueryResultsWithHeader(), conf.getExportQueryResultsPath());
                 } else {
@@ -152,7 +159,6 @@ public class ExecuteFinalQueries {
                     it.close();
                 }
                 long end = new Date().getTime();
-
                 result = "*** Query " + sqlQuery.getId() + " Time: " + (end - start) + " ms -  Result size: " + resultSize;
             } catch (Exception e) {
                 result = "*** Error executing query " + sqlQuery.getId() + ": " + e.getLocalizedMessage();

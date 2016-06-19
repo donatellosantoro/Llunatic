@@ -34,9 +34,8 @@ public class SQLReplaceDatabase implements IReplaceDatabase {
         }
         for (String tableName : virtualDB.getTableNames()) {
             DBMSVirtualTable virtualTable = (DBMSVirtualTable) virtualDB.getTable(tableName);
-            String newName = tableName + "_" + new Date().getTime();
-            sb.append("ALTER TABLE ").append(DBMSUtility.getSchemaNameAndDot(virtualAc)).append(virtualTable.getVirtualName());
-            sb.append(" RENAME TO ").append(virtualTable.getName()).append(";\n");
+//            sb.append("ALTER TABLE ").append(DBMSUtility.getSchemaNameAndDot(virtualAc)).append(virtualTable.getVirtualName());
+//            sb.append(" RENAME TO ").append(virtualTable.getName()).append(";\n");
             sb.append("ALTER TABLE ").append(DBMSUtility.getSchemaNameAndDot(virtualAc)).append(virtualTable.getName());
             sb.append(" SET SCHEMA ").append(targetAc.getSchemaName()).append(";\n");
         }

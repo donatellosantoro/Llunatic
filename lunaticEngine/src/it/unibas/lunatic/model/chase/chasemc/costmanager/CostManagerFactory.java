@@ -2,6 +2,7 @@ package it.unibas.lunatic.model.chase.chasemc.costmanager;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.chasede.costmanager.ICostManagerDE;
 import it.unibas.lunatic.model.chase.chasede.costmanager.StandardCostManagerDE;
 import it.unibas.lunatic.model.chase.chasede.costmanager.StandardSymmetricCostManagerDE;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.nonsymmetric.GreedyCostManager;
@@ -18,16 +19,8 @@ public class CostManagerFactory {
 
     private static Logger logger = LoggerFactory.getLogger(CostManagerFactory.class);
 
-    public static ICostManager getCostManager(Dependency dependency, Scenario scenario) {
-        if (scenario.getConfiguration().isDeScenario()) {
-            return getDECostManager(dependency, scenario);
-        } else {
-            return getMCCostManager(dependency, scenario);
-        }
-    }
-
-    private static ICostManager getMCCostManager(Dependency dependency, Scenario scenario) {
-        ICostManager result;
+    public static ICostManagerMC getCostManagerMC(Dependency dependency, Scenario scenario) {
+        ICostManagerMC result;
         if (scenario.getConfiguration().isUseSymmetricOptimization() && dependency.hasSymmetricChase()) {
             result = getSymmetricChaseMC(dependency, scenario.getCostManagerConfiguration());
         } else {
@@ -37,7 +30,7 @@ public class CostManagerFactory {
         return result;
     }
 
-    private static ICostManager getSymmetricChaseMC(Dependency dependency, CostManagerConfiguration costManagerConfiguration) {
+    private static ICostManagerMC getSymmetricChaseMC(Dependency dependency, CostManagerConfiguration costManagerConfiguration) {
         if (costManagerConfiguration.getType().equals(LunaticConstants.COST_MANAGER_STANDARD)) {
             return new StandardSymmetricCostManager();
         }
@@ -50,7 +43,7 @@ public class CostManagerFactory {
         throw new IllegalArgumentException("Unknown costmanager type " + costManagerConfiguration.getType());
     }
 
-    private static ICostManager getNonSymmetricChaseMC(Dependency dependency, CostManagerConfiguration costManagerConfiguration) {
+    private static ICostManagerMC getNonSymmetricChaseMC(Dependency dependency, CostManagerConfiguration costManagerConfiguration) {
         if (costManagerConfiguration.getType().equals(LunaticConstants.COST_MANAGER_STANDARD)) {
             return new StandardCostManager();
         }
@@ -63,8 +56,8 @@ public class CostManagerFactory {
         throw new IllegalArgumentException("Unknown costmanager type " + costManagerConfiguration.getType());
     }
 
-    private static ICostManager getDECostManager(Dependency dependency, Scenario scenario) {
-        ICostManager result;
+    public static ICostManagerDE getCostManagerDE(Dependency dependency, Scenario scenario) {
+        ICostManagerDE result;
         if (scenario.getConfiguration().isUseSymmetricOptimization() && dependency.hasSymmetricChase()) {
             result = new StandardSymmetricCostManagerDE();
         } else {

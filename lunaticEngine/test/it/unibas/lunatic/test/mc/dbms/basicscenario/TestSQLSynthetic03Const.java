@@ -3,7 +3,7 @@
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -20,7 +20,7 @@ public class TestSQLSynthetic03Const extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario\n" + scenario.toString());
 //        scenario.getConfiguration().setRemoveDuplicates(true);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("DeltaDB: " + result.getDeltaDB().printInstances());
         if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());

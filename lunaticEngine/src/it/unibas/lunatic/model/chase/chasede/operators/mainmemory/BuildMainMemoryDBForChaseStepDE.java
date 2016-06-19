@@ -1,8 +1,8 @@
 package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.chasede.operators.IBuildDatabaseForDE;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfDBOIDs;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
@@ -42,7 +42,7 @@ import speedy.model.database.mainmemory.MainMemoryVirtualDB;
 import speedy.model.database.mainmemory.MainMemoryVirtualTable;
 import speedy.utility.SpeedyUtility;
 
-public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForChaseStep {
+public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForDE {
 
     private static Logger logger = LoggerFactory.getLogger(BuildMainMemoryDBForChaseStepDE.class);
     private CheckConsistencyOfDBOIDs oidChecker = new CheckConsistencyOfDBOIDs();
@@ -53,23 +53,23 @@ public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForChaseSt
     }
 
     @Override
-    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, Scenario scenario) {
-        return extractDatabase(stepId, deltaDB, originalDB, false);
+    public IDatabase extractDatabase(IDatabase deltaDB, IDatabase originalDB, Scenario scenario) {
+        return extractDatabase(deltaDB, originalDB, false);
     }
 
     @Override
-    public IDatabase extractDatabaseWithDistinct(String stepId, IDatabase deltaDB, IDatabase originalDB, Scenario scenario) {
-        return extractDatabase(stepId, deltaDB, originalDB, true);
+    public IDatabase extractDatabaseWithDistinct(IDatabase deltaDB, IDatabase originalDB, Scenario scenario) {
+        return extractDatabase(deltaDB, originalDB, true);
     }
 
-    private IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, boolean distinct) {
+    private IDatabase extractDatabase(IDatabase deltaDB, IDatabase originalDB, boolean distinct) {
         long start = new Date().getTime();
-        if (logger.isDebugEnabled()) logger.debug("Extracting database for step " + stepId + " on deltaDB:\n" + deltaDB.printInstances());
+        if (logger.isDebugEnabled()) logger.debug("Extracting database on deltaDB:\n" + deltaDB.printInstances());
         Map<String, List<AttributeRef>> attributeMap = new HashMap<String, List<AttributeRef>>();
         for (String tableName : originalDB.getTableNames()) {
             attributeMap.put(tableName, buildAttributeRefs(originalDB.getTable(tableName)));
         }
-        IDatabase result = extractDatabase(stepId, deltaDB, originalDB, attributeMap, distinct);
+        IDatabase result = extractDatabase(deltaDB, originalDB, attributeMap, distinct);
         if (logger.isDebugEnabled()) logger.debug("Extracted database\n" + result);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.STEP_DB_BUILDER, end - start);
@@ -80,9 +80,9 @@ public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForChaseSt
     }
 
     @Override
-    public IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, Dependency dependency, Scenario scenario) {
+    public IDatabase extractDatabase(IDatabase deltaDB, IDatabase originalDB, Dependency dependency, Scenario scenario) {
         long start = new Date().getTime();
-        if (logger.isDebugEnabled()) logger.debug("Extracting database for step " + stepId + " and dependency:\n" + dependency.toLongString() + "\non deltaDB:\n" + deltaDB.printInstances());
+        if (logger.isDebugEnabled()) logger.debug("Extracting database for dependency:\n" + dependency.toLongString() + "\non deltaDB:\n" + deltaDB.printInstances());
         Map<String, List<AttributeRef>> attributeMap = new HashMap<String, List<AttributeRef>>();
         List<AttributeRef> requestedAttributesForDependency = DependencyUtility.extractRequestedAttributesWithExistential(dependency);
         if (requestedAttributesForDependency.isEmpty()) {
@@ -98,7 +98,7 @@ public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForChaseSt
             attributesForTable.add(attribute);
         }
         if (logger.isDebugEnabled()) logger.debug("Attribute map: " + LunaticUtility.printMap(attributeMap));
-        IDatabase result = extractDatabase(stepId, deltaDB, originalDB, attributeMap, false);
+        IDatabase result = extractDatabase(deltaDB, originalDB, attributeMap, false);
         if (logger.isDebugEnabled()) logger.debug("Extracted database for dependency\n" + dependency + "\n" + result);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.STEP_DB_BUILDER, end - start);
@@ -108,7 +108,7 @@ public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForChaseSt
         return result;
     }
 
-    private IDatabase extractDatabase(String stepId, IDatabase deltaDB, IDatabase originalDB, Map<String, List<AttributeRef>> tablesAndAttributesToExtract, boolean distinct) {
+    private IDatabase extractDatabase(IDatabase deltaDB, IDatabase originalDB, Map<String, List<AttributeRef>> tablesAndAttributesToExtract, boolean distinct) {
         Set<String> tableNames = tablesAndAttributesToExtract.keySet();
         List<MainMemoryVirtualTable> virtualTables = new ArrayList<MainMemoryVirtualTable>();
         for (String tableName : tableNames) {
@@ -116,7 +116,7 @@ public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForChaseSt
             List<AttributeRef> affectedAttributes = new ArrayList<AttributeRef>(tablesAndAttributesToExtract.get(tableName));
             List<AttributeRef> nonAffectedAttributes = new ArrayList<AttributeRef>();
             List<AttributeRef> deltaTableAttributes = new ArrayList<AttributeRef>();
-            IAlgebraOperator initialTable = generateInitialTable(tableName, affectedAttributes, nonAffectedAttributes, deltaDB, deltaTableAttributes, stepId);
+            IAlgebraOperator initialTable = generateInitialTable(tableName, affectedAttributes, nonAffectedAttributes, deltaDB, deltaTableAttributes);
             AttributeRef oidAttributeRef = findOidAttribute(initialTable, deltaDB);
             if (affectedAttributes.isEmpty()) {
                 IAlgebraOperator projection = new Project(SpeedyUtility.createProjectionAttributes(deltaTableAttributes), cleanNames(deltaTableAttributes), true);
@@ -128,7 +128,7 @@ public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForChaseSt
                 virtualTables.add(firstTable);
                 if (logger.isDebugEnabled()) logger.debug("Initial table for " + tableName + "\n" + projection);
             } else {
-                IAlgebraOperator algebraRoot = buildAlgebraTreeForTable(table, affectedAttributes, nonAffectedAttributes, stepId, oidAttributeRef, initialTable, deltaTableAttributes);
+                IAlgebraOperator algebraRoot = buildAlgebraTreeForTable(table, affectedAttributes, nonAffectedAttributes, oidAttributeRef, initialTable, deltaTableAttributes);
                 if (distinct) {
                     algebraRoot = createDistinctTable(algebraRoot, table.getAttributes());
                 }
@@ -145,7 +145,7 @@ public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForChaseSt
             ////////
         }
         IDatabase result = new MainMemoryVirtualDB((MainMemoryDB) deltaDB, ((MainMemoryDB) originalDB).getDataSource(), virtualTables);
-        if (logger.isDebugEnabled()) logger.debug("Building database for step : " + stepId + " over\n" + deltaDB.printInstances());
+        if (logger.isDebugEnabled()) logger.debug("Building database over\n" + deltaDB.printInstances());
         return result;
     }
 
@@ -173,7 +173,7 @@ public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForChaseSt
         throw new IllegalArgumentException("Unable to find oid attribute in " + initialTable);
     }
 
-    private IAlgebraOperator generateInitialTable(String tableName, List<AttributeRef> affectedAttributes, List<AttributeRef> nonAffectedAttributes, IDatabase deltaDB, List<AttributeRef> deltaTableAttributes, String stepId) {
+    private IAlgebraOperator generateInitialTable(String tableName, List<AttributeRef> affectedAttributes, List<AttributeRef> nonAffectedAttributes, IDatabase deltaDB, List<AttributeRef> deltaTableAttributes) {
         for (Iterator<AttributeRef> it = affectedAttributes.iterator(); it.hasNext();) {
             AttributeRef attributeRef = it.next();
             if (isNotAffected(attributeRef, deltaDB)) {
@@ -195,36 +195,31 @@ public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForChaseSt
             nonAffectedAttributes.add(firstAttributeRef);
             deltaTableAttributes.add(new AttributeRef(ChaseUtility.getDeltaRelationName(tableName, firstAttributeRef.getName()), SpeedyConstants.TID));
             deltaTableAttributes.add(new AttributeRef(new TableAlias(ChaseUtility.getDeltaRelationName(tableName, firstAttributeRef.getName()), "0"), firstAttributeRef.getName()));
-            initialTable = buildTreeForAttribute(firstAttributeRef, stepId);
+            initialTable = buildTreeForAttribute(firstAttributeRef);
         }
         return initialTable;
     }
 
-    private IAlgebraOperator buildTreeForAttribute(AttributeRef attribute, String stepId) {
-        // select * from R_A where step
+    private IAlgebraOperator buildTreeForAttribute(AttributeRef attribute) {
         TableAlias table = new TableAlias(ChaseUtility.getDeltaRelationName(attribute.getTableName(), attribute.getName()));
         Scan tableScan = new Scan(table);
-        Expression stepExpression = new Expression("startswith(\"" + stepId + "\", " + SpeedyConstants.STEP + ")");
-        stepExpression.changeVariableDescription(SpeedyConstants.STEP, new AttributeRef(table, SpeedyConstants.STEP));
-        Select stepSelect = new Select(stepExpression);
-        stepSelect.addChild(tableScan);
-        // select max(step), oid from R_A group by oid
+        // select max(version), oid from R_A group by oid
         AttributeRef oid = new AttributeRef(table, SpeedyConstants.TID);
-        AttributeRef step = new AttributeRef(table, SpeedyConstants.STEP);
+        AttributeRef version = new AttributeRef(table, SpeedyConstants.VERSION);
         List<AttributeRef> groupingAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oid}));
-        IAggregateFunction max = new MaxAggregateFunction(step);
+        IAggregateFunction max = new MaxAggregateFunction(version);
         IAggregateFunction oidValue = new ValueAggregateFunction(oid);
         List<IAggregateFunction> aggregateFunctions = new ArrayList<IAggregateFunction>(Arrays.asList(new IAggregateFunction[]{max, oidValue}));
         GroupBy groupBy = new GroupBy(groupingAttributes, aggregateFunctions);
-        groupBy.addChild(stepSelect);
+        groupBy.addChild(tableScan);
         // select * from R_A_1
         TableAlias alias = new TableAlias(table.getTableName(), "0");
         Scan aliasScan = new Scan(alias);
-        // select * from (group-by) join R_A_1 on oid, step
-        List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oid, step}));
+        // select * from (group-by) join R_A_1 on oid, version
+        List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oid, version}));
         AttributeRef oidInAlias = new AttributeRef(alias, SpeedyConstants.TID);
-        AttributeRef stepInAlias = new AttributeRef(alias, SpeedyConstants.STEP);
-        List<AttributeRef> rightAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oidInAlias, stepInAlias}));
+        AttributeRef versionInAlias = new AttributeRef(alias, SpeedyConstants.VERSION);
+        List<AttributeRef> rightAttributes = new ArrayList<AttributeRef>(Arrays.asList(new AttributeRef[]{oidInAlias, versionInAlias}));
         Join join = new Join(leftAttributes, rightAttributes);
         join.addChild(groupBy);
         join.addChild(aliasScan);
@@ -237,11 +232,11 @@ public class BuildMainMemoryDBForChaseStepDE implements IBuildDatabaseForChaseSt
         return project;
     }
 
-    private IAlgebraOperator buildAlgebraTreeForTable(ITable table, List<AttributeRef> affectedAttributes, List<AttributeRef> nonAffectedAttributes, String stepId, AttributeRef oidAttributeRef, IAlgebraOperator deltaForFirstAttribute, List<AttributeRef> deltaTableAttributes) {
+    private IAlgebraOperator buildAlgebraTreeForTable(ITable table, List<AttributeRef> affectedAttributes, List<AttributeRef> nonAffectedAttributes, AttributeRef oidAttributeRef, IAlgebraOperator deltaForFirstAttribute, List<AttributeRef> deltaTableAttributes) {
         IAlgebraOperator leftChild = deltaForFirstAttribute;
         for (AttributeRef attributeRef : affectedAttributes) {
             deltaTableAttributes.add(new AttributeRef(new TableAlias(ChaseUtility.getDeltaRelationName(table.getName(), attributeRef.getName()), "0"), attributeRef.getName()));
-            IAlgebraOperator deltaForAttribute = buildTreeForAttribute(attributeRef, stepId);
+            IAlgebraOperator deltaForAttribute = buildTreeForAttribute(attributeRef);
             AttributeRef oid = new AttributeRef(ChaseUtility.getDeltaRelationName(table.getName(), attributeRef.getName()), SpeedyConstants.TID);
             Join join = new Join(oidAttributeRef, oid);
             join.addChild(leftChild);

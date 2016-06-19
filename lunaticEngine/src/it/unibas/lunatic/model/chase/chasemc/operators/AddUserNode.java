@@ -11,10 +11,10 @@ import it.unibas.lunatic.model.chase.chasemc.partialorder.IPartialOrder;
 
 public class AddUserNode {
 
-    private IChangeCell cellChanger;
-    private IOccurrenceHandler occurrenceHandler;
+    private ChangeCellMC cellChanger;
+    private OccurrenceHandlerMC occurrenceHandler;
 
-    public AddUserNode(IChangeCell cellChanger, IOccurrenceHandler occurrenceHandler) {
+    public AddUserNode(ChangeCellMC cellChanger, OccurrenceHandlerMC occurrenceHandler) {
         this.cellChanger = cellChanger;
         this.occurrenceHandler = occurrenceHandler;
     }

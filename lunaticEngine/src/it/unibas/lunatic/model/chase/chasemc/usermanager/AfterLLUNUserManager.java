@@ -4,15 +4,15 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import speedy.model.database.IValue;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import java.util.List;
 import speedy.model.database.LLUNValue;
 
 public class AfterLLUNUserManager implements IUserManager {
 
-    private IOccurrenceHandler occurrenceHandler;
+    private OccurrenceHandlerMC occurrenceHandler;
 
-    public AfterLLUNUserManager(IOccurrenceHandler occurrenceHandler) {
+    public AfterLLUNUserManager(OccurrenceHandlerMC occurrenceHandler) {
         this.occurrenceHandler = occurrenceHandler;
     }
 

@@ -3,7 +3,7 @@ package it.unibas.lunatic.test.mc.dbms.basicscenario;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -20,7 +20,7 @@ public class TestSQLPersons extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         scenario.getCostManagerConfiguration().setDoBackward(false);
         scenario.getCostManagerConfiguration().setDoPermutations(false);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
@@ -35,7 +35,7 @@ public class TestSQLPersons extends CheckExpectedSolutionsTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.persons_dbms, true);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         setConfigurationForTest(scenario);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
 //        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
@@ -53,7 +53,7 @@ public class TestSQLPersons extends CheckExpectedSolutionsTest {
         scenario.getConfiguration().setUseSymmetricOptimization(false);
         scenario.getCostManagerConfiguration().setDoBackward(false);
         scenario.getCostManagerConfiguration().setDoPermutations(false);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());
@@ -69,7 +69,7 @@ public class TestSQLPersons extends CheckExpectedSolutionsTest {
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setUseSymmetricOptimization(false);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         if (logger.isDebugEnabled()) logger.debug(result.toStringWithSort());

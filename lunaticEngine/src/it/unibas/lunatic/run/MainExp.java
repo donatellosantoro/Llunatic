@@ -16,7 +16,7 @@ public class MainExp {
     private final static Logger logger = LoggerFactory.getLogger(MainExp.class);
 
     public static void main(String[] args) {
-        if (args.length < 1 || args.length > 2) {
+        if (args.length < 1) {
             printUsage();
             return;
         }

@@ -5,7 +5,7 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfDBOIDs;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStepMC;
 import speedy.model.database.Attribute;
 import speedy.model.database.AttributeRef;
 import speedy.model.database.IDatabase;
@@ -45,7 +45,7 @@ import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.SpeedyUtility;
 
-public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStep {
+public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStepMC {
 
     private static Logger logger = LoggerFactory.getLogger(BuildSQLDBForChaseStep.class);
     private AlgebraTreeToSQL sqlGenerator = new AlgebraTreeToSQL();

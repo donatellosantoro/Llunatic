@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import speedy.model.database.IDatabase;
@@ -13,10 +12,10 @@ import java.util.List;
 public class ChaseTreeToString {
 
     private int counter;
-    private final IBuildDatabaseForChaseStep databaseBuilder;
-    private final IOccurrenceHandler occurrenceHandler;
+    private final IBuildDatabaseForChaseStepMC databaseBuilder;
+    private final OccurrenceHandlerMC occurrenceHandler;
 
-    public ChaseTreeToString(IBuildDatabaseForChaseStep databaseBuilder, IOccurrenceHandler occurrenceHandler) {
+    public ChaseTreeToString(IBuildDatabaseForChaseStepMC databaseBuilder, OccurrenceHandlerMC occurrenceHandler) {
         this.databaseBuilder = databaseBuilder;
         this.occurrenceHandler = occurrenceHandler;
     }

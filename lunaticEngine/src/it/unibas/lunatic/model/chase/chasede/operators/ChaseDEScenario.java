@@ -9,8 +9,6 @@ import it.unibas.lunatic.model.chase.chasede.IDEChaser;
 import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
-import it.unibas.lunatic.model.chase.chasemc.operators.ChaserResult;
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.model.chase.commons.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
@@ -49,14 +47,14 @@ public class ChaseDEScenario implements IDEChaser {
     private final IAnalyzeDatabase databaseAnalyzer;
     private final ExecuteFinalQueries finalQueryExecutor = new ExecuteFinalQueries();
     private final IBuildDeltaDB deltaBuilder;
-    private final IBuildDatabaseForChaseStep databaseBuilder;
+    private final IBuildDatabaseForDE databaseBuilder;
     private final IChaseSTTGDs stChaser;
     private final ChaseTargetTGDs tgdChaser;
     private final ChaseDeltaEGDs egdChaser;
     private final ChaseDCs dChaser;
 
     public ChaseDEScenario(IChaseSTTGDs stChaser, ChaseDeltaEGDs egdChaser, IRunQuery queryRunner, IInsertFromSelectNaive naiveInsert,
-            IBuildDeltaDB deltaBuilder, IBuildDatabaseForChaseStep databaseBuilder, IAnalyzeDatabase databaseAnalyze, IReplaceDatabase databaseReplacer) {
+            IBuildDeltaDB deltaBuilder, IBuildDatabaseForDE databaseBuilder, IAnalyzeDatabase databaseAnalyze, IReplaceDatabase databaseReplacer) {
         this.stChaser = stChaser;
         this.tgdChaser = new ChaseTargetTGDs(naiveInsert);
         this.egdChaser = egdChaser;
@@ -69,9 +67,7 @@ public class ChaseDEScenario implements IDEChaser {
 
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
         if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
-        List<Dependency> egds = scenario.getEGDs();
-        scenario.setEGDs(new ArrayList<Dependency>());
-        scenario.setExtEGDs(egds);
+        ChaseUtility.copyEGDsToExtEGDs(scenario);
         CostManagerUtility.setDECostManager(scenario);
         analyzeSourceDatabase(scenario);
         long start = new Date().getTime();
@@ -99,14 +95,13 @@ public class ChaseDEScenario implements IDEChaser {
                     if (logger.isTraceEnabled()) logger.trace("DeltaDB: " + deltaDB);
                     ChaseTree chaseTree = new ChaseTree(scenario);
                     DeltaChaseStep root = new DeltaChaseStep(scenario, chaseTree, LunaticConstants.CHASE_STEP_ROOT, targetDB, deltaDB);
-                    root.getSatisfiedEGDs().addAll(satisfiedEGDs);
-                    ChaserResult egdResult = egdChaser.doChase(root, scenario, chaseState, egdQueryMap);
-                    boolean cellChanges = egdResult.isNewNodes();
+                    root.addAllSatisfiedEGDs(satisfiedEGDs);
+                    boolean cellChanges = egdChaser.doChase(root, scenario, chaseState, egdQueryMap);
                     if (!cellChanges) {
                         break;
                     }
                     DeltaChaseStep lastStep = getLastStep(chaseTree.getRoot());
-                    IDatabase databaseAfterEGD = databaseBuilder.extractDatabaseWithDistinct(lastStep.getId(), lastStep.getDeltaDB(), lastStep.getOriginalDB(), scenario);
+                    IDatabase databaseAfterEGD = databaseBuilder.extractDatabaseWithDistinct(lastStep.getDeltaDB(), lastStep.getOriginalDB(), scenario);
                     if (logger.isDebugEnabled()) logger.debug("Database after egds:\n" + databaseAfterEGD.printInstances());
                     databaseReplacer.replaceTargetDB(databaseAfterEGD, scenario);
                     targetDB = scenario.getTarget();
@@ -132,7 +127,7 @@ public class ChaseDEScenario implements IDEChaser {
             finalQueryExecutor.executeFinalQueries(targetDB, scenario);
             printResult(targetDB, scenario.getConfiguration());
             scenario.setExtEGDs(new ArrayList<Dependency>());
-            scenario.setEGDs(egds);
+            scenario.setEGDs(scenario.getEgdsFromParser());
             return targetDB;
         } catch (ChaseFailedException e) {
             throw e;

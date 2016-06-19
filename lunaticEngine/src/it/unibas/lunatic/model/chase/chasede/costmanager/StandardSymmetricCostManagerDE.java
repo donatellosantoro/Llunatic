@@ -2,6 +2,7 @@ package it.unibas.lunatic.model.chase.chasede.costmanager;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.chasede.operators.OccurrenceHandlerDE;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.ChangeDescription;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
@@ -10,21 +11,19 @@ import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForSymmetricEGD;
 import it.unibas.lunatic.model.chase.chasemc.Repair;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StandardSymmetricCostManagerDE implements ICostManager {
+public class StandardSymmetricCostManagerDE implements ICostManagerDE {
 
     private static Logger logger = LoggerFactory.getLogger(StandardSymmetricCostManagerDE.class);
 
     @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot,
-            List<Repair> repairsForDependency, Scenario scenario, String stepId, IOccurrenceHandler occurrenceHandler) {
+            List<Repair> repairsForDependency, Scenario scenario, String stepId, OccurrenceHandlerDE occurrenceHandler) {
         EquivalenceClassForSymmetricEGD equivalenceClass = (EquivalenceClassForSymmetricEGD) equivalenceClassProxy.getEquivalenceClass();
         if (logger.isInfoEnabled()) logger.info("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName());
         if (logger.isDebugEnabled()) logger.debug("########Current node: " + stepId);

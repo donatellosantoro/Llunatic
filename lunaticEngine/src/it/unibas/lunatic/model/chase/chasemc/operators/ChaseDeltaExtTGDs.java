@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
@@ -30,10 +29,10 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
     private static final Logger logger = LoggerFactory.getLogger(ChaseDeltaExtTGDs.class);
 
     private final ChaseTGDEquivalenceClass dependencyChaser;
-    private final IBuildDatabaseForChaseStep databaseBuilder;
+    private final IBuildDatabaseForChaseStepMC databaseBuilder;
     private final IOIDGenerator oidGenerator;
 
-    public ChaseDeltaExtTGDs(IRunQuery queryRunner, IBuildDatabaseForChaseStep databaseBuilder, IOccurrenceHandler occurrenceHandler, IOIDGenerator oidGenerator, IChangeCell cellChanger) {
+    public ChaseDeltaExtTGDs(IRunQuery queryRunner, IBuildDatabaseForChaseStepMC databaseBuilder, OccurrenceHandlerMC occurrenceHandler, IOIDGenerator oidGenerator, ChangeCellMC cellChanger) {
         this.databaseBuilder = databaseBuilder;
         this.oidGenerator = oidGenerator;
         this.dependencyChaser = new ChaseTGDEquivalenceClass(queryRunner, oidGenerator, occurrenceHandler, cellChanger);

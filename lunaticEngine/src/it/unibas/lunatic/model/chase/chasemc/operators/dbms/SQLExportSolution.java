@@ -3,7 +3,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators.dbms;
 import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStepMC;
 import it.unibas.lunatic.model.chase.chasemc.operators.IExportSolution;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +20,7 @@ import speedy.utility.DBMSUtility;
 public class SQLExportSolution implements IExportSolution {
 
     private static Logger logger = LoggerFactory.getLogger(SQLExportSolution.class);
-    private IBuildDatabaseForChaseStep databaseBuilder;
+    private IBuildDatabaseForChaseStepMC databaseBuilder;
 
     @Override
     public void export(DeltaChaseStep step, String suffix, Scenario scenario) {

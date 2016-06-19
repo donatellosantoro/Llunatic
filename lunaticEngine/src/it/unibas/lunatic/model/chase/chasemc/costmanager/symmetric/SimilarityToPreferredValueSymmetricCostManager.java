@@ -10,8 +10,6 @@ import it.unibas.lunatic.model.chase.chasemc.EGDEquivalenceClassTuple;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CellGroupScore;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
-import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.similarity.SimilarityConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
@@ -33,14 +31,16 @@ import speedy.model.database.LLUNValue;
 import speedy.model.database.NullValue;
 import speedy.model.database.TupleOID;
 import speedy.utility.SpeedyUtility;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManagerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 
-public class SimilarityToPreferredValueSymmetricCostManager implements ICostManager {
+public class SimilarityToPreferredValueSymmetricCostManager implements ICostManagerMC {
 
     private static Logger logger = LoggerFactory.getLogger(SimilarityToPreferredValueSymmetricCostManager.class);
 
     @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot,
-            List<Repair> repairsForDependency, Scenario scenario, String stepId, IOccurrenceHandler occurrenceHandler) {
+            List<Repair> repairsForDependency, Scenario scenario, String stepId, OccurrenceHandlerMC occurrenceHandler) {
         if (!(scenario.getPartialOrder() instanceof FrequencyPartialOrder)) {
             logger.warn("#### SimilarityToPreferredValueCostManager is usually used with a FrequencyPartialOrder ####");
         }

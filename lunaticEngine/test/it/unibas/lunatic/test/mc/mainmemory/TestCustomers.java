@@ -3,7 +3,7 @@ package it.unibas.lunatic.test.mc.mainmemory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
@@ -21,7 +21,7 @@ public class TestCustomers extends CheckTest {
 //        scenario.getConfiguration().setUseSymmetricOptimization(false);
 //        scenario.getConfiguration().setDiscardDuplicateTuples(true);
 //        scenario.getConfiguration().setRemoveDuplicates(true);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result: " + result.toStringLeavesOnlyWithSort());
         Assert.assertEquals(36, resultSizer.getSolutions(result));

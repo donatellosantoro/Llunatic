@@ -34,7 +34,7 @@ import speedy.model.database.operators.IRunQuery;
 
 //Assumption: CellGroup ids are consistent across steps, i.e.: if C1 belongs to cell group x at step S, 
 //            it belongs to the same cell group also at step S+1
-public class OccurrenceHandlerMC implements IOccurrenceHandler {
+public class OccurrenceHandlerMC {
 
     private static Logger logger = LoggerFactory.getLogger(OccurrenceHandlerMC.class);
 
@@ -58,7 +58,6 @@ public class OccurrenceHandlerMC implements IOccurrenceHandler {
 //        return value.toString().equals("_L137") && stepId.equals("r.cfd1_0_f#.cfd2_0_f#.md3_0_f#.cfd2_0_f#");
     }
 
-    @Override
     public CellGroup enrichCellGroups(CellGroup preliminaryCellGroup, IDatabase deltaDB, String step, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Enriching cell group: " + preliminaryCellGroup + "\n In step " + step);
         IValue value = preliminaryCellGroup.getValue();
@@ -78,7 +77,7 @@ public class OccurrenceHandlerMC implements IOccurrenceHandler {
         return mergedCG;
     }
 
-    protected CellGroup loadCellGroupFromId(IValue value, IDatabase deltaDB, String stepId, Scenario scenario) {
+    private CellGroup loadCellGroupFromId(IValue value, IDatabase deltaDB, String stepId, Scenario scenario) {
         CellGroup cellGroup = this.cacheManager.loadCellGroupFromId(value, stepId, deltaDB, scenario);
 //        if (isDebug(value, stepId)) {
 //            if (cellGroup != null && cellGroup.getJustifications().size() < 3) {
@@ -156,7 +155,6 @@ public class OccurrenceHandlerMC implements IOccurrenceHandler {
         return loadCellGroupFromId(cellGroupId, deltaDB, step, scenario);
     }
 
-    @Override
     public CellGroup loadCellGroupFromValue(Cell cell, IDatabase deltaDB, String stepId, Scenario scenario) {
         IValue cellGroupId = cell.getValue();
         if (cellGroupId instanceof ConstantValue) {
@@ -168,13 +166,11 @@ public class OccurrenceHandlerMC implements IOccurrenceHandler {
         return loadCellGroupFromId(cellGroupId, deltaDB, stepId, scenario);
     }
 
-    @Override
     public IValue findClusterId(CellRef cellRef, String stepId, IDatabase deltaDB, Scenario scenario) {
         IValue clusterId = this.cacheManager.getClusterId(cellRef, stepId, deltaDB, scenario);
         return clusterId;
     }
 
-    @Override
     public void saveNewCellGroup(CellGroup cellGroup, IDatabase deltaDB, String stepId, Scenario scenario) {
         if (logger.isDebugEnabled()) logger.debug("Adding new cell group " + cellGroup + " in step " + stepId);
         this.cacheManager.putCellGroup(cellGroup, stepId, deltaDB, scenario);
@@ -199,7 +195,6 @@ public class OccurrenceHandlerMC implements IOccurrenceHandler {
         if (logger.isTraceEnabled()) logger.trace("DeltaDB\n" + deltaDB.printInstances());
     }
 
-    @Override
     public void deleteCellGroup(CellGroup cellGroup, IDatabase deltaDB, String stepId) {
         this.cacheManager.removeCellGroup(cellGroup.getValue(), stepId);
         for (Cell cell : cellGroup.getOccurrences()) {
@@ -209,18 +204,15 @@ public class OccurrenceHandlerMC implements IOccurrenceHandler {
         deleteOperator.execute(LunaticConstants.CELLGROUP_TABLE, deleteCellGroupQuery, null, deltaDB);
     }
 
-    @Override
     public void reset() {
         this.cacheManager.reset();
     }
 
-    @Override
     public void generateCellGroupStats(DeltaChaseStep step) {
         this.cacheManager.generateCellGroupStats(step);
     }
 
     /////////////////////////////////////////////////////////////////////////   
-    @Override
     public void saveCellGroupCell(IDatabase deltaDB, IValue groupId, CellGroupCell cell, String stepId, Scenario scenario) {
         assert (groupId != null) : "Trying to save occurrence with null groupid " + cell;
         String type = cell.getType();
@@ -262,7 +254,6 @@ public class OccurrenceHandlerMC implements IOccurrenceHandler {
     /////////////////////////////////////////////////////////
     //////    DEBUGGING
     /////////////////////////////////////////////////////////
-    @Override
     public List<CellGroup> loadAllCellGroupsForDebugging(IDatabase deltaDB, String stepId, Scenario scenario) {
         cacheManager.loadCellGroups(stepId, deltaDB, scenario);
         Set<String> keys = cacheManager.getKeySet();
@@ -274,7 +265,6 @@ public class OccurrenceHandlerMC implements IOccurrenceHandler {
         return result;
     }
 
-    @Override
     public List<CellGroup> loadAllCellGroupsInStepForDebugging(IDatabase deltaDB, String stepId, Scenario scenario) {
         IAlgebraOperator query = CellGroupTableUtility.buildQueryToExtractCellGroupIdsInSingleStep(stepId);
         if (logger.isDebugEnabled()) logger.debug("Query for extract cell groups ids in step\n" + query);

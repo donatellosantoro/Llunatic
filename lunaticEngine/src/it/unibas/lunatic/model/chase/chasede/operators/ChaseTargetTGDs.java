@@ -51,7 +51,7 @@ public class ChaseTargetTGDs {
 
     private List<TGDStratum> findInitialStrata(DependencyStratification stratification) {
         List<TGDStratum> result = new ArrayList<TGDStratum>();
-        DirectedGraph<TGDStratum, DefaultEdge> strataGraph = stratification.getStrataGraph();
+        DirectedGraph<TGDStratum, DefaultEdge> strataGraph = stratification.getTgdStrataGraph();
         for (TGDStratum tgdStratum : stratification.getTGDStrata()) {
             if (strataGraph.inDegreeOf(tgdStratum) == 0) {
                 result.add(tgdStratum);

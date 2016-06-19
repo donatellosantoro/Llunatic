@@ -3,6 +3,7 @@ package it.unibas.lunatic.model.chase.commons.operators;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.commons.IChaseState;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStepMC;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -18,9 +19,9 @@ public class ChaseDeltaDCs {
 
     private static Logger logger = LoggerFactory.getLogger(ChaseDeltaDCs.class);
     private IRunQuery queryRunner;
-    private IBuildDatabaseForChaseStep databaseBuilder;
+    private IBuildDatabaseForChaseStepMC databaseBuilder;
 
-    public ChaseDeltaDCs(IRunQuery queryRunner, IBuildDatabaseForChaseStep databaseBuilder) {
+    public ChaseDeltaDCs(IRunQuery queryRunner, IBuildDatabaseForChaseStepMC databaseBuilder) {
         this.queryRunner = queryRunner;
         this.databaseBuilder = databaseBuilder;
     }

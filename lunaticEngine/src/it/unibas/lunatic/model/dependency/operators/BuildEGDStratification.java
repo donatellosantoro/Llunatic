@@ -5,6 +5,7 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.EGDStratum;
 import it.unibas.lunatic.model.dependency.ExtendedEGD;
+import it.unibas.lunatic.model.dependency.TGDStratum;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +44,9 @@ public class BuildEGDStratification {
             stratum.setId(++counter + "");
         }
         if (logger.isDebugEnabled()) logger.debug("Stratification: " + stratification);
+        DirectedGraph<EGDStratum, DefaultEdge> egdStrataGraph = buildEGDStrataGraph(dependencyGraph, stratification.getEGDStrata());
+        if (logger.isDebugEnabled()) logger.debug("EGD Strata Graph: " + egdStrataGraph.toString());
+        stratification.setEgdStrataGraph(egdStrataGraph);
         return stratification;
     }
 
@@ -87,5 +91,34 @@ public class BuildEGDStratification {
             result.add(extendedDependency.getDependency());
         }
         return result;
+    }
+
+    private DirectedGraph<EGDStratum, DefaultEdge> buildEGDStrataGraph(DirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph, List<EGDStratum> egdStrata) {
+        DirectedGraph<EGDStratum, DefaultEdge> strataGraph = new DefaultDirectedGraph<EGDStratum, DefaultEdge>(DefaultEdge.class);
+        for (EGDStratum stratum : egdStrata) {
+            strataGraph.addVertex(stratum);
+        }
+        for (EGDStratum stratumA : egdStrata) {
+            for (EGDStratum stratumB : egdStrata) {
+                if(stratumA.equals(stratumB)){
+                    continue;
+                }
+                if (existsPath(dependencyGraph, stratumA, stratumB)) {
+                    strataGraph.addEdge(stratumA, stratumB);
+                }
+            }
+        }
+        return strataGraph;
+    }
+
+    private boolean existsPath(DirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph, EGDStratum t1, EGDStratum t2) {
+        for (ExtendedEGD dependency1 : t1.getExtendedDependencies()) {
+            for (ExtendedEGD dependency2 : t2.getExtendedDependencies()) {
+                if (dependencyGraph.containsEdge(dependency1, dependency2)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

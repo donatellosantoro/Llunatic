@@ -6,7 +6,7 @@ import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.AddUserNode;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckTest;
@@ -29,7 +29,7 @@ public class TestDoctorsUserInput extends CheckTest {
         scenario.getCostManagerConfiguration().setDoBackward(false);
         scenario.getCostManagerConfiguration().setDoPermutations(false);
 //        scenario.setUserManager(new StandardUserManager());
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug("Result #1:\n" + result.toStringWithSort());
         addUserNode(result, scenario);

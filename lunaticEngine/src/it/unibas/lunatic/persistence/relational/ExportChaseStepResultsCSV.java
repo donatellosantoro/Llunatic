@@ -6,7 +6,7 @@ import it.unibas.lunatic.exceptions.DAOException;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForTGD;
 import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStepMC;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
@@ -327,7 +327,7 @@ public class ExportChaseStepResultsCSV {
         return sb.toString();
     }
 
-    private IBuildDatabaseForChaseStep getDatabaseBuilder(Scenario scenario) {
+    private IBuildDatabaseForChaseStepMC getDatabaseBuilder(Scenario scenario) {
         return OperatorFactory.getInstance().getDatabaseBuilder(scenario);
     }
 

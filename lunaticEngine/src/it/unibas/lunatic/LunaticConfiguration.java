@@ -47,6 +47,7 @@ public class LunaticConfiguration {
 
     private boolean autoSelectBestNumberOfThreads = true;
     private int maxNumberOfThreads = 1;
+    private boolean useThreadsForQueries = false;
 
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
 //    private String deChaser = LunaticConstants.PROXY_MC_CHASER;
@@ -54,7 +55,7 @@ public class LunaticConfiguration {
 //
     private String cacheTypeForMC = LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE;
 //    private String cacheTypeForMC = LunaticConstants.GREEDY_MULTI_STEP_JCS;
-    
+
     private String cacheTypeForDE = LunaticConstants.GREEDY_DE_JCS;
 //    private String cacheTypeForDE = LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE;
 
@@ -415,6 +416,14 @@ public class LunaticConfiguration {
         this.useCompactAttributeName = useCompactAttributeName;
     }
 
+    public boolean isUseThreadsForQueries() {
+        return useThreadsForQueries;
+    }
+
+    public void setUseThreadsForQueries(boolean useThreadsForQueries) {
+        this.useThreadsForQueries = useThreadsForQueries;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
@@ -436,6 +445,7 @@ public class LunaticConfiguration {
                 + "\n\t DiscardDuplicateTuples: " + discardDuplicateTuples
                 + "\n\t AutoSelectBestNumberOfThreads: " + autoSelectBestNumberOfThreads
                 + "\n\t MaxNumberOfThreads: " + maxNumberOfThreads
+                + "\n\t UseThreadsForQueries: " + useThreadsForQueries
                 + "\n\t UseBatchInsert: " + useBatchInsert
                 + "\n\t UseUnloggedWorkTables: " + useUnloggedWorkTables
                 + "\n\t UseHashForSkolem: " + useHashForSkolem

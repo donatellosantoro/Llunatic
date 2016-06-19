@@ -37,6 +37,7 @@ public class Scenario {
     private List<Dependency> dcs = new ArrayList<Dependency>();
     private List<Dependency> egds = new ArrayList<Dependency>();
     private List<Dependency> extEgds = new ArrayList<Dependency>();
+    private List<Dependency> egdsFromParser = new ArrayList<Dependency>();
     private List<DED> dedstTgds = new ArrayList<DED>();
     private List<DED> dedextTgds = new ArrayList<DED>();
     private List<DED> dedegds = new ArrayList<DED>();
@@ -152,6 +153,14 @@ public class Scenario {
             throw new IllegalArgumentException("Either egds or extended egds may be specified for a scenario");
         }
         this.extEgds = eEgds;
+    }
+
+    public List<Dependency> getEgdsFromParser() {
+        return egdsFromParser;
+    }
+
+    public void setEgdsFromParser(List<Dependency> egdsFromParser) {
+        this.egdsFromParser = egdsFromParser;
     }
 
     public List<DED> getDEDstTGDs() {

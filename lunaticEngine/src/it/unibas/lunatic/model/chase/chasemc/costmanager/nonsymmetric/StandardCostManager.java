@@ -10,9 +10,7 @@ import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerConfiguration;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
-import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
@@ -29,15 +27,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.Cell;
 import speedy.utility.comparator.StringComparator;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManagerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 
-public class StandardCostManager implements ICostManager {
+public class StandardCostManager implements ICostManagerMC {
 
     private static Logger logger = LoggerFactory.getLogger(StandardCostManager.class);
     private CheckSatisfactionAfterUpgradesEGD satisfactionChecker = new CheckSatisfactionAfterUpgradesEGD();
 
     @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot,
-            List<Repair> repairsForDependency, Scenario scenario, String stepId, IOccurrenceHandler occurrenceHandler) {
+            List<Repair> repairsForDependency, Scenario scenario, String stepId, OccurrenceHandlerMC occurrenceHandler) {
         EquivalenceClassForEGD equivalenceClass = (EquivalenceClassForEGD) equivalenceClassProxy.getEquivalenceClass();
         if (logger.isInfoEnabled()) logger.info("Chasing dependency " + equivalenceClass.getEGD().getId() + " with cost manager " + this.getClass().getSimpleName() + " and partial order " + scenario.getPartialOrder().getClass().getSimpleName() + " in step " + stepId);
         if (logger.isDebugEnabled()) logger.debug("######## Current node: " + chaseTreeRoot.toStringWithSort());

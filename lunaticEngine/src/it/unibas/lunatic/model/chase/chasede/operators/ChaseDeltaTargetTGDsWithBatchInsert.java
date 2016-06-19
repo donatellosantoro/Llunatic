@@ -5,7 +5,7 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
+import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStepMC;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
@@ -29,9 +29,9 @@ public class ChaseDeltaTargetTGDsWithBatchInsert implements IChaseDeltaExtTGDs {
     private static Logger logger = LoggerFactory.getLogger(ChaseDeltaTargetTGDsWithBatchInsert.class);
 
     private IInsertDeltaTuplesForTargetTGDs insertTuples;
-    private IBuildDatabaseForChaseStep databaseBuilder;
+    private IBuildDatabaseForChaseStepMC databaseBuilder;
 
-    public ChaseDeltaTargetTGDsWithBatchInsert(IInsertDeltaTuplesForTargetTGDs insertTuples, IBuildDatabaseForChaseStep databaseBuilder) {
+    public ChaseDeltaTargetTGDsWithBatchInsert(IInsertDeltaTuplesForTargetTGDs insertTuples, IBuildDatabaseForChaseStepMC databaseBuilder) {
         this.insertTuples = insertTuples;
         this.databaseBuilder = databaseBuilder;
     }

@@ -47,13 +47,13 @@ public class ChaseTGDEquivalenceClass {
 
     private IRunQuery queryRunner;
     private IOIDGenerator oidGenerator;
-    private IOccurrenceHandler occurrenceHandler;
-    private IChangeCell cellChanger;
+    private OccurrenceHandlerMC occurrenceHandler;
+    private ChangeCellMC cellChanger;
 
     private ICorrectCellGroupID cellGroupIDFixer = new CorrectCellGroupID();
     private CheckSatisfactionAfterUpgradesTGD satisfactionChecker = new CheckSatisfactionAfterUpgradesTGD();
 
-    public ChaseTGDEquivalenceClass(IRunQuery queryRunner, IOIDGenerator oidGenerator, IOccurrenceHandler occurrenceHandler, IChangeCell cellChanger) {
+    public ChaseTGDEquivalenceClass(IRunQuery queryRunner, IOIDGenerator oidGenerator, OccurrenceHandlerMC occurrenceHandler, ChangeCellMC cellChanger) {
         this.queryRunner = queryRunner;
         this.oidGenerator = oidGenerator;
         this.occurrenceHandler = occurrenceHandler;

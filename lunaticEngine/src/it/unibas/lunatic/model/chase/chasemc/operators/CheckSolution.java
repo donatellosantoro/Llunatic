@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
@@ -16,10 +15,10 @@ import speedy.model.database.operators.IRunQuery;
 public class CheckSolution {
 
     private static Logger logger = LoggerFactory.getLogger(CheckSolution.class);
-    private CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker;
-    private IOccurrenceHandler occurrenceHandler;
+    private CheckUnsatisfiedDependenciesMC unsatisfiedDependenciesChecker;
+    private OccurrenceHandlerMC occurrenceHandler;
 
-    public CheckSolution(CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker, IOccurrenceHandler occurrenceHandler, IRunQuery queryRunner, IBuildDatabaseForChaseStep databaserBuilder) {
+    public CheckSolution(CheckUnsatisfiedDependenciesMC unsatisfiedDependenciesChecker, OccurrenceHandlerMC occurrenceHandler, IRunQuery queryRunner, IBuildDatabaseForChaseStepMC databaserBuilder) {
         this.unsatisfiedDependenciesChecker = unsatisfiedDependenciesChecker;
         this.occurrenceHandler = occurrenceHandler;
     }

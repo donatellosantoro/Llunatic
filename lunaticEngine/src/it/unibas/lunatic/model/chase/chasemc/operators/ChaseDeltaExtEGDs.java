@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.utility.LunaticUtility;
@@ -30,21 +29,21 @@ import speedy.model.database.operators.IRunQuery;
 public class ChaseDeltaExtEGDs {
 
     private static final Logger logger = LoggerFactory.getLogger(ChaseDeltaExtEGDs.class);
-    private final CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker;
-    private final IBuildDatabaseForChaseStep databaseBuilder;
+    private final CheckUnsatisfiedDependenciesMC unsatisfiedDependenciesChecker;
+    private final IBuildDatabaseForChaseStepMC databaseBuilder;
     private final CheckDuplicates duplicateChecker;
-    private final IChaseEGDEquivalenceClass symmetricEGDChaser;
-    private final IChaseEGDEquivalenceClass egdChaser;
-    private final IOccurrenceHandler occurrenceHandler;
+    private final IChaseExtEGDEquivalenceClass symmetricEGDChaser;
+    private final IChaseExtEGDEquivalenceClass egdChaser;
+    private final OccurrenceHandlerMC occurrenceHandler;
 
-    public ChaseDeltaExtEGDs(IBuildDatabaseForChaseStep stepBuilder, IRunQuery queryRunner,
-            IInsertTuple insertOperator, IBatchInsert batchInsertOperator, IChangeCell cellChanger,
-            IOccurrenceHandler occurrenceHandler, CheckUnsatisfiedDependencies unsatisfiedDependenciesChecker) {
+    public ChaseDeltaExtEGDs(IBuildDatabaseForChaseStepMC stepBuilder, IRunQuery queryRunner,
+            IInsertTuple insertOperator, IBatchInsert batchInsertOperator, ChangeCellMC cellChanger,
+            OccurrenceHandlerMC occurrenceHandler, CheckUnsatisfiedDependenciesMC unsatisfiedDependenciesChecker) {
         this.databaseBuilder = stepBuilder;
         this.duplicateChecker = new CheckDuplicates();
         this.symmetricEGDChaser = new ChaseSymmetricExtEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
         this.egdChaser = new ChaseExtEGDEquivalenceClass(queryRunner, occurrenceHandler, cellChanger);
-        this.unsatisfiedDependenciesChecker = new CheckUnsatisfiedDependencies(databaseBuilder, occurrenceHandler, queryRunner);
+        this.unsatisfiedDependenciesChecker = new CheckUnsatisfiedDependenciesMC(databaseBuilder, occurrenceHandler, queryRunner);
         this.occurrenceHandler = occurrenceHandler;
     }
 
@@ -81,7 +80,7 @@ public class ChaseDeltaExtEGDs {
         return false;
     }
 
-    private IChaseEGDEquivalenceClass getChaser(Dependency egd) {
+    private IChaseExtEGDEquivalenceClass getChaser(Dependency egd) {
         if (egd.hasSymmetricChase()) {
             return this.symmetricEGDChaser;
         }
@@ -118,7 +117,7 @@ public class ChaseDeltaExtEGDs {
             if (logger.isDebugEnabled()) logger.debug("Building database for step id: " + currentNode.getId() + "\nDelta db:\n" + currentNode.getDeltaDB().printInstances());
             IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), egd, scenario);
             if (logger.isTraceEnabled()) logger.trace("Database for step id: " + currentNode.getId() + "\n" + databaseForStep.printInstances());
-            IChaseEGDEquivalenceClass chaser = getChaser(egd);
+            IChaseExtEGDEquivalenceClass chaser = getChaser(egd);
             NewChaseSteps newChaseSteps = chaser.chaseDependency(currentNode, egd, premiseTreeMap.get(egd), scenario, chaseState, databaseForStep);
             long endEgd = new Date().getTime();
             ChaseStats.getInstance().addDepenendecyStat(egd, endEgd - startEgd);

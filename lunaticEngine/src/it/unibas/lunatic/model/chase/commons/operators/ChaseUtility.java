@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -115,11 +116,11 @@ public class ChaseUtility {
         return tuple;
     }
 
-    public static Tuple buildTupleDE(TupleOID tid, String stepId, IValue newValue, IValue groupID, String deltaTableName, String attributeName) {
+    public static Tuple buildTupleDE(TupleOID tid, long version, IValue newValue, IValue groupID, String deltaTableName, String attributeName) {
         TupleOID oid = new TupleOID(IntegerOIDGenerator.getNextOID());
         Tuple tuple = new Tuple(oid);
         tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, SpeedyConstants.TID), new ConstantValue(tid)));
-        tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, SpeedyConstants.STEP), new ConstantValue(stepId)));
+        tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, SpeedyConstants.VERSION), new ConstantValue(version)));
         tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, attributeName), newValue));
         tuple.addCell(new Cell(oid, new AttributeRef(deltaTableName, LunaticConstants.GROUP_ID), groupID));
         return tuple;
@@ -501,6 +502,25 @@ public class ChaseUtility {
         boolean hasResults = it.hasNext();
         it.close();
         return !hasResults;
+    }
+
+    public static void copyEGDsToExtEGDs(Scenario scenario) {
+        List<Dependency> egds = scenario.getEGDs();
+        scenario.setEGDs(new ArrayList<Dependency>());
+        scenario.setExtEGDs(egds);
+        scenario.setEgdsFromParser(egds);
+    }
+
+    public static boolean hasModifiedQueriedAttributes(Set<AttributeRef> affectedAttributes, List<AttributeRef> queriedAttributes) {
+        if (logger.isDebugEnabled()) logger.debug("Checking if dependency has modified queried attributes. Affected attributes: " + affectedAttributes + " - Queried attributes: " + queriedAttributes);
+        for (AttributeRef affectedAttribute : affectedAttributes) {
+            if (queriedAttributes.contains(affectedAttribute)) {
+                if (logger.isDebugEnabled()) logger.debug("Return true");
+                return true;
+            }
+        }
+        if (logger.isDebugEnabled()) logger.debug("Return false");
+        return false;
     }
 
 }

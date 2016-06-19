@@ -44,7 +44,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         if (logger.isDebugEnabled()) logger.debug("Affected attributes " + affectedAttributes);
         List<String> deltaTables = Collections.synchronizedList(new ArrayList<String>());
         createDeltaRelationsSchemaThread(database, deltaTables, accessConfiguration, affectedAttributes, scenario);
-        insertIntoDeltaRelationsThread(database, accessConfiguration, rootName, affectedAttributes, scenario);
+        insertIntoDeltaRelationsThread(database, accessConfiguration, affectedAttributes, scenario);
         analyzeDeltaTables(deltaTables, accessConfiguration, scenario.getConfiguration().getMaxNumberOfThreads());
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_BUILDER, end - start);
@@ -61,11 +61,11 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         threadManager.waitForActiveThread();
     }
 
-    private void insertIntoDeltaRelationsThread(IDatabase database, AccessConfiguration accessConfiguration, String rootStepId, Set<AttributeRef> affectedAttributes, Scenario scenario) {
+    private void insertIntoDeltaRelationsThread(IDatabase database, AccessConfiguration accessConfiguration, Set<AttributeRef> affectedAttributes, Scenario scenario) {
         int maxNumberOfThreads = scenario.getConfiguration().getMaxNumberOfThreads();
         ThreadManager threadManager = new ThreadManager(maxNumberOfThreads);
         for (String tableName : database.getTableNames()) {
-            InsertIntoDeltaRelationThread exThread = new InsertIntoDeltaRelationThread(accessConfiguration, database, tableName, rootStepId, affectedAttributes, scenario);
+            InsertIntoDeltaRelationThread exThread = new InsertIntoDeltaRelationThread(accessConfiguration, database, tableName, affectedAttributes, scenario);
             threadManager.startThread(exThread);
         }
         threadManager.waitForActiveThread();
@@ -86,7 +86,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         script.append("----- Generating cell group tables -----\n");
         String unloggedOption = (scenario.getConfiguration().isUseUnloggedWorkTables() ? " UNLOGGED " : "");
         script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(DBMSUtility.getSchemaNameAndDot(accessConfiguration)).append(LunaticConstants.CELLGROUP_TABLE).append("(").append("\n");
-        script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
+        script.append(SpeedyConstants.INDENT).append(SpeedyConstants.VERSION).append(" bigint,").append("\n");
         String valueType = " text,";
         if (scenario.getConfiguration().isUseDictionaryEncoding()) {
             valueType = " bigint,";
@@ -107,7 +107,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         deltaTables.add(schemaAndTable);
         String unloggedOption = (scenario.getConfiguration().isUseUnloggedWorkTables() ? " UNLOGGED " : "");
         script.append("CREATE ").append(unloggedOption).append(" TABLE ").append(schemaAndTable).append("(").append("\n");
-        script.append(SpeedyConstants.INDENT).append(SpeedyConstants.STEP).append(" text,").append("\n");
+        script.append(SpeedyConstants.INDENT).append(SpeedyConstants.VERSION).append(" bigint,").append("\n");
         script.append(SpeedyConstants.INDENT).append(SpeedyConstants.TID).append(" bigint,").append("\n");
         script.append(SpeedyConstants.INDENT).append(attributeName).append(" ").append(LunaticDBMSUtility.convertDataSourceTypeToDBType(attributeType, scenario.getConfiguration())).append(",").append("\n");
         String idType = " text";
@@ -116,9 +116,6 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         }
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.GROUP_ID).append(idType).append("\n");
         script.append(") WITH OIDS;").append("\n\n");
-//        script.append("CREATE INDEX ").append(attributeName).append("_oid  ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append(" USING btree(tid ASC);\n");
-//        script.append("CREATE INDEX ").append(attributeName).append("_step  ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append(" USING btree(step ASC);\n\n");
-//        script.append("REINDEX TABLE ").append(deltaDBSchema).append(".").append(deltaRelationName).append(";\n");
         script.append(generateTriggerFunction(deltaDBSchema, tableName, attributeName, attributeType));
         script.append(addTriggerToTable(deltaDBSchema, tableName, attributeName));
         return script.toString();
@@ -141,12 +138,12 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         return script.toString();
     }
 
-    private String insertIntoDeltaRelation(String originalDBSchema, String deltaDBSchema, String tableName, String attributeName, String rootStepId) {
+    private String insertIntoDeltaRelation(String originalDBSchema, String deltaDBSchema, String tableName, String attributeName) {
         StringBuilder script = new StringBuilder();
         String deltaRelationName = ChaseUtility.getDeltaRelationName(tableName, attributeName);
         //NOTE: Insert is done from select. To initalize cellGroupId and original value, we need to use the trigger
         script.append("INSERT INTO ").append(deltaDBSchema).append(".").append(deltaRelationName).append("\n");
-        script.append("SELECT cast('").append(rootStepId).append("' AS varchar) AS step, ").append(SpeedyConstants.OID).append(", ").append(attributeName);
+        script.append("SELECT 0 AS ").append(SpeedyConstants.VERSION).append(", ").append(SpeedyConstants.OID).append(", ").append(attributeName);
         script.append("\n").append(SpeedyConstants.INDENT);
         script.append("FROM ").append(originalDBSchema).append(".").append(tableName).append(";");
         script.append("\n");
@@ -217,7 +214,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         result.append(longIndent).append("NEW.").append(LunaticConstants.GROUP_ID).append(" = NEW.").append(attributeName).append(";\n");
         result.append(longIndent).append("INSERT INTO ");
         result.append(deltaDBSchema).append(".").append(LunaticConstants.CELLGROUP_TABLE).append(" VALUES(");
-        result.append("NEW.").append(SpeedyConstants.STEP).append(", ");
+        result.append("NEW.").append(SpeedyConstants.VERSION).append(", ");
         result.append("NEW.").append(LunaticConstants.GROUP_ID).append(", ");
         result.append("NEW.").append(SpeedyConstants.TID).append(", ");
         result.append("'").append(tableName).append("'").append(", ");
@@ -272,15 +269,13 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         private AccessConfiguration accessConfiguration;
         private IDatabase database;
         private String tableName;
-        private String rootStepId;
         private Set<AttributeRef> affectedAttributes;
         private Scenario scenario;
 
-        public InsertIntoDeltaRelationThread(AccessConfiguration accessConfiguration, IDatabase database, String tableName, String rootStepId, Set<AttributeRef> affectedAttributes, Scenario scenario) {
+        public InsertIntoDeltaRelationThread(AccessConfiguration accessConfiguration, IDatabase database, String tableName, Set<AttributeRef> affectedAttributes, Scenario scenario) {
             this.accessConfiguration = accessConfiguration;
             this.database = database;
             this.tableName = tableName;
-            this.rootStepId = rootStepId;
             this.affectedAttributes = affectedAttributes;
             this.scenario = scenario;
         }
@@ -297,7 +292,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
                     continue;
                 }
                 if (isAffected(new AttributeRef(table.getName(), attribute.getName()), affectedAttributes)) {
-                    script.append(insertIntoDeltaRelation(originalDBSchema, deltaDBSchema, table.getName(), attribute.getName(), rootStepId));
+                    script.append(insertIntoDeltaRelation(originalDBSchema, deltaDBSchema, table.getName(), attribute.getName()));
                 } else {
                     tableNonAffectedAttributes.add(attribute);
                 }

@@ -1,9 +1,9 @@
 package it.unibas.lunatic.model.chase.chasemc.operators.mainmemory;
 
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfDBOIDs;
+import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStepMC;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import speedy.model.database.Attribute;
@@ -42,7 +42,7 @@ import speedy.model.database.mainmemory.MainMemoryVirtualDB;
 import speedy.model.database.mainmemory.MainMemoryVirtualTable;
 import speedy.utility.SpeedyUtility;
 
-public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStep {
+public class BuildMainMemoryDBForChaseStep implements IBuildDatabaseForChaseStepMC {
 
     private static Logger logger = LoggerFactory.getLogger(BuildMainMemoryDBForChaseStep.class);
     private CheckConsistencyOfDBOIDs oidChecker = new CheckConsistencyOfDBOIDs();

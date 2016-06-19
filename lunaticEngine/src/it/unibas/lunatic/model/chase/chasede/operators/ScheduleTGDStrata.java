@@ -67,7 +67,7 @@ public class ScheduleTGDStrata {
     private boolean allPreviousStrataAreSatisfied(TGDStratum tgdStratum) {
         this.unsatisfiedStrataLock.lock();
         try {
-            DirectedGraph<TGDStratum, DefaultEdge> strataGraph = scenario.getStratification().getStrataGraph();
+            DirectedGraph<TGDStratum, DefaultEdge> strataGraph = scenario.getStratification().getTgdStrataGraph();
             for (DefaultEdge inEdge : strataGraph.incomingEdgesOf(tgdStratum)) {
                 TGDStratum prevStratum = strataGraph.getEdgeSource(inEdge);
                 if (unsatisfiedStrata.contains(prevStratum)) {
@@ -110,7 +110,7 @@ public class ScheduleTGDStrata {
             if (logger.isDebugEnabled()) logger.debug("** Stratum satisfied: " + tgdStratum);
             this.unsatisfiedStrata.remove(tgdStratum);
             this.unsatisfiedStrataCondition.signalAll();
-            DirectedGraph<TGDStratum, DefaultEdge> strataGraph = scenario.getStratification().getStrataGraph();
+            DirectedGraph<TGDStratum, DefaultEdge> strataGraph = scenario.getStratification().getTgdStrataGraph();
             for (DefaultEdge outEdge : strataGraph.outgoingEdgesOf(tgdStratum)) {
                 TGDStratum nextStratum = strataGraph.getEdgeTarget(outEdge);
                 this.startThreadForTGDStratum(nextStratum);

@@ -45,7 +45,7 @@ public class BuildTGDStratification {
         }
         if (logger.isDebugEnabled()) logger.debug(stratification.toString());
         DirectedGraph<TGDStratum, DefaultEdge> strataGraph = buildStrataGraph(chaseGraph, stratification.getTGDStrata());
-        stratification.setStrataGraph(strataGraph);
+        stratification.setTgdStrataGraph(strataGraph);
     }
 
     private Map<Dependency, Set<Dependency>> findAffectedDependenciesForTGDs(List<Dependency> tgds) {
@@ -122,7 +122,7 @@ public class BuildTGDStratification {
         }
         for (TGDStratum stratumA : tgdStrata) {
             for (TGDStratum stratumB : tgdStrata) {
-                if(stratumA == stratumB){
+                if(stratumA.equals(stratumB)){
                     continue;
                 }
                 if (existsPath(dependencyGraph, stratumA, stratumB)) {

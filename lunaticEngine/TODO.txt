@@ -1,4 +1,2 @@
-da BART
-- eliminare parametro Dependency in buildAlgebraTree
-- aggiungere id != id nei prodotti cartesiani
-- ripulire il codice di BuildAlgebraTreeForSymmetricEGD (evitare di ricalcolare gli stessi attributi)
+
+[ ] Optimize code for mcchaser by introducing threads for violation queries, analyze operations and delta db builder

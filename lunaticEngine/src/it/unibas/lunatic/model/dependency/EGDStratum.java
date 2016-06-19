@@ -41,5 +41,15 @@ public class EGDStratum {
         result.append("]");
         return result.toString();
     }
-        
+
+    public String toLongString() {
+        StringBuilder result = new StringBuilder();
+        result.append("Stratum ").append(id).append(" [\n");
+        for (Dependency dependency : dependencies) {
+            result.append(dependency.toLogicalString()).append("\n");
+        }
+        result.append("]");
+        return result.toString();
+    }
+
 }

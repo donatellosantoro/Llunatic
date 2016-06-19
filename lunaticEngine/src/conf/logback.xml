@@ -40,6 +40,9 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.CostManagerUtility" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDStratumThread" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ScheduleEGDStrata" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDsWithThreads" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.CheckVariablesInExpressions" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.FindVariableEquivalenceClasses" level="DEBUG"/>-->

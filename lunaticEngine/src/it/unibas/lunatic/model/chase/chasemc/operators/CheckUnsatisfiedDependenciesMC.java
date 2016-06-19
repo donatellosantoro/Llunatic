@@ -1,6 +1,5 @@
 package it.unibas.lunatic.model.chase.chasemc.operators;
 
-import it.unibas.lunatic.model.chase.commons.operators.IBuildDatabaseForChaseStep;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
@@ -20,29 +19,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.ITupleIterator;
-import speedy.model.database.AttributeRef;
 import speedy.model.database.Cell;
 import speedy.model.database.IDatabase;
 import speedy.model.database.IValue;
 import speedy.model.database.Tuple;
 import speedy.model.database.operators.IRunQuery;
 
-public class CheckUnsatisfiedDependencies {
+public class CheckUnsatisfiedDependenciesMC {
 
-    private static Logger logger = LoggerFactory.getLogger(CheckUnsatisfiedDependencies.class);
+    private static Logger logger = LoggerFactory.getLogger(CheckUnsatisfiedDependenciesMC.class);
 
     private BuildAlgebraTreeForTGD treeBuilderForTGD = new BuildAlgebraTreeForTGD();
     private BuildAlgebraTreeForEGD treeBuilderForEGD = new BuildAlgebraTreeForEGD();
-    private IBuildDatabaseForChaseStep databaseBuilder;
-    private IOccurrenceHandler occurrenceHandler;
+    private IBuildDatabaseForChaseStepMC databaseBuilder;
+    private OccurrenceHandlerMC occurrenceHandler;
     private final IRunQuery queryRunner;
 
-    public CheckUnsatisfiedDependencies(IBuildDatabaseForChaseStep databaseBuilder, IOccurrenceHandler occurrenceHandler, IRunQuery queryRunner) {
+    public CheckUnsatisfiedDependenciesMC(IBuildDatabaseForChaseStepMC databaseBuilder, OccurrenceHandlerMC occurrenceHandler, IRunQuery queryRunner) {
         this.databaseBuilder = databaseBuilder;
         this.occurrenceHandler = occurrenceHandler;
         this.queryRunner = queryRunner;
@@ -250,7 +247,7 @@ public class CheckUnsatisfiedDependencies {
             if (currentNode.getSatisfiedEGDs().contains(dependency)) {
                 return true;
             }
-            if (hasModifiedQueriedAttributes(currentNode.getAffectedAttributesInNode(), dependency.getQueriedAttributes())) {
+            if (ChaseUtility.hasModifiedQueriedAttributes(currentNode.getAffectedAttributesInNode(), dependency.getQueriedAttributes())) {
                 return false;
             }
             currentNode = currentNode.getFather();
@@ -265,15 +262,4 @@ public class CheckUnsatisfiedDependencies {
         return false;
     }
 
-    private boolean hasModifiedQueriedAttributes(Set<AttributeRef> affectedAttributes, List<AttributeRef> queriedAttributes) {
-        if (logger.isDebugEnabled()) logger.debug("Checking if dependency has modified queried attributes. Affected attributes: " + affectedAttributes + " - Queried attributes: " + queriedAttributes);
-        for (AttributeRef affectedAttribute : affectedAttributes) {
-            if (queriedAttributes.contains(affectedAttribute)) {
-                if (logger.isDebugEnabled()) logger.debug("Return true");
-                return true;
-            }
-        }
-        if (logger.isDebugEnabled()) logger.debug("Return false");
-        return false;
-    }
 }

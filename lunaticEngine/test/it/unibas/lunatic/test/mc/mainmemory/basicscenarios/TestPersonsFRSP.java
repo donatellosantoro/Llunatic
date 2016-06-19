@@ -4,7 +4,7 @@ import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
-import it.unibas.lunatic.model.chase.commons.operators.ChaserFactory;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import it.unibas.lunatic.test.References;
 import it.unibas.lunatic.test.UtilityTest;
 import it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest;
@@ -21,7 +21,7 @@ public class TestPersonsFRSP extends CheckExpectedSolutionsTest {
         setConfigurationForTest(scenario);
         scenario.getCostManagerConfiguration().setType(LunaticConstants.COST_MANAGER_SIMILARITY);
         scenario.getCostManagerConfiguration().setDoPermutations(false);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
 //        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         DeltaChaseStep result = chaser.doChase(scenario);
@@ -41,7 +41,7 @@ public class TestPersonsFRSP extends CheckExpectedSolutionsTest {
         scenario.getConfiguration().setDiscardDuplicateTuples(true);
         scenario.getCostManagerConfiguration().setType(LunaticConstants.COST_MANAGER_SIMILARITY);
         scenario.getCostManagerConfiguration().setDoPermutations(false);
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
 //        if (logger.isDebugEnabled()) logger.debug("Scenario " + getTestName("persons", scenario));
         DeltaChaseStep result = chaser.doChase(scenario);

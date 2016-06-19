@@ -10,10 +10,8 @@ import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGD;
 import it.unibas.lunatic.model.chase.chasemc.EquivalenceClassForEGDProxy;
 import it.unibas.lunatic.model.chase.chasemc.ViolationContext;
 import it.unibas.lunatic.model.chase.chasemc.costmanager.CellGroupScore;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import it.unibas.lunatic.model.similarity.SimilarityConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesEGD;
-import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
 import it.unibas.lunatic.model.chase.chasemc.partialorder.FrequencyPartialOrder;
 import it.unibas.lunatic.model.dependency.Dependency;
 import speedy.model.database.IValue;
@@ -33,15 +31,17 @@ import speedy.model.database.LLUNValue;
 import speedy.model.database.NullValue;
 import speedy.model.database.TupleOID;
 import speedy.utility.SpeedyUtility;
+import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManagerMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 
-public class SimilarityToPreferredValueCostManager implements ICostManager {
+public class SimilarityToPreferredValueCostManager implements ICostManagerMC {
 
     private static final Logger logger = LoggerFactory.getLogger(SimilarityToPreferredValueCostManager.class);
     private final CheckSatisfactionAfterUpgradesEGD satisfactionChecker = new CheckSatisfactionAfterUpgradesEGD();
 
     @SuppressWarnings("unchecked")
     public List<Repair> chooseRepairStrategy(EquivalenceClassForEGDProxy equivalenceClassProxy, DeltaChaseStep chaseTreeRoot,
-            List<Repair> repairsForDependency, Scenario scenario, String stepId, IOccurrenceHandler occurrenceHandler) {
+            List<Repair> repairsForDependency, Scenario scenario, String stepId, OccurrenceHandlerMC occurrenceHandler) {
         if (!(scenario.getPartialOrder() instanceof FrequencyPartialOrder)) {
             logger.warn("#### SimilarityToPreferredValueCostManager is usually used with a FrequencyPartialOrder ####");
         }
