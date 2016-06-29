@@ -51,7 +51,7 @@ public class DAOMCScenarioCF {
             Element rootElement = document.getRootElement();
             //CONFIGURATION
             Element configurationElement = rootElement.getChild("configuration");
-            LunaticConfiguration configuration = daoConfiguration.loadConfiguration(configurationElement);
+            LunaticConfiguration configuration = daoConfiguration.loadConfiguration(rootElement, configurationElement);
             scenario.setConfiguration(configuration);
             if (config.getUseDictionaryEncoding() != null) {
                 configuration.setUseDictionaryEncoding(config.getUseDictionaryEncoding());

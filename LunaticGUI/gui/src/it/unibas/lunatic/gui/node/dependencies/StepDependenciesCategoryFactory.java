@@ -2,7 +2,7 @@ package it.unibas.lunatic.gui.node.dependencies;
 
 import it.unibas.lunatic.core.CellGroupHelper;
 import it.unibas.lunatic.gui.node.chase.mc.ChaseStepNode;
-import it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies;
+import it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependenciesMC;
 import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ class StepDependenciesCategoryFactory extends ChildFactory<ChaseStepNode> {
 
     @Override
     protected Node[] createNodesForKey(ChaseStepNode context) {
-        CheckUnsatisfiedDependencies checker = cgHelper.getUnsatisfiedDependencyChecker(context.getScenario());
+        CheckUnsatisfiedDependenciesMC checker = cgHelper.getUnsatisfiedDependencyChecker(context.getScenario());
         List<Dependency> unsatisfiedDependencies = checker.findUnsatisfiedDependencies(context.getChaseStep(), context.getChaseStep().getDeltaDB(), context.getScenario());
         List<Node> result = new ArrayList<Node>();
         Node[] nodes = new DepListNode(unsatisfiedDependencies, "unsatisfied", false).getChildren().getNodes();

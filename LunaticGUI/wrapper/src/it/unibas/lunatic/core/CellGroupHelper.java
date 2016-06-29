@@ -5,9 +5,8 @@ import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.AddUserNode;
-import it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies;
-import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStep;
-import it.unibas.lunatic.model.chase.chasemc.operators.IOccurrenceHandler;
+import it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependenciesMC;
+import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStepMC;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.operators.ValueExtractor;
 import java.util.ArrayList;
@@ -65,8 +64,8 @@ public class CellGroupHelper {
         return new ValueExtractor(operatorFactory.getQueryRunner(s));
     }
 
-    private IOccurrenceHandler getValueOccurrenceHandlerMCExtractor(Scenario s) {
-        return operatorFactory.getOccurrenceHandler(s);
+    private OccurrenceHandlerMC getValueOccurrenceHandlerMCExtractor(Scenario s) {
+        return operatorFactory.getOccurrenceHandlerMC(s);
     }
 
     public List<IValue> extractValues(List<CellGroup> cgList) {
@@ -81,10 +80,10 @@ public class CellGroupHelper {
         return operatorFactory.getUserNodeCreator(scenario);
     }
 
-    public CheckUnsatisfiedDependencies getUnsatisfiedDependencyChecker(Scenario scenario) {
-        IBuildDatabaseForChaseStep databaseBuilder = operatorFactory.getDatabaseBuilder(scenario);
+    public CheckUnsatisfiedDependenciesMC getUnsatisfiedDependencyChecker(Scenario scenario) {
+        IBuildDatabaseForChaseStepMC databaseBuilder = operatorFactory.getDatabaseBuilder(scenario);
         IRunQuery queryRunner = operatorFactory.getQueryRunner(scenario);
-        IOccurrenceHandler valueOccurrenceHandlerMC = getValueOccurrenceHandlerMCExtractor(scenario);
-        return new CheckUnsatisfiedDependencies(databaseBuilder, valueOccurrenceHandlerMC, queryRunner);
+        OccurrenceHandlerMC valueOccurrenceHandlerMC = getValueOccurrenceHandlerMCExtractor(scenario);
+        return new CheckUnsatisfiedDependenciesMC(databaseBuilder, valueOccurrenceHandlerMC, queryRunner);
     }
 }

@@ -15,15 +15,12 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CellGroupIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import speedy.model.database.IDatabase;
-import it.unibas.lunatic.model.chase.commons.ChaserFactory;
-import it.unibas.lunatic.model.chase.commons.control.IChaseState;
-import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
+import it.unibas.lunatic.model.chase.commons.IChaseState;
+import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
-import speedy.model.database.operators.IDatabaseManager;
-import speedy.model.database.operators.dbms.SQLDatabaseManager;
 import speedy.persistence.relational.QueryStatManager;
 import speedy.utility.DBMSUtility;
 
@@ -62,7 +59,7 @@ public class StandardChase implements IChaseOperator {
 
     private IChaseResult chaseMCScenario(LoadedScenario ls, IChaseState chaseState) {
         Scenario scenario = ls.getScenario();
-        ChaseMCScenario chaser = ChaserFactory.getChaser(scenario);
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         ChaseTree result = chaser.doChase(scenario, chaseState);
         return new McChaseResult(ls, result);
     }

@@ -4,7 +4,7 @@ import it.unibas.lunatic.ITaskListener;
 import it.unibas.lunatic.gui.IViewManager;
 import it.unibas.lunatic.gui.model.IChaseResult;
 import it.unibas.lunatic.gui.model.LoadedScenario;
-import it.unibas.lunatic.model.chase.commons.control.ChaseState;
+import it.unibas.lunatic.model.chase.commons.ChaseState;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.SwingWorker;

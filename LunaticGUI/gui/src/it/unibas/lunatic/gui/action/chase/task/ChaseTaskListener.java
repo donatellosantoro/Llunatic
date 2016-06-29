@@ -57,7 +57,7 @@ public class ChaseTaskListener implements ITaskListener<ChaseTask> {
                 LoadedScenario scenario = task.getScenario();
                 scenario.put(R.BeanProperty.CHASE_RESULT, result);
                 String statusText = Bundle.MSG_ChaseSuccessful();
-                Long exTime = ChaseStats.getInstance().getStat(ChaseStats.TOTAL_TIME);
+                Long exTime = ChaseStats.getInstance().getStat(ChaseStats.CHASE_TIME);
                 if (exTime != null && exTime > 0) {
                     statusText += " in " + exTime + " ms";
                 }

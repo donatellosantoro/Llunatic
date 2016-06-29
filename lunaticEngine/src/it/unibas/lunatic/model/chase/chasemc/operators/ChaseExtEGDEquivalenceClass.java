@@ -121,7 +121,7 @@ public class ChaseExtEGDEquivalenceClass implements IChaseExtEGDEquivalenceClass
         Dependency egd = dv.getEgd();
         EquivalenceClassForEGD equivalenceClass = new EquivalenceClassForEGD(dv);
         if (lastTuple != null && !this.lastTupleHandled) {
-            if (logger.isDebugEnabled()) logger.debug("Reading tuple : " + this.lastTuple.toStringWithOIDAndAlias());
+            if (logger.isTraceEnabled()) logger.trace("Reading tuple : " + this.lastTuple.toStringWithOIDAndAlias());
             addTuple(this.lastTuple, equivalenceClass, contextCounter++, deltaDB, stepId, scenario);
             this.lastTupleHandled = true;
         }
@@ -130,7 +130,7 @@ public class ChaseExtEGDEquivalenceClass implements IChaseExtEGDEquivalenceClass
         while (it.hasNext()) {
             if (chaseState.isCancelled()) ChaseUtility.stopChase(chaseState); //throw new ChaseException("Chase interrupted by user");
             Tuple tuple = it.next();
-            if (logger.isDebugEnabled()) logger.debug("Reading tuple : " + tuple.toStringWithOIDAndAlias());
+            if (logger.isTraceEnabled()) logger.trace("Reading tuple : " + tuple.toStringWithOIDAndAlias());
             if (scenario.getConfiguration().isDiscardDuplicateTuples()) {
                 String fingerprint = generateFingerprintForTuple(tuple, dv);
                 if (analizedTupleFingerprints.contains(fingerprint)) {

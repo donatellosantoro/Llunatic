@@ -18,7 +18,7 @@ public class DaoChaseStep {
     }
 
     public void persist(Scenario s, DeltaChaseStep result, String fileName) throws IOException {
-        GenerateModifiedCells operator = new GenerateModifiedCells(OperatorFactory.getInstance().getOccurrenceHandler(s));
+        GenerateModifiedCells operator = new GenerateModifiedCells(OperatorFactory.getInstance().getOccurrenceHandlerMC(s));
         if (s.isMainMemory()) {
             operator.generate(result, fileName);
         } else {

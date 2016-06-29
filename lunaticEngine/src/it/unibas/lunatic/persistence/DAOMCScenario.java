@@ -42,9 +42,13 @@ public class DAOMCScenario {
         return scenario;
     }
 
-    private boolean isStandardScenario(Element rootElement) {
+    public static boolean isStandardScenario(Element rootElement) {
         Element dependenciesElement = rootElement.getChild("dependencies");
         return dependenciesElement.getChildren().isEmpty();
+    }
+
+    public static boolean isCFScenario(Element rootElement) {
+        return !isStandardScenario(rootElement);
     }
 
 }

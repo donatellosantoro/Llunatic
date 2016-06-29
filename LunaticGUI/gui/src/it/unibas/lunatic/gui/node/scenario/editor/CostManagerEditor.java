@@ -1,7 +1,6 @@
 package it.unibas.lunatic.gui.node.scenario.editor;
 
 import it.unibas.lunatic.core.CostManagerProvider;
-import it.unibas.lunatic.model.chase.chasemc.costmanager.ICostManager;
 import java.beans.PropertyEditorSupport;
 import java.util.Collection;
 import javax.swing.JComboBox;

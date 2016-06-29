@@ -4,8 +4,8 @@ import speedy.SpeedyConstants;
 
 public class LunaticConfiguration {
 
-//    private static boolean printSteps = true;
-    private static boolean printSteps = false;
+    private static boolean printSteps = true;
+//    private static boolean printSteps = false;
     private static boolean printResults = false;
     private boolean debugMode = false;
     private boolean recreateDBOnStart = true;
@@ -30,7 +30,7 @@ public class LunaticConfiguration {
     private double numberCellsWeightForRanking = 0.7;
     private boolean useUnloggedWorkTables = true;
     private boolean useHashForSkolem = true;
-    private boolean useDictionaryEncoding = true;
+    private boolean useDictionaryEncoding = false;
     private boolean useBatchInsert = true;
     private boolean useCompactAttributeName = true;
     private boolean exportSolutions = false;

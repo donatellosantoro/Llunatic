@@ -63,7 +63,7 @@ public class DAOLunaticConfiguration {
             Document document = daoUtility.buildDOM(fileScenario);
             Element rootElement = document.getRootElement();
             Element configurationElement = rootElement.getChild("configuration");
-            return loadConfiguration(configurationElement);
+            return loadConfiguration(rootElement, configurationElement);
         } catch (Throwable ex) {
             logger.error(ex.getLocalizedMessage());
             ex.printStackTrace();
@@ -75,7 +75,7 @@ public class DAOLunaticConfiguration {
         }
     }
 
-    public LunaticConfiguration loadConfiguration(Element configurationElement) {
+    public LunaticConfiguration loadConfiguration(Element rootElement, Element configurationElement) {
         LunaticConfiguration configuration = new LunaticConfiguration();
         if (configurationElement == null || configurationElement.getChildren().isEmpty()) {
             return configuration;
@@ -103,6 +103,8 @@ public class DAOLunaticConfiguration {
         Element useDictionaryEncodingElement = configurationElement.getChild("useDictionaryEncoding");
         if (useDictionaryEncodingElement != null) {
             configuration.setUseDictionaryEncoding(Boolean.parseBoolean(useDictionaryEncodingElement.getValue()));
+        } else if (DAOMCScenario.isCFScenario(rootElement)) {
+            configuration.setUseDictionaryEncoding(true);
         }
         Element optimizeTGDsElement = configurationElement.getChild("optimizeSTTGDs");
         if (optimizeTGDsElement != null) {

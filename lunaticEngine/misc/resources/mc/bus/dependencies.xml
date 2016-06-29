@@ -51,12 +51,13 @@ e09: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiern
 e10: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiername: $x4 , administrativeareacode: $x5, nptgdistrictcode: $x6, sourcelocalitytype: $x7, gridtype: $x8, creationdatetime: $x9, modificationdatetime: $x10, revisionnumber: $x11, modification: $x12, atcoareacode: $x13, areaname: $x14, shortname: $x15, countrylang: $x16, regioncode: $x17, districtcode: $x18, districtname: $x19, plusbuszonecode: $x20, sequence: $x21, easting: $x22, northing: $x23, country: $x24, regionname: $x25), 
     bus(localitycode: $y1, localityname: $y2, localitynamelang: $y3, qualifiername: $y4, administrativeareacode: $x5, nptgdistrictcode: $y6, sourcelocalitytype: $y7, gridtype: $y8, creationdatetime: $y9, modificationdatetime: $y10, revisionnumber: $y11, modification: $y12, atcoareacode: $y13, areaname: $y14, shortname: $y15, countrylang: $y16, regioncode: $y17, districtcode: $y18, districtname: $y19, plusbuszonecode: $y20, sequence: $y21, easting: $y22, northing: $y23, country: $y24, regionname: $y25) 
         -> $x17 == $y17.
-        
+              
 ////a tuple with CDT=MDT should have RN=0 
 ////not(CDT=MDT, RN!="0")
 //e11: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiername: $x4 , administrativeareacode: $x5, nptgdistrictcode: $x6, sourcelocalitytype: $x7, gridtype: $x8, creationdatetime: $x9, modificationdatetime: $x10, revisionnumber: $x11, modification: $x12, atcoareacode: $x13, areaname: $x14, shortname: $x15, countrylang: $x16, regioncode: $x17, districtcode: $x18, districtname: $x19, plusbuszonecode: $x20, sequence: $x21, easting: $x22, northing: $x23, country: $x24, regionname: $x25), 
 //     consttablecf1(revisionnumber: $y11),
 //        $x9 == $x10  -> $x11 == $y11.
+
 //a tuple with CDT=MDT should have RN=0 
 //not(CDT=MDT, RN!="0")
 //e11: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiername: $x4 , administrativeareacode: $x5, nptgdistrictcode: $x6, sourcelocalitytype: $x7, gridtype: $x8, creationdatetime: $x9, modificationdatetime: $x9, revisionnumber: $x11, modification: $x12, atcoareacode: $x13, areaname: $x14, shortname: $x15, countrylang: $x16, regioncode: $x17, districtcode: $x18, districtname: $x19, plusbuszonecode: $x20, sequence: $x21, easting: $x22, northing: $x23, country: $x24, regionname: $x25), 
@@ -64,12 +65,17 @@ e10: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiern
 //     consttablecf1(revisionnumber: $z11),
 //     -> $x11 == $z11.
 
+e11: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiername: $x4 , administrativeareacode: $x5, nptgdistrictcode: $x6, sourcelocalitytype: $x7, gridtype: $x8, creationdatetime: $x9, modificationdatetime: $x10, revisionnumber: $x11, modification: $x12, atcoareacode: $x13, areaname: $x14, shortname: $x15, countrylang: $x16, regioncode: $x17, districtcode: $x18, districtname: $x19, plusbuszonecode: $x20, sequence: $x21, easting: $x22, northing: $x23, country: $x24, regionname: $x25), 
+     $x3 == "EN", $x9 == $x10 -> $x11 == "0".
+
 //a tuple with CDT=MDT should have M=new
 //not(CDT=MDT, M!="new")
 //e12: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiername: $x4 , administrativeareacode: $x5, nptgdistrictcode: $x6, sourcelocalitytype: $x7, gridtype: $x8, creationdatetime: $x9, modificationdatetime: $x10, revisionnumber: $x11, modification: $x12, atcoareacode: $x13, areaname: $x14, shortname: $x15, countrylang: $x16, regioncode: $x17, districtcode: $x18, districtname: $x19, plusbuszonecode: $x20, sequence: $x21, easting: $x22, northing: $x23, country: $x24, regionname: $x25), 
 //     consttablecf2(modification: $y12),
 //        $x9 == $x10 ->  $x12 == $y12.
-           
+ 
+e12: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiername: $x4 , administrativeareacode: $x5, nptgdistrictcode: $x6, sourcelocalitytype: $x7, gridtype: $x8, creationdatetime: $x9, modificationdatetime: $x10, revisionnumber: $x11, modification: $x12, atcoareacode: $x13, areaname: $x14, shortname: $x15, countrylang: $x16, regioncode: $x17, districtcode: $x18, districtname: $x19, plusbuszonecode: $x20, sequence: $x21, easting: $x22, northing: $x23, country: $x24, regionname: $x25), 
+        $x3 == "EN", $x9 == $x10 ->  $x12 == "new".
 ]]>
     </dependencies>
 <authoritativeSources>

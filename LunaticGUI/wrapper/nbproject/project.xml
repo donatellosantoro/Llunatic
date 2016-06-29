@@ -23,9 +23,11 @@
                 <package>it.unibas.lunatic.model.algebra.operators</package>
                 <package>it.unibas.lunatic.model.algebra.sql</package>
                 <package>it.unibas.lunatic.model.chase.chasede</package>
+                <package>it.unibas.lunatic.model.chase.chasede.costmanager</package>
                 <package>it.unibas.lunatic.model.chase.chasede.operators</package>
                 <package>it.unibas.lunatic.model.chase.chasede.operators.dbms</package>
                 <package>it.unibas.lunatic.model.chase.chasede.operators.mainmemory</package>
+                <package>it.unibas.lunatic.model.chase.chasede.partialorder</package>
                 <package>it.unibas.lunatic.model.chase.chaseded</package>
                 <package>it.unibas.lunatic.model.chase.chaseded.dbms</package>
                 <package>it.unibas.lunatic.model.chase.chaseded.mainmemory</package>
@@ -41,7 +43,7 @@
                 <package>it.unibas.lunatic.model.chase.chasemc.partialorder.valuecomparator</package>
                 <package>it.unibas.lunatic.model.chase.chasemc.usermanager</package>
                 <package>it.unibas.lunatic.model.chase.commons</package>
-                <package>it.unibas.lunatic.model.chase.commons.control</package>
+                <package>it.unibas.lunatic.model.chase.commons.operators</package>
                 <package>it.unibas.lunatic.model.database.lazyloading</package>
                 <package>it.unibas.lunatic.model.database.skolem</package>
                 <package>it.unibas.lunatic.model.dependency</package>
@@ -52,9 +54,11 @@
                 <package>it.unibas.lunatic.parser.operators</package>
                 <package>it.unibas.lunatic.parser.output</package>
                 <package>it.unibas.lunatic.persistence</package>
+                <package>it.unibas.lunatic.persistence.csv</package>
+                <package>it.unibas.lunatic.persistence.encoding</package>
                 <package>it.unibas.lunatic.persistence.relational</package>
+                <package>it.unibas.lunatic.run</package>
                 <package>it.unibas.lunatic.utility</package>
-                <package>it.unibas.lunatic.utility.combinatorial</package>
                 <package>it.unibas.lunatic.utility.graph</package>
                 <package>org.apache.commons.jcs</package>
                 <package>org.apache.commons.jcs.access</package>
@@ -171,7 +175,7 @@
                 <runtime-relative-path>ext/js-engine.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/js-engine.jar</binary-origin>
             </class-path-extension>
-<!--            <class-path-extension>
+            <!--            <class-path-extension>
                 <runtime-relative-path>ext/xercesImpl.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/xercesImpl.jar</binary-origin>
             </class-path-extension>-->
@@ -226,6 +230,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/antlr-3.1.1-runtime.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/antlr-3.1.1-runtime.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/antlr-runtime-4.5.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/antlr-runtime-4.5.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/c3p0-0.9.2.1.jar</runtime-relative-path>

@@ -5,7 +5,7 @@
 <!ENTITY configuration SYSTEM "configuration.xml">
 ]>
 <scenario>
-  <source>
+<!--  <source>
     <type>DBMS</type>
     <access-configuration>
       <driver>org.postgresql.Driver</driver>
@@ -14,7 +14,7 @@
       <login>pguser</login>
       <password>pguser</password>
     </access-configuration>
-  </source>
+  </source>-->
   <target> 
     <type>DBMS</type>
     <access-configuration>

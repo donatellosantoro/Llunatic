@@ -114,7 +114,7 @@ public class ChaseDeltaExtEGDs {
             long startEgd = new Date().getTime();
             if (logger.isDebugEnabled()) logger.info("* Chasing dependency " + egd.getId() + " on step " + currentNode.getId());
             if (logger.isDebugEnabled()) logger.info("* Algebra operator " + premiseTreeMap.get(egd));
-            if (logger.isDebugEnabled()) logger.debug("Building database for step id: " + currentNode.getId() + "\nDelta db:\n" + currentNode.getDeltaDB().printInstances());
+            if (logger.isDebugEnabled()) logger.trace("Building database for step id: " + currentNode.getId() + "\nDelta db:\n" + currentNode.getDeltaDB().printInstances());
             IDatabase databaseForStep = databaseBuilder.extractDatabase(currentNode.getId(), currentNode.getDeltaDB(), currentNode.getOriginalDB(), egd, scenario);
             if (logger.isTraceEnabled()) logger.trace("Database for step id: " + currentNode.getId() + "\n" + databaseForStep.printInstances());
             IChaseExtEGDEquivalenceClass chaser = getChaser(egd);
