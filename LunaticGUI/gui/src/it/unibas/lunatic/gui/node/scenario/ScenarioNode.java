@@ -16,6 +16,7 @@ public class ScenarioNode extends AbstractNode {
 
     public static final String USER_MANAGER = "userManager";
     public static final String COST_MANAGER = "costManager";
+    public static final String SIMILARITY_STRATEGY = "similarityStrategy";
     public static final String ITERATION_LIMIT = "IterationLimit";
     public static final String CHASE_BACKWARD = "chaseBackward";
     public static final String PERMUTATION_ALLOWED = "permutationAllowed";

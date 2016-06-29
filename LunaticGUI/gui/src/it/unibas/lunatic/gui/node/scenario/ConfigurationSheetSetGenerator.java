@@ -19,6 +19,7 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages({
     "PROP_partialOrder=Partial order",
     "PROP_costManager=Cost manager",
+    "PROP_similarityStrategy=Similarity strategy",
     "PROP_userManager=User manager",
     "PROP_dependencies=N. of dependencies",
     "PROP_removeDuplicates=Remove duplicates",
@@ -64,6 +65,13 @@ public class ConfigurationSheetSetGenerator {
             public void setValue(String val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
                 scenario.getCostManagerConfiguration().setType(val);
                 scenarioNode.updateCostManagerSet();
+            }
+        });
+        set.put(new PropertySupport.ReadOnly<String>(ScenarioNode.SIMILARITY_STRATEGY, String.class, Bundle.PROP_similarityStrategy(), Bundle.PROP_similarityStrategy()) {
+
+            @Override
+            public String getValue() throws IllegalAccessException, InvocationTargetException {
+                return scenario.getCostManagerConfiguration().getDefaultSimilarityConfiguration().getStrategy();
             }
         });
         set.put(new PropertySupport.ReadWrite<IUserManager>(ScenarioNode.USER_MANAGER, IUserManager.class, Bundle.PROP_userManager(), Bundle.PROP_userManager()) {

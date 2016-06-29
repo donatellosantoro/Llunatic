@@ -27,6 +27,9 @@ public class ChaseStepAncestorFactory extends ChildFactory<DeltaChaseStep> {
     protected Node[] createNodesForKey(DeltaChaseStep key) {
         List<Node> stack = new ArrayList<Node>();
         DeltaChaseStep parent = key.getFather();
+        if (parent == null) {
+            return new Node[0];
+        }
         while (!parent.isRoot()) {
             Node n = new ChaseStepAnchestorNode(parent, scenario);
             stack.add(n);
