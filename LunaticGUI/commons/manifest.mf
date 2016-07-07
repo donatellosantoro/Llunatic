@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 OpenIDE-Module: it.unibas.lunatic
 OpenIDE-Module-Localizing-Bundle: it/unibas/lunatic/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0.1
+OpenIDE-Module-Specification-Version: 2.2
 AutoUpdate-Essential-Module: true

@@ -17,9 +17,9 @@ Q: Come modificare l'intervallo di update nella distribuzione?
 A: aggingere in NETBEANS_HOME\harness\etc\app.conf l'opzione -J-Dplugin.manager.check.interval=EVERY_DAY (oppure la cadenza voluta)
 -----------------------------------------------------------------------------------------------------------
 
-Q: Come cambiare il numero di versione?
-A: Modificare il file branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties
-   Modificare il file branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
+Q: How to change "version number"?
+A: Edit branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties
+   Edit branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
 
 -----------------------------------------------------------------------------------------------------------
 Q: Come impostare la posizione dei topcomponent
@@ -34,6 +34,6 @@ Inoltre le zone vengono mostrate come folder, e in ognuna c'è un riferimento al
 -----------------------------------------------------------------------------------------------------------
 NOTE
 -----------------------------------------------------------------------------------------------------------
-Utilizzare xerces-2.8.0.jar (la stessa versione di NetBeans)
+Use xerces-2.8.0.jar (same version of NetBeans)
 
-Per aggiornare i moduli utilizzare sempre un diverso minor version (Es 1.2 -> 1.3 ok, 1.2 -> 1.2.1 NO)
+In order to update modules, it is important to use a divverent minor version (Eg. 1.2 -> 1.3 ok, 1.2 -> 1.2.1 NO)

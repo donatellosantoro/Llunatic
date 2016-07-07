@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: it.unibas.lunatic.gui.branding
+OpenIDE-Module-Localizing-Bundle: it/unibas/lunatic/gui/branding/Bundle.properties
+OpenIDE-Module-Specification-Version: 2.2
+

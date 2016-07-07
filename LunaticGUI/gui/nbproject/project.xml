@@ -23,6 +23,12 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>it.unibas.lunatic.gui.branding</code-name-base>
+                    <run-dependency>
+                        <specification-version>2.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>it.unibas.lunatic.res</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -203,6 +209,12 @@
             </module-dependencies>
             <public-packages>
                 <package>it.unibas.lunatic.gui</package>
+                <package>it.unibas.lunatic.gui.action</package>
+                <package>it.unibas.lunatic.gui.action.cellgroups</package>
+                <package>it.unibas.lunatic.gui.action.chase</package>
+                <package>it.unibas.lunatic.gui.action.chase.task</package>
+                <package>it.unibas.lunatic.gui.action.scenario</package>
+                <package>it.unibas.lunatic.gui.action.scenario.task</package>
                 <package>it.unibas.lunatic.gui.data</package>
                 <package>it.unibas.lunatic.gui.model</package>
                 <package>it.unibas.lunatic.gui.node</package>
@@ -212,6 +224,7 @@
                 <package>it.unibas.lunatic.gui.node.chase.mc.stack</package>
                 <package>it.unibas.lunatic.gui.node.dependencies</package>
                 <package>it.unibas.lunatic.gui.node.scenario</package>
+                <package>it.unibas.lunatic.gui.node.scenario.editor</package>
                 <package>it.unibas.lunatic.gui.node.utils</package>
                 <package>it.unibas.lunatic.gui.table</package>
                 <package>it.unibas.lunatic.gui.window.utils</package>
