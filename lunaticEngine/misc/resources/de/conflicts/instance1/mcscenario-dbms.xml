@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+<!ENTITY NAME "instance1">
+]>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:chasebench_&NAME;_de</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <schemaFile schema="source">schema/s-schema.txt</schemaFile>
+    <import>
+      <input type="csv" separator="," hasHeader="false" table="s1">data/s1.csv</input>
+      <input type="csv" separator="," hasHeader="false" table="s2">data/s2.csv</input>
+    </import>
+  </source>
+  <target>
+    <type>DBMS</type>
+    <generateFromDependencies>true</generateFromDependencies>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:chasebench_&NAME;_de</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <schemaFile schema="target">schema/t-schema.txt</schemaFile>
+  </target>
+  <configuration>
+  <printResults>true</printResults>
+  <printSteps>true</printSteps>
+    <exportSolutions>true</exportSolutions>
+    <exportSolutionsPath>/Temp/llunatic/&NAME;/</exportSolutionsPath>
+    <exportSolutionsType>CSV</exportSolutionsType>
+    <useDictionaryEncoding>false</useDictionaryEncoding>
+    <optimizeSTTGDs>false</optimizeSTTGDs>
+  </configuration>
+  <dependencies>
+    <sttgdsFile>dependencies/st-tgds.txt</sttgdsFile>
+    <ttgdsFile>dependencies/t-tgds.txt</ttgdsFile>
+    <egdsFile>dependencies/t-egds.txt</egdsFile>
+  </dependencies>
+</scenario>

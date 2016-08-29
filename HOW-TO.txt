@@ -1,33 +1,26 @@
-Q: Come modificare la memoria della gui quando l'applicazione viene eseguita dall'IDE?
-A: Modificare il file NETBEANS_HOME\harness\run.xml impostando il valore "-J-Xmx1024m" alla proprieta' "run.args".
+Q: How to change the java virtual machine memory from the binary distribution?
+A: Change file app.conf modifying the value "-J-Xmx1024m" of the property "default_options".
+
+MacOS: /Applications/llunatic.app/Contents/Resources/llunatic/etc/llunatic.conf
+
+-----------------------------------------------------------------------------------------------------------
+Q: How to change the java virtual machine memory when the app is run inside the IDE?
+A: Change file NETBEANS_HOME\harness\run.xml adding the value "-J-Xmx1024m" to the property "run.args".
 
 Esempio: <property name="run.args" value="-J-Xmx1024m"/>
 -----------------------------------------------------------------------------------------------
-
-Q: Come modificare la memoria della distribuzione?
-A: Modificare il file NETBEANS_HOME\harness\etc\app.conf aggiungendo l'opzione "-J-Xmx1024m"
-
-Esempio: default_options="-J-Xms24m -J-Xmx1024m"
------------------------------------------------------------------------------------------------
-
-Q: Come modificare l'intervallo di update nell'esecuzione dell'ide? 
-A: aggingere in NETBEANS_HOME\harness\run.xml l'opzione -J-Dplugin.manager.check.interval=EVERY_DAY (oppure la cadenza voluta)
------------------------------------------------------------------------------------------------------------
-Q: Come modificare l'intervallo di update nella distribuzione? 
-A: aggingere in NETBEANS_HOME\harness\etc\app.conf l'opzione -J-Dplugin.manager.check.interval=EVERY_DAY (oppure la cadenza voluta)
------------------------------------------------------------------------------------------------------------
 
 Q: How to change "version number"?
 A: Edit branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties
    Edit branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
 
 -----------------------------------------------------------------------------------------------------------
-Q: Come impostare la posizione dei topcomponent
-A: E' possibile farlo in due modi: 
-@TopComponent.Registration(mode = "explorer", openAtStartup = true) -> consigliato
-oppure editando XMLLayer (utile per spostare i TopComponent predefiniti, tipo favorites, properties output)
+Q: How to set the position of top components?
+A: There are two ways: 
+@TopComponent.Registration(mode = "explorer", openAtStartup = true) -> preferred
+or changing XMLLayer (this is useful to move default TopComponent, as favorites, properties output, ...)
 
-Le zone di default sono (bottomSlidingSide, commonpalette, editor, explorer, leftSlidingSide, navigator, output, properties, rightSlidingSide, topSlidingSide)
+Default zones are (bottomSlidingSide, commonpalette, editor, explorer, leftSlidingSide, navigator, output, properties, rightSlidingSide, topSlidingSide)
 In XMLLayers è possibile configurare le dimensioni e posizioni di ogni zona (es editor.wsmode)
 Inoltre le zone vengono mostrate come folder, e in ognuna c'è un riferimento al topComponent (modificando l'annotazione il riferimento viene automaticamente spostato)
 

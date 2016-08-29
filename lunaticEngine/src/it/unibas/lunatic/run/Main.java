@@ -1,10 +1,13 @@
 package it.unibas.lunatic.run;
 
 import it.unibas.lunatic.LunaticConfiguration;
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.DAOException;
+import it.unibas.lunatic.model.chase.chasede.CheckConflictsResult;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import it.unibas.lunatic.model.chase.chasede.IDEChaser;
+import it.unibas.lunatic.model.chase.chasede.operators.CheckConflicts;
 import it.unibas.lunatic.model.chase.chaseded.DEDChaserFactory;
 import it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
@@ -12,11 +15,16 @@ import it.unibas.lunatic.model.chase.chasemc.operators.ChaseTreeSize;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import it.unibas.lunatic.persistence.DAOAccessConfiguration;
+import it.unibas.lunatic.persistence.DAOConfiguration;
 import it.unibas.lunatic.persistence.DAOLunaticConfiguration;
 import it.unibas.lunatic.persistence.DAOMCScenario;
 import java.io.File;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
 import speedy.exceptions.DBMSException;
@@ -35,11 +43,24 @@ public class Main {
     private final static DAOAccessConfiguration daoAccessConfiguration = new DAOAccessConfiguration();
 
     public static void main(String[] args) {
-        if (args.length != 1) {
-            System.out.print("Usage: java -jar lunaticEngine.jar <path_scenario.xml>\n");
+        if (args.length < 1) {
+            printUsage();
             return;
         }
-        String relativePathScenario = args[0];
+        List<String> options = new ArrayList<String>(Arrays.asList(args));
+        String relativePathScenario = null;
+        for (Iterator<String> iterator = options.iterator(); iterator.hasNext();) {
+            String option = iterator.next();
+            if (option.startsWith("-")) {
+                continue;
+            }
+            relativePathScenario = option;
+            iterator.remove();
+        }
+        if (relativePathScenario == null) {
+            printUsage();
+            return;
+        }
         File confFile = new File(relativePathScenario).getAbsoluteFile();
         if (!confFile.exists()) {
             System.out.println("Unable to load scenario. File " + relativePathScenario + " not found");
@@ -55,12 +76,20 @@ public class Main {
                 DBMSUtility.cleanWorkTargetSchemas(accessConfiguration);
             }
             System.out.println("*** Loading scenario " + fileScenario + "... ");
-            Scenario scenario = daoScenario.loadScenario(fileScenario);
+            DAOConfiguration daoConfig = new DAOConfiguration();
+            if (isCheckConflict(options)) {
+                daoConfig.setUseCompactAttributeName(false);
+            }
+            Scenario scenario = daoScenario.loadScenario(fileScenario, daoConfig);
             System.out.println(" Scenario loaded!");
             if (!bigScenario(scenario)) {
                 System.out.println(scenario);
             }
             System.out.println("*** Chasing scenario (" + df.format(new Date()) + ")...");
+            if (isCheckConflict(options)) {
+                checkConflicts(scenario);
+                return;
+            }
             if (scenario.isDEDScenario()) {
                 chaseDEDScenario(scenario);
             } else if (scenario.isDEScenario()) {
@@ -76,6 +105,10 @@ public class Main {
         } catch (DAOException ex) {
             System.out.println("\nUnable to load scenario. \n" + ex.getLocalizedMessage());
         }
+    }
+
+    private static boolean isCheckConflict(List<String> options) {
+        return options.contains(LunaticConstants.OPTION_CHECK_CONFLICTS);
     }
 
     private static void chaseDEScenario(Scenario scenario) {
@@ -112,6 +145,19 @@ public class Main {
             }
         }
         System.out.println(ChaseStats.getInstance().toString());
+    }
+
+    private static void checkConflicts(Scenario scenario) {
+        CheckConflicts checker = new CheckConflicts();
+        CheckConflictsResult result = checker.doCheck(scenario);
+        if (result.getConstantsToRemove().isEmpty()) {
+            PrintUtility.printSuccess("** This de scenario does not contain conflicting constants.");
+            return;
+        }
+        PrintUtility.printInformation("In order to remove hard conflicts, please delete the following values from source tables:");
+        for (String value : result.getConstantsToRemove().keySet()) {
+            System.out.println("Value: " + value + " from " + result.getConstantsToRemove().get(value));
+        }
     }
 
     private static void chaseDEDScenario(Scenario scenario) {
@@ -184,5 +230,9 @@ public class Main {
         }
         String dependenciesString = dependenciesElement.getValue().trim();
         return !(dependenciesString.contains("ExtEGDs") && !dependenciesString.contains("DED-"));
+    }
+
+    private static void printUsage() {
+        System.out.print("Usage: java -jar lunaticEngine.jar <path_scenario.xml>\n");
     }
 }

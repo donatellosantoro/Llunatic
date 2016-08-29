@@ -1,0 +1,5 @@
+s {
+    a : STRING,
+    b : STRING,
+    c : STRING
+}

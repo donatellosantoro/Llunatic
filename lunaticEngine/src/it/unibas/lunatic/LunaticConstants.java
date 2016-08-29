@@ -80,4 +80,7 @@ public class LunaticConstants {
 //    public static final CellRef USER_CELL_REF = new CellRef(USER_TUPLE_ID, USER_ATTRIBUTE_REF);
 //    public static final CellGroupCell INVALID_CELL = new CellGroupCell(INVALID_CELL_REF, BOTTOM_VALUE, BOTTOM_VALUE, LunaticConstants.TYPE_INVALID, true);
 
+    // COMMAND LINE OPTIONS
+    public static String OPTION_CHECK_CONFLICTS  = "-checkConflicts=true";
+
 }

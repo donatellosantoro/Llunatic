@@ -55,6 +55,19 @@ public class UtilityTest {
         }
     }
 
+    public static String getScenarioAbsolutePath(String fileScenario) {
+        try {
+            fileScenario = RESOURCES_FOLDER + fileScenario;
+            URL scenarioURL = UtilityTest.class.getResource(fileScenario);
+            fileScenario = new File(scenarioURL.toURI()).getAbsolutePath();
+            return fileScenario;
+        } catch (URISyntaxException ex) {
+            ex.printStackTrace();
+            Assert.fail(ex.getLocalizedMessage());
+            return null;
+        }
+    }
+
     public static Scenario loadScenarioFromAbsolutePath(String fileScenario, String suffix, boolean recreateDB) {
         return loadScenario(fileScenario, suffix, recreateDB);
     }

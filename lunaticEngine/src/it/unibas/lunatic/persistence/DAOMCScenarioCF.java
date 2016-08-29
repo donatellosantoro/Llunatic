@@ -56,6 +56,12 @@ public class DAOMCScenarioCF {
             if (config.getUseDictionaryEncoding() != null) {
                 configuration.setUseDictionaryEncoding(config.getUseDictionaryEncoding());
             }
+            if (config.getPrintSteps() != null) {
+                configuration.setPrintSteps(config.getPrintSteps());
+            }
+            if (config.getUseCompactAttributeName() != null) {
+                configuration.setUseCompactAttributeName(config.getUseCompactAttributeName());
+            }
             if (configuration.isUseDictionaryEncoding()) {
                 if (config.isImportData()) {
                     scenario.setValueEncoder(new DictionaryEncoder(DAOUtility.extractScenarioName(fileScenario)));

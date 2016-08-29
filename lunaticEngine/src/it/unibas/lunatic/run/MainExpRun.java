@@ -24,6 +24,7 @@ public class MainExpRun {
         DAOConfiguration daoConfig = new DAOConfiguration();
         daoConfig.setImportData(false);
         daoConfig.setUseEncodedDependencies(true);
+        daoConfig.setUseCompactAttributeName(true);
         LunaticUtility.applyCommandLineOptions(daoConfig, options);
         Scenario scenario = daoScenario.loadScenario(fileScenario, daoConfig);
         LunaticConfiguration conf = scenario.getConfiguration();

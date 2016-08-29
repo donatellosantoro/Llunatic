@@ -21,7 +21,7 @@
     <!--<logger name="it.unibas.lunatic.test" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.QueryStatManager" level="DEBUG"/>-->
-    <logger name="speedy.persistence.relational.QueryManager" level="TRACE"/>
+    <!--<logger name="speedy.persistence.relational.QueryManager" level="TRACE"/>-->
     <!--<logger name="speedy.persistence.file.operators.ExportCSVFileWithCopy" level="TRACE"/>-->
 
     <!--     MODEL     -->
@@ -97,6 +97,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseTargetTGDStratumThread" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ExecuteFinalQueries" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.CheckConflicts" level="DEBUG"/>-->
 
     <!--     CHASE MC     -->    
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager" level="DEBUG"/>-->

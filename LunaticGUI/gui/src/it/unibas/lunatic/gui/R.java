@@ -21,6 +21,7 @@ public class R {
         public static final String SAVE_CHASE_STEP = "it.unibas.lunatic.gui.action.chase.ActionSaveCells";
         public static final String CLOSE_SCENARIO_FROM_NODE = "it.unibas.lunatic.gui.action.CloseScenarioFromNode";
         public static final String RUN_CHASE = "it.unibas.lunatic.gui.action.Chase";
+        public static final String RUN_CHECK_CONFLICTS = "it.unibas.lunatic.gui.action.CheckConflicts";
         public static final String CONTINUE_CHASE = "it.unibas.lunatic.gui.action.RerunChase";
         public static final String LOAD_SCENARIO = "it.unibas.lunatic.gui.action.LoadScenario";
         public static final String SHOW_TABLE = "it.unibas.lunatic.gui.action.ShowTable";

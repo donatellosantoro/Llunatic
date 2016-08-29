@@ -1,0 +1,11 @@
+s1 {
+    a : STRING,
+    b : STRING,
+    c : STRING
+}
+
+s2 {
+    a : STRING,
+    b : STRING,
+    c : STRING
+}

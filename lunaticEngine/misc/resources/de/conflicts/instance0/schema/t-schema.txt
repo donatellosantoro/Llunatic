@@ -1,0 +1,10 @@
+t1 {
+    a : STRING,
+    b : STRING,
+    c : STRING
+}
+
+t2 {
+    a : STRING,
+    b : STRING
+}

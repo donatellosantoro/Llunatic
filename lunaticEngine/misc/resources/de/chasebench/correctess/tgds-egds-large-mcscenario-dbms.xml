@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+<!ENTITY NAME "tgdsegdslarge">
+<!ENTITY BASE_FOLDER "/Users/donatello/Projects/chaseBench/scenarios/correctness/tgdsEgdsLarge/">
+]>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:chasebench_&NAME;_de</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <schemaFile schema="source">&BASE_FOLDER;schema/&NAME;.s-schema.txt</schemaFile>
+    <import>
+      <input type="csv" separator="," hasHeader="false" table="s">&BASE_FOLDER;data/s.csv</input>
+    </import>
+  </source>
+  <target>
+    <type>DBMS</type>
+    <generateFromDependencies>true</generateFromDependencies>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:chasebench_&NAME;_de</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <schemaFile schema="target">&BASE_FOLDER;schema/&NAME;.t-schema.txt</schemaFile>
+  </target>
+  <configuration>
+    <printResults>true</printResults>
+    <printSteps>true</printSteps>
+    <exportSolutions>true</exportSolutions>
+    <exportSolutionsPath>/Temp/llunatic/&NAME;/</exportSolutionsPath>
+    <exportSolutionsType>CSV</exportSolutionsType>
+    <useDictionaryEncoding>false</useDictionaryEncoding>
+    <optimizeSTTGDs>false</optimizeSTTGDs>
+  </configuration>
+  <dependencies>
+    <sttgdsFile>&BASE_FOLDER;dependencies/&NAME;.st-tgds.txt</sttgdsFile>
+    <ttgdsFile>&BASE_FOLDER;/dependencies/&NAME;.t-tgds.txt</ttgdsFile>
+    <egdsFile>&BASE_FOLDER;/dependencies/&NAME;.t-egds.txt</egdsFile>
+  </dependencies>
+</scenario>

@@ -22,29 +22,25 @@ import org.openide.util.NbBundle.Messages;
 
 @ActionID(
         category = "Run",
-        id = R.ActionId.RUN_CHASE)
+        id = R.ActionId.RUN_CHECK_CONFLICTS)
 @ActionRegistration(
-        displayName = "#CTL_ActionChase",
+        displayName = "#CTL_ActionCheckConflicts",
         lazy = false)
 @ActionReferences({
     @ActionReference(path = "Menu/Run", position = 0),
-    @ActionReference(path = "Toolbars/Run", position = 0)
+    //    @ActionReference(path = "Toolbars/Run", position = 0)
 })
 @Messages({
-    "CTL_ActionChase=Run",
-    "DIALOG_ResetChaseQuestion=Chase has already been executed. Every change made will be lost."
-    + "\nConfirm to continue."
+    "CTL_ActionCheckConflicts=Check Conflicts"
 })
-public final class ActionChase extends ContextAwareActionProxy<ChaseState> {
+public final class ActionCheckConflicts extends ContextAwareActionProxy<ChaseState> {
 
-    private NotifyDescriptor.Confirmation resetChase = new NotifyDescriptor.Confirmation(Bundle.DIALOG_ResetChaseQuestion(), NotifyDescriptor.OK_CANCEL_OPTION);
-    private DialogDisplayer dialogDisplayer = DialogDisplayer.getDefault();
     private ChaseTaskListener chaseListener = new ChaseTaskListener();
-    private StandardChase standardChase = new StandardChase();
+    private StandardChase standardChase = new StandardChase(true);
 
-    public ActionChase() {
-        super.putValue(Action.SMALL_ICON, ImageUtilities.loadImage("it/unibas/lunatic/icons/run-project.24.png"));
-        super.putValue(Action.NAME, Bundle.CTL_ActionChase());
+    public ActionCheckConflicts() {
+//        super.putValue(Action.SMALL_ICON, ImageUtilities.loadImage("it/unibas/lunatic/icons/run-project.24.png"));
+        super.putValue(Action.NAME, Bundle.CTL_ActionCheckConflicts());
     }
 
     @Override
@@ -55,21 +51,11 @@ public final class ActionChase extends ContextAwareActionProxy<ChaseState> {
     @Override
     public void actionPerformed(ActionEvent ev) {
         LoadedScenario scenario = app.get(R.Bean.LOADED_SCENARIO, LoadedScenario.class);
-        IChaseResult result = scenario.get(R.BeanProperty.CHASE_RESULT, IChaseResult.class);
-        boolean execute = true;
-        if (result != null) {
-            Object choice = dialogDisplayer.notify(resetChase);
-            if (!choice.equals(NotifyDescriptor.OK_OPTION)) {
-                execute = false;
-            }
-        }
-        if (execute) {
-            ChaseState chaseState = new ChaseState();
-            scenario.put(R.BeanProperty.CHASE_STATE, chaseState);
-            ChaseTask chaseTask = new ChaseTask(scenario, standardChase, chaseListener, chaseState);
-            chaseTask.execute();
-            update();
-        }
+        ChaseState chaseState = new ChaseState();
+        scenario.put(R.BeanProperty.CHASE_STATE, chaseState);
+        ChaseTask chaseTask = new ChaseTask(scenario, standardChase, chaseListener, chaseState);
+        chaseTask.execute();
+        update();
     }
 
     @Override

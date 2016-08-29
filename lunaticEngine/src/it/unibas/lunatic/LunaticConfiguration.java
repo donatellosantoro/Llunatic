@@ -32,7 +32,7 @@ public class LunaticConfiguration {
     private boolean useHashForSkolem = true;
     private boolean useDictionaryEncoding = false;
     private boolean useBatchInsert = true;
-    private boolean useCompactAttributeName = true;
+    private boolean useCompactAttributeName = false;
     private boolean exportSolutions = false;
     private String exportSolutionsPath;
     private String exportSolutionsType = SpeedyConstants.CSV;

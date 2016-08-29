@@ -55,6 +55,7 @@ public class MainExpImport {
         daoConfig.setImportData(true);
         daoConfig.setProcessDependencies(false);
         daoConfig.setExportEncodedDependencies(true);
+        daoConfig.setUseCompactAttributeName(true);
         LunaticUtility.applyCommandLineOptions(daoConfig, options);
         Scenario scenario = daoScenario.loadScenario(fileScenario, daoConfig);
         System.out.println(" Scenario loaded!");
