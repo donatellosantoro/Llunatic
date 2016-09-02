@@ -12,7 +12,7 @@ public class TestSQLTGDs extends CheckTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestSQLTGDs.class);
 
-    public void testRSEgd() throws Exception {
+    public void testTgd0() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/tgd0-mcscenario-dbms.xml", true);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
@@ -32,9 +32,16 @@ public class TestSQLTGDs extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug(result.toString());
 //        checkExpectedInstances(result, scenario);
     }
-
+//
     public void testTgd3() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/tgd3-mcscenario-dbms.xml", true);
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        checkExpectedInstances(result, scenario);
+    }
+
+    public void testTgd4() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/tgd4-mcscenario-dbms.xml", true);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

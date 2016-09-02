@@ -31,7 +31,7 @@ public class TestSQLAccuracy extends CheckExpectedSolutionsTest {
     }
 
     public void testScenarioOrderingAttributeNonSymmetric() throws Exception {
-        Scenario scenario = UtilityTest.loadScenarioFromResources(References.accuracy_poset, true);
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.accuracy_poset_dbms, true);
         setConfigurationForTest(scenario);
         scenario.getConfiguration().setUseSymmetricOptimization(false);
         scenario.getConfiguration().setDiscardDuplicateTuples(true);

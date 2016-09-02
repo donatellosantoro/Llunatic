@@ -93,7 +93,9 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
                     tableNonAffectedAttributes.add(attribute);
                 }
             }
-            script.append(createTableForNonAffected(deltaDBSchema, deltaTables, table.getName(), tableNonAffectedAttributes, scenario));
+            if (!tableNonAffectedAttributes.isEmpty()) {
+                script.append(createTableForNonAffected(deltaDBSchema, deltaTables, table.getName(), tableNonAffectedAttributes, scenario));
+            }
         }
         if (logger.isDebugEnabled()) logger.debug("\n----Generating Delta Relations Schema: " + script);
         return script.toString();
@@ -159,7 +161,9 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
                     tableNonAffectedAttributes.add(attribute);
                 }
             }
-            script.append(insertIntoNonAffectedRelation(originalDBSchema, deltaDBSchema, table.getName(), tableNonAffectedAttributes));
+            if (!tableNonAffectedAttributes.isEmpty()) {
+                script.append(insertIntoNonAffectedRelation(originalDBSchema, deltaDBSchema, table.getName(), tableNonAffectedAttributes));
+            }
         }
         if (logger.isDebugEnabled()) logger.debug("----Insert into Delta Relations: " + script);
         return script.toString();

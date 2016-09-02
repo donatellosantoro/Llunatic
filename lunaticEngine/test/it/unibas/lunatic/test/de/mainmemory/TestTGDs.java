@@ -41,4 +41,12 @@ public class TestTGDs extends CheckExpectedSolutionsTest {
 //        exportResults("/Temp/expectedTGD3/", result, scenario);
         checkExpectedInstances(result, scenario);
     }
+
+    public void testTgd4() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/tgd4-mcscenario.xml");
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+//        exportResults("/Temp/expectedTGD3/", result, scenario);
+        checkExpectedInstances(result, scenario);
+    }
 }

@@ -4,7 +4,6 @@ import it.unibas.lunatic.model.chase.chasemc.ChaseTree;
 import java.util.Map;
 import java.util.Set;
 import speedy.model.database.AttributeRef;
-import speedy.model.database.IDatabase;
 
 public class CheckConflictsResult {
 

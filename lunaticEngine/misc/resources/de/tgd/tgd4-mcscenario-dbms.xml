@@ -4,7 +4,7 @@
         <type>DBMS</type>
         <access-configuration>
             <driver>org.postgresql.Driver</driver>
-            <uri>jdbc:postgresql:tgd3</uri>
+            <uri>jdbc:postgresql:tgd4</uri>
             <schema>source</schema>
             <login>pguser</login>
             <password>pguser</password>
@@ -31,7 +31,7 @@ INSERT INTO source.s0(a, b, c, d) VALUES ('x1', 'x2', 'x7', 'x4');
         <type>DBMS</type>
         <access-configuration>
             <driver>org.postgresql.Driver</driver>
-            <uri>jdbc:postgresql:tgd3</uri>
+            <uri>jdbc:postgresql:tgd4</uri>
             <schema>target</schema>
             <login>pguser</login>
             <password>pguser</password>
@@ -61,7 +61,7 @@ create table t2(
       <dependencies>
 <![CDATA[
 STTGDs:
-s0(a: $X1,b: $X2,c: $X3, d:$X4) -> t1(a: $Y1,b: $Y2,c: $Y3, d:$Y3).
+s0(a: $X1,b: $X2,c: $X3, d:$X4) -> t1(a: $X1,b: $Y2,c: $Y3, d:$Y3).
 
 ExtTGDs:
 t1(a: $X1,b: $X2,c: $X3,d: $X4) -> t2(a: $Y1,b: $Y2,c: $Y3, d:$Y3).

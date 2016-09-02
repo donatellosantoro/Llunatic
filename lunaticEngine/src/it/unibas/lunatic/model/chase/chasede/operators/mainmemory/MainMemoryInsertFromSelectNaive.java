@@ -48,7 +48,7 @@ public class MainMemoryInsertFromSelectNaive implements IInsertFromSelectNaive {
             if (logger.isDebugEnabled()) logger.debug("----Premise tuple: " + premiseTuple);
             for (TableAlias tableAlias : targetTablesToInsert) {
                 if (logger.isDebugEnabled()) logger.debug("----Inserting into table: " + tableAlias);
-                MainMemoryTable table = (MainMemoryTable) target.getTable(tableAlias.getTableName());
+                ITable table = target.getTable(tableAlias.getTableName());
                 Tuple targetTuple = buildTargetTuple(tableAlias, table, premiseTuple, targetGenerators);
                 if (logger.isDebugEnabled()) logger.debug("----Target tuple: " + targetTuple);
                 insertOperator.execute(table, targetTuple, source, target);

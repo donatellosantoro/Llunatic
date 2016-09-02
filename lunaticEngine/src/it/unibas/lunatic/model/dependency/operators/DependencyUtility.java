@@ -284,17 +284,17 @@ public class DependencyUtility {
 
     public static boolean isLav(Dependency tgd) {
 //        return stTgd.getPremise().getPositiveFormula().getAtoms().size() == 1;
-          return hasSingleAtom(tgd.getPremise());
+        return hasSingleAtom(tgd.getPremise());
     }
 
     public static boolean isGav(Dependency tgd) {
 //        return stTgd.getConclusion().getPositiveFormula().getAtoms().size() == 1;
-          return hasSingleAtom(tgd.getConclusion());
+        return hasSingleAtom(tgd.getConclusion());
     }
 
     public static boolean hasSingleAtom(IFormula formula) {
-        return formula.getPositiveFormula().getAtoms().size() == 1 &&
-                formula.getNegatedSubFormulas().isEmpty();
+        return formula.getPositiveFormula().getAtoms().size() == 1
+                && formula.getNegatedSubFormulas().isEmpty();
     }
 
     public static boolean allVariablesHaveSingletonOccurrences(Dependency tgd) {
@@ -319,6 +319,20 @@ public class DependencyUtility {
             sb.append(dependency.toLogicalString());
         }
         return sb.toString();
+    }
+
+    public static boolean isSTTGD(Dependency dependency) {
+        for (IFormulaAtom atom : dependency.getPremise().getAtoms()) {
+            if (!(atom instanceof RelationalAtom)) {
+                continue;
+            }
+            RelationalAtom relationalAtom = (RelationalAtom) atom;
+            TableAlias tableAlias = relationalAtom.getTableAlias();
+            if(tableAlias.isSource()){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

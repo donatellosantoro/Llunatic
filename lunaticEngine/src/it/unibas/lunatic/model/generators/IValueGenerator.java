@@ -9,5 +9,7 @@ public interface IValueGenerator extends Cloneable {
 
     String toString();
 
+    String toSQLString();
+
     IValueGenerator clone();
 }

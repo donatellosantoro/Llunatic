@@ -28,7 +28,7 @@ public class BuildAlgebraTreeForTGD {
     public Map<Dependency, IAlgebraOperator> buildAlgebraTreesForTGDViolationsCheck(List<Dependency> extTGDs, Scenario scenario) {
         Map<Dependency, IAlgebraOperator> result = new HashMap<Dependency, IAlgebraOperator>();
         for (Dependency extTGD : extTGDs) {
-            IAlgebraOperator standardQuery = treeBuilderForStandardChase.generate(extTGD, scenario);
+            IAlgebraOperator standardQuery = treeBuilderForStandardChase.generateAlgebraTreeWithDifference(extTGD, scenario);
             if (logger.isDebugEnabled()) logger.debug("Operator for dependency " + extTGD + "\n" + standardQuery);
             result.put(extTGD, standardQuery);
         }
@@ -38,7 +38,7 @@ public class BuildAlgebraTreeForTGD {
     public Map<Dependency, IAlgebraOperator> buildAlgebraTreesForTGDViolationsChase(List<Dependency> extTGDs, Scenario scenario) {
         Map<Dependency, IAlgebraOperator> result = new HashMap<Dependency, IAlgebraOperator>();
         for (Dependency extTGD : extTGDs) {
-            IAlgebraOperator standardQuery = treeBuilderForStandardChase.generate(extTGD, scenario);
+            IAlgebraOperator standardQuery = treeBuilderForStandardChase.generateAlgebraTreeWithDifference(extTGD, scenario);
             if (logger.isDebugEnabled()) logger.debug("Operator for dependency " + extTGD + "\n" + standardQuery);
             List<FormulaVariable> universalVariables = DependencyUtility.getUniversalVariablesInConclusion(extTGD);
             IAlgebraOperator premiseOperator = treeBuilder.buildTreeForPremise(extTGD, scenario);

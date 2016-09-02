@@ -8,7 +8,7 @@ import it.unibas.lunatic.model.dependency.FormulaAttribute;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
-import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
+import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,10 +28,11 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
 
     private final static Logger logger = LoggerFactory.getLogger(SQLInsertFromSelectNaive.class);
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
-    private FormulaAttributeToSQL attributeGenerator = new FormulaAttributeToSQL();
+    private FormulaAttributeToSQL attributeGenerator;
 
     public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target, Scenario scenario) {
 //                LunaticDBMSUtility.createFunctionsForNumericalSkolem(((DBMSDB) target).getAccessConfiguration());
+        attributeGenerator = new FormulaAttributeToSQL(); //Operator with state
         try {
             String selectQuery = queryBuilder.treeToSQL(sourceQuery, source, target, SpeedyConstants.INDENT + SpeedyConstants.INDENT);
             String insertQuery = generateInsertScript(dependency, selectQuery, (DBMSDB) target, scenario);
@@ -71,9 +72,9 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
     private String generateSelectForInsert(RelationalAtom relationalAtom, Dependency stTgd, String selectQuery, Scenario scenario) {
         StringBuilder result = new StringBuilder();
         result.append(SpeedyConstants.INDENT).append("SELECT DISTINCT ");
-        Map<FormulaVariable, SkolemFunctionGenerator> skolems = new HashMap<FormulaVariable, SkolemFunctionGenerator>();
+        Map<FormulaVariable, IValueGenerator> generatorMap = new HashMap<FormulaVariable, IValueGenerator>();
         for (FormulaAttribute formulaAttribute : relationalAtom.getAttributes()) {
-            result.append(attributeGenerator.generateSQL(formulaAttribute, stTgd, skolems, scenario));
+            result.append(attributeGenerator.generateSQL(formulaAttribute, stTgd, generatorMap, scenario));
             result.append(", ");
         }
         SpeedyUtility.removeChars(", ".length(), result);

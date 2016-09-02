@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
 import speedy.model.algebra.Difference;
+import speedy.model.algebra.Distinct;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.Limit;
 import speedy.model.algebra.Project;
@@ -26,7 +27,15 @@ public class BuildAlgebraTreeForStandardChase {
 
     private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
 
-    public IAlgebraOperator generate(Dependency extTGD, Scenario scenario) {
+    public IAlgebraOperator generateAlgebraTreeWithDifference(Dependency extTGD, Scenario scenario) {
+        return generate(extTGD, scenario, true, false);
+    }
+
+    public IAlgebraOperator generateAlgebraTreeWithDinstinct(Dependency extTGD, Scenario scenario) {
+        return generate(extTGD, scenario, false, true);
+    }
+
+    private IAlgebraOperator generate(Dependency extTGD, Scenario scenario, boolean useDifference, boolean useDistinct) {
         if (logger.isDebugEnabled()) logger.debug("Generating standard query for dependency " + extTGD);
         if (!DependencyUtility.hasUniversalVariablesInConclusion(extTGD)) {
             return generateAlgebraTreeForNoUniversalVariablesInConclusion(extTGD, scenario);
@@ -37,6 +46,12 @@ public class BuildAlgebraTreeForStandardChase {
         if (logger.isDebugEnabled()) logger.debug("Universal attributes in premise: " + universalAttributesInPremise);
         IAlgebraOperator premiseOperator = buildPremiseOperator(extTGD, scenario, universalVariablesInConclusion);
         if (logger.isDebugEnabled()) logger.debug("Premise operator\n" + premiseOperator);
+        if (!useDifference && !useDistinct) {
+            return premiseOperator;
+        }
+        if (!useDifference) {
+            return addDistinct(premiseOperator, universalAttributesInPremise);
+        }
         IAlgebraOperator conclusionOperator = buildConclusionOperator(extTGD, scenario, universalVariablesInConclusion);
         if (logger.isDebugEnabled()) logger.debug("Conclusion operator\n" + conclusionOperator);
         Difference difference = new Difference();
@@ -44,7 +59,7 @@ public class BuildAlgebraTreeForStandardChase {
         difference.addChild(conclusionOperator);
         if (logger.isDebugEnabled()) logger.debug("Difference operator: " + difference);
         IAlgebraOperator root = difference;
-        if (scenario.getConfiguration().isUseLimit1ForEGDs()) {
+        if (scenario.getConfiguration().isUseLimit1ForTGDs()) {
             Limit limit = new Limit(1);
             limit.addChild(root);
             if (logger.isDebugEnabled()) logger.debug("Adding limit operator. " + limit);
@@ -60,7 +75,7 @@ public class BuildAlgebraTreeForStandardChase {
         if (universalAttributes.isEmpty()) {
             throw new IllegalArgumentException("There are no universal variables in premise, for dependency " + dependency.toLogicalString());
         }
-        ProjectWithoutOIDs root = new ProjectWithoutOIDs(SpeedyUtility.createProjectionAttributes(universalAttributes));
+        IAlgebraOperator root = new ProjectWithoutOIDs(SpeedyUtility.createProjectionAttributes(universalAttributes));
         root.addChild(premiseOperator);
         return root;
     }
@@ -72,6 +87,14 @@ public class BuildAlgebraTreeForStandardChase {
         ProjectWithoutOIDs root = new ProjectWithoutOIDs(SpeedyUtility.createProjectionAttributes(universalAttributes));
         root.addChild(conclusion);
         return root;
+    }
+
+    private IAlgebraOperator addDistinct(IAlgebraOperator premiseOperator, List<AttributeRef> universalAttributesInPremise) {
+        ProjectWithoutOIDs project = new ProjectWithoutOIDs(SpeedyUtility.createProjectionAttributes(universalAttributesInPremise));
+        project.addChild(premiseOperator);
+        Distinct distinct = new Distinct();
+        distinct.addChild(project);
+        return distinct;
     }
 
     private IAlgebraOperator generateAlgebraTreeForNoUniversalVariablesInConclusion(Dependency extTGD, Scenario scenario) {
@@ -113,4 +136,5 @@ public class BuildAlgebraTreeForStandardChase {
         result.addChild(conclusionLimit1);
         return result;
     }
+
 }

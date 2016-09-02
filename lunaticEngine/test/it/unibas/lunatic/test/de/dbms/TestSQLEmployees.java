@@ -21,7 +21,7 @@ public class TestSQLEmployees extends CheckTest {
         checkExpectedInstances(result, scenario);
     }
 
-    public void testScenarioEGD() throws Exception {
+    public void testScenarioEGD() throws Exception { 
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_egd_dbms, true);
         scenario.getConfiguration().setOptimizeSTTGDs(false);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
@@ -29,7 +29,7 @@ public class TestSQLEmployees extends CheckTest {
         checkExpectedInstances(result, scenario);
     }
 
-    public void testScenarioDenial() throws Exception {
+    public void testScenarioDenial() throws Exception { 
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.employees_dtgd_dbms, true);
         try {
             DEChaserFactory.getChaser(scenario).doChase(scenario);

@@ -76,6 +76,7 @@ public class ChaseTGDEquivalenceClass {
         long equivalenceClassStart = new Date().getTime();
         while (it.hasNext()) {
             Tuple tuple = it.next();
+            if (logger.isDebugEnabled()) logger.debug("Analyzing tuple " + tuple);
             List<IValue> universalValuesInConclusion = DependencyUtility.extractUniversalValuesInConclusion(tuple, tgd);
             if (logger.isDebugEnabled()) logger.debug("Detected violation on values " + universalValuesInConclusion);
             if (lastUniversalValues == null || LunaticUtility.areDifferentConsideringOrder(lastUniversalValues, universalValuesInConclusion)) {
@@ -197,9 +198,12 @@ public class ChaseTGDEquivalenceClass {
 
     private List<TGDEquivalenceClassCells> generateUpdates(Map<CellGroupCell, List<TGDEquivalenceClassCells>> cellMap, IDatabase deltaDB, String step, Dependency tgd, Scenario scenario) {
         long start = new Date().getTime();
+        if (logger.isDebugEnabled()) logger.debug("Generating updates for cell map\n" + SpeedyUtility.printMap(cellMap));
         Set<List<TGDEquivalenceClassCells>> analizedSets = new HashSet<List<TGDEquivalenceClassCells>>();
         List<TGDEquivalenceClassCells> candidateUpdates = new ArrayList<TGDEquivalenceClassCells>();
-        Set<TupleOID> tuplesToRemoveDueToSAU = new HashSet<TupleOID>();
+        Set<TupleOID> candidateTuplesToRemoveDueToSAU = new HashSet<TupleOID>();
+        List<TGDEquivalenceClassCells> subsumedCellGroups = new ArrayList<TGDEquivalenceClassCells>();
+        Set<TupleOID> tuplesToGenerate = new HashSet<TupleOID>();
         for (List<TGDEquivalenceClassCells> group : cellMap.values()) {
             if (analizedSets.contains(group)) {
                 continue;
@@ -207,21 +211,38 @@ public class ChaseTGDEquivalenceClass {
             analizedSets.add(group);
             TGDEquivalenceClassCells mergedCellsToInsert = mergeAll(group);
             CellGroup canonicalCellGroup = mergedCellsToInsert.getCellGroup().clone();
+            if (logger.isDebugEnabled()) logger.debug("Canonical CellGroup: " + canonicalCellGroup);
             CellGroup enrichedCellGroup = this.occurrenceHandler.enrichCellGroups(mergedCellsToInsert.getCellGroup(), deltaDB, step, scenario);
+            if (logger.isDebugEnabled()) logger.debug("Enriched CellGroup: " + enrichedCellGroup);
             mergedCellsToInsert.setCellGroup(enrichedCellGroup);
             this.cellGroupIDFixer.correctCellGroupId(mergedCellsToInsert.getCellGroup());
             checkAndSetOriginalValues(mergedCellsToInsert.getCellGroup());
-            if (generatesTuplesToRemoveDueToSAU(mergedCellsToInsert, tuplesToRemoveDueToSAU) || satisfactionChecker.isSatisfiedAfterUpgrades(mergedCellsToInsert, canonicalCellGroup, tgd, scenario)) {
-                tuplesToRemoveDueToSAU.addAll(getTupleOIDs(mergedCellsToInsert));
+            if (logger.isDebugEnabled()) logger.debug("Enriched CellGroup after Fixing ID Value and Original Values: " + mergedCellsToInsert.getCellGroup());
+            if (inCandidateTupleToRemoveDueToSAU(mergedCellsToInsert, candidateTuplesToRemoveDueToSAU) //This cell group generates tuples we already decided to remove
+                    || satisfactionChecker.isSatisfiedAfterUpgrades(mergedCellsToInsert, canonicalCellGroup, tgd, scenario)) { //Or violation is satisfied after repair
+                candidateTuplesToRemoveDueToSAU.addAll(getTupleOIDs(mergedCellsToInsert));
+                subsumedCellGroups.add(mergedCellsToInsert);
             } else {
                 addNewCells(mergedCellsToInsert);
                 candidateUpdates.add(mergedCellsToInsert);
+                tuplesToGenerate.addAll(getTupleOIDs(mergedCellsToInsert));
+            }
+        }
+        if (logger.isDebugEnabled()) logger.debug("Tuples to remove due to SAU: " + candidateTuplesToRemoveDueToSAU);
+        if (logger.isDebugEnabled()) logger.debug("Tuples to generate: " + tuplesToGenerate);
+        for (TGDEquivalenceClassCells cellGroup : subsumedCellGroups) {
+            if (isToKeep(cellGroup, tuplesToGenerate)) {
+                if (logger.isDebugEnabled()) logger.debug("Cell group needed " + cellGroup);
+                addNewCells(cellGroup);
+                candidateUpdates.add(cellGroup);
+                candidateTuplesToRemoveDueToSAU.removeAll(getTupleOIDs(cellGroup));
             }
         }
         List<TGDEquivalenceClassCells> result = new ArrayList<TGDEquivalenceClassCells>();
         // needs to filter at the end, some early updates might have survived
         for (TGDEquivalenceClassCells candidate : candidateUpdates) {
-            if (generatesTuplesToRemoveDueToSAU(candidate, tuplesToRemoveDueToSAU)) {
+            if (inCandidateTupleToRemoveDueToSAU(candidate, candidateTuplesToRemoveDueToSAU)) {
+                if (logger.isDebugEnabled()) logger.debug("Skipping " + candidate + " due to SAU");
                 continue;
             }
             result.add(candidate);
@@ -296,7 +317,7 @@ public class ChaseTGDEquivalenceClass {
         return result;
     }
 
-    private boolean generatesTuplesToRemoveDueToSAU(TGDEquivalenceClassCells candidate, Set<TupleOID> tuplesToRemoveDueToSAU) {
+    private boolean inCandidateTupleToRemoveDueToSAU(TGDEquivalenceClassCells candidate, Set<TupleOID> tuplesToRemoveDueToSAU) {
         Set<TupleOID> tuplesInCandidate = getTupleOIDs(candidate);
         for (TupleOID candidateTupleOID : tuplesInCandidate) {
             if (tuplesToRemoveDueToSAU.contains(candidateTupleOID)) {
@@ -304,6 +325,16 @@ public class ChaseTGDEquivalenceClass {
             }
         }
         return false;
+    }
+
+    private boolean isToKeep(TGDEquivalenceClassCells cellGroup, Set<TupleOID> tuplesToGenerate) {
+        Set<TupleOID> newTuples = getTupleOIDs(cellGroup);
+        for (TupleOID newTuple : newTuples) {
+            if (!tuplesToGenerate.contains(newTuple)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

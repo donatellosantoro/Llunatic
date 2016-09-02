@@ -2,8 +2,9 @@ package it.unibas.lunatic.model.algebra.sql;
 
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
+import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForStandardChase;
 import it.unibas.lunatic.model.dependency.*;
-import it.unibas.lunatic.model.generators.SkolemFunctionGenerator;
+import it.unibas.lunatic.model.generators.IValueGenerator;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
@@ -23,9 +24,12 @@ import speedy.utility.DBMSUtility;
 
 public class GenerateTargetInsert {
 
-    private FormulaAttributeToSQL attributeGenerator = new FormulaAttributeToSQL();
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
     private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
+    private BuildAlgebraTreeForStandardChase standardTreeBuilder = new BuildAlgebraTreeForStandardChase();
+
+    public GenerateTargetInsert() {
+    }
 
     public String generateScript(Collection<Dependency> sttgds, Set<Dependency> dependenciesToMaterialize, Scenario scenario) {
         StringBuilder result = new StringBuilder();
@@ -59,9 +63,10 @@ public class GenerateTargetInsert {
     }
 
     private String generateSelectForInsert(RelationalAtom relationalAtom, Dependency stTgd, Set<Dependency> dependenciesToMaterialize, Scenario scenario) {
+        FormulaAttributeToSQL attributeGenerator = new FormulaAttributeToSQL(); //Operator with state
         StringBuilder result = new StringBuilder();
         result.append(SpeedyConstants.INDENT).append("SELECT DISTINCT ");
-        Map<FormulaVariable, SkolemFunctionGenerator> skolems = new HashMap<FormulaVariable, SkolemFunctionGenerator>();
+        Map<FormulaVariable, IValueGenerator> skolems = new HashMap<FormulaVariable, IValueGenerator>();
         for (FormulaAttribute formulaAttribute : relationalAtom.getAttributes()) {
             result.append(attributeGenerator.generateSQL(formulaAttribute, stTgd, skolems, scenario));
             result.append(", ");
@@ -72,7 +77,7 @@ public class GenerateTargetInsert {
             result.append(LunaticDBMSUtility.getWorkSchema(scenario)).append(".").append(stTgd.getId());
         } else {
             result.append(" (\n");
-            IAlgebraOperator operator = treeBuilder.buildTreeForPremise(stTgd, scenario);
+            IAlgebraOperator operator = getPremiseOperator(stTgd, scenario);
             result.append(queryBuilder.treeToSQL(operator, scenario.getSource(), scenario.getTarget(), SpeedyConstants.INDENT));
             result.append("\n) as tmp_").append(stTgd.getId());
         }
@@ -110,5 +115,12 @@ public class GenerateTargetInsert {
         LunaticUtility.removeChars(", ".length(), attributes);
         attributes.append(")");
         return attributes.toString();
+    }
+
+    private IAlgebraOperator getPremiseOperator(Dependency dependency, Scenario scenario) {
+        if (scenario.getConfiguration().isUseDistinctInSTTGDs()) {
+            return standardTreeBuilder.generateAlgebraTreeWithDinstinct(dependency, scenario);
+        }
+        return treeBuilder.buildTreeForPremise(dependency, scenario);
     }
 }

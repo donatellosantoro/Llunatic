@@ -99,14 +99,16 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 DeltaChaseStep newStep = new DeltaChaseStep(scenario, node, localId, LunaticConstants.CHASE_STEP_TGD);
                 if (logger.isDebugEnabled()) logger.debug("---- Candidate new step: " + newStep.getId() + "- Chasing tgd: " + eTgd);
                 IAlgebraOperator tgdQuery = tgdTreeMap.get(eTgd);
-                if (logger.isTraceEnabled()) logger.debug("----TGD Query: " + tgdQuery);
+                if (logger.isTraceEnabled()) logger.trace("----TGD Query: " + tgdQuery);
                 IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), eTgd, scenario);
 //                IDatabase databaseForStep = databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB()); //TODO Optimize deds workers
                 if (logger.isTraceEnabled()) logger.trace("Database for step: " + databaseBuilder.extractDatabase(newStep.getId(), newStep.getDeltaDB(), newStep.getOriginalDB(), scenario).printInstances() + "\nDeltaDB: " + newStep.getDeltaDB().printInstances());
                 long start = new Date().getTime();
                 boolean insertedTuples = dependencyChaser.chaseDependency(newStep, eTgd, tgdQuery, scenario, chaseState, databaseForStep);
                 long end = new Date().getTime();
-                unsatisfiedTGDs.remove(eTgd);
+                if (!scenario.getConfiguration().isUseLimit1ForTGDs() || !insertedTuples) {
+                    unsatisfiedTGDs.remove(eTgd);
+                }
                 if (LunaticConfiguration.isPrintSteps()) System.out.println("Dependency chasing Execution time: " + (end - start) + " ms");
                 ChaseStats.getInstance().addDepenendecyStat(eTgd, end - start);
                 if (insertedTuples) {

@@ -40,6 +40,10 @@ public class ExpressionGenerator implements IValueGenerator {
         return result;
     }
 
+    public String toSQLString() {
+        return toString();
+    }
+
     @Override
     public IValueGenerator clone() {
         ExpressionGenerator clone = null;

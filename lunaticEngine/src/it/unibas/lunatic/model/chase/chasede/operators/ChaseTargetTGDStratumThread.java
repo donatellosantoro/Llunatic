@@ -55,7 +55,9 @@ public class ChaseTargetTGDStratumThread implements IBackgroundThread {
                 if (logger.isDebugEnabled()) logger.debug("----Chasing tgd: " + eTgd);
                 IAlgebraOperator treeRoot = treeMap.get(eTgd);
                 boolean newTuples = naiveInsert.execute(eTgd, treeRoot, scenario.getSource(), scenario.getTarget(), scenario) || insertedTuples;
-                unsatisfiedTGDs.remove(eTgd);
+                if (!scenario.getConfiguration().isUseLimit1ForTGDs() || !newTuples) {
+                    unsatisfiedTGDs.remove(eTgd);
+                }
                 if (newTuples) {
                     if (logger.isDebugEnabled()) logger.debug("TGD " + eTgd.getId() + " inserted new tuples. Marking as unsatisfied the dependencies " + scenario.getStratification().getAffectedTGDsMap().get(eTgd));
                     unsatisfiedTGDs.addAll(scenario.getStratification().getAffectedTGDsMap().get(eTgd));

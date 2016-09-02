@@ -3,6 +3,7 @@ package it.unibas.lunatic.model.chase.chasede.operators.dbms;
 import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
+import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForStandardChase;
 import it.unibas.lunatic.model.algebra.sql.GenerateTargetInsert;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
@@ -35,6 +36,7 @@ public class ChaseSQLSTTGDsWithThreads implements IChaseSTTGDs {
 
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
     private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
+    private BuildAlgebraTreeForStandardChase standardTreeBuilder = new BuildAlgebraTreeForStandardChase();
     private final GenerateTargetInsert targetInsertQuery = new GenerateTargetInsert();
 
     public void doChase(Scenario scenario, boolean cleanTarget) {
@@ -96,8 +98,14 @@ public class ChaseSQLSTTGDsWithThreads implements IChaseSTTGDs {
     }
 
     private String buildPremiseString(Dependency dependency, Scenario scenario) {
-        IAlgebraOperator operator = treeBuilder.buildTreeForPremise(dependency, scenario);
-        return operator.toString();
+        return getPremiseOperator(dependency, scenario).toString();
+    }
+
+    private IAlgebraOperator getPremiseOperator(Dependency dependency, Scenario scenario) {
+        if (scenario.getConfiguration().isUseDistinctInSTTGDs()) {
+            return standardTreeBuilder.generateAlgebraTreeWithDinstinct(dependency, scenario);
+        }
+        return treeBuilder.buildTreeForPremise(dependency, scenario);
     }
 
     private String cleanTargetScript(Scenario scenario) {
@@ -177,7 +185,8 @@ public class ChaseSQLSTTGDsWithThreads implements IChaseSTTGDs {
                 if (!dependenciesToMaterialize.contains(dependency)) {
                     continue;
                 }
-                IAlgebraOperator operator = treeBuilder.buildTreeForPremise(dependency, scenario);
+                IAlgebraOperator operator = getPremiseOperator(dependency, scenario);
+                if (logger.isDebugEnabled()) logger.debug("ST-TGD operator\n" + operator);
                 String unloggedOption = (scenario.getConfiguration().isUseUnloggedWorkTables() ? " UNLOGGED " : "");
                 result.append("CREATE ").append(unloggedOption).append(" TABLE ").append(LunaticDBMSUtility.getWorkSchema(scenario)).append(".").append(dependency.getId()).append(" AS\n");
                 result.append(queryBuilder.treeToSQL(operator, scenario.getSource(), scenario.getTarget(), SpeedyConstants.INDENT));

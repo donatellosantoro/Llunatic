@@ -39,7 +39,6 @@ public class CheckSatisfactionAfterUpgradesTGD {
         if (logger.isDebugEnabled()) logger.debug("Canonical cell group: " + canonicalCellGroup);
         if (logger.isDebugEnabled()) logger.debug("Canonical new cells: " + newCells);
         if (logger.isDebugEnabled()) logger.debug("Existing cell group: " + existingCellGroup);
-
         Map<String, Set<TupleOID>> oidMapForNewCells = generateOidMap(update.getNewCells());
         Map<String, Set<TupleOID>> oidMapForExisting = generateOidMap(existingCellGroup.getAllCells());
         for (Map<TupleOID, TupleOID> idMapping : generateIdMapping(oidMapForNewCells, oidMapForExisting)) {

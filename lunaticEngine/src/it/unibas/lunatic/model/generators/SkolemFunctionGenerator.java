@@ -28,6 +28,10 @@ public class SkolemFunctionGenerator implements IValueGenerator {
         return this.skolemFunction.toString();
     }
 
+    public String toSQLString() {
+        return toString();
+    }
+
     @Override
     public IValueGenerator clone() {
         try {

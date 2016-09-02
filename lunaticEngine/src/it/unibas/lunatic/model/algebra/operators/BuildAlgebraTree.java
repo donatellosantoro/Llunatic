@@ -122,7 +122,6 @@ public class BuildAlgebraTree {
 //        difference.addChild(project);
 //        return difference;
 //    }
-
     private IAlgebraOperator addJoinForDifference(IAlgebraOperator root, IAlgebraOperator negatedRoot, FormulaWithNegations negatedFormula) {
         List<DifferenceEquality> differenceEqualities = findDifferenceEqualities(negatedFormula);
         List<AttributeRef> leftAttributes = new ArrayList<AttributeRef>();

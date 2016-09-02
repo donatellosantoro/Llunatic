@@ -4,14 +4,17 @@ import speedy.SpeedyConstants;
 
 public class LunaticConfiguration {
 
-    private static boolean printSteps = true;
-//    private static boolean printSteps = false;
+//    private static boolean printSteps = true;
+    private static boolean printSteps = false;
     private static boolean printResults = false;
     private boolean debugMode = false;
     private boolean recreateDBOnStart = true;
     private boolean cleanSchemasOnStartForDEScenarios = true;
     private Integer iterationLimit = null;
+    private boolean useDistinctInSTTGDs = true;
     private boolean useLimit1ForEGDs = false;
+    private boolean useLimit1ForTGDs = false;
+    private boolean useStandardChase = false;//Requires useLimi1ForTGD=true
     private boolean deScenario = false; //MCProxy for DE chase
     private boolean optimizeSTTGDs = true;
     private boolean rewriteSTTGDOverlaps = true;
@@ -115,6 +118,14 @@ public class LunaticConfiguration {
         this.useLimit1ForEGDs = useLimit1ForEGDs;
     }
 
+    public boolean isUseLimit1ForTGDs() {
+        return useLimit1ForTGDs;
+    }
+
+    public void setUseLimit1ForTGDs(boolean useLimit1ForTGDs) {
+        this.useLimit1ForTGDs = useLimit1ForTGDs;
+    }
+
     public boolean isDeScenario() {
         return deScenario;
     }
@@ -182,6 +193,23 @@ public class LunaticConfiguration {
     public void changeParametersForScalabilityTests() {
         this.checkGroundSolutions = false;
         this.removeDuplicates = false;
+    }
+
+    public boolean isUseStandardChase() {
+        return useStandardChase;
+    }
+
+    public void setUseStandardChase(boolean useStandardChase) {
+        this.useStandardChase = useStandardChase;
+        this.useLimit1ForTGDs = useStandardChase;
+    }
+
+    public boolean isUseDistinctInSTTGDs() {
+        return useDistinctInSTTGDs;
+    }
+
+    public void setUseDistinctInSTTGDs(boolean useDistinctInSTTGDs) {
+        this.useDistinctInSTTGDs = useDistinctInSTTGDs;
     }
 
     public String getDeChaser() {

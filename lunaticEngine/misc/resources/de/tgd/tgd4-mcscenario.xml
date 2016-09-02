@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <source>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+s0(a, b, c, d)
+INSTANCE:
+s0(a: "x1",b: "x2", c: "x3",d: "x4")
+s0(a: "x1",b: "x2", c: "x7",d: "x4")
+]]>
+        </generate>
+    </source>
+    <target>
+        <type>GENERATE</type>
+        <generate>
+<![CDATA[
+SCHEMA:
+t1(a, b, c, d)
+t2(a, b, c, d)
+]]>
+        </generate>
+    </target>
+    <dependencies>
+<![CDATA[
+STTGDs:
+s0(a: $X1,b: $X2,c: $X3, d:$X4) -> t1(a: $X1,b: $Y2,c: $Y3, d:$Y3).
+
+ExtTGDs:
+t1(a: $X1,b: $X2,c: $X3,d: $X4) -> t2(a: $Y1,b: $Y2,c: $Y3, d:$Y3).
+]]>
+    </dependencies>
+</scenario>

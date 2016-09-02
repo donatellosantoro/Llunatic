@@ -18,6 +18,24 @@ public class TestSyntheticTGD03 extends CheckExpectedSolutionsTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T03);
         setConfigurationForTest(scenario);
+        scenario.getConfiguration().setUseStandardChase(false);
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
+        ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
+        DeltaChaseStep result = chaser.doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toLongStringWithSort());
+        if (logger.isDebugEnabled()) logger.debug("Solutions: " + resultSizer.getPotentialSolutions(result));
+        if (logger.isDebugEnabled()) logger.debug("Duplicate solutions: " + resultSizer.getDuplicates(result));
+        Assert.assertEquals(1, resultSizer.getPotentialSolutions(result));
+        Assert.assertEquals(0, resultSizer.getDuplicates(result));
+//        checkSolutions(result);
+//        exportResults("/Temp/expectedTGD03", result);
+        checkExpectedSolutions("expectedTGD03", result);
+    }
+
+    public void testScenarioStandardChase() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T03);
+        setConfigurationForTest(scenario);
+        scenario.getConfiguration().setUseStandardChase(true);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);

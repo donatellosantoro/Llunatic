@@ -19,6 +19,7 @@
     </root>
     <!--TEST-->     
     <!--<logger name="it.unibas.lunatic.test" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.QueryStatManager" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.QueryManager" level="TRACE"/>-->
@@ -98,6 +99,9 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ExecuteFinalQueries" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.CheckConflicts" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.mainmemory.ChaseMainMemorySTTGDs" level="DEBUG"/>-->
+        <!--<logger name="it.unibas.lunatic.model.generators.operators.GenerateFreshNullsForStandardChase" level="DEBUG"/>-->
+        <!--<logger name="it.unibas.lunatic.model.generators.operators.SQLGenerateFreshNullForStandardChase" level="DEBUG"/>-->
 
     <!--     CHASE MC     -->    
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager" level="DEBUG"/>-->
@@ -122,6 +126,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.ReplaceConstantsWithVariables" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckSatisfactionAfterUpgradesTGD" level="DEBUG"/>-->
     
     <!--     Cache     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.cache.AbstractGreedyCacheManager" level="trace"/>-->
