@@ -1,10 +1,12 @@
 package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
 import it.unibas.lunatic.LunaticConfiguration;
+import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForStandardChase;
+import it.unibas.lunatic.model.chase.chasede.operators.IInsertFromSelectNaive;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.IRemoveDuplicates;

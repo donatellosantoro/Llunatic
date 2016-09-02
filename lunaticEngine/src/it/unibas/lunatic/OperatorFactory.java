@@ -63,11 +63,13 @@ import it.unibas.lunatic.model.chase.chasede.operators.dbms.BuildSQLDBForChaseSt
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.BuildSQLDeltaDBDE;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDsWithThreads;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectNaive;
+import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectSkolem;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLRemoveDuplicates;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLReplaceDatabase;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.BuildMainMemoryDBForChaseStepDE;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.BuildMainMemoryDeltaDBDE;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectNaive;
+import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectSkolem;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryRemoveDuplicates;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryReplaceDatabase;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStepMC;
@@ -77,7 +79,7 @@ import speedy.model.database.operators.dbms.SQLAnalyzeDatabase;
 import speedy.model.database.operators.mainmemory.MainMemoryAnalyzeDatabase;
 
 public class OperatorFactory {
-    
+
     private static Logger logger = LoggerFactory.getLogger(OperatorFactory.class);
     private static OperatorFactory singleton = new OperatorFactory();
     //
@@ -119,105 +121,105 @@ public class OperatorFactory {
     //
     private Map<Scenario, OccurrenceHandlerMC> occurrenceHandlerMCMap = new HashMap<Scenario, OccurrenceHandlerMC>();
     private Map<Scenario, OccurrenceHandlerDE> occurrenceHandlerDEMap = new HashMap<Scenario, OccurrenceHandlerDE>();
-    
+
     private OperatorFactory() {
     }
-    
+
     public static OperatorFactory getInstance() {
         return singleton;
     }
-    
+
     public void reset() {
         if (logger.isDebugEnabled()) logger.debug("Resetting occurrence handler map...");
         this.occurrenceHandlerMCMap.clear();
         this.occurrenceHandlerDEMap.clear();
         SimilarityFactory.getInstance().reset();
     }
-    
+
     public IRunQuery getQueryRunner(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return mainMemoryQueryRunner;
         }
         return sqlQueryRunner;
     }
-    
+
     public IInsertTuple getInsertTuple(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return mainMemoryInsertTuple;
         }
         return sqlInsertTuple;
     }
-    
+
     public IBatchInsert getSingletonBatchInsertOperator(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return mainMemoryBatchInsertOperator;
         }
         return sqlBatchInsertOperator;
     }
-    
+
     public IBuildDatabaseForChaseStepMC getDatabaseBuilder(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return new BuildMainMemoryDBForChaseStep(scenario.getConfiguration().isCheckConsistencyOfDBs());
         }
         return new BuildSQLDBForChaseStep(scenario.getConfiguration().isCheckConsistencyOfDBs());
     }
-    
+
     public IBuildDatabaseForDE getDatabaseBuilderDE(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return new BuildMainMemoryDBForChaseStepDE(scenario.getConfiguration().isCheckConsistencyOfDBs());
         }
         return new BuildSQLDBForChaseStepDE(scenario.getConfiguration().isCheckConsistencyOfDBs());
     }
-    
+
     public IDelete getDeleteOperator(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return mainMemoryDeleteOperator;
         }
         return sqlDeleteOperator;
     }
-    
+
     public IUpdateCell getCellUpdater(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return mainMemoryCellUpdater;
         }
         return sqlCellUpdater;
     }
-    
+
     public IBuildDeltaDB getDeltaDBBuilder(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return mainMemoryDeltaBuilder;
         }
         return sqlDeltaBuilder;
     }
-    
+
     public IBuildDeltaDB getDeltaDBBuilderDE(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return mainMemoryDeltaBuilderDE;
         }
         return sqlDeltaBuilderDE;
     }
-    
+
     public IChaseSTTGDs getSTChaser(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return mainMemorySTTGDsChaser;
         }
         return sqlSTTGDsChaser;
     }
-    
+
     public IOIDGenerator getOIDGenerator(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return mainMemoryOIDGenerator;
         }
         return sqlOIDGenerator;
     }
-    
+
     public IDatabaseManager getDatabaseManager(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return mainMemoryDatabaseManager;
         }
         return sqlDatabaseManager;
     }
-    
+
     public IDEDDatabaseManager getDEDDatabaseManager(Scenario scenario) {
         if (!scenario.isDEDScenario()) {
             throw new IllegalArgumentException("DED DatabaseManager is for DED scenarios only");
@@ -227,7 +229,7 @@ public class OperatorFactory {
         }
         return sqlDEDDatabaseManager;
     }
-    
+
     public OccurrenceHandlerMC getOccurrenceHandlerMC(Scenario scenario) {
         if (!scenario.isMCScenario()) {
             throw new IllegalArgumentException("Scenario must be MC");
@@ -249,7 +251,7 @@ public class OperatorFactory {
         occurrenceHandlerMCMap.put(scenario, occurrenceHandler);
         return occurrenceHandler;
     }
-    
+
     public IChaseDeltaExtTGDs getExtTgdChaser(Scenario scenario) {
         if (scenario.isDEScenario()) {
             throw new IllegalArgumentException("Incompatible operator type for DE Scenario");
@@ -257,44 +259,44 @@ public class OperatorFactory {
         return new ChaseDeltaExtTGDs(getQueryRunner(scenario), getDatabaseBuilder(scenario),
                 getOccurrenceHandlerMC(scenario), getOIDGenerator(scenario), getCellChangerMC(scenario));
     }
-    
+
     public CheckUnsatisfiedDependenciesMC getUnsatisfiedDependenciesCheckerMC(Scenario scenario) {
         return new CheckUnsatisfiedDependenciesMC(getDatabaseBuilder(scenario), getOccurrenceHandlerMC(scenario), getQueryRunner(scenario));
     }
-    
+
     public CheckUnsatisfiedDependenciesDE getUnsatisfiedDependenciesCheckerDE(Scenario scenario) {
         return new CheckUnsatisfiedDependenciesDE(getDatabaseBuilderDE(scenario), getQueryRunner(scenario));
     }
-    
+
     public CheckSolution getSolutionChecker(Scenario scenario) {
         return new CheckSolution(getUnsatisfiedDependenciesCheckerMC(scenario), getOccurrenceHandlerMC(scenario), getQueryRunner(scenario), getDatabaseBuilder(scenario));
     }
-    
+
     public ChaseDeltaExtEGDs getDeltaExtEGDChaser(Scenario scenario) {
         return new ChaseDeltaExtEGDs(getDatabaseBuilder(scenario), getQueryRunner(scenario),
                 getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getCellChangerMC(scenario),
                 getOccurrenceHandlerMC(scenario), getUnsatisfiedDependenciesCheckerMC(scenario));
     }
-    
+
     public ChaseDeltaEGDs getDeltaEGDChaser(Scenario scenario) {
-        return new ChaseDeltaEGDs(getUnsatisfiedDependenciesCheckerDE(scenario), getDatabaseBuilderDE(scenario), 
+        return new ChaseDeltaEGDs(getUnsatisfiedDependenciesCheckerDE(scenario), getDatabaseBuilderDE(scenario),
                 getQueryRunner(scenario), getOccurrenceHandlerDE(scenario), getCellChangerDE(scenario));
     }
-    
+
     public ChangeCellMC getCellChangerMC(Scenario scenario) {
         if (!scenario.isMCScenario()) {
             throw new IllegalArgumentException("Incompatible operator type for Scenario");
         }
         return new ChangeCellMC(getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getOccurrenceHandlerMC(scenario));
     }
-    
+
     public ChangeCellDE getCellChangerDE(Scenario scenario) {
         if (!scenario.isDEScenario() && !scenario.isDEDScenario()) {
             throw new IllegalArgumentException("Scenario must be DE");
         }
         return new ChangeCellDE(getInsertTuple(scenario), getSingletonBatchInsertOperator(scenario), getOccurrenceHandlerDE(scenario));
     }
-    
+
     public OccurrenceHandlerDE getOccurrenceHandlerDE(Scenario scenario) {
         if (!scenario.isDEScenario() && !scenario.isDEDScenario()) {
             throw new IllegalArgumentException("Scenario must be DE");
@@ -318,53 +320,59 @@ public class OperatorFactory {
         occurrenceHandlerDEMap.put(scenario, occurrenceHandler);
         return occurrenceHandler;
     }
-    
+
     public AddUserNode getUserNodeCreator(Scenario scenario) {
         if (!scenario.isMCScenario()) {
             throw new IllegalArgumentException("Incompatible operator type for Scenario");
         }
         return new AddUserNode(getCellChangerMC(scenario), getOccurrenceHandlerMC(scenario));
     }
-    
+
     public ChaseTreeToString getChaseTreeToString(Scenario scenario) {
         return new ChaseTreeToString(getDatabaseBuilder(scenario), getOccurrenceHandlerMC(scenario));
     }
-    
+
     public IInsertFromSelectNaive getInsertFromSelectNaive(Scenario scenario) {
+        if (scenario.getConfiguration().isUseSkolemChase()) {
+            if (scenario.isMainMemory()) {
+                return new MainMemoryInsertFromSelectSkolem();
+            }
+            return new SQLInsertFromSelectSkolem();
+        }
         if (scenario.isMainMemory()) {
             return new MainMemoryInsertFromSelectNaive();
         }
         return new SQLInsertFromSelectNaive();
     }
-    
+
     public IRemoveDuplicates getDuplicateRemover(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return new MainMemoryRemoveDuplicates();
         }
         return new SQLRemoveDuplicates();
     }
-    
+
     public IAnalyzeDatabase getDatabaseAnalyzer(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return new MainMemoryAnalyzeDatabase();
         }
         return new SQLAnalyzeDatabase();
     }
-    
+
     public IReplaceDatabase getDatabaseReplacer(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return new MainMemoryReplaceDatabase();
         }
         return new SQLReplaceDatabase();
     }
-    
+
     public IExportSolution getSolutionExporter(Scenario scenario) {
         if (scenario.isMainMemory()) {
             throw new IllegalArgumentException("Not supported yet");
         }
         return sqlSolutionExporter;
     }
-    
+
     public GenerateModifiedCells getGenerateModifiedCells(Scenario scenario) {
         return new GenerateModifiedCells(getOccurrenceHandlerMC(scenario));
     }

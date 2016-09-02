@@ -56,6 +56,7 @@ public class ChaseTargetTGDStratumThread implements IBackgroundThread {
                 IAlgebraOperator treeRoot = treeMap.get(eTgd);
                 boolean newTuples = naiveInsert.execute(eTgd, treeRoot, scenario.getSource(), scenario.getTarget(), scenario) || insertedTuples;
                 if (!scenario.getConfiguration().isUseLimit1ForTGDs() || !newTuples) {
+                    if (logger.isDebugEnabled()) logger.debug("No new tuples. TGD " + eTgd + " is satisfied.");
                     unsatisfiedTGDs.remove(eTgd);
                 }
                 if (newTuples) {

@@ -21,7 +21,7 @@ public class ChaseTargetTGDs {
 
     private final static Logger logger = LoggerFactory.getLogger(ChaseTargetTGDs.class);
 
-    private BuildAlgebraTreeForStandardChase insertGenerator = new BuildAlgebraTreeForStandardChase();
+    private BuildAlgebraTreeForStandardChase treeBuilderForStandardChase = new BuildAlgebraTreeForStandardChase();
     private IInsertFromSelectNaive naiveInsert;
     private ScheduleTGDStrata tgdScheduler;
 
@@ -63,11 +63,11 @@ public class ChaseTargetTGDs {
     private Map<Dependency, IAlgebraOperator> buildAlgebraTrees(List<Dependency> extTGDs, Scenario scenario) {
         Map<Dependency, IAlgebraOperator> result = new HashMap<Dependency, IAlgebraOperator>();
         for (Dependency dependency : extTGDs) {
-            IAlgebraOperator standardInsert = insertGenerator.generateAlgebraTreeWithDifference(dependency, scenario);
+            IAlgebraOperator standardInsert = treeBuilderForStandardChase.generateAlgebraForTGD(dependency, scenario);
             if (logger.isDebugEnabled()) logger.debug("Operator for dependency " + dependency + "\n" + standardInsert);
             result.put(dependency, standardInsert);
         }
         return result;
     }
-
+    
 }

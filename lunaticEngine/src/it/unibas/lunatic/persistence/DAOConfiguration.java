@@ -3,7 +3,7 @@ package it.unibas.lunatic.persistence;
 public class DAOConfiguration {
 
     private String suffix;
-    private Boolean printSteps = true;
+    private Boolean printSteps = false;
     private boolean importData = true;
     private boolean processDependencies = true;
     private boolean exportEncodedDependencies = false;

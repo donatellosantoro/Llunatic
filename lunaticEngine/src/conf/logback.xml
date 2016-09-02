@@ -79,6 +79,7 @@
     
     <!--     MainMemory     -->
     <!--<logger name="speedy.model.algebra.operators.mainmemory.MainMemoryInsertTuple" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryReplaceDatabase" level="DEBUG"/>-->
     
     <!--     DBMS     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLRunQuery" level="DEBUG"/>-->
@@ -100,8 +101,12 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ExecuteFinalQueries" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.CheckConflicts" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.mainmemory.ChaseMainMemorySTTGDs" level="DEBUG"/>-->
-        <!--<logger name="it.unibas.lunatic.model.generators.operators.GenerateFreshNullsForStandardChase" level="DEBUG"/>-->
-        <!--<logger name="it.unibas.lunatic.model.generators.operators.SQLGenerateFreshNullForStandardChase" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectNaive" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectSkolem" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectNaive" level="TRACE"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectSkolem" level="TRACE"/>-->
+    <!--<logger name="it.unibas.lunatic.model.generators.operators.GenerateFreshNullsForStandardChase" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.generators.operators.SQLGenerateFreshNullForStandardChase" level="DEBUG"/>-->
 
     <!--     CHASE MC     -->    
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager" level="DEBUG"/>-->

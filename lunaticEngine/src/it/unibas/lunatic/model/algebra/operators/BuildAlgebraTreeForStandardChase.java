@@ -27,6 +27,13 @@ public class BuildAlgebraTreeForStandardChase {
 
     private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
 
+    public IAlgebraOperator generateAlgebraForTGD(Dependency extTGD, Scenario scenario) {
+        if (scenario.getConfiguration().isUseSkolemChase()) {
+            return generateAlgebraTreeWithDinstinct(extTGD, scenario);
+        }
+        return generateAlgebraTreeWithDifference(extTGD, scenario);
+    }
+
     public IAlgebraOperator generateAlgebraTreeWithDifference(Dependency extTGD, Scenario scenario) {
         return generate(extTGD, scenario, true, false);
     }

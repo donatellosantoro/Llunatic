@@ -24,7 +24,6 @@ import speedy.model.database.NullValue;
 import speedy.model.database.TableAlias;
 import speedy.model.database.Tuple;
 import speedy.model.database.TupleOID;
-import speedy.model.database.mainmemory.MainMemoryTable;
 import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 
 public class MainMemoryInsertFromSelectNaive implements IInsertFromSelectNaive {
@@ -61,7 +60,6 @@ public class MainMemoryInsertFromSelectNaive implements IInsertFromSelectNaive {
             }
         }
         it.close();
-//        removeDuplicates(targetTablesToInsert, target);
         return insertedTuple;
     }
 
@@ -90,12 +88,4 @@ public class MainMemoryInsertFromSelectNaive implements IInsertFromSelectNaive {
         IValueGenerator generator = targetGenerators.get(attributeRef);
         return generator.generateValue(sourceTuple);
     }
-
-//    private void removeDuplicates(List<TableAlias> targetTablesToInsert, MainMemoryDB target) {
-//        INode instance = target.getDataSource().getInstances().get(0);
-//        for (TableAlias table : targetTablesToInsert) {
-//            INode tableRoot = instance.getChild(table.getTableName());
-//            AlgebraUtility.removeDuplicates(tableRoot.getChildren());
-//        }
-//    }
 }

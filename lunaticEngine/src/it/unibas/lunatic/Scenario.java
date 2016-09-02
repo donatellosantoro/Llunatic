@@ -98,6 +98,9 @@ public class Scenario {
     }
 
     public void setTarget(IDatabase target) {
+        if (!(target instanceof MainMemoryDB) && !(target instanceof DBMSDB)) {
+            throw new IllegalArgumentException();
+        }
         this.target = target;
     }
 

@@ -137,6 +137,9 @@ public class ChaseDEScenario implements IDEChaser {
     }
 
     private void printResult(IDatabase targetDB, LunaticConfiguration conf) {
+        if (conf.isPrintTargetStats()) {
+            printTargetStats(targetDB);
+        }
         if (!LunaticConfiguration.isPrintResults()) {
             return;
         }
@@ -167,7 +170,6 @@ public class ChaseDEScenario implements IDEChaser {
         if (postProcessingTime > 0) PrintUtility.printInformation("*** PostProcessing time: " + postProcessingTime + " ms");
         PrintUtility.printInformation("*** TOTAL TIME: " + totalTime + " ms");
         PrintUtility.printInformation("----------------------------------------------------");
-        if (logger.isDebugEnabled()) printTargetStats(targetDB);
     }
 
     private void printTargetStats(IDatabase targetDB) {
@@ -183,9 +185,9 @@ public class ChaseDEScenario implements IDEChaser {
                 System.out.println("# " + tableName + ": " + tableSize + " tuples");
             }
         }
+        System.out.println("### Total Number of Tuples: " + totalNumberOfTuples + " tuples");
         Integer numberOfNulls = databaseSizeCalculator.countNulls(targetDB);
         System.out.println("# Number of nulls: " + numberOfNulls);
-        System.out.println("### Total Number of Tuples: " + totalNumberOfTuples + " tuples");
     }
 
     private void analyzeSourceDatabase(Scenario scenario) {

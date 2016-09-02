@@ -22,24 +22,24 @@ import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 import speedy.persistence.relational.QueryStatManager;
 
 public class CheckTest extends TestCase {
-
+    
     private static Logger logger = LoggerFactory.getLogger(CheckTest.class);
-
+    
     protected ChaseTreeSize resultSizer = new ChaseTreeSize();
     protected PrintRankedSolutions solutionPrinter = new PrintRankedSolutions();
 //    protected RepairsComparator comparator = new RepairsComparator();
     protected ChaseStats chaseStats = ChaseStats.getInstance();
     protected QueryStatManager queryStats = QueryStatManager.getInstance();
     protected CheckConsistencyOfCellGroups validSolutionChecker = new CheckConsistencyOfCellGroups();
-
+    
     protected GenerateModifiedCells getModifiedCellGenerator(Scenario scenario) {
         return new GenerateModifiedCells(OperatorFactory.getInstance().getOccurrenceHandlerMC(scenario));
     }
-
+    
     @Override
     protected void setUp() throws Exception {
     }
-
+    
     @Override
     protected void tearDown() throws Exception {
         IntegerOIDGenerator.resetCounter();
@@ -49,18 +49,18 @@ public class CheckTest extends TestCase {
         chaseStats.resetStatistics();
         queryStats.resetStatistics();
     }
-
+    
     protected void setConfigurationForTest(Scenario scenario) {
         scenario.getConfiguration().setCheckSolutions(true);
         scenario.getConfiguration().setCheckSolutionsQuery(true);
         scenario.getConfiguration().setCheckAllNodesForEGDSatisfaction(true);
         if (scenario.isMainMemory()) scenario.getConfiguration().setDebugMode(true);
     }
-
+    
     protected void setCheckEGDsAfterEachStep(Scenario scenario) {
         scenario.getConfiguration().setCheckAllNodesForEGDSatisfaction(true);
     }
-
+    
     protected void checkSolutions(DeltaChaseStep result) {
         if (logger.isDebugEnabled()) logger.debug("Checking that leaves are solutions...");
         validSolutionChecker.checkConsistencyOfCellGroupsInStep(result);
@@ -68,7 +68,7 @@ public class CheckTest extends TestCase {
         Assert.assertTrue("No solution...", resultSizer.getAllNodes(result) > 0);
         Assert.assertEquals("Expected solutions", resultSizer.getPotentialSolutions(result), resultSizer.getSolutions(result));
     }
-
+    
     protected String getTestName(String scenarioName, Scenario scenario) {
         StringBuilder name = new StringBuilder(scenarioName.toUpperCase());
         if (scenario.isDEScenario()) {
@@ -89,15 +89,15 @@ public class CheckTest extends TestCase {
         }
         return name.toString();
     }
-
+    
     protected PrecisionAndRecall computeMin(List<PrecisionAndRecall> listPrecisionAndRecall) {
         return listPrecisionAndRecall.get(listPrecisionAndRecall.size() - 1);
     }
-
+    
     protected PrecisionAndRecall computeMax(List<PrecisionAndRecall> listPrecisionAndRecall) {
         return listPrecisionAndRecall.get(0);
     }
-
+    
     protected PrecisionAndRecall computeMean(List<PrecisionAndRecall> listPrecisionAndRecall) {
         double sumP = 0.0;
         double sumR = 0.0;
@@ -110,31 +110,35 @@ public class CheckTest extends TestCase {
         double fMeasure = (2 * precision * recall) / (precision + recall);
         return new PrecisionAndRecall(precision, recall, fMeasure);
     }
-
+    
     @SuppressWarnings("unchecked")
     protected void checkExpectedInstances(IDatabase result, Scenario scenario) throws Exception {
         String expectedResultFile = generateExpectedFileName(scenario);
+        checkExpectedInstances(result, expectedResultFile, scenario);
+    }
+    
+    protected void checkExpectedInstances(IDatabase result, String expectedResultFile, Scenario scenario) throws Exception {
         DataSourceTxtInstanceChecker checker = new DataSourceTxtInstanceChecker();
         checker.checkInstance(result, expectedResultFile);
     }
-
+    
     private String generateExpectedFileName(Scenario scenario) {
         String fileName = scenario.getFileName().substring(0, scenario.getFileName().lastIndexOf("."));
         return fileName + "-expectedSolution.txt";
     }
-
+    
     protected String generateOutputFileName(Scenario scenario) {
         String fileName = scenario.getFileName().substring(0, scenario.getFileName().lastIndexOf("."));
         fileName = fileName.replace("build/classes", "misc");
         return fileName + ".out";
     }
-
+    
     protected String generateOutputFileName(Scenario scenario, String suffix) {
         String fileName = scenario.getFileName().substring(0, scenario.getFileName().lastIndexOf("."));
         fileName = fileName.replace("build/classes", "misc");
         return fileName + "." + suffix + ".out";
     }
-
+    
     public void testDummy() {
     }
 }

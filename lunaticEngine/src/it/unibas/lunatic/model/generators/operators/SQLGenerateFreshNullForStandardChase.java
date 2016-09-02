@@ -21,10 +21,10 @@ public class SQLGenerateFreshNullForStandardChase {
         }
         String newValue = "'" + SpeedyConstants.SKOLEM_PREFIX + "-" + counter++ + "'";
         if (SpeedyUtility.isBigInt(type)) {
-            newValue = SpeedyConstants.BIGINT_SKOLEM_PREFIX + counter;
+            newValue = (SpeedyConstants.MIN_BIGINT_SKOLEM_VALUE + counter) + "";
         }
         if (SpeedyUtility.isDoublePrecision(type)) {
-            newValue = SpeedyConstants.BIGINT_SKOLEM_PREFIX + counter; //Automatic conversion of bigint to doubleprecision
+            newValue = (SpeedyConstants.MIN_BIGINT_SKOLEM_VALUE + counter) + ""; //Automatic conversion of bigint to doubleprecision
         }
         valueCache.put(variableInDependency, newValue);
         if (logger.isDebugEnabled()) logger.debug("-> " + newValue);

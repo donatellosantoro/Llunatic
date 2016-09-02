@@ -7,6 +7,7 @@ public class LunaticConfiguration {
 //    private static boolean printSteps = true;
     private static boolean printSteps = false;
     private static boolean printResults = false;
+    private boolean printTargetStats = false;
     private boolean debugMode = false;
     private boolean recreateDBOnStart = true;
     private boolean cleanSchemasOnStartForDEScenarios = true;
@@ -14,7 +15,7 @@ public class LunaticConfiguration {
     private boolean useDistinctInSTTGDs = true;
     private boolean useLimit1ForEGDs = false;
     private boolean useLimit1ForTGDs = false;
-    private boolean useStandardChase = false;//Requires useLimi1ForTGD=true
+    private String chaseMode;
     private boolean deScenario = false; //MCProxy for DE chase
     private boolean optimizeSTTGDs = true;
     private boolean rewriteSTTGDOverlaps = true;
@@ -61,6 +62,37 @@ public class LunaticConfiguration {
 
     private String cacheTypeForDE = LunaticConstants.GREEDY_DE_JCS;
 //    private String cacheTypeForDE = LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE;
+
+    public LunaticConfiguration() {
+        setChaseMode(LunaticConstants.CHASE_OPTIMIZED);
+//        setChaseMode(LunaticConstants.CHASE_SKOLEM);
+//        setChaseMode(LunaticConstants.CHASE_STANDARD);
+    }
+
+    public String getChaseMode() {
+        return chaseMode;
+    }
+
+    private void setChaseMode(String chaseMode) {
+        this.chaseMode = chaseMode;
+        if (chaseMode.equals(LunaticConstants.CHASE_OPTIMIZED)) {
+            this.useLimit1ForTGDs = false;
+        } else if (chaseMode.equals(LunaticConstants.CHASE_STANDARD)) {
+            this.useLimit1ForTGDs = true;
+        } else if (chaseMode.equals(LunaticConstants.CHASE_SKOLEM)) {
+            this.useLimit1ForTGDs = false;
+        } else {
+            throw new IllegalArgumentException("Unknow chase mode " + chaseMode);
+        }
+    }
+
+    public boolean isUseStandardChase() {
+        return LunaticConstants.CHASE_STANDARD.equals(this.chaseMode);
+    }
+
+    public boolean isUseSkolemChase() {
+        return LunaticConstants.CHASE_SKOLEM.equals(this.chaseMode);
+    }
 
     public static boolean isPrintSteps() {
         return printSteps;
@@ -193,15 +225,6 @@ public class LunaticConfiguration {
     public void changeParametersForScalabilityTests() {
         this.checkGroundSolutions = false;
         this.removeDuplicates = false;
-    }
-
-    public boolean isUseStandardChase() {
-        return useStandardChase;
-    }
-
-    public void setUseStandardChase(boolean useStandardChase) {
-        this.useStandardChase = useStandardChase;
-        this.useLimit1ForTGDs = useStandardChase;
     }
 
     public boolean isUseDistinctInSTTGDs() {
@@ -450,6 +473,14 @@ public class LunaticConfiguration {
 
     public void setUseThreadsForQueries(boolean useThreadsForQueries) {
         this.useThreadsForQueries = useThreadsForQueries;
+    }
+
+    public boolean isPrintTargetStats() {
+        return printTargetStats;
+    }
+
+    public void setPrintTargetStats(boolean printTargetStats) {
+        this.printTargetStats = printTargetStats;
     }
 
     @Override

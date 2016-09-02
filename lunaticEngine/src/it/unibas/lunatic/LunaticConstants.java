@@ -54,6 +54,11 @@ public class LunaticConstants {
     ///////////////    DE CHASER STRATEGIES    ///////////////////
     public static final String DE_OPTIMIZED_CHASER = "DE_OPTIMIZED_CHASER";
 
+    ///////////////    CHASE MODE///////////////////
+    public static final String CHASE_STANDARD = "STANDARD CHASE";
+    public static final String CHASE_OPTIMIZED = "OPTIMIZED CHASE";
+    public static final String CHASE_SKOLEM = "SKOLEM CHASE";
+
     ///////////////////// COST MANAGER
     public static final String COST_MANAGER_STANDARD = "Standard";
     public static final String COST_MANAGER_SIMILARITY = "Similarity";

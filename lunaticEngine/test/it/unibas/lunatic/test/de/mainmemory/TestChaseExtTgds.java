@@ -1,5 +1,6 @@
 package it.unibas.lunatic.test.de.mainmemory;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
 import speedy.model.database.IDatabase;
@@ -17,7 +18,12 @@ public class TestChaseExtTgds extends CheckTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.RS_tc);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
-        checkExpectedInstances(result, scenario);
+        if (scenario.getConfiguration().isUseSkolemChase()) {
+            String expected = scenario.getFileName().replace(".xml", "-skolemchase-expectedSolution.txt");
+            checkExpectedInstances(result, expected, scenario);
+        }else{
+            checkExpectedInstances(result, scenario);
+        }
     }
 
     public void testJoin() throws Exception {
