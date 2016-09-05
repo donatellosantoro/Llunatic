@@ -23,12 +23,15 @@ import speedy.SpeedyConstants;
 import speedy.exceptions.DBMSException;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
+import speedy.model.database.Attribute;
+import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.thread.IBackgroundThread;
 import speedy.model.thread.ThreadManager;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.DBMSUtility;
+import speedy.utility.SpeedyUtility;
 
 public class ChaseSQLSTTGDsWithThreads implements IChaseSTTGDs {
 
@@ -46,9 +49,12 @@ public class ChaseSQLSTTGDsWithThreads implements IChaseSTTGDs {
         long start = new Date().getTime();
         if (logger.isDebugEnabled()) logger.debug("Generating script for st tgds on scenario: " + scenario);
         DBMSDB target = (DBMSDB) scenario.getTarget();
-        AccessConfiguration accessConfiguration = (target).getAccessConfiguration();
+        AccessConfiguration accessConfiguration = target.getAccessConfiguration();
         LunaticDBMSUtility.createWorkSchema(accessConfiguration, scenario);
         createFunctionsForNumericalSkolems(scenario);
+        if (scenario.getConfiguration().isPreventInsertDuplicateTuples()) {
+            addTargetUniqueConstraints(target);
+        }
         if (scenario.getSTTgds().isEmpty()) {
             return;
         }
@@ -126,6 +132,23 @@ public class ChaseSQLSTTGDsWithThreads implements IChaseSTTGDs {
         AccessConfiguration workAccessConfiguration = targetAccessConfiguration.clone();
         workAccessConfiguration.setSchemaName(SpeedyConstants.WORK_SCHEMA);
         DBMSUtility.createFunctionsForNumericalSkolem(workAccessConfiguration);
+    }
+
+    private void addTargetUniqueConstraints(DBMSDB target) {
+        StringBuilder sb = new StringBuilder();
+        AccessConfiguration ac = target.getAccessConfiguration();
+        for (String tableName : target.getTableNames()) {
+            sb.append("ALTER TABLE ").append(DBMSUtility.getSchemaNameAndDot(ac)).append(tableName).append(" ADD UNIQUE (");
+            for (Attribute attribute : target.getTable(tableName).getAttributes()) {
+                if (attribute.getName().equalsIgnoreCase(SpeedyConstants.OID)) {
+                    continue;
+                }
+                sb.append(attribute.getName()).append(", ");
+            }
+            SpeedyUtility.removeChars(", ".length(), sb);
+            sb.append(") NOT DEFERRABLE INITIALLY IMMEDIATE;\n");
+        }
+        QueryManager.executeScript(sb.toString(), ac, true, true, true, true);
     }
 
     class ExecuteSTTGDThread implements IBackgroundThread {

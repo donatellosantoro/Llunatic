@@ -17,10 +17,13 @@ import speedy.SpeedyConstants;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
 import speedy.model.database.Attribute;
+import speedy.model.database.IDatabase;
 import speedy.model.database.TableAlias;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSTable;
+import speedy.persistence.relational.AccessConfiguration;
 import speedy.utility.DBMSUtility;
+import speedy.utility.SpeedyUtility;
 
 public class GenerateTargetInsert {
 
@@ -98,6 +101,9 @@ public class GenerateTargetInsert {
                 result.append("\n UNION \n");
                 result.append(selects.get(i));
             }
+            if (scenario.getConfiguration().isPreventInsertDuplicateTuples()) {
+                result.append(generateOnConflictPart(target, tableToInsert));
+            }
             result.append(";\n\n");
         }
         return result.toString();
@@ -122,5 +128,13 @@ public class GenerateTargetInsert {
             return standardTreeBuilder.generateAlgebraTreeWithDinstinct(dependency, scenario);
         }
         return treeBuilder.buildTreeForPremise(dependency, scenario);
+    }
+
+    private String generateOnConflictPart(DBMSDB target, String tableToInsert) {
+        StringBuilder result = new StringBuilder();
+        result.append(SpeedyConstants.INDENT).append("\nON CONFLICT ");
+        result.append(getTableAttributes(target, tableToInsert));
+        result.append(" DO NOTHING\n");
+        return result.toString();
     }
 }

@@ -29,7 +29,9 @@ public class SQLInsertFromSelectSkolem implements IInsertFromSelectNaive {
         IInsertFromSelectNaive naiveInsert = new SQLInsertFromSelectNaive();//Operator with state
         boolean insertTuples = naiveInsert.execute(dependency, sourceQuery, source, target, scenario);
         if (logger.isDebugEnabled()) logger.debug("Naive insert tuple: " + insertTuples);
-        duplicateRemover.removeDuplicatesModuloOID(target, scenario);
+        if (!scenario.getConfiguration().isPreventInsertDuplicateTuples()) {
+            duplicateRemover.removeDuplicatesModuloOID(target, scenario);
+        }
         if (logger.isTraceEnabled()) logger.trace("TargetDB without duplicates:\n" + target.printInstances());
         long newSize = getSize(affectedTables, dbmsTarget);
         if (logger.isDebugEnabled()) logger.debug("Initial size: " + size);

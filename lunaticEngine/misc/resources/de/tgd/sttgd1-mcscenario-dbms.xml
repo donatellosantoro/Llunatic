@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <source>
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:sttgd</uri>
+            <schema>source</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+create table s1(oid serial, a text, b text, c text);
+create table s2(oid serial, a text, b text, c text);
+
+INSERT INTO source.s1(a, b, c) VALUES ('a1', 'b', 'c');
+INSERT INTO source.s2(a, b, c) VALUES ('a1', 'b', 'c');
+
+]]>
+</init-db>
+    </source>
+    <target>
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:sttgd</uri>
+            <schema>target</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+create table t1(oid serial, a text, b text, c text);
+create table t2(oid serial, a text, b text, c text);
+]]>
+</init-db>
+    </target>
+      <dependencies>
+<![CDATA[
+STTGDs:
+m0: s1(a: $a1, b: $b1, c: $c1) -> t1(a: $a1, b: $c1, c: $c1).
+m1: s2(a: $a1, b: $b1, c: $c1) -> t1(a: $a1, b: $c1, c: $c1).
+ExtTGDs:
+t0: t1(a: $a1, b: $b1, c: $c1) -> t1(a: $a1, b: $c1, c: $c1).
+]]>
+    </dependencies>
+</scenario>

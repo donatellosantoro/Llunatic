@@ -15,6 +15,7 @@ public class LunaticConfiguration {
     private boolean useDistinctInSTTGDs = true;
     private boolean useLimit1ForEGDs = false;
     private boolean useLimit1ForTGDs = false;
+    private boolean preventInsertDuplicateTuples = false;
     private String chaseMode;
     private boolean deScenario = false; //MCProxy for DE chase
     private boolean optimizeSTTGDs = true;
@@ -77,10 +78,13 @@ public class LunaticConfiguration {
         this.chaseMode = chaseMode;
         if (chaseMode.equals(LunaticConstants.CHASE_OPTIMIZED)) {
             this.useLimit1ForTGDs = false;
+            this.preventInsertDuplicateTuples = false;
         } else if (chaseMode.equals(LunaticConstants.CHASE_STANDARD)) {
             this.useLimit1ForTGDs = true;
+            this.preventInsertDuplicateTuples = false;
         } else if (chaseMode.equals(LunaticConstants.CHASE_SKOLEM)) {
             this.useLimit1ForTGDs = false;
+            this.preventInsertDuplicateTuples = true;
         } else {
             throw new IllegalArgumentException("Unknow chase mode " + chaseMode);
         }
@@ -481,6 +485,14 @@ public class LunaticConfiguration {
 
     public void setPrintTargetStats(boolean printTargetStats) {
         this.printTargetStats = printTargetStats;
+    }
+
+    public boolean isPreventInsertDuplicateTuples() {
+        return preventInsertDuplicateTuples;
+    }
+
+    public void setPreventInsertDuplicateTuples(boolean preventInsertDuplicateTuples) {
+        this.preventInsertDuplicateTuples = preventInsertDuplicateTuples;
     }
 
     @Override

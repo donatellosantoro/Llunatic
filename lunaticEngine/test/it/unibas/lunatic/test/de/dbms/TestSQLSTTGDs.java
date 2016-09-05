@@ -12,8 +12,15 @@ public class TestSQLSTTGDs extends CheckTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestSQLSTTGDs.class);
 
-    public void testRSEgd() throws Exception {
+    public void testSTTGD0() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/sttgd0-mcscenario-dbms.xml", true);
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        checkExpectedInstances(result, scenario);
+    }
+
+    public void testSTTGD1() throws Exception {
+        Scenario scenario = UtilityTest.loadScenarioFromResources("/de/tgd/sttgd1-mcscenario-dbms.xml", true);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);

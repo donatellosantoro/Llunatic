@@ -30,7 +30,6 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
 
     public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target, Scenario scenario) {
-//                LunaticDBMSUtility.createFunctionsForNumericalSkolem(((DBMSDB) target).getAccessConfiguration());
         FormulaAttributeToSQL attributeGenerator = new FormulaAttributeToSQL(); //Operator with state
         try {
             String selectQuery = queryBuilder.treeToSQL(sourceQuery, source, target, SpeedyConstants.INDENT + SpeedyConstants.INDENT);
@@ -66,6 +65,9 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
             SpeedyUtility.removeChars(", ".length(), result);
             result.append(")\n");
             result.append(generateSelectForInsert(relationalAtom, dependency, selectQuery, attributeGenerator, scenario));
+            if (scenario.getConfiguration().isPreventInsertDuplicateTuples()) {
+                result.append(generateOnConflictPart(relationalAtom));
+            }
             result.append(";\n\n");
         }
         return result.toString();
@@ -84,6 +86,20 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
         result.append(" FROM (");
         result.append("\n");
         result.append(selectQuery).append(") AS ").append("Q").append(LunaticDBMSUtility.cleanRelationName(stTgd.getId()));
+        return result.toString();
+    }
+
+    private String generateOnConflictPart(RelationalAtom relationalAtom) {
+        StringBuilder result = new StringBuilder();
+        result.append(SpeedyConstants.INDENT).append("\nON CONFLICT (");
+        for (FormulaAttribute formulaAttribute : relationalAtom.getAttributes()) {
+            if (formulaAttribute.getAttributeName().equalsIgnoreCase(SpeedyConstants.OID)) {
+                continue;
+            }
+            result.append(formulaAttribute.getAttributeName()).append(", ");
+        }
+        SpeedyUtility.removeChars(", ".length(), result);
+        result.append(") DO NOTHING\n");
         return result.toString();
     }
 }
