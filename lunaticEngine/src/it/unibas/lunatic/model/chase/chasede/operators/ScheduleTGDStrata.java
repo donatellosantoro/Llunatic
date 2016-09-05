@@ -25,7 +25,6 @@ public class ScheduleTGDStrata {
 
     private ThreadManager threadManager;
     private Map<Dependency, IAlgebraOperator> treeMap;
-    private IInsertFromSelectNaive naiveInsert;
     private IChaseState chaseState;
     private Scenario scenario;
     private boolean modified = false;
@@ -34,9 +33,8 @@ public class ScheduleTGDStrata {
     private Lock unsatisfiedStrataLock;
     private Condition unsatisfiedStrataCondition;
 
-    public ScheduleTGDStrata(Map<Dependency, IAlgebraOperator> treeMap, IInsertFromSelectNaive naiveInsert, IChaseState chaseState, Scenario scenario) {
+    public ScheduleTGDStrata(Map<Dependency, IAlgebraOperator> treeMap, IChaseState chaseState, Scenario scenario) {
         this.treeMap = treeMap;
-        this.naiveInsert = naiveInsert;
         this.chaseState = chaseState;
         this.scenario = scenario;
         this.unsatisfiedStrataLock = new ReentrantLock();
@@ -57,7 +55,7 @@ public class ScheduleTGDStrata {
                 return;
             }
             if (logger.isDebugEnabled()) logger.debug("Starting thread for tgdStratum " + tgdStratum);
-            ChaseTargetTGDStratumThread stratumThread = new ChaseTargetTGDStratumThread(this, tgdStratum, treeMap, naiveInsert, scenario, chaseState);
+            ChaseTargetTGDStratumThread stratumThread = new ChaseTargetTGDStratumThread(this, tgdStratum, treeMap, scenario, chaseState);
             threadManager.startThread(stratumThread);
         } finally {
             this.unsatisfiedStrataLock.unlock();

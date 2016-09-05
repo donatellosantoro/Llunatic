@@ -53,10 +53,10 @@ public class ChaseDEScenario implements IDEChaser {
     private final ChaseDeltaEGDs egdChaser;
     private final ChaseDCs dChaser;
 
-    public ChaseDEScenario(IChaseSTTGDs stChaser, ChaseDeltaEGDs egdChaser, IRunQuery queryRunner, IInsertFromSelectNaive naiveInsert,
+    public ChaseDEScenario(IChaseSTTGDs stChaser, ChaseDeltaEGDs egdChaser, IRunQuery queryRunner,
             IBuildDeltaDB deltaBuilder, IBuildDatabaseForDE databaseBuilder, IAnalyzeDatabase databaseAnalyze, IReplaceDatabase databaseReplacer) {
         this.stChaser = stChaser;
-        this.tgdChaser = new ChaseTargetTGDs(naiveInsert);
+        this.tgdChaser = new ChaseTargetTGDs();
         this.egdChaser = egdChaser;
         this.dChaser = new ChaseDCs(queryRunner);
         this.deltaBuilder = deltaBuilder;

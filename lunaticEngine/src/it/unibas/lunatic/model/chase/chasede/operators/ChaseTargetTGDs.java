@@ -22,19 +22,14 @@ public class ChaseTargetTGDs {
     private final static Logger logger = LoggerFactory.getLogger(ChaseTargetTGDs.class);
 
     private BuildAlgebraTreeForStandardChase treeBuilderForStandardChase = new BuildAlgebraTreeForStandardChase();
-    private IInsertFromSelectNaive naiveInsert;
     private ScheduleTGDStrata tgdScheduler;
-
-    public ChaseTargetTGDs(IInsertFromSelectNaive naiveInsert) {
-        this.naiveInsert = naiveInsert;
-    }
 
     public boolean doChase(Scenario scenario, IChaseState chaseState) {
         if (scenario.getExtTGDs().isEmpty()) {
             return false;
         }
         Map<Dependency, IAlgebraOperator> treeMap = buildAlgebraTrees(scenario.getExtTGDs(), scenario);
-        this.tgdScheduler = new ScheduleTGDStrata(treeMap, naiveInsert, chaseState, scenario);
+        this.tgdScheduler = new ScheduleTGDStrata(treeMap,  chaseState, scenario);
         if (logger.isDebugEnabled()) logger.debug("Chasing t-tgds " + scenario.getExtTGDs() + " with " + scenario.getConfiguration().getMaxNumberOfThreads() + " threads");
         DependencyStratification stratification = scenario.getStratification();
         tgdScheduler.addUnsatisfiedStrata(stratification.getTGDStrata());

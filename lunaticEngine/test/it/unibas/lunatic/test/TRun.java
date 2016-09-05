@@ -19,6 +19,7 @@ public class TRun extends TestCase {
 //        Main.main(new String[]{path});
         MainExp.main(new String[]{path});
 //        MainExp.main(new String[]{path, "-printsteps=true"});
+//        MainExp.main(new String[]{path, "-useDictionaryEncoding=false"});
 //        MainExp.main(new String[]{path, "-printsteps=true","-useDictionaryEncoding=false"});
     }
 

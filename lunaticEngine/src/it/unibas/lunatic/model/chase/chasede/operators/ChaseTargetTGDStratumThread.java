@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.chase.chasede.operators;
 
 import it.unibas.lunatic.LunaticConfiguration;
+import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
@@ -22,15 +23,13 @@ public class ChaseTargetTGDStratumThread implements IBackgroundThread {
     private ScheduleTGDStrata tgdScheduler;
     private TGDStratum stratum;
     private Map<Dependency, IAlgebraOperator> treeMap;
-    private IInsertFromSelectNaive naiveInsert;
     private Scenario scenario;
     private IChaseState chaseState;
 
-    public ChaseTargetTGDStratumThread(ScheduleTGDStrata tgdScheduler, TGDStratum stratum, Map<Dependency, IAlgebraOperator> treeMap, IInsertFromSelectNaive naiveInsert, Scenario scenario, IChaseState chaseState) {
+    public ChaseTargetTGDStratumThread(ScheduleTGDStrata tgdScheduler, TGDStratum stratum, Map<Dependency, IAlgebraOperator> treeMap, Scenario scenario, IChaseState chaseState) {
         this.tgdScheduler = tgdScheduler;
         this.stratum = stratum;
         this.treeMap = treeMap;
-        this.naiveInsert = naiveInsert;
         this.scenario = scenario;
         this.chaseState = chaseState;
     }
@@ -54,6 +53,7 @@ public class ChaseTargetTGDStratumThread implements IBackgroundThread {
                 if (LunaticConfiguration.isPrintSteps()) System.out.println("   ****Chasing tgd: " + eTgd.getId());
                 if (logger.isDebugEnabled()) logger.debug("----Chasing tgd: " + eTgd);
                 IAlgebraOperator treeRoot = treeMap.get(eTgd);
+                IInsertFromSelectNaive naiveInsert = OperatorFactory.getInstance().getInsertFromSelectNaive(scenario);
                 boolean newTuples = naiveInsert.execute(eTgd, treeRoot, scenario.getSource(), scenario.getTarget(), scenario) || insertedTuples;
                 if (!scenario.getConfiguration().isUseLimit1ForTGDs() || !newTuples) {
                     if (logger.isDebugEnabled()) logger.debug("No new tuples. TGD " + eTgd + " is satisfied.");

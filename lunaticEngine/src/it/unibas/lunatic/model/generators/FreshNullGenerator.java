@@ -18,7 +18,6 @@ public class FreshNullGenerator implements IValueGenerator {
             SQLGenerateFreshNullForStandardChase sqlGenerator,
             FormulaVariable variable, Dependency dependency, String type) {
         this.mmGenerator = generator;
-
         this.sqlGenerator = sqlGenerator;
         this.variableInDependency = variable.getId() + "." + dependency.getId();
         this.type = type;

@@ -26,13 +26,12 @@ public class DEChaserFactory {
     private static IDEChaser getDEOptimizedChaser(Scenario scenario) {
         IChaseSTTGDs stChaser = OperatorFactory.getInstance().getSTChaser(scenario);
         ChaseDeltaEGDs egdChaser = OperatorFactory.getInstance().getDeltaEGDChaser(scenario);
-        IInsertFromSelectNaive insertFromSelectNaive = OperatorFactory.getInstance().getInsertFromSelectNaive(scenario);
         IRunQuery queryRunner = OperatorFactory.getInstance().getQueryRunner(scenario);
         IBuildDeltaDB deltaBuilder = OperatorFactory.getInstance().getDeltaDBBuilderDE(scenario);
         IBuildDatabaseForDE databaseBuilder = OperatorFactory.getInstance().getDatabaseBuilderDE(scenario);
         IAnalyzeDatabase databaseAnalyzer = OperatorFactory.getInstance().getDatabaseAnalyzer(scenario);
         IReplaceDatabase databaseReplacer = OperatorFactory.getInstance().getDatabaseReplacer(scenario);
-        ChaseDEScenario tgdChaser = new ChaseDEScenario(stChaser, egdChaser, queryRunner, insertFromSelectNaive, deltaBuilder, databaseBuilder, databaseAnalyzer,databaseReplacer);
+        ChaseDEScenario tgdChaser = new ChaseDEScenario(stChaser, egdChaser, queryRunner, deltaBuilder, databaseBuilder, databaseAnalyzer, databaseReplacer);
         return tgdChaser;
     }
 

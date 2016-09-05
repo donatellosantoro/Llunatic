@@ -28,14 +28,13 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
 
     private final static Logger logger = LoggerFactory.getLogger(SQLInsertFromSelectNaive.class);
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
-    private FormulaAttributeToSQL attributeGenerator;
 
     public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target, Scenario scenario) {
 //                LunaticDBMSUtility.createFunctionsForNumericalSkolem(((DBMSDB) target).getAccessConfiguration());
-        attributeGenerator = new FormulaAttributeToSQL(); //Operator with state
+        FormulaAttributeToSQL attributeGenerator = new FormulaAttributeToSQL(); //Operator with state
         try {
             String selectQuery = queryBuilder.treeToSQL(sourceQuery, source, target, SpeedyConstants.INDENT + SpeedyConstants.INDENT);
-            String insertQuery = generateInsertScript(dependency, selectQuery, (DBMSDB) target, scenario);
+            String insertQuery = generateInsertScript(dependency, selectQuery, (DBMSDB) target, attributeGenerator, scenario);
             if (logger.isDebugEnabled()) logger.debug("Insert query:\n" + insertQuery);
             if (logger.isTraceEnabled()) logger.trace("TargetDB:\n" + target.printInstances());
             int affectedRows = QueryManager.executeInsertOrDelete(insertQuery, ((DBMSDB) target).getAccessConfiguration());
@@ -51,7 +50,7 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
         }
     }
 
-    private String generateInsertScript(Dependency dependency, String selectQuery, DBMSDB target, Scenario scenario) {
+    private String generateInsertScript(Dependency dependency, String selectQuery, DBMSDB target, FormulaAttributeToSQL attributeGenerator, Scenario scenario) {
         StringBuilder result = new StringBuilder();
         String targetSchemaName = DBMSUtility.getSchemaNameAndDot(target.getAccessConfiguration());
         for (IFormulaAtom atom : dependency.getConclusion().getAtoms()) {
@@ -66,13 +65,13 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
             }
             SpeedyUtility.removeChars(", ".length(), result);
             result.append(")\n");
-            result.append(generateSelectForInsert(relationalAtom, dependency, selectQuery, scenario));
+            result.append(generateSelectForInsert(relationalAtom, dependency, selectQuery, attributeGenerator, scenario));
             result.append(";\n\n");
         }
         return result.toString();
     }
 
-    private String generateSelectForInsert(RelationalAtom relationalAtom, Dependency stTgd, String selectQuery, Scenario scenario) {
+    private String generateSelectForInsert(RelationalAtom relationalAtom, Dependency stTgd, String selectQuery, FormulaAttributeToSQL attributeGenerator, Scenario scenario) {
         StringBuilder result = new StringBuilder();
         result.append(SpeedyConstants.INDENT).append("SELECT DISTINCT ");
         Map<FormulaVariable, IValueGenerator> generatorMap = new HashMap<FormulaVariable, IValueGenerator>();
