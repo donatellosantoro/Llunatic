@@ -3,11 +3,13 @@ package it.unibas.lunatic.model.chase.chasede.operators;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForStandardChase;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.IChaseState;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.TGDStratum;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,7 @@ public class ChaseTargetTGDs {
         if (scenario.getExtTGDs().isEmpty()) {
             return false;
         }
+        long start = new Date().getTime();
         Map<Dependency, IAlgebraOperator> treeMap = buildAlgebraTrees(scenario.getExtTGDs(), scenario);
         this.tgdScheduler = new ScheduleTGDStrata(treeMap,  chaseState, scenario);
         if (logger.isDebugEnabled()) logger.debug("Chasing t-tgds " + scenario.getExtTGDs() + " with " + scenario.getConfiguration().getMaxNumberOfThreads() + " threads");
@@ -41,6 +44,8 @@ public class ChaseTargetTGDs {
             tgdScheduler.startThreadForTGDStratum(tgdStratum);
         }
         tgdScheduler.waitForUnsatisfiedStrata();
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.TGD_TIME, end - start);
         return tgdScheduler.isModified();
     }
 

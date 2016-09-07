@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.GenerateStatsForScenario;
 import it.unibas.lunatic.model.dependency.AttributesInSameCellGroups;
 import speedy.model.database.AttributeRef;
@@ -11,6 +12,7 @@ import it.unibas.lunatic.model.dependency.EGDStratum;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.jgrapht.DirectedGraph;
@@ -41,6 +43,7 @@ public class AnalyzeDependencies {
         if (scenario.getStratification() != null) {
             return;
         }
+        long start = new Date().getTime();
 //        rewriter.rewrite(scenario);
         DirectedGraph<AttributeRef, ExtendedEdge> faginDependencyGraph = faginDependencyGraphBuilder.buildGraph(scenario.getExtTGDs());
         if (logger.isDebugEnabled()) logger.debug("Fagin Dependency graph " + faginDependencyGraph);
@@ -72,6 +75,8 @@ public class AnalyzeDependencies {
         // FINAL
         checkAuthoritativeSources(scenario.getExtEGDs(), scenario);
         statGenerator.generateStats(scenario);
+        long end = new Date().getTime();
+        ChaseStats.getInstance().addStat(ChaseStats.ANALYZE_DEPENDENCIES_TIME, end - start);
     }
 
     private void findAllQueriedAttributesForEGDs(List<Dependency> dependencies) {
