@@ -37,6 +37,10 @@ public class MainExpExport {
     public static void main(String[] args) {
         long startExportTime = new Date().getTime();
         List<String> options = new ArrayList<String>(Arrays.asList(args));
+        boolean queryOnly = false;
+        if (options.contains("-queryonly")) {
+            queryOnly = true;
+        }
         String fileScenario = options.get(0);
         Document document = daoUtility.buildDOM(fileScenario);
         Element rootElement = document.getRootElement();
@@ -53,11 +57,15 @@ public class MainExpExport {
         IValueEncoder valueEncoder = getValueEncoder(conf, fileScenario);
         IDatabase targetDB = daoDatabaseConfiguration.loadDatabase(targetElement, "", fileScenario, valueEncoder, conf.isUseCompactAttributeName());
         List<SQLQueryString> sqlQueries = loadSQLQueries(fileScenario);
-        resultExporter.exportSolutionInSeparateFiles(targetDB, valueEncoder, conf.isExportQueryResultsWithHeader(), conf.getExportSolutionsPath(), conf.getMaxNumberOfThreads());
-        long endExportTime = new Date().getTime();
-        PrintUtility.printInformation("------------------------------------------");
-        PrintUtility.printInformation("*** Export time:  " + (endExportTime - startExportTime) + " ms");
-        PrintUtility.printInformation("------------------------------------------");
+        if (queryOnly) {
+            conf.setExportQueryResults(false);
+        } else {
+            resultExporter.exportSolutionInSeparateFiles(targetDB, valueEncoder, conf.isExportQueryResultsWithHeader(), conf.getExportSolutionsPath(), conf.getMaxNumberOfThreads());
+            long endExportTime = new Date().getTime();
+            PrintUtility.printInformation("------------------------------------------");
+            PrintUtility.printInformation("*** Export time:  " + (endExportTime - startExportTime) + " ms");
+            PrintUtility.printInformation("------------------------------------------");
+        }
         long startQueryTime = new Date().getTime();
         finalQueryExecutor.executeSQLQueries(targetDB, sqlQueries, conf, valueEncoder);
         long endQueryTime = new Date().getTime();

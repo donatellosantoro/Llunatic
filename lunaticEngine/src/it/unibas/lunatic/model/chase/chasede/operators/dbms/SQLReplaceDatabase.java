@@ -10,6 +10,8 @@ import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSVirtualDB;
 import speedy.model.database.dbms.DBMSVirtualTable;
+import speedy.model.database.operators.IDatabaseManager;
+import speedy.model.database.operators.dbms.SQLDatabaseManager;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.DBMSUtility;
@@ -17,6 +19,7 @@ import speedy.utility.DBMSUtility;
 public class SQLReplaceDatabase implements IReplaceDatabase {
 
     private final static Logger logger = LoggerFactory.getLogger(SQLReplaceDatabase.class);
+    private IDatabaseManager databaseManager = new SQLDatabaseManager();
 
     public void replaceTargetDB(IDatabase newDatabase, Scenario scenario) {
         DBMSDB targetDB = (DBMSDB) scenario.getTarget();
@@ -42,6 +45,9 @@ public class SQLReplaceDatabase implements IReplaceDatabase {
         sb.append("COMMIT TRANSACTION").append(";\n");
         if (logger.isDebugEnabled()) logger.debug(sb.toString());
         QueryManager.executeScript(sb.toString(), targetAc, true, true, true, false);
+        if (scenario.getConfiguration().isPreventInsertDuplicateTuples()) {
+            databaseManager.addUniqueConstraints(scenario.getTarget());
+        }
     }
 
 }

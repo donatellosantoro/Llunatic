@@ -20,6 +20,9 @@ public class MainExpRun {
 
     public static void main(String[] args) {
         List<String> options = new ArrayList<String>(Arrays.asList(args));
+        if (options.contains("-queryonly")) {
+            return;
+        }
         String fileScenario = options.get(0);
         DAOConfiguration daoConfig = new DAOConfiguration();
         daoConfig.setImportData(false);

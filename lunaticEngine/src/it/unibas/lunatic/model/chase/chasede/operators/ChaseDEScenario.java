@@ -36,7 +36,7 @@ import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.database.operators.IAnalyzeDatabase;
 
 public class ChaseDEScenario implements IDEChaser {
-
+    
     public static final int ITERATION_LIMIT = 10;
     private final static Logger logger = LoggerFactory.getLogger(ChaseDEScenario.class);
     private final AnalyzeDependencies dependencyAnalyzer = new AnalyzeDependencies();
@@ -52,7 +52,7 @@ public class ChaseDEScenario implements IDEChaser {
     private final ChaseTargetTGDs tgdChaser;
     private final ChaseDeltaEGDs egdChaser;
     private final ChaseDCs dChaser;
-
+    
     public ChaseDEScenario(IChaseSTTGDs stChaser, ChaseDeltaEGDs egdChaser, IRunQuery queryRunner,
             IBuildDeltaDB deltaBuilder, IBuildDatabaseForDE databaseBuilder, IAnalyzeDatabase databaseAnalyze,
             IReplaceDatabase databaseReplacer) {
@@ -65,9 +65,12 @@ public class ChaseDEScenario implements IDEChaser {
         this.databaseAnalyzer = databaseAnalyze;
         this.databaseReplacer = databaseReplacer;
     }
-
+    
     public IDatabase doChase(Scenario scenario, IChaseState chaseState) {
         if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
+        if (scenario.getConfiguration().isUseSkolemChase() || scenario.getConfiguration().isUseStandardChase()) {
+            PrintUtility.printInformation("**** Using " + scenario.getConfiguration().getChaseMode());
+        }
         ChaseUtility.copyEGDsToExtEGDs(scenario);
         CostManagerUtility.setDECostManager(scenario);
         analyzeSourceDatabase(scenario);
@@ -136,7 +139,7 @@ public class ChaseDEScenario implements IDEChaser {
             if (logger.isDebugEnabled()) ChaseStats.getInstance().printStatistics();
         }
     }
-
+    
     private void printResult(IDatabase targetDB, LunaticConfiguration conf) {
         if (conf.isPrintTargetStats()) {
             printTargetStats(targetDB);
@@ -172,7 +175,7 @@ public class ChaseDEScenario implements IDEChaser {
         PrintUtility.printInformation("*** TOTAL TIME: " + totalTime + " ms");
         PrintUtility.printInformation("----------------------------------------------------");
     }
-
+    
     private void printTargetStats(IDatabase targetDB) {
         System.out.println("");
         System.out.println("Target Database Stats");
@@ -190,7 +193,7 @@ public class ChaseDEScenario implements IDEChaser {
         Integer numberOfNulls = databaseSizeCalculator.countNulls(targetDB);
         System.out.println("# Number of nulls: " + numberOfNulls);
     }
-
+    
     private void analyzeSourceDatabase(Scenario scenario) {
         if (scenario.isMainMemory()) {
             return;
@@ -202,7 +205,7 @@ public class ChaseDEScenario implements IDEChaser {
         ChaseStats.getInstance().addStat(ChaseStats.ANALYZE_DB, end - start);
         if (LunaticConfiguration.isPrintSteps()) System.out.println("****Source database analyzed in " + (end - start) + "ms");
     }
-
+    
     private List<Dependency> findSatisfiedEGDs(Scenario scenario, IDatabase targetDB) {
         List<Dependency> satisfiedEGDs = Collections.synchronizedList(new ArrayList<Dependency>());
         int numberOfThreads = scenario.getConfiguration().getMaxNumberOfThreads();
@@ -214,7 +217,7 @@ public class ChaseDEScenario implements IDEChaser {
         threadManager.waitForActiveThread();
         return satisfiedEGDs;
     }
-
+    
     private boolean checkIfAllTargetTGDsAreInclusionDependencies(List<Dependency> extTGDs) {
         for (Dependency extTGD : extTGDs) {
             if (!extTGD.isInclusionDependency()) {
@@ -223,32 +226,32 @@ public class ChaseDEScenario implements IDEChaser {
         }
         return true;
     }
-
+    
     public IDatabase doChase(Scenario scenario) {
         return doChase(scenario, ImmutableChaseState.getInstance());
     }
-
+    
     private DeltaChaseStep getLastStep(DeltaChaseStep node) {
         while (!node.getChildren().isEmpty()) {
             node = node.getChildren().get(0);
         }
         return node;
     }
-
+    
     class CheckEGDSatisfactionThread implements IBackgroundThread {
-
+        
         private Dependency extEGD;
         private List<Dependency> satisfiedEGDs;
         private IDatabase targetDB;
         private Scenario scenario;
-
+        
         public CheckEGDSatisfactionThread(Dependency extEGD, List<Dependency> satisfiedEGDs, IDatabase targetDB, Scenario scenario) {
             this.extEGD = extEGD;
             this.satisfiedEGDs = satisfiedEGDs;
             this.targetDB = targetDB;
             this.scenario = scenario;
         }
-
+        
         public void execute() {
             if (!ChaseUtility.checkEGDSatisfactionWithQuery(extEGD, targetDB, scenario)) {
                 if (logger.isDebugEnabled()) logger.debug("EGD " + extEGD + " is violated");
@@ -257,6 +260,6 @@ public class ChaseDEScenario implements IDEChaser {
             if (logger.isDebugEnabled()) logger.debug("EGD " + extEGD + " is satisfied");
             satisfiedEGDs.add(extEGD);
         }
-
+        
     }
 }

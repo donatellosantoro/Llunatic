@@ -25,6 +25,9 @@ public class MainExpImport {
 
     public static void main(String[] args) {
         List<String> options = new ArrayList<String>(Arrays.asList(args));
+        if (options.contains("-queryonly")) {
+            return;
+        }
         boolean chaseOnly = false;
         if (options.contains("-chaseonly")) {
             options.remove("-chaseonly");
