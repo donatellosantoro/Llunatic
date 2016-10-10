@@ -18,6 +18,7 @@ import it.unibas.lunatic.persistence.DAOAccessConfiguration;
 import it.unibas.lunatic.persistence.DAOConfiguration;
 import it.unibas.lunatic.persistence.DAOLunaticConfiguration;
 import it.unibas.lunatic.persistence.DAOMCScenario;
+import it.unibas.lunatic.utility.LunaticUtility;
 import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -68,7 +69,8 @@ public class Main {
         }
         try {
             String fileScenario = confFile.getAbsolutePath();
-            LunaticConfiguration conf = daoConfiguration.loadConfiguration(fileScenario);
+            String chaseMode = LunaticUtility.getChaseMode(options);
+            LunaticConfiguration conf = daoConfiguration.loadConfiguration(fileScenario, chaseMode);
             if (conf.isRecreateDBOnStart()) {
                 removeExistingDB(fileScenario, conf);
             } else if (isDEScenario(fileScenario) && conf.isCleanSchemasOnStartForDEScenarios()) {
@@ -80,6 +82,7 @@ public class Main {
             if (isCheckConflict(options)) {
                 daoConfig.setUseCompactAttributeName(false);
             }
+            daoConfig.setChaseMode(chaseMode);
             Scenario scenario = daoScenario.loadScenario(fileScenario, daoConfig);
             System.out.println(" Scenario loaded!");
             if (!bigScenario(scenario)) {

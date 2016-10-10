@@ -228,7 +228,7 @@ public class FindSymmetricAtoms {
         ComparisonAtom comparison = (ComparisonAtom) conclusion.getAtoms().get(0);
         FormulaVariable v1 = comparison.getVariables().get(0);
         FormulaVariable v2 = comparison.getVariables().get(1);
-        if (!haveOccurrencesInSelfJoinAtoms(symmetricAtoms.getSelfJoin(), v1, v2)) {
+        if (!haveOccurrencesInSelfJoinAtoms(symmetricAtoms.getSymmetricSelfJoin(), v1, v2)) {
             return false;
         }
         return true;

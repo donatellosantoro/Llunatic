@@ -14,14 +14,8 @@ import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import it.unibas.lunatic.model.chase.commons.operators.ChaserFactoryMC;
 import it.unibas.lunatic.model.dependency.Dependency;
-import it.unibas.lunatic.model.dependency.FormulaAttribute;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
-import it.unibas.lunatic.model.dependency.IFormula;
-import it.unibas.lunatic.model.dependency.IFormulaAtom;
-import it.unibas.lunatic.model.dependency.RelationalAtom;
-import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
-import it.unibas.lunatic.model.dependency.operators.ExtendedEdge;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,13 +31,10 @@ import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
 import speedy.model.database.Attribute;
 import speedy.model.database.AttributeRef;
-import speedy.model.database.Cell;
 import speedy.model.database.IDatabase;
 import speedy.model.database.ITable;
 import speedy.model.database.IValue;
 import speedy.model.database.TableAlias;
-import speedy.utility.PrintUtility;
-import speedy.utility.SpeedyUtility;
 
 public class CheckConflicts {
 

@@ -67,6 +67,7 @@ public class ChaseStats {
     public static final String LOAD_XML_SCENARIO_TIME = "Load XML Scenario Time";
     public static final String PROCESS_DEPENDENCIES_TIME = "Process Dependencies Time";
     public static final String ANALYZE_DEPENDENCIES_TIME = "Analyze Dependencies Time";
+    public static final String STTGD_REWRITING = "Rewrite ST-TGDs Time";
     public static final String INIT_DB_TIME = "Init DB Time";
     /////
     public static final String HASHED_CELL_GROUPS = "#Hashed cellgroup";

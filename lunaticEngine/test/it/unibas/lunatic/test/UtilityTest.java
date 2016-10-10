@@ -84,10 +84,10 @@ public class UtilityTest {
         }
         try {
             DAOMCScenario daoScenario = new DAOMCScenario();
-            DAOConfiguration daoConfiguration = new DAOConfiguration();
-            daoConfiguration.setSuffix(suffix);
-            daoConfiguration.setUseDictionaryEncoding(false);
-            Scenario scenario = daoScenario.loadScenario(fileScenario, daoConfiguration);
+            DAOConfiguration daoConfig = new DAOConfiguration();
+            daoConfig.setSuffix(suffix);
+            daoConfig.setUseDictionaryEncoding(false);
+            Scenario scenario = daoScenario.loadScenario(fileScenario, daoConfig);
             scenario.setAbsolutePath(fileScenario);
             return scenario;
         } catch (Exception ex) {

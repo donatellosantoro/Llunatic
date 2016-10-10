@@ -63,7 +63,7 @@ public class ChaseTargetTGDs {
     private Map<Dependency, IAlgebraOperator> buildAlgebraTrees(List<Dependency> extTGDs, Scenario scenario) {
         Map<Dependency, IAlgebraOperator> result = new HashMap<Dependency, IAlgebraOperator>();
         for (Dependency dependency : extTGDs) {
-            IAlgebraOperator standardInsert = treeBuilderForStandardChase.generateAlgebraForTGD(dependency, scenario);
+            IAlgebraOperator standardInsert = treeBuilderForStandardChase.generateAlgebraForTargetTGD(dependency, scenario);
             if (logger.isDebugEnabled()) logger.debug("Operator for dependency " + dependency + "\n" + standardInsert);
             result.put(dependency, standardInsert);
         }

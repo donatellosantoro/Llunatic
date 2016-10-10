@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.chase.commons.operators;
 
+import it.unibas.lunatic.LunaticConfiguration;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.OperatorFactory;
@@ -21,6 +22,7 @@ import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.PositiveFormula;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
+import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import it.unibas.lunatic.persistence.relational.LunaticDBMSUtility;
 import it.unibas.lunatic.utility.LunaticUtility;
 import speedy.model.expressions.Expression;
@@ -29,7 +31,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -521,6 +522,38 @@ public class ChaseUtility {
         }
         if (logger.isDebugEnabled()) logger.debug("Return false");
         return false;
+    }
+
+    public static boolean isUseLimit1ForTGD(Dependency tgd, Scenario scenario) {
+        LunaticConfiguration configuration = scenario.getConfiguration();
+        if (!configuration.isChaseRestricted()
+                || scenario.getConfiguration().getChaseMode().equals(LunaticConstants.CHASE_PARALLEL_RESTRICTED_SKOLEM)) {
+            return false;
+        }
+        if (configuration.getNullGenerationStrategy().equals(LunaticConstants.FRESH_NULL_STRATEGY)) {
+            //Always with fresh nulls
+            return true;
+        }
+        //In case of skolem, we need limit1 only if tgd has self join or overlap btw premise and conclusion
+        boolean hasSelfJoin = DependencyUtility.hasSelfJoinInConclusion(tgd);
+        boolean hasOverlapBtwPremiseAndConclusion = DependencyUtility.hasOverlapBtwPremiseAndConclusion(tgd);
+        if (logger.isDebugEnabled()) logger.debug("Dependency " + tgd + (hasSelfJoin ? " has " : " doesn't have ") + " self joins");
+        if (logger.isDebugEnabled()) logger.debug("Dependency " + tgd + (hasOverlapBtwPremiseAndConclusion ? " has " : " doesn't have ") + " overlap btw premise and conclusion");
+        return hasSelfJoin || hasOverlapBtwPremiseAndConclusion;
+    }
+
+    public static boolean isRewriteSTTGDs(Scenario scenario) {
+        if (!scenario.getConfiguration().isOptimizeSTTGDs() || scenario.getSTTgds().isEmpty()) {
+            return false;
+        }
+        if (!scenario.getConfiguration().isForceOptimizeSTTGDs()
+                && (scenario.getSTTgds().size() > LunaticConstants.MAX_NUM_STTGDS_TO_REWRITE
+                || (scenario.getEGDs().isEmpty() && scenario.getExtEGDs().isEmpty()) 
+                || (scenario.getEGDs().size() > LunaticConstants.MAX_NUM_EGDS_TO_REWRITE)
+                || (scenario.getExtEGDs().size() > LunaticConstants.MAX_NUM_EGDS_TO_REWRITE))) {
+            return false;
+        }
+        return true;
     }
 
 }

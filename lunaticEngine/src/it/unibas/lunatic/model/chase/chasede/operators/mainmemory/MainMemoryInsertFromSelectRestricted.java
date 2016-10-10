@@ -26,9 +26,9 @@ import speedy.model.database.Tuple;
 import speedy.model.database.TupleOID;
 import speedy.model.database.mainmemory.datasource.IntegerOIDGenerator;
 
-public class MainMemoryInsertFromSelectNaive implements IInsertFromSelectNaive {
+public class MainMemoryInsertFromSelectRestricted implements IInsertFromSelectNaive {
 
-    private static Logger logger = LoggerFactory.getLogger(MainMemoryInsertFromSelectNaive.class);
+    private static Logger logger = LoggerFactory.getLogger(MainMemoryInsertFromSelectRestricted.class);
 
     private IInsertTuple insertOperator = new MainMemoryInsertTuple();
     private MainMemoryDEOccurrenceHandler occurrenceHandlerDE = new MainMemoryDEOccurrenceHandler();

@@ -61,8 +61,8 @@ public class ChaseMCScenario {
     }
 
     public ChaseTree doChase(Scenario scenario, IChaseState chaseState) {
-        if(scenario.getConfiguration().isUseSkolemChase()){
-            throw new ChaseException("Skolem chase is not supported on MC scenario");
+        if(!scenario.getConfiguration().isChaseRestricted()){
+            throw new ChaseException("Unrestricted chase is not supported on MC scenario");
         }
         checkDataSources(scenario);
         long start = new Date().getTime();

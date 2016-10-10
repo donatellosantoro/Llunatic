@@ -15,9 +15,9 @@ import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSTable;
 
-public class SQLInsertFromSelectSkolem implements IInsertFromSelectNaive {
+public class SQLInsertFromSelectUnrestricted implements IInsertFromSelectNaive {
 
-    private final static Logger logger = LoggerFactory.getLogger(SQLInsertFromSelectSkolem.class);
+    private final static Logger logger = LoggerFactory.getLogger(SQLInsertFromSelectUnrestricted.class);
 
     private IRemoveDuplicates duplicateRemover = new SQLRemoveDuplicates();
 
@@ -26,7 +26,7 @@ public class SQLInsertFromSelectSkolem implements IInsertFromSelectNaive {
         List<String> affectedTables = findAffectedTables(dependency);
         DBMSDB dbmsTarget = (DBMSDB) target;
         long size = getSize(affectedTables, dbmsTarget);
-        IInsertFromSelectNaive naiveInsert = new SQLInsertFromSelectNaive();//Operator with state
+        IInsertFromSelectNaive naiveInsert = new SQLInsertFromSelectRestricted();//Operator with state
         boolean insertTuples = naiveInsert.execute(dependency, sourceQuery, source, target, scenario);
         if (logger.isDebugEnabled()) logger.debug("Naive insert tuple: " + insertTuples);
         if (!scenario.getConfiguration().isPreventInsertDuplicateTuples()) {

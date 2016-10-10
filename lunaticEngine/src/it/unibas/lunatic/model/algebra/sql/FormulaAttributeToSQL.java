@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.algebra.sql;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.database.skolem.AppendSkolemPart;
 import it.unibas.lunatic.model.database.skolem.ISkolemPart;
@@ -75,10 +76,12 @@ public class FormulaAttributeToSQL {
         if (generatorForVariable != null) {
             return generatorForVariable;
         }
-        if (scenario.getConfiguration().isUseStandardChase() && !DependencyUtility.isSTTGD(dependency)) { 
+        if (scenario.getConfiguration().getNullGenerationStrategy().equals(LunaticConstants.FRESH_NULL_STRATEGY)) {
             generatorForVariable = createFreshNullGenerator(variable, type, dependency);
-        } else {
+        } else if (scenario.getConfiguration().getNullGenerationStrategy().equals(LunaticConstants.SKOLEM_STRATEGY)) {
             generatorForVariable = createSkolemGenerator(variable, type, dependency, scenario);
+        } else {
+            throw new IllegalArgumentException("Unknown null generation strategy " + scenario.getConfiguration().getNullGenerationStrategy());
         }
         generatorMap.put(variable, generatorForVariable);
         return generatorForVariable;

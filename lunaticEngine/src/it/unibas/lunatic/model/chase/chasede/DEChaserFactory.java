@@ -10,7 +10,6 @@ import it.unibas.lunatic.model.chase.chasede.operators.IReplaceDatabase;
 import it.unibas.lunatic.model.chase.commons.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
 import speedy.model.database.operators.IAnalyzeDatabase;
-import speedy.model.database.operators.IDatabaseManager;
 import speedy.model.database.operators.IRunQuery;
 
 public class DEChaserFactory {

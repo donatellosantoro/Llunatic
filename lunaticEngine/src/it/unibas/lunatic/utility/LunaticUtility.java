@@ -1,6 +1,7 @@
 package it.unibas.lunatic.utility;
 
 import it.unibas.lunatic.LunaticConfiguration;
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.chase.chasemc.CellGroup;
 import it.unibas.lunatic.model.chase.chasemc.DeltaChaseStep;
@@ -452,6 +453,33 @@ public class LunaticUtility {
             boolean value = Boolean.parseBoolean(stringValue);
             conf.setUseDictionaryEncoding(value);
         }
+        if (key.equalsIgnoreCase("-printTargetStats")) {
+            boolean value = Boolean.parseBoolean(stringValue);
+            conf.setPrintTargetStats(value);
+        }
+    }
+
+    public static String getChaseMode(List<String> options) {
+        final String modePrefix = "-chaseMode=";
+        for (Iterator<String> iterator = options.iterator(); iterator.hasNext();) {
+            String option = iterator.next();
+            if (!option.startsWith(modePrefix)) {
+                continue;
+            }
+            iterator.remove();
+            String chaseMode = option.substring(modePrefix.length());
+            if (chaseMode.equalsIgnoreCase("unrestricted-skolem")) {
+                return LunaticConstants.CHASE_UNRESTRICTED_SKOLEM;
+            }
+            if (chaseMode.equalsIgnoreCase("standard")) {
+                return LunaticConstants.CHASE_RESTRICTED_FRESH_NULL;
+            }
+            if (chaseMode.equalsIgnoreCase("restricted-skolem")) {
+                return LunaticConstants.CHASE_RESTRICTED_SKOLEM;
+            }
+            throw new IllegalArgumentException("Unknown chase mode " + chaseMode);
+        }
+        return null;
     }
 
 }

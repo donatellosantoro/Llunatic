@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.algebra.operators;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
@@ -27,18 +28,26 @@ public class BuildAlgebraTreeForStandardChase {
 
     private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
 
-    public IAlgebraOperator generateAlgebraForTGD(Dependency extTGD, Scenario scenario) {
-        if (scenario.getConfiguration().isUseSkolemChase()) {
-            return generateAlgebraTreeWithDinstinct(extTGD, scenario);
+    public IAlgebraOperator generateAlgebraForTargetTGD(Dependency extTGD, Scenario scenario) {
+        if (!scenario.getConfiguration().isChaseRestricted()) {
+            return generateAlgebraTreeWithDistinct(extTGD, scenario);
         }
         return generateAlgebraTreeWithDifference(extTGD, scenario);
+    }
+
+    public IAlgebraOperator generateAlgebraForSourceToTargetTGD(Dependency stTGD, Scenario scenario) {
+        if (scenario.getConfiguration().isChaseRestricted() && !ChaseUtility.isRewriteSTTGDs(scenario)) {
+            return generateAlgebraTreeWithDifference(stTGD, scenario);
+        } else {
+            return generateAlgebraTreeWithDistinct(stTGD, scenario);
+        }
     }
 
     public IAlgebraOperator generateAlgebraTreeWithDifference(Dependency extTGD, Scenario scenario) {
         return generate(extTGD, scenario, true, false);
     }
 
-    public IAlgebraOperator generateAlgebraTreeWithDinstinct(Dependency extTGD, Scenario scenario) {
+    public IAlgebraOperator generateAlgebraTreeWithDistinct(Dependency extTGD, Scenario scenario) {
         return generate(extTGD, scenario, false, true);
     }
 
@@ -66,7 +75,7 @@ public class BuildAlgebraTreeForStandardChase {
         difference.addChild(conclusionOperator);
         if (logger.isDebugEnabled()) logger.debug("Difference operator: " + difference);
         IAlgebraOperator root = difference;
-        if (scenario.getConfiguration().isUseLimit1ForTGDs()) {
+        if (ChaseUtility.isUseLimit1ForTGD(extTGD, scenario)) {
             Limit limit = new Limit(1);
             limit.addChild(root);
             if (logger.isDebugEnabled()) logger.debug("Adding limit operator. " + limit);
@@ -141,6 +150,7 @@ public class BuildAlgebraTreeForStandardChase {
         Difference result = new Difference();
         result.addChild(premiseDifference);
         result.addChild(conclusionLimit1);
+        if (logger.isDebugEnabled()) logger.debug("Algebra tree for no universal variables in conclusion:\n " + result);
         return result;
     }
 

@@ -45,6 +45,10 @@ public class LunaticConstants {
     public static final String TYPE_USER = "USER";
     public static final String TYPE_INVALID = "INVALID";
     public static final String TYPE_ADDITIONAL = "ADDTL_FOR_";
+    
+    ///////////////    NULL GENERATION STRATEGIES    ///////////////////
+    public static final String SKOLEM_STRATEGY = "SKOLEM STRATEGY";
+    public static final String FRESH_NULL_STRATEGY = "FRESH NULL STRATEGY";
 
     ///////////////    CACHE STRATEGIES    ///////////////////
     public static final String GREEDY_DE_JCS = "GREEDY_DE_JCS";
@@ -55,9 +59,10 @@ public class LunaticConstants {
     public static final String DE_OPTIMIZED_CHASER = "DE_OPTIMIZED_CHASER";
 
     ///////////////    CHASE MODE///////////////////
-    public static final String CHASE_STANDARD = "STANDARD CHASE";
-    public static final String CHASE_OPTIMIZED = "OPTIMIZED CHASE";
-    public static final String CHASE_SKOLEM = "SKOLEM CHASE";
+    public static final String CHASE_RESTRICTED_FRESH_NULL = "Restricted Fresh Null (Standard) Chase";
+    public static final String CHASE_RESTRICTED_SKOLEM = "Restricted Skolem Chase";
+    public static final String CHASE_PARALLEL_RESTRICTED_SKOLEM = "Parallel Restricted Skolem Chase";
+    public static final String CHASE_UNRESTRICTED_SKOLEM = "Unrestricted Skolem Chase";
 
     ///////////////////// COST MANAGER
     public static final String COST_MANAGER_STANDARD = "Standard";
@@ -68,6 +73,7 @@ public class LunaticConstants {
 
     //
     public static int MAX_NUM_STTGDS_TO_REWRITE = 500;
+    public static int MAX_NUM_EGDS_TO_REWRITE = 50;
 
     ///////////////    DEBUG MODE     ///////////////////
 //    public static final boolean DBMS_DEBUG = true;

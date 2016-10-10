@@ -54,11 +54,20 @@ public class Scenario {
     private DependencyStratification stratification;
     private IValueEncoder valueEncoder;
     //
-    private LunaticConfiguration configuration = new LunaticConfiguration();
+    private LunaticConfiguration configuration;
 
     public Scenario(String fileName, String suffix) {
+        this(fileName, suffix, null);
+    }
+
+    public Scenario(String fileName, String suffix, LunaticConfiguration configuration) {
         this.fileName = fileName;
         this.suffix = suffix;
+        if (configuration == null) {
+            this.configuration = new LunaticConfiguration();
+        } else {
+            this.configuration = configuration;
+        }
     }
 
     public String getAbsolutePath() {

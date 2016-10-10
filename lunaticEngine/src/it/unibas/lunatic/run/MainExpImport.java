@@ -34,7 +34,8 @@ public class MainExpImport {
             chaseOnly = true;
         }
         String fileScenario = options.get(0);
-        LunaticConfiguration conf = daoConfiguration.loadConfiguration(fileScenario);
+        String chaseMode = LunaticUtility.getChaseMode(options);
+        LunaticConfiguration conf = daoConfiguration.loadConfiguration(fileScenario, chaseMode);
         LunaticUtility.applyCommandLineOptions(conf, options);
         if (chaseOnly) {
             conf.setRecreateDBOnStart(false);
@@ -59,6 +60,7 @@ public class MainExpImport {
         daoConfig.setProcessDependencies(false);
         daoConfig.setExportEncodedDependencies(true);
         daoConfig.setUseCompactAttributeName(true);
+        daoConfig.setChaseMode(chaseMode);
         LunaticUtility.applyCommandLineOptions(daoConfig, options);
         Scenario scenario = daoScenario.loadScenario(fileScenario, daoConfig);
         System.out.println(" Scenario loaded!");

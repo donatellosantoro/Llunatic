@@ -1,7 +1,6 @@
 package it.unibas.lunatic.model.algebra.sql;
 
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForStandardChase;
 import it.unibas.lunatic.model.dependency.*;
 import it.unibas.lunatic.model.generators.IValueGenerator;
@@ -13,22 +12,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
 import speedy.model.database.Attribute;
-import speedy.model.database.IDatabase;
 import speedy.model.database.TableAlias;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.DBMSTable;
-import speedy.persistence.relational.AccessConfiguration;
 import speedy.utility.DBMSUtility;
-import speedy.utility.SpeedyUtility;
 
 public class GenerateTargetInsert {
 
+    private final static Logger logger = LoggerFactory.getLogger(GenerateTargetInsert.class);
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
-    private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
     private BuildAlgebraTreeForStandardChase standardTreeBuilder = new BuildAlgebraTreeForStandardChase();
 
     public GenerateTargetInsert() {
@@ -80,7 +78,8 @@ public class GenerateTargetInsert {
             result.append(LunaticDBMSUtility.getWorkSchema(scenario)).append(".").append(stTgd.getId());
         } else {
             result.append(" (\n");
-            IAlgebraOperator operator = getPremiseOperator(stTgd, scenario);
+            IAlgebraOperator operator = standardTreeBuilder.generateAlgebraForTargetTGD(stTgd, scenario);
+            if (logger.isDebugEnabled()) logger.debug("***** PREMISE OPERATOR :\n" + operator);
             result.append(queryBuilder.treeToSQL(operator, scenario.getSource(), scenario.getTarget(), SpeedyConstants.INDENT));
             result.append("\n) as tmp_").append(stTgd.getId());
         }
@@ -121,13 +120,6 @@ public class GenerateTargetInsert {
         LunaticUtility.removeChars(", ".length(), attributes);
         attributes.append(")");
         return attributes.toString();
-    }
-
-    private IAlgebraOperator getPremiseOperator(Dependency dependency, Scenario scenario) {
-        if (scenario.getConfiguration().isUseDistinctInSTTGDs()) {
-            return standardTreeBuilder.generateAlgebraTreeWithDinstinct(dependency, scenario);
-        }
-        return treeBuilder.buildTreeForPremise(dependency, scenario);
     }
 
     private String generateOnConflictPart(DBMSDB target, String tableToInsert) {

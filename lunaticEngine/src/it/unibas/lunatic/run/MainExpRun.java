@@ -24,10 +24,12 @@ public class MainExpRun {
             return;
         }
         String fileScenario = options.get(0);
+        String chaseMode = LunaticUtility.getChaseMode(options);
         DAOConfiguration daoConfig = new DAOConfiguration();
         daoConfig.setImportData(false);
         daoConfig.setUseEncodedDependencies(true);
         daoConfig.setUseCompactAttributeName(true);
+        daoConfig.setChaseMode(chaseMode);
         LunaticUtility.applyCommandLineOptions(daoConfig, options);
         Scenario scenario = daoScenario.loadScenario(fileScenario, daoConfig);
         LunaticConfiguration conf = scenario.getConfiguration();
@@ -37,6 +39,8 @@ public class MainExpRun {
         conf.setExportSolutions(false);
         conf.setExportChanges(false);
         conf.setPrintResults(false);
+        scenario.getQueries().clear();//Handled in MainExpExport
+        scenario.getSQLQueries().clear(); //Handled in MainExpExport
         if (scenario.isDEDScenario()) {
             DEDChaserFactory.getChaser(scenario).doChase(scenario);
         } else if (scenario.isDEScenario()) {

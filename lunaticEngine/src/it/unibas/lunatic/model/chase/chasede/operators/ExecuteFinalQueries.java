@@ -20,6 +20,7 @@ import speedy.model.algebra.operators.ITupleIterator;
 import speedy.model.database.IDatabase;
 import speedy.model.database.dbms.DBMSDB;
 import speedy.model.database.dbms.SQLQueryString;
+import speedy.model.database.operators.IDatabaseManager;
 import speedy.model.database.operators.dbms.IValueEncoder;
 import speedy.model.database.operators.dbms.RunSQLQueryString;
 import speedy.persistence.file.operators.ExportCSVFileWithCopy;
@@ -34,6 +35,9 @@ public class ExecuteFinalQueries {
 
     public void executeFinalQueries(IDatabase targetDB, Scenario scenario) {
         long start = new Date().getTime();
+        if(!scenario.getQueries().isEmpty() || !scenario.getSQLQueries().isEmpty()){
+            OperatorFactory.getInstance().getDatabaseAnalyzer(scenario).analyze(targetDB, scenario.getConfiguration().getMaxNumberOfThreads());
+        }
         executeDependencyQueries(targetDB, scenario);
         executeSQLQueries(targetDB, scenario);
         long end = new Date().getTime();

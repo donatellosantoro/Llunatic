@@ -3,7 +3,6 @@ package it.unibas.lunatic.persistence;
 public class DAOConfiguration {
 
     private String suffix;
-    private Boolean printSteps = false;
     private boolean importData = true;
     private boolean processDependencies = true;
     private boolean exportEncodedDependencies = false;
@@ -11,15 +10,9 @@ public class DAOConfiguration {
     private boolean removeExistingDictionary = false;
     //Parameters received via commandline that we need to override on the loaded configuration
     private Boolean useDictionaryEncoding;
+    private Boolean printTargetStats;
     private Boolean useCompactAttributeName;
-
-    public Boolean getPrintSteps() {
-        return printSteps;
-    }
-
-    public void setPrintSteps(Boolean printSteps) {
-        this.printSteps = printSteps;
-    }
+    private String chaseMode;
 
     public String getSuffix() {
         return suffix;
@@ -83,6 +76,22 @@ public class DAOConfiguration {
 
     public void setUseCompactAttributeName(Boolean useCompactAttributeName) {
         this.useCompactAttributeName = useCompactAttributeName;
+    }
+
+    public String getChaseMode() {
+        return chaseMode;
+    }
+
+    public void setChaseMode(String chaseMode) {
+        this.chaseMode = chaseMode;
+    }
+
+    public Boolean getPrintTargetStats() {
+        return printTargetStats;
+    }
+
+    public void setPrintTargetStats(Boolean printTargetStats) {
+        this.printTargetStats = printTargetStats;
     }
 
 }

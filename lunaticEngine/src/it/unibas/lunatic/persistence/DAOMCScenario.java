@@ -51,4 +51,16 @@ public class DAOMCScenario {
         return !isStandardScenario(rootElement);
     }
 
+    public static boolean hasCFTGD(Element rootElement, String fileName) {
+        Element dependenciesElement = rootElement.getChild("dependencies");
+        Element tTGDFileElement = dependenciesElement.getChild("ttgdsFile");
+        if (tTGDFileElement != null) {
+            File file = DAOUtility.loadFile(tTGDFileElement.getText(), fileName);
+            if (file != null && file.length() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

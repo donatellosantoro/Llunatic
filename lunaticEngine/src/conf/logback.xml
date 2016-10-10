@@ -91,6 +91,8 @@
     <!--     CHASE DE     -->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseDEScenario" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.algebra.sql.GenerateTargetInsert" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseSTTGDsRestricted" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ScheduleTGDStrata" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChaseExtTGDStratumThread" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryInsertTuplesForTGDs" level="DEBUG"/>-->
@@ -107,6 +109,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectSkolem" level="TRACE"/>-->
     <!--<logger name="it.unibas.lunatic.model.generators.operators.GenerateFreshNullsForStandardChase" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.generators.operators.SQLGenerateFreshNullForStandardChase" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.commons.operators.ChaseUtility" level="DEBUG"/>-->
 
     <!--     CHASE MC     -->    
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager" level="DEBUG"/>-->
@@ -147,6 +150,8 @@
     <!--<logger name="speedy.persistence.relational.PooledDbConnectionFactory" level="TRACE"/>-->
     <!--<logger name="speedy.persistence.xml.operators.TransformFilePaths" level="DEBUG" />-->
     <!--<logger name="it.unibas.lunatic.persistence.DAODBSchemaCF" level="DEBUG" />-->
+    <!--<logger name="speedy.persistence.file.operators.ImportCSVFileWithCopy" level="DEBUG" />-->
+    <!--<logger name="speedy.model.database.operators.dbms.RunSQLQueryString" level="DEBUG" />-->
     
     <logger name="com.mchange" level="WARN"/>
     <logger name="com.sun" level="WARN"/>

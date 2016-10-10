@@ -1,5 +1,6 @@
 package it.unibas.lunatic.model.dependency.operators;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.database.skolem.AppendSkolemPart;
 import it.unibas.lunatic.model.database.skolem.ISkolemPart;
@@ -76,11 +77,12 @@ public class FindTargetGenerators {
         if (generatorForVariable != null) {
             return generatorForVariable;
         }
-        if (scenario.getConfiguration().isUseStandardChase() && !DependencyUtility.isSTTGD(dependency)) { 
-            //TODO+++ Temporarily the std chase is performed only on target tgd. The skolem chase is run in all cases for the st-tgds
+        if (scenario.getConfiguration().getNullGenerationStrategy().equals(LunaticConstants.FRESH_NULL_STRATEGY)) {
             generatorForVariable = createFreshNullGenerator(attributeRef, variable, dependency, scenario);
-        } else {
+        } else if (scenario.getConfiguration().getNullGenerationStrategy().equals(LunaticConstants.SKOLEM_STRATEGY)) {
             generatorForVariable = createSkolemGenerator(attributeRef, variable, dependency, scenario);
+        } else {
+            throw new IllegalArgumentException("Unknown null generation strategy " + scenario.getConfiguration().getNullGenerationStrategy());
         }
         generatorMap.put(variable, generatorForVariable);
         return generatorForVariable;

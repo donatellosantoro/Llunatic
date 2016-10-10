@@ -60,7 +60,7 @@ class FindFunctionalDependencies {
     }
 
     private List<String> extractLeftAttributes(Dependency egd) {
-        VariableEquivalenceClass variableEC = egd.getSymmetricAtoms().getSelfJoin().getVariableEquivalenceClass();
+        VariableEquivalenceClass variableEC = egd.getSymmetricAtoms().getSymmetricSelfJoin().getVariableEquivalenceClass();
         Set<String> leftAttributes = new HashSet<String>();
         for (FormulaVariableOccurrence occurrence : variableEC.getPremiseRelationalOccurrences()) {
             leftAttributes.add(ChaseUtility.unAlias(occurrence.getAttributeRef()).getName());

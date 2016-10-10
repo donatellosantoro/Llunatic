@@ -58,12 +58,12 @@ public class DAOLunaticConfiguration {
     private final DAOXmlUtility daoUtility = new DAOXmlUtility();
     private final TransformFilePaths filePathTransformator = new TransformFilePaths();
 
-    public LunaticConfiguration loadConfiguration(String fileScenario) {
+    public LunaticConfiguration loadConfiguration(String fileScenario, String chaseMode) {
         try {
             Document document = daoUtility.buildDOM(fileScenario);
             Element rootElement = document.getRootElement();
             Element configurationElement = rootElement.getChild("configuration");
-            return loadConfiguration(rootElement, configurationElement);
+            return loadConfiguration(fileScenario, rootElement, configurationElement, chaseMode);
         } catch (Throwable ex) {
             logger.error(ex.getLocalizedMessage());
             ex.printStackTrace();
@@ -75,8 +75,13 @@ public class DAOLunaticConfiguration {
         }
     }
 
-    public LunaticConfiguration loadConfiguration(Element rootElement, Element configurationElement) {
-        LunaticConfiguration configuration = new LunaticConfiguration();
+    public LunaticConfiguration loadConfiguration(String fileScenario, Element rootElement, Element configurationElement, String chaseMode) {
+        LunaticConfiguration configuration;
+        if (chaseMode == null) {
+            configuration = new LunaticConfiguration();
+        } else {
+            configuration = new LunaticConfiguration(chaseMode);
+        }
         if (configurationElement == null || configurationElement.getChildren().isEmpty()) {
             return configuration;
         }
@@ -103,7 +108,7 @@ public class DAOLunaticConfiguration {
         Element useDictionaryEncodingElement = configurationElement.getChild("useDictionaryEncoding");
         if (useDictionaryEncodingElement != null) {
             configuration.setUseDictionaryEncoding(Boolean.parseBoolean(useDictionaryEncodingElement.getValue()));
-        } else if (DAOMCScenario.isCFScenario(rootElement)) {
+        } else if (DAOMCScenario.isCFScenario(rootElement) && DAOMCScenario.hasCFTGD(rootElement, fileScenario)) {
             configuration.setUseDictionaryEncoding(true);
         }
         Element optimizeTGDsElement = configurationElement.getChild("optimizeSTTGDs");
@@ -431,7 +436,8 @@ public class DAOLunaticConfiguration {
 
     private void selectBestNumberOfThreads(LunaticConfiguration configuration) {
         int cores = Runtime.getRuntime().availableProcessors();
-        int threads = (cores * 2) - 1;
+//        int threads = (cores * 2) - 1;
+        int threads = cores;
         configuration.setMaxNumberOfThreads(threads);
     }
 

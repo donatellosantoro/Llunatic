@@ -106,7 +106,7 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
                 long start = new Date().getTime();
                 boolean insertedTuples = dependencyChaser.chaseDependency(newStep, eTgd, tgdQuery, scenario, chaseState, databaseForStep);
                 long end = new Date().getTime();
-                if (!scenario.getConfiguration().isUseLimit1ForTGDs() || !insertedTuples) {
+                if (!(ChaseUtility.isUseLimit1ForTGD(eTgd, scenario)) || !insertedTuples) {
                     unsatisfiedTGDs.remove(eTgd);
                 }
                 if (LunaticConfiguration.isPrintSteps()) System.out.println("Dependency chasing Execution time: " + (end - start) + " ms");

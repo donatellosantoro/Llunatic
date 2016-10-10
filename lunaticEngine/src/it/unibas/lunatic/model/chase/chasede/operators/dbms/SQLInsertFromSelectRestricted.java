@@ -24,9 +24,9 @@ import speedy.persistence.relational.QueryManager;
 import speedy.utility.DBMSUtility;
 import speedy.utility.SpeedyUtility;
 
-public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
+public class SQLInsertFromSelectRestricted implements IInsertFromSelectNaive {
 
-    private final static Logger logger = LoggerFactory.getLogger(SQLInsertFromSelectNaive.class);
+    private final static Logger logger = LoggerFactory.getLogger(SQLInsertFromSelectRestricted.class);
     private AlgebraTreeToSQL queryBuilder = new AlgebraTreeToSQL();
 
     public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target, Scenario scenario) {
@@ -43,6 +43,10 @@ public class SQLInsertFromSelectNaive implements IInsertFromSelectNaive {
             if (ex.getMessage().contains("ERROR: function bigint_skolem(text) does not exist")
                     || ex.getMessage().contains("ERROR: function double_skolem(text) does not exist")) {
                 if (logger.isDebugEnabled()) logger.debug("Some functions are missing in the current C3p0 thread. Retrying...");
+                return execute(dependency, sourceQuery, source, target, scenario);
+            }
+            if (ex.getMessage().contains("waits for ShareLock on transaction")) {
+                if (logger.isDebugEnabled()) logger.debug("Thread are interfering each others. Retrying...");
                 return execute(dependency, sourceQuery, source, target, scenario);
             }
             throw ex;

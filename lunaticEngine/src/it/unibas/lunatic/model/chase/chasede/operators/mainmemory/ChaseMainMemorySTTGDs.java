@@ -1,15 +1,13 @@
 package it.unibas.lunatic.model.chase.chasede.operators.mainmemory;
 
 import it.unibas.lunatic.LunaticConfiguration;
-import it.unibas.lunatic.OperatorFactory;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.exceptions.ChaseException;
-import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTree;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForStandardChase;
-import it.unibas.lunatic.model.chase.chasede.operators.IInsertFromSelectNaive;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
 import it.unibas.lunatic.model.chase.chasede.operators.IRemoveDuplicates;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import speedy.model.database.IDatabase;
 import it.unibas.lunatic.model.dependency.Dependency;
 import java.util.Date;
@@ -22,7 +20,6 @@ public class ChaseMainMemorySTTGDs implements IChaseSTTGDs {
 
     private static Logger logger = LoggerFactory.getLogger(ChaseMainMemorySTTGDs.class);
 
-    private BuildAlgebraTree treeBuilder = new BuildAlgebraTree();
     private BuildAlgebraTreeForStandardChase standardTreeBuilder = new BuildAlgebraTreeForStandardChase();
     private IRemoveDuplicates duplicateRemover = new MainMemoryRemoveDuplicates();
 
@@ -40,21 +37,14 @@ public class ChaseMainMemorySTTGDs implements IChaseSTTGDs {
         if (logger.isDebugEnabled()) logger.debug("Chasing st tgds on scenario: " + scenario);
         for (Dependency stTgd : scenario.getSTTgds()) {
             if (logger.isDebugEnabled()) logger.debug("----Chasing tgd: " + stTgd);
-            IAlgebraOperator treeRoot = getPremiseOperator(stTgd, scenario);
+            IAlgebraOperator treeRoot = standardTreeBuilder.generateAlgebraForSourceToTargetTGD(stTgd, scenario);
             if (logger.isDebugEnabled()) logger.debug("----Algebra tree: " + treeRoot);
-            MainMemoryInsertFromSelectNaive insert = new MainMemoryInsertFromSelectNaive();
+            MainMemoryInsertFromSelectRestricted insert = new MainMemoryInsertFromSelectRestricted();
             insert.execute(stTgd, treeRoot, (MainMemoryDB) scenario.getSource(), (MainMemoryDB) target, scenario);
         }
         duplicateRemover.removeDuplicatesModuloOID((MainMemoryDB) target, scenario);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.STTGD_TIME, end - start);
         if (logger.isDebugEnabled()) logger.debug("----Result of chasing st tgds: " + target);
-    }
-
-    private IAlgebraOperator getPremiseOperator(Dependency dependency, Scenario scenario) {
-        if (scenario.getConfiguration().isUseDistinctInSTTGDs()) {
-            return standardTreeBuilder.generateAlgebraTreeWithDinstinct(dependency, scenario);
-        }
-        return treeBuilder.buildTreeForPremise(dependency, scenario);
     }
 }

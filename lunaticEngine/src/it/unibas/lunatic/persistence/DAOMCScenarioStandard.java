@@ -30,7 +30,6 @@ public class DAOMCScenarioStandard {
     public Scenario loadScenario(String fileScenario, DAOConfiguration config) throws DAOException {
         long start = new Date().getTime();
         try {
-            Scenario scenario = new Scenario(fileScenario, config.getSuffix());
             long startLoadXML = new Date().getTime();
             Document document = daoUtility.buildDOM(fileScenario);
             long endLoadXML = new Date().getTime();
@@ -38,10 +37,13 @@ public class DAOMCScenarioStandard {
             Element rootElement = document.getRootElement();
             //CONFIGURATION
             Element configurationElement = rootElement.getChild("configuration");
-            LunaticConfiguration configuration = daoConfiguration.loadConfiguration(rootElement, configurationElement);
-            scenario.setConfiguration(configuration);
+            LunaticConfiguration configuration = daoConfiguration.loadConfiguration(fileScenario, rootElement, configurationElement, config.getChaseMode());
+            Scenario scenario = new Scenario(fileScenario, config.getSuffix(), configuration);
             if (config.getUseDictionaryEncoding() != null) {
                 configuration.setUseDictionaryEncoding(config.getUseDictionaryEncoding());
+            }
+            if (config.getPrintTargetStats()!= null) {
+                configuration.setPrintTargetStats(config.getPrintTargetStats());
             }
             if (configuration.isUseDictionaryEncoding()) {
                 if (config.isImportData()) {

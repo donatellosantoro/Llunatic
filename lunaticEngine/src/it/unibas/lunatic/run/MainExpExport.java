@@ -45,7 +45,8 @@ public class MainExpExport {
         Document document = daoUtility.buildDOM(fileScenario);
         Element rootElement = document.getRootElement();
         Element configurationElement = rootElement.getChild("configuration");
-        LunaticConfiguration conf = daoConfiguration.loadConfiguration(rootElement, configurationElement);
+        String chaseMode = LunaticUtility.getChaseMode(options);
+        LunaticConfiguration conf = daoConfiguration.loadConfiguration(fileScenario, rootElement, configurationElement, chaseMode);
         LunaticUtility.applyCommandLineOptions(conf, options);
         if (!conf.isExportSolutions()) {
             return;

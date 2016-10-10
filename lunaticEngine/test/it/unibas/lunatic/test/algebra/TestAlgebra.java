@@ -113,9 +113,7 @@ public class TestAlgebra extends TestCase {
         TableAlias tableAlias = new TableAlias("IBDBookSet", true);
         List<AttributeRef> attributesToSelect = new ArrayList<AttributeRef>();
         attributesToSelect.add(new AttributeRef(tableAlias, "title"));
-        List<IAlgebraOperator> selectionOperators = new ArrayList<IAlgebraOperator>();
-        selectionOperators.add(project);
-        SelectNotIn selectIn = new SelectNotIn(attributesToSelect, selectionOperators);
+        SelectNotIn selectIn = new SelectNotIn(attributesToSelect, project);
         Scan scan = new Scan(tableAlias);
         selectIn.addChild(scan);
         if (logger.isTraceEnabled()) logger.debug(selectIn.toString());

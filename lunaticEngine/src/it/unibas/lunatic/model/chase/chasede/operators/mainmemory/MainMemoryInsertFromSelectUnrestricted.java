@@ -9,12 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 
-public class MainMemoryInsertFromSelectSkolem implements IInsertFromSelectNaive {
+public class MainMemoryInsertFromSelectUnrestricted implements IInsertFromSelectNaive {
 
-    private static Logger logger = LoggerFactory.getLogger(MainMemoryInsertFromSelectSkolem.class);
+    private static Logger logger = LoggerFactory.getLogger(MainMemoryInsertFromSelectUnrestricted.class);
 
     private IRemoveDuplicates duplicateRemover = new MainMemoryRemoveDuplicates();
-    private IInsertFromSelectNaive naiveInsert = new MainMemoryInsertFromSelectNaive();
+    private IInsertFromSelectNaive naiveInsert = new MainMemoryInsertFromSelectRestricted();
 
     @Override
     public boolean execute(Dependency dependency, IAlgebraOperator sourceQuery, IDatabase source, IDatabase target, Scenario scenario) {

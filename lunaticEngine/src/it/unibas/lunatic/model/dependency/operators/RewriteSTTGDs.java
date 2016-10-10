@@ -1,14 +1,15 @@
 package it.unibas.lunatic.model.dependency.operators;
 
-import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.commons.ChaseStats;
+import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.persistence.DAOMCScenarioStandard;
 import it.unibas.spicy.model.mapping.rewriting.operators.RewriteAndExportSTTgds;
 import it.unibas.spicy.persistence.DAOException;
-import it.unibas.lunatic.model.dependency.operators.DependencyUtility;
 import it.unibas.lunatic.persistence.DAOConfiguration;
 import it.unibas.spicy.model.mapping.rewriting.RewritingConfiguration;
+import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +21,10 @@ public class RewriteSTTGDs {
 
     public void rewrite(Scenario scenario) {
         try {
-            if (!scenario.getConfiguration().isOptimizeSTTGDs()
-                    || scenario.getSTTgds().isEmpty()
-                    || scenario.getSTTgds().size() > LunaticConstants.MAX_NUM_STTGDS_TO_REWRITE
-                    || (scenario.getEGDs().isEmpty() && scenario.getExtEGDs().isEmpty())) {
+            if(!ChaseUtility.isRewriteSTTGDs(scenario)){
                 return;
             }
+            long start = new Date().getTime();
             RewritingConfiguration config = createConfig(scenario);
             String originalTGDs = buildTGDStringToRewrite(scenario);
             if (logger.isDebugEnabled()) logger.debug("Original ST-TGDs: \n" + originalTGDs);
@@ -40,6 +39,8 @@ public class RewriteSTTGDs {
             scenario.getSTTgds().clear();
             scenario.getSTTgds().addAll(rewrittenScenario.getSTTgds());
             if (logger.isDebugEnabled()) logger.debug(DependencyUtility.printDependencies(scenario.getSTTgds()));
+            long end = new Date().getTime();
+            ChaseStats.getInstance().addStat(ChaseStats.STTGD_REWRITING, end-start);
         } catch (DAOException ex) {
             logger.error("Unable to rewrite ST-TGDs: " + ex.getLocalizedMessage());
             throw new it.unibas.lunatic.exceptions.DAOException("Unable to rewrite ST-TGDs: " + ex.getLocalizedMessage());

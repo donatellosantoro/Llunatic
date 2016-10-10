@@ -17,7 +17,7 @@ public class TestChaseExtTgds extends CheckTest {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.RS_tc);
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
-        if (scenario.getConfiguration().isUseSkolemChase()) {
+        if (!scenario.getConfiguration().isChaseRestricted()) {
             String expected = scenario.getFileName().replace(".xml", "-skolemchase-expectedSolution.txt");
             checkExpectedInstances(result, expected, scenario);
         }else{

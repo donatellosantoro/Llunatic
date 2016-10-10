@@ -96,7 +96,7 @@ public class BuildAlgebraTree {
             IAlgebraOperator negatedFormulaOperator = builderForPositiveFormula.buildTreeForPositiveFormula(dependency, negatedFormula.getPositiveFormula(), premise, addOidInequality);
             IAlgebraOperator project = new Project(SpeedyUtility.createProjectionAttributes(attributesInNegatedFormula));
             project.addChild(negatedFormulaOperator);
-            SelectNotIn selectNotIn = new SelectNotIn(attributesInPositiveFormula, Arrays.asList(new IAlgebraOperator[]{project}));
+            SelectNotIn selectNotIn = new SelectNotIn(attributesInPositiveFormula, project);
             selectNotIn.addChild(root);
             root = selectNotIn;
         }

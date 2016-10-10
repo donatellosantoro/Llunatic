@@ -2,6 +2,7 @@ package it.unibas.lunatic;
 
 import it.unibas.lunatic.model.chase.chasede.operators.ChangeCellDE;
 import it.unibas.lunatic.model.chase.chasede.operators.ChaseDeltaEGDs;
+import it.unibas.lunatic.model.chase.chasede.operators.ChaseSTTGDsRestrictedFreshNulls;
 import it.unibas.lunatic.model.chase.chasede.operators.CheckUnsatisfiedDependenciesDE;
 import it.unibas.lunatic.model.chase.chasede.operators.IBuildDatabaseForDE;
 import it.unibas.lunatic.model.chase.commons.operators.IChaseSTTGDs;
@@ -62,14 +63,14 @@ import it.unibas.lunatic.model.chase.chasede.operators.OccurrenceHandlerDE;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.BuildSQLDBForChaseStepDE;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.BuildSQLDeltaDBDE;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.ChaseSQLSTTGDsWithThreads;
-import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectNaive;
-import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectSkolem;
+import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectRestricted;
+import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLInsertFromSelectUnrestricted;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLRemoveDuplicates;
 import it.unibas.lunatic.model.chase.chasede.operators.dbms.SQLReplaceDatabase;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.BuildMainMemoryDBForChaseStepDE;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.BuildMainMemoryDeltaDBDE;
-import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectNaive;
-import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectSkolem;
+import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectRestricted;
+import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryInsertFromSelectUnrestricted;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryRemoveDuplicates;
 import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryReplaceDatabase;
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStepMC;
@@ -106,7 +107,6 @@ public class OperatorFactory {
     //
     private IChaseSTTGDs mainMemorySTTGDsChaser = new ChaseMainMemorySTTGDs();
     private IChaseSTTGDs sqlSTTGDsChaser = new ChaseSQLSTTGDsWithThreads();
-//    private IChaseSTTGDs sqlSTTGDsChaser = new ChaseSQLSTTGDs();
     //
     private IOIDGenerator mainMemoryOIDGenerator = new MainMemoryOIDGenerator();
     private IOIDGenerator sqlOIDGenerator = SQLOIDGenerator.getInstance();
@@ -200,6 +200,10 @@ public class OperatorFactory {
     }
 
     public IChaseSTTGDs getSTChaser(Scenario scenario) {
+        if (scenario.getConfiguration().isChaseRestricted()
+                && scenario.getConfiguration().getNullGenerationStrategy().equals(LunaticConstants.FRESH_NULL_STRATEGY)) {
+            return new ChaseSTTGDsRestrictedFreshNulls(getDatabaseManager(scenario));
+        }
         if (scenario.isMainMemory()) {
             return mainMemorySTTGDsChaser;
         }
@@ -333,16 +337,17 @@ public class OperatorFactory {
     }
 
     public IInsertFromSelectNaive getInsertFromSelectNaive(Scenario scenario) {
-        if (scenario.getConfiguration().isUseSkolemChase()) {
+        if (scenario.getConfiguration().isChaseRestricted()) {
             if (scenario.isMainMemory()) {
-                return new MainMemoryInsertFromSelectSkolem();
+                return new MainMemoryInsertFromSelectRestricted();
             }
-            return new SQLInsertFromSelectSkolem();
+            return new SQLInsertFromSelectRestricted();
+        } else {
+            if (scenario.isMainMemory()) {
+                return new MainMemoryInsertFromSelectUnrestricted();
+            }
+            return new SQLInsertFromSelectUnrestricted();
         }
-        if (scenario.isMainMemory()) {
-            return new MainMemoryInsertFromSelectNaive();
-        }
-        return new SQLInsertFromSelectNaive();
     }
 
     public IRemoveDuplicates getDuplicateRemover(Scenario scenario) {

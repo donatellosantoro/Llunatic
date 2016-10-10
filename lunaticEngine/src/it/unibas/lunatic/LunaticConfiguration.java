@@ -12,13 +12,12 @@ public class LunaticConfiguration {
     private boolean recreateDBOnStart = true;
     private boolean cleanSchemasOnStartForDEScenarios = true;
     private Integer iterationLimit = null;
-    private boolean useDistinctInSTTGDs = true;
     private boolean useLimit1ForEGDs = false;
-    private boolean useLimit1ForTGDs = false;
     private boolean preventInsertDuplicateTuples = false;
     private String chaseMode;
     private boolean deScenario = false; //MCProxy for DE chase
     private boolean optimizeSTTGDs = true;
+    private boolean forceOptimizeSTTGDs = false;
     private boolean rewriteSTTGDOverlaps = true;
     private boolean checkGroundSolutions = false;
     private boolean checkSolutions = false;
@@ -50,6 +49,9 @@ public class LunaticConfiguration {
     private String exportChangesPath;
     private boolean printStatsOnly = false;
 
+    private boolean chaseRestricted = false;
+    private String nullGenerationStrategy;
+
     private boolean autoSelectBestNumberOfThreads = true;
     private int maxNumberOfThreads = 1;
     private boolean useThreadsForQueries = false;
@@ -65,37 +67,56 @@ public class LunaticConfiguration {
 //    private String cacheTypeForDE = LunaticConstants.GREEDY_SINGLESTEP_JCS_CACHE;
 
     public LunaticConfiguration() {
-        setChaseMode(LunaticConstants.CHASE_OPTIMIZED);
-//        setChaseMode(LunaticConstants.CHASE_SKOLEM);
-//        setChaseMode(LunaticConstants.CHASE_STANDARD);
+        this(LunaticConstants.CHASE_PARALLEL_RESTRICTED_SKOLEM);
+//        this(LunaticConstants.CHASE_UNRESTRICTED_SKOLEM);
+//        this(LunaticConstants.CHASE_RESTRICTED_FRESH_NULL);
+//        this(LunaticConstants.CHASE_RESTRICTED_SKOLEM);
+    }
+
+    public LunaticConfiguration(String chaseMode) {
+        setChaseMode(chaseMode);
+    }
+
+    private void setChaseMode(String chaseMode) {
+        if (chaseMode == null) {
+            chaseMode = LunaticConstants.CHASE_PARALLEL_RESTRICTED_SKOLEM;
+        }
+        if (chaseMode.equals(LunaticConstants.CHASE_PARALLEL_RESTRICTED_SKOLEM)) {
+            this.chaseRestricted = true;
+            this.nullGenerationStrategy = LunaticConstants.SKOLEM_STRATEGY;
+            this.preventInsertDuplicateTuples = false;
+            this.optimizeSTTGDs = true;
+        } else if (chaseMode.equals(LunaticConstants.CHASE_RESTRICTED_FRESH_NULL)) {
+            this.chaseRestricted = true;
+            this.nullGenerationStrategy = LunaticConstants.FRESH_NULL_STRATEGY;
+            this.preventInsertDuplicateTuples = false;
+            this.optimizeSTTGDs = false;
+        } else if (chaseMode.equals(LunaticConstants.CHASE_RESTRICTED_SKOLEM)) {
+            this.chaseRestricted = true;
+            this.nullGenerationStrategy = LunaticConstants.SKOLEM_STRATEGY;
+            this.preventInsertDuplicateTuples = false;
+            this.optimizeSTTGDs = false;
+        } else if (chaseMode.equals(LunaticConstants.CHASE_UNRESTRICTED_SKOLEM)) {
+            this.chaseRestricted = false;
+            this.nullGenerationStrategy = LunaticConstants.SKOLEM_STRATEGY;
+            this.preventInsertDuplicateTuples = true;
+            this.optimizeSTTGDs = false;
+        } else {
+            throw new IllegalArgumentException("Unknow chase mode " + chaseMode);
+        }
+        this.chaseMode = chaseMode;
     }
 
     public String getChaseMode() {
         return chaseMode;
     }
 
-    private void setChaseMode(String chaseMode) {
-        this.chaseMode = chaseMode;
-        if (chaseMode.equals(LunaticConstants.CHASE_OPTIMIZED)) {
-            this.useLimit1ForTGDs = false;
-            this.preventInsertDuplicateTuples = false;
-        } else if (chaseMode.equals(LunaticConstants.CHASE_STANDARD)) {
-            this.useLimit1ForTGDs = true;
-            this.preventInsertDuplicateTuples = false;
-        } else if (chaseMode.equals(LunaticConstants.CHASE_SKOLEM)) {
-            this.useLimit1ForTGDs = false;
-            this.preventInsertDuplicateTuples = true;
-        } else {
-            throw new IllegalArgumentException("Unknow chase mode " + chaseMode);
-        }
+    public boolean isChaseRestricted() {
+        return chaseRestricted;
     }
 
-    public boolean isUseStandardChase() {
-        return LunaticConstants.CHASE_STANDARD.equals(this.chaseMode);
-    }
-
-    public boolean isUseSkolemChase() {
-        return LunaticConstants.CHASE_SKOLEM.equals(this.chaseMode);
+    public String getNullGenerationStrategy() {
+        return nullGenerationStrategy;
     }
 
     public static boolean isPrintSteps() {
@@ -152,14 +173,6 @@ public class LunaticConfiguration {
 
     public void setUseLimit1ForEGDs(boolean useLimit1ForEGDs) {
         this.useLimit1ForEGDs = useLimit1ForEGDs;
-    }
-
-    public boolean isUseLimit1ForTGDs() {
-        return useLimit1ForTGDs;
-    }
-
-    public void setUseLimit1ForTGDs(boolean useLimit1ForTGDs) {
-        this.useLimit1ForTGDs = useLimit1ForTGDs;
     }
 
     public boolean isDeScenario() {
@@ -229,14 +242,6 @@ public class LunaticConfiguration {
     public void changeParametersForScalabilityTests() {
         this.checkGroundSolutions = false;
         this.removeDuplicates = false;
-    }
-
-    public boolean isUseDistinctInSTTGDs() {
-        return useDistinctInSTTGDs;
-    }
-
-    public void setUseDistinctInSTTGDs(boolean useDistinctInSTTGDs) {
-        this.useDistinctInSTTGDs = useDistinctInSTTGDs;
     }
 
     public String getDeChaser() {
@@ -445,6 +450,14 @@ public class LunaticConfiguration {
 
     public void setOptimizeSTTGDs(boolean optimizeSTTGDs) {
         this.optimizeSTTGDs = optimizeSTTGDs;
+    }
+
+    public boolean isForceOptimizeSTTGDs() {
+        return forceOptimizeSTTGDs;
+    }
+
+    public void setForceOptimizeSTTGDs(boolean forceOptimizeSTTGDs) {
+        this.forceOptimizeSTTGDs = forceOptimizeSTTGDs;
     }
 
     public boolean isRewriteSTTGDOverlaps() {

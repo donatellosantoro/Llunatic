@@ -3,6 +3,7 @@ package it.unibas.lunatic.model.dependency.operators;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.operators.AlgebraUtility;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
+import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
@@ -10,10 +11,11 @@ import it.unibas.lunatic.model.dependency.IFormula;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
 import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.model.dependency.VariableEquivalenceClass;
-import it.unibas.lunatic.model.dependency.operators.FindSourceAtoms;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.database.AttributeRef;
@@ -328,9 +330,50 @@ public class DependencyUtility {
             }
             RelationalAtom relationalAtom = (RelationalAtom) atom;
             TableAlias tableAlias = relationalAtom.getTableAlias();
-            if(tableAlias.isSource()){
+            if (tableAlias.isSource()) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public static boolean hasOverlapBtwPremiseAndConclusion(Dependency tgd) {
+        Set<String> premiseTable = extractTableAlias(tgd.getPremise());
+        Set<String> conclusionTable = extractTableAlias(tgd.getConclusion());
+        return !LunaticUtility.hasEmptyIntersection(premiseTable, conclusionTable);
+    }
+
+    private static Set<String> extractTableAlias(IFormula formula) {
+        Set<String> result = new HashSet<String>();
+        for (IFormulaAtom atom : formula.getAtoms()) {
+            if (atom instanceof RelationalAtom) {
+                RelationalAtom relationalAtom = (RelationalAtom) atom;
+                result.add(relationalAtom.getTableName());
+            }
+            if (atom instanceof ComparisonAtom) {
+                ComparisonAtom comparisonAtom = (ComparisonAtom) atom;
+                for (FormulaVariable variable : comparisonAtom.getVariables()) {
+                    for (AttributeRef attributeRef : variable.getAttributeRefs()) {
+                        result.add(attributeRef.getTableName());
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static boolean hasSelfJoinInConclusion(Dependency tgd) {
+        Set<String> targetRelations = new HashSet<String>();
+        for (IFormulaAtom atom : tgd.getConclusion().getAtoms()) {
+            if (!(atom instanceof RelationalAtom)) {
+                continue;
+            }
+            RelationalAtom relationalAtom = (RelationalAtom) atom;
+            String tableName = relationalAtom.getTableName();
+            if (targetRelations.contains(tableName)) {
+                return true;
+            }
+            targetRelations.add(tableName);
         }
         return false;
     }
