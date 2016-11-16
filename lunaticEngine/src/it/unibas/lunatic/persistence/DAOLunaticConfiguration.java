@@ -157,6 +157,10 @@ public class DAOLunaticConfiguration {
                 throw new it.unibas.lunatic.exceptions.DAOException("Export type not supported");
             }
         }
+        Element stopOnNotWAElement = configurationElement.getChild("stopOnNotWA");
+        if (stopOnNotWAElement != null) {
+            configuration.setStopOnNotWA(Boolean.parseBoolean(stopOnNotWAElement.getValue()));
+        }
         Element exportChangesElement = configurationElement.getChild("exportChanges");
         if (exportChangesElement != null) {
             configuration.setExportChanges(Boolean.parseBoolean(exportChangesElement.getValue()));

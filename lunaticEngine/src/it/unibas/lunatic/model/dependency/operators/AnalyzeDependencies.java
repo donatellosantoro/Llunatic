@@ -47,7 +47,7 @@ public class AnalyzeDependencies {
 //        rewriter.rewrite(scenario);
         DirectedGraph<AttributeRef, ExtendedEdge> faginDependencyGraph = faginDependencyGraphBuilder.buildGraph(scenario.getExtTGDs());
         if (logger.isDebugEnabled()) logger.debug("Fagin Dependency graph " + faginDependencyGraph);
-        weaklyAcyclicityChecker.check(faginDependencyGraph, scenario.getExtTGDs());
+        weaklyAcyclicityChecker.check(faginDependencyGraph, scenario.getExtTGDs(), scenario.getConfiguration());
         DirectedGraph<AttributeRef, ExtendedEdge> dependencyGraph = removeSpecialEdges(faginDependencyGraph);
         if (logger.isDebugEnabled()) logger.debug("Dependency graph " + dependencyGraph);
         if (scenario.getConfiguration().isDeScenario() && !scenario.getExtEGDs().isEmpty()) {

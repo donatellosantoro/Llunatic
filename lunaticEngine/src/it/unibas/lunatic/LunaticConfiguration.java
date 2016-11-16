@@ -56,6 +56,8 @@ public class LunaticConfiguration {
     private int maxNumberOfThreads = 1;
     private boolean useThreadsForQueries = false;
 
+    private boolean stopOnNotWA = true;
+
 //    private String deChaser = LunaticConstants.CLASSIC_DE_CHASER;
 //    private String deChaser = LunaticConstants.PROXY_MC_CHASER;
     private String deChaser = LunaticConstants.DE_OPTIMIZED_CHASER;
@@ -508,6 +510,14 @@ public class LunaticConfiguration {
         this.preventInsertDuplicateTuples = preventInsertDuplicateTuples;
     }
 
+    public boolean isStopOnNotWA() {
+        return stopOnNotWA;
+    }
+
+    public void setStopOnNotWA(boolean stopOnNotWA) {
+        this.stopOnNotWA = stopOnNotWA;
+    }
+
     @Override
     public String toString() {
         return "\tDebugMode: " + debugMode
@@ -537,6 +547,7 @@ public class LunaticConfiguration {
                 + "\n\t ExportSolutions: " + exportSolutions
                 + "\n\t ExportSolutionsPath: " + exportSolutionsPath
                 + "\n\t ExportSolutionsType: " + exportSolutionsType
+                + "\n\t StopOnNotWA: " + stopOnNotWA
                 + "\n\t UseCompactAttributeName: " + useCompactAttributeName
                 + "\n\t Cache type for MC: " + cacheTypeForMC
                 + "\n\t Cache type for DE: " + cacheTypeForDE
