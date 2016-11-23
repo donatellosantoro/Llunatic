@@ -122,7 +122,6 @@ public class ChaseMCScenario {
         int iterations = 0;
         while (!userInteractionRequired) {
             if (chaseState.isCancelled()) {
-                //throw new ChaseException("Chase interrupted by user");
                 ChaseUtility.stopChase(chaseState);
             }
             boolean newTgdNodes = extTgdChaser.doChase(root, scenario, chaseState, tgdQueryMap, tgdQuerySatisfactionMap);
@@ -133,7 +132,6 @@ public class ChaseMCScenario {
                 dChaser.doChase(root, scenario, chaseState, dQueryMap);
             }
             if (egdResult.isNewNodes() && logger.isDebugEnabled()) logger.debug("Chase tree after egd enforcement:\n" + root);
-//            if (!newTgdNodes && !egdResult.isNewNodes()) {
             if (scenario.getExtEGDs().isEmpty() || !newTgdNodes && !egdResult.isNewNodes()) {
                 break;
             } else {

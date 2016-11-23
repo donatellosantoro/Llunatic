@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:llunatic_test_violations</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <import>
+      <input type="csv" separator="," table="mdsw">mdsw.csv</input>
+    </import>
+  </source>
+  <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:llunatic_test_violations</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <import>
+      <input type="csv" separator="," table="bus">dirty_db.csv</input>
+    </import>
+  </target>
+  <dependencies>
+<![CDATA[
+ExtEGDs:
+e01_1: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiername: $x4 , administrativeareacode: $x5, nptgdistrictcode: $x6, sourcelocalitytype: $x7, gridtype: $x8, atcoareacode: $x9, areaname: $x10, shortname: $x11, regioncode: $x12, districtcode: $x13, districtname: $x14, regionname: $x15), 
+$x9 == "190" -> $x12 == "SW".
+
+e01_2: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiername: $x4 , administrativeareacode: $x5, nptgdistrictcode: $x6, sourcelocalitytype: $x7, gridtype: $x8, atcoareacode: $x9, areaname: $x10, shortname: $x11, regioncode: $x12, districtcode: $x13, districtname: $x14, regionname: $x15), 
+mdsw(atcoareacodemd: $atcoareacode1, regioncode: $regioncode1), $x9 == $atcoareacode1 -> $x12 == $regioncode1.
+
+e01_3: bus(localitycode: $x1, localityname: $x2, localitynamelang: $x3, qualifiername: $x4 , administrativeareacode: $x5, nptgdistrictcode: $x6, sourcelocalitytype: $x7, gridtype: $x8, atcoareacode: $x9, areaname: $x10, shortname: $x11, regioncode: $x12, districtcode: $x13, districtname: $x14, regionname: $x15), 
+mdsw(atcoareacodemd: $atcoareacode1, regioncode: $regioncode1), $x9 == $atcoareacode1 -> $x12 == "SW".
+
+]]>
+  </dependencies>
+</scenario>

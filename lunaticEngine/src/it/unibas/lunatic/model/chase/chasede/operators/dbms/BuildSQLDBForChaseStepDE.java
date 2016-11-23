@@ -375,7 +375,7 @@ public class BuildSQLDBForChaseStepDE implements IBuildDatabaseForDE {
         }
     }
 
-    class ExtractTableThread implements IBackgroundThread {
+    private class ExtractTableThread implements IBackgroundThread {
 
         private String script;
         private AccessConfiguration accessConfiguration;

@@ -2,6 +2,7 @@ package it.unibas.lunatic.model.chase.chasemc.operators.dbms;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.model.chase.chasede.operators.dbms.BuildSQLDBForChaseStepDE;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfDBOIDs;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;
@@ -41,6 +42,9 @@ import speedy.model.algebra.aggregatefunctions.MaxAggregateFunction;
 import speedy.model.algebra.aggregatefunctions.ValueAggregateFunction;
 import speedy.model.algebra.operators.sql.AlgebraTreeToSQL;
 import speedy.model.database.TableAlias;
+import speedy.model.database.dbms.DBMSVirtualTable;
+import speedy.model.thread.IBackgroundThread;
+import speedy.model.thread.ThreadManager;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.SpeedyUtility;
@@ -76,20 +80,22 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStepMC {
         for (String tableName : originalDB.getTableNames()) {
             attributeMap.put(tableName, buildAttributeRefs(originalDB.getTable(tableName)));
         }
-        StringBuilder script = new StringBuilder();
         Map<String, String> tableViews = extractDatabase("\"" + stepId + "\"", "", deltaDB, originalDB, attributeMap, true, distinct, scenario);
+        int maxNumberOfThreads = scenario.getConfiguration().getMaxNumberOfThreads();
+        ThreadManager threadManager = new ThreadManager(maxNumberOfThreads);
         for (String tableName : tableViews.keySet()) {
             String viewScript = tableViews.get(tableName);
-            script.append(viewScript).append("\n");
+            ExtractTableThread exThread = new ExtractTableThread(viewScript, ((DBMSDB) originalDB).getAccessConfiguration());
+            threadManager.startThread(exThread);
         }
-        if (logger.isDebugEnabled()) logger.debug("View paramized script:\n" + script);
-        QueryManager.executeScript(script.toString(), ((DBMSDB) originalDB).getAccessConfiguration(), true, true, true, false);
+        threadManager.waitForActiveThread();
         AccessConfiguration accessConfiguration = ((DBMSDB) deltaDB).getAccessConfiguration();
         String cleanStepId = stepId.replaceAll("\\.", "_");
         if (useHash) {
             cleanStepId = getHash(cleanStepId);
         }
         DBMSVirtualDB virtualDB = new DBMSVirtualDB((DBMSDB) originalDB, ((DBMSDB) deltaDB), "__" + cleanStepId, accessConfiguration);
+        analyzeTables(virtualDB, tableViews.keySet());
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.STEP_DB_BUILDER, end - start);
         if (logger.isInfoEnabled()) logger.info("Generated database for step " + stepId + " - " + (end - start) + " ms");
@@ -134,11 +140,23 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStepMC {
         DBMSVirtualDB virtualDB = new DBMSVirtualDB((DBMSDB) originalDB, ((DBMSDB) deltaDB), "_" + dependency.getId() + "_" + cleanStepId, accessConfiguration);
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.STEP_DB_BUILDER, end - start);
-        if (logger.isInfoEnabled()) logger.info("Generating database for step " + stepId + " and depedency " + dependency+ " - " + (end - start) + " ms");
+        if (logger.isInfoEnabled()) logger.info("Generating database for step " + stepId + " and depedency " + dependency + " - " + (end - start) + " ms");
         if (checkOIDsInTables) {
             oidChecker.checkDatabase(virtualDB);
         }
         return virtualDB;
+    }
+
+    private void analyzeTables(DBMSVirtualDB virtualDB, Set<String> tablesToExtract) {
+        String schemaName = virtualDB.getAccessConfiguration().getSchemaAndSuffix();
+        assert (!virtualDB.getTableNames().isEmpty());
+        for (String tableName : virtualDB.getTableNames()) {
+            if (!tablesToExtract.contains(tableName)) {
+                continue;
+            }
+            DBMSVirtualTable virtualTable = (DBMSVirtualTable) virtualDB.getTable(tableName);
+            QueryManager.executeScript("ANALYZE " + schemaName + "." + virtualTable.getVirtualName(), virtualDB.getAccessConfiguration(), true, true, true, false);
+        }
     }
 
     private Map<String, String> extractDatabase(String stepId, String dependencyId, IDatabase deltaDB, IDatabase originalDB, Map<String, List<AttributeRef>> tablesAndAttributesToExtract, boolean materialize, boolean distinct, Scenario scenario) {
@@ -385,6 +403,23 @@ public class BuildSQLDBForChaseStep implements IBuildDatabaseForChaseStepMC {
                 it.remove();
             }
         }
+    }
+
+    private class ExtractTableThread implements IBackgroundThread {
+
+        private String script;
+        private AccessConfiguration accessConfiguration;
+
+        public ExtractTableThread(String script, AccessConfiguration accessConfiguration) {
+            this.script = script;
+            this.accessConfiguration = accessConfiguration;
+        }
+
+        public void execute() {
+            if (logger.isDebugEnabled()) logger.debug("View paramized script:\n" + script);
+            QueryManager.executeScript(script, accessConfiguration, true, true, true, false);
+        }
+
     }
 
 }

@@ -106,7 +106,7 @@ public class CellGroupCell extends Cell {
 //    }
 
     public String toLongString() {
-        return this.toString() + type + " - toSave:" + toSave + " - last saved CGid=" + (lastSavedCellGroupId == null ? "[]" : lastSavedCellGroupId)
+        return this.toString() + " - " + type + " - toSave:" + toSave + " - last saved CGid=" + (lastSavedCellGroupId == null ? "[]" : lastSavedCellGroupId)
                 + (additionalValue == null ? "" : " additionalValue: " + additionalValue);
     }
 

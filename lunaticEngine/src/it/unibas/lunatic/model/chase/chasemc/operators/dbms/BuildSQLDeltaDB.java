@@ -19,6 +19,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
+import speedy.model.thread.IBackgroundThread;
+import speedy.model.thread.ThreadManager;
 import speedy.persistence.relational.AccessConfiguration;
 import speedy.persistence.relational.QueryManager;
 import speedy.utility.DBMSUtility;
@@ -36,23 +38,47 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         LunaticDBMSUtility.createWorkSchema(accessConfiguration, scenario);
         StringBuilder script = new StringBuilder();
         script.append(createCellGroupTable(accessConfiguration, scenario));
+        QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true, false);
         Set<AttributeRef> affectedAttributes = findAllAffectedAttributes(scenario);
         if (logger.isDebugEnabled()) logger.debug("Affected attributes " + affectedAttributes);
         List<String> deltaTables = new ArrayList<String>();
-        script.append(createDeltaRelationsSchema(database, deltaTables, accessConfiguration, affectedAttributes, scenario));
-        script.append(insertIntoDeltaRelations(database, accessConfiguration, rootName, affectedAttributes, scenario));
-        QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true, false);
-        analyzeDeltaTables(deltaTables, accessConfiguration);
+        createDeltaRelationsSchemaThread(database, deltaTables, accessConfiguration, affectedAttributes, scenario);
+        insertIntoDeltaRelationsThread(database, accessConfiguration, rootName, affectedAttributes, scenario);
+        analyzeDeltaTables(deltaTables, accessConfiguration, scenario.getConfiguration().getMaxNumberOfThreads());
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.DELTA_DB_BUILDER, end - start);
         return deltaDB;
     }
 
-    private void analyzeDeltaTables(List<String> deltaTables, AccessConfiguration accessConfiguration) {
-        QueryManager.executeScript("ANALYZE " + DBMSUtility.getSchemaNameAndDot(accessConfiguration) + LunaticConstants.CELLGROUP_TABLE, accessConfiguration, true, true, true, false);
-        for (String tableName : deltaTables) {
-            QueryManager.executeScript("ANALYZE " + tableName, accessConfiguration, true, true, true, false);
+    private void createDeltaRelationsSchemaThread(IDatabase database, List<String> deltaTables, AccessConfiguration accessConfiguration, Set<AttributeRef> affectedAttributes, Scenario scenario) {
+        int maxNumberOfThreads = scenario.getConfiguration().getMaxNumberOfThreads();
+        ThreadManager threadManager = new ThreadManager(maxNumberOfThreads);
+        for (String tableName : database.getTableNames()) {
+            CreateDeltaRelationThread exThread = new CreateDeltaRelationThread(accessConfiguration, database, tableName, deltaTables, affectedAttributes, scenario);
+            threadManager.startThread(exThread);
         }
+        threadManager.waitForActiveThread();
+    }
+
+    private void insertIntoDeltaRelationsThread(IDatabase database, AccessConfiguration accessConfiguration, String rootStepId, Set<AttributeRef> affectedAttributes, Scenario scenario) {
+        int maxNumberOfThreads = scenario.getConfiguration().getMaxNumberOfThreads();
+        ThreadManager threadManager = new ThreadManager(maxNumberOfThreads);
+        for (String tableName : database.getTableNames()) {
+            InsertIntoDeltaRelationThread exThread = new InsertIntoDeltaRelationThread(accessConfiguration, rootStepId, database, tableName, affectedAttributes, scenario);
+            threadManager.startThread(exThread);
+        }
+        threadManager.waitForActiveThread();
+    }
+//
+
+    private void analyzeDeltaTables(List<String> deltaTables, AccessConfiguration accessConfiguration, int maxNumberOfThreads) {
+        QueryManager.executeScript("ANALYZE " + DBMSUtility.getSchemaNameAndDot(accessConfiguration) + LunaticConstants.CELLGROUP_TABLE, accessConfiguration, true, true, true, false);
+        ThreadManager threadManager = new ThreadManager(maxNumberOfThreads);
+        for (String tableName : deltaTables) {
+            AnalyzeTableThread analyzeThread = new AnalyzeTableThread(tableName, accessConfiguration);
+            threadManager.startThread(analyzeThread);
+        }
+        threadManager.waitForActiveThread();
     }
 
     private String createCellGroupTable(AccessConfiguration accessConfiguration, Scenario scenario) {
@@ -73,31 +99,6 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         script.append(SpeedyConstants.INDENT).append(LunaticConstants.CELL_TYPE).append(" text").append("\n");
         script.append(") WITH OIDS;").append("\n\n");
         if (logger.isDebugEnabled()) logger.debug("----Generating occurrences tables: " + script);
-        return script.toString();
-    }
-
-    private String createDeltaRelationsSchema(IDatabase database, List<String> deltaTables, AccessConfiguration accessConfiguration, Set<AttributeRef> affectedAttributes, Scenario scenario) {
-        String deltaDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario);
-        StringBuilder script = new StringBuilder();
-        script.append("----- Generating Delta Relations Schema -----\n");
-        for (String tableName : database.getTableNames()) {
-            DBMSTable table = (DBMSTable) database.getTable(tableName);
-            List<Attribute> tableNonAffectedAttributes = new ArrayList<Attribute>();
-            for (Attribute attribute : table.getAttributes()) {
-                if (attribute.getName().equals(SpeedyConstants.OID)) {
-                    continue;
-                }
-                if (isAffected(new AttributeRef(table.getName(), attribute.getName()), affectedAttributes)) {
-                    script.append(createDeltaRelationSchemaAndTrigger(deltaDBSchema, deltaTables, table.getName(), attribute.getName(), attribute.getType(), scenario));
-                } else {
-                    tableNonAffectedAttributes.add(attribute);
-                }
-            }
-            if (!tableNonAffectedAttributes.isEmpty()) {
-                script.append(createTableForNonAffected(deltaDBSchema, deltaTables, table.getName(), tableNonAffectedAttributes, scenario));
-            }
-        }
-        if (logger.isDebugEnabled()) logger.debug("\n----Generating Delta Relations Schema: " + script);
         return script.toString();
     }
 
@@ -140,32 +141,6 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         LunaticUtility.removeChars(",\n".length(), script);
         script.append("\n").append(") WITH OIDS;").append("\n\n");
 //        script.append("CREATE INDEX ").append(deltaRelationName).append("_oid  ON ").append(deltaDBSchema).append(".").append(deltaRelationName).append(" USING btree(tid ASC);\n");
-        return script.toString();
-    }
-
-    private String insertIntoDeltaRelations(IDatabase database, AccessConfiguration accessConfiguration, String rootStepId, Set<AttributeRef> affectedAttributes, Scenario scenario) {
-        String originalDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(((DBMSDB) database).getAccessConfiguration(), scenario);
-        String deltaDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario);
-        StringBuilder script = new StringBuilder();
-        script.append("----- Insert into Delta Relations -----\n");
-        for (String tableName : database.getTableNames()) {
-            DBMSTable table = (DBMSTable) database.getTable(tableName);
-            List<Attribute> tableNonAffectedAttributes = new ArrayList<Attribute>();
-            for (Attribute attribute : table.getAttributes()) {
-                if (attribute.getName().equals(SpeedyConstants.OID)) {
-                    continue;
-                }
-                if (isAffected(new AttributeRef(table.getName(), attribute.getName()), affectedAttributes)) {
-                    script.append(insertIntoDeltaRelation(originalDBSchema, deltaDBSchema, table.getName(), attribute.getName(), rootStepId));
-                } else {
-                    tableNonAffectedAttributes.add(attribute);
-                }
-            }
-            if (!tableNonAffectedAttributes.isEmpty()) {
-                script.append(insertIntoNonAffectedRelation(originalDBSchema, deltaDBSchema, table.getName(), tableNonAffectedAttributes));
-            }
-        }
-        if (logger.isDebugEnabled()) logger.debug("----Insert into Delta Relations: " + script);
         return script.toString();
     }
 
@@ -283,5 +258,110 @@ public class BuildSQLDeltaDB extends AbstractBuildDeltaDB {
         result.append("'").append(LunaticConstants.TYPE_OCCURRENCE).append("'").append(");\n");
         result.append(indent).append("END IF;").append("\n");
         return result.toString();
+    }
+
+    private class CreateDeltaRelationThread implements IBackgroundThread {
+
+        private AccessConfiguration accessConfiguration;
+        private IDatabase database;
+        private String tableName;
+        private List<String> deltaTables;
+        private Set<AttributeRef> affectedAttributes;
+        private Scenario scenario;
+
+        public CreateDeltaRelationThread(AccessConfiguration accessConfiguration, IDatabase database, String tableName, List<String> deltaTables, Set<AttributeRef> affectedAttributes, Scenario scenario) {
+            this.accessConfiguration = accessConfiguration;
+            this.database = database;
+            this.tableName = tableName;
+            this.deltaTables = deltaTables;
+            this.affectedAttributes = affectedAttributes;
+            this.scenario = scenario;
+        }
+
+        public void execute() {
+            String deltaDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario);
+            StringBuilder script = new StringBuilder();
+            script.append("----- Generating Delta Relations Schema -----\n");
+            DBMSTable table = (DBMSTable) database.getTable(tableName);
+            List<Attribute> tableNonAffectedAttributes = new ArrayList<Attribute>();
+            for (Attribute attribute : table.getAttributes()) {
+                if (attribute.getName().equals(SpeedyConstants.OID)) {
+                    continue;
+                }
+                if (isAffected(new AttributeRef(table.getName(), attribute.getName()), affectedAttributes)) {
+                    script.append(createDeltaRelationSchemaAndTrigger(deltaDBSchema, deltaTables, table.getName(), attribute.getName(), attribute.getType(), scenario));
+                } else {
+                    tableNonAffectedAttributes.add(attribute);
+                }
+            }
+            if (!tableNonAffectedAttributes.isEmpty()) {
+                script.append(createTableForNonAffected(deltaDBSchema, deltaTables, table.getName(), tableNonAffectedAttributes, scenario));
+            }
+            if (logger.isDebugEnabled()) logger.debug("\n----Generating Delta Relations Schema: " + script);
+            QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true, false);
+        }
+
+    }
+
+    private class InsertIntoDeltaRelationThread implements IBackgroundThread {
+
+        private AccessConfiguration accessConfiguration;
+        private String rootStepId;
+        private IDatabase database;
+        private String tableName;
+        private Set<AttributeRef> affectedAttributes;
+        private Scenario scenario;
+
+        public InsertIntoDeltaRelationThread(AccessConfiguration accessConfiguration, String rootStepId, IDatabase database, String tableName, Set<AttributeRef> affectedAttributes, Scenario scenario) {
+            this.accessConfiguration = accessConfiguration;
+            this.rootStepId = rootStepId;
+            this.database = database;
+            this.tableName = tableName;
+            this.affectedAttributes = affectedAttributes;
+            this.scenario = scenario;
+        }
+
+        public void execute() {
+            String originalDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(((DBMSDB) database).getAccessConfiguration(), scenario);
+            String deltaDBSchema = LunaticDBMSUtility.getSchemaWithSuffix(accessConfiguration, scenario);
+            StringBuilder script = new StringBuilder();
+            script.append("----- Insert into Delta Relations -----\n");
+            DBMSTable table = (DBMSTable) database.getTable(tableName);
+            List<Attribute> tableNonAffectedAttributes = new ArrayList<Attribute>();
+            for (Attribute attribute : table.getAttributes()) {
+                if (attribute.getName().equals(SpeedyConstants.OID)) {
+                    continue;
+                }
+                if (isAffected(new AttributeRef(table.getName(), attribute.getName()), affectedAttributes)) {
+                    script.append(insertIntoDeltaRelation(originalDBSchema, deltaDBSchema, table.getName(), attribute.getName(), rootStepId));
+                } else {
+                    tableNonAffectedAttributes.add(attribute);
+                }
+            }
+            if (!tableNonAffectedAttributes.isEmpty()) {
+                script.append(insertIntoNonAffectedRelation(originalDBSchema, deltaDBSchema, table.getName(), tableNonAffectedAttributes));
+            }
+            if (logger.isDebugEnabled()) logger.debug("----Insert into Delta Relations: " + script);
+            QueryManager.executeScript(script.toString(), accessConfiguration, true, true, true, false);
+        }
+
+    }
+
+    private class AnalyzeTableThread implements IBackgroundThread {
+
+        private String tableName;
+        private AccessConfiguration accessConfiguration;
+
+        public AnalyzeTableThread(String tableName, AccessConfiguration accessConfiguration) {
+            this.tableName = tableName;
+            this.accessConfiguration = accessConfiguration;
+        }
+
+        public void execute() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("ANALYZE ").append(tableName).append(";\n");
+            QueryManager.executeScript(sb.toString(), accessConfiguration, true, true, true, false);
+        }
+
     }
 }

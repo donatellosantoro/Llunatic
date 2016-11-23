@@ -18,7 +18,6 @@ public class TestSQLSyntheticTGD03 extends CheckExpectedSolutionsTest {
     public void testScenario() throws Exception {
         Scenario scenario = UtilityTest.loadScenarioFromResources(References.synthetic_T03_dbms, true);
         setConfigurationForTest(scenario);
-//        ChaserFactory.setDoBackward(false);
         if (logger.isDebugEnabled()) logger.debug(scenario.toString());
         ChaseMCScenario chaser = ChaserFactoryMC.getChaser(scenario);
         DeltaChaseStep result = chaser.doChase(scenario);

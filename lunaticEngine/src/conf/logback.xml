@@ -21,7 +21,7 @@
     <!--<logger name="it.unibas.lunatic.test" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
-    <!--<logger name="speedy.persistence.relational.QueryStatManager" level="DEBUG"/>-->
+    <!--<logger name="speedy.persistence.relational.QueryStatManager" level="TRACE"/>-->
     <!--<logger name="speedy.persistence.relational.QueryManager" level="TRACE"/>-->
     <!--<logger name="speedy.persistence.file.operators.ExportCSVFileWithCopy" level="TRACE"/>-->
 
@@ -118,9 +118,10 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseSymmetricEGDEquivalenceClass" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.costmanager.StandardCostManager" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.EquivalenceClassUtility" level="TRACE"/>-->
-    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.ChaseMCScenario" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseMCScenario" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseDeltaExtEGDs" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.ChaseExtEGDEquivalenceClass" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDeltaDB" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.partialorder.StandardPartialOrder" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CorrectCellGroupID" level="DEBUG"/>-->
@@ -145,6 +146,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chaseded.ChaseDEDScenarioGreedy" level="DEBUG"/>-->
 
     <!--     OTHERS     -->
+    <!--<logger name="speedy.utility.DBMSUtility" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.ScriptUtility" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.test.comparator.instances.CompareInstances" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.PooledDbConnectionFactory" level="TRACE"/>-->

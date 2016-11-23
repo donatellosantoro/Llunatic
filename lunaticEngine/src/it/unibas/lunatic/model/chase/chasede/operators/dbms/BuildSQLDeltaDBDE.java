@@ -223,7 +223,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
         return result.toString();
     }
 
-    class CreateDeltaRelationThread implements IBackgroundThread {
+    private class CreateDeltaRelationThread implements IBackgroundThread {
 
         private AccessConfiguration accessConfiguration;
         private IDatabase database;
@@ -264,7 +264,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
 
     }
 
-    class InsertIntoDeltaRelationThread implements IBackgroundThread {
+    private class InsertIntoDeltaRelationThread implements IBackgroundThread {
 
         private AccessConfiguration accessConfiguration;
         private IDatabase database;
@@ -305,7 +305,7 @@ public class BuildSQLDeltaDBDE extends AbstractBuildDeltaDB {
 
     }
 
-    class AnalyzeTableThread implements IBackgroundThread {
+    private class AnalyzeTableThread implements IBackgroundThread {
 
         private String tableName;
         private AccessConfiguration accessConfiguration;

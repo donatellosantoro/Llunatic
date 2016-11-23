@@ -64,7 +64,8 @@ public class ChaseTGDEquivalenceClass {
             Scenario scenario, IChaseState chaseState, IDatabase databaseForStep) {
         if (logger.isDebugEnabled()) logger.debug("** Chasing dependency " + tgd);
         if (logger.isDebugEnabled()) logger.debug("Database " + databaseForStep.printInstances());
-        if (logger.isDebugEnabled()) logger.debug("DeltaDB " + currentNode.getDeltaDB().printInstances());
+        if (logger.isTraceEnabled()) logger.trace("DeltaDB " + currentNode.getDeltaDB().printInstances());
+        if (logger.isDebugEnabled()) logger.debug("Current Step " + currentNode.toLongStringLeavesOnlyWithSort());
         if (logger.isTraceEnabled()) logger.debug("Query " + query);
         long violationQueryStart = new Date().getTime();
         ITupleIterator it = queryRunner.run(query, scenario.getSource(), databaseForStep);
@@ -228,8 +229,10 @@ public class ChaseTGDEquivalenceClass {
                 tuplesToGenerate.addAll(getTupleOIDs(mergedCellsToInsert));
             }
         }
+        tuplesToGenerate.removeAll(candidateTuplesToRemoveDueToSAU);
         if (logger.isDebugEnabled()) logger.debug("Tuples to remove due to SAU: " + candidateTuplesToRemoveDueToSAU);
         if (logger.isDebugEnabled()) logger.debug("Tuples to generate: " + tuplesToGenerate);
+        if (logger.isDebugEnabled()) logger.debug("Subsumed cell groups: " + subsumedCellGroups);
         for (TGDEquivalenceClassCells cellGroup : subsumedCellGroups) {
             if (isToKeep(cellGroup, tuplesToGenerate)) {
                 if (logger.isDebugEnabled()) logger.debug("Cell group needed " + cellGroup);

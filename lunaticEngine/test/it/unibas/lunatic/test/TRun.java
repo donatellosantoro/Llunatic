@@ -28,14 +28,16 @@ public class TRun extends TestCase {
 //        String path = "/chasebench/tools/llunatic/input/deep/deep-200-mcscenario-dbms.xml";
 //        String path = "/chasebench/tools/llunatic/input/doctors/doctors-10k-mcscenario-dbms.xml";
 //        String path = "/chasebench/tools/llunatic/input/doctors/doctors-500k-mcscenario-dbms.xml";
+//        String path = "/chasebench/tools/llunatic/input/doctors/doctors-1m-mcscenario-dbms.xml";
 //        String path = "/chasebench/tools/llunatic/input/doctors-fd/doctors-fd-10k-mcscenario-dbms.xml";
 //        String path = "/chasebench/tools/llunatic/input/doctors-fd/doctors-fd-10k-mcscenario-dbms.xml";
 //        String path = "/chasebench/tools/llunatic/input/doctors-fd/doctors-fd-1m-mcscenario-dbms.xml";
 //        String path = "/chasebench/tools/llunatic/input-stonly/doctors/doctors-10k-mcscenario-dbms.xml";
 //        String path = "/chasebench/tools/llunatic/input-stonly/doctors/doctors-100k-mcscenario-dbms.xml";
-        String path = "/chasebench/tools/llunatic/input-stonly/doctors/doctors-1m-mcscenario-dbms.xml";
+//        String path = "/chasebench/tools/llunatic/input-stonly/doctors/doctors-1m-mcscenario-dbms.xml";
 //        String path = "/chasebench/tools/llunatic/input-stonly/doctors/doctors-500k-mcscenario-dbms.xml";
 //        String path = "/Users/donatello/Temp/chaseBench-workspace/STB-128-lite/STB-128-lite-mcscenario-dbms.xml";
+        String path = "/Users/donatello/Temp/chaseBench-workspace/500/general-mcscenario-dbms.xml";
 //        Main.main(new String[]{path});
 //        MainExp.main(new String[]{path});
         MainExp.main(new String[]{path, "-printTargetStats=true", "-printsteps=true"});

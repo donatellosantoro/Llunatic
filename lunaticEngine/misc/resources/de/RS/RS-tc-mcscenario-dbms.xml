@@ -15,7 +15,7 @@ create schema source;
 SET search_path = source, pg_catalog;
 
 create table r (
-  a varchar(50),
+  a varchar(50) not null,
   b varchar(50)
 ) with oids;
 

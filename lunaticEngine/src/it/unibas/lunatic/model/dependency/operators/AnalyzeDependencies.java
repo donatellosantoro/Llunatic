@@ -10,7 +10,6 @@ import it.unibas.lunatic.model.dependency.ExtendedEGD;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.EGDStratum;
 import it.unibas.lunatic.utility.LunaticUtility;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;

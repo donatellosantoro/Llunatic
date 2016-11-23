@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import speedy.model.database.LLUNValue;
 import speedy.model.database.NullValue;
 import speedy.model.database.TupleOID;
+import speedy.utility.SpeedyUtility;
 
 public class CheckSatisfactionAfterUpgradesTGD {
 
@@ -36,18 +37,23 @@ public class CheckSatisfactionAfterUpgradesTGD {
         }
         CellGroup existingCellGroup = update.getCellGroup();
         Set<CellGroupCell> newCells = update.getNewCells();
-        if (logger.isDebugEnabled()) logger.debug("Canonical cell group: " + canonicalCellGroup);
-        if (logger.isDebugEnabled()) logger.debug("Canonical new cells: " + newCells);
+        if (logger.isDebugEnabled()) logger.debug("Canonical cell group: " + canonicalCellGroup + " with new cells: " + newCells);
         if (logger.isDebugEnabled()) logger.debug("Existing cell group: " + existingCellGroup);
-        Map<String, Set<TupleOID>> oidMapForNewCells = generateOidMap(update.getNewCells());
+        if (logger.isDebugEnabled()) logger.debug("Existing cell group cells: " + existingCellGroup.getAllCells());
+        Map<String, Set<TupleOID>> oidMapForNewCells = generateOidMap(newCells);
         Map<String, Set<TupleOID>> oidMapForExisting = generateOidMap(existingCellGroup.getAllCells());
-        for (Map<TupleOID, TupleOID> idMapping : generateIdMapping(oidMapForNewCells, oidMapForExisting)) {
+        List<Map<TupleOID, TupleOID>> idMappings = generateIdMapping(oidMapForNewCells, oidMapForExisting);
+        if (logger.isDebugEnabled()) logger.debug("Id mappings: " + SpeedyUtility.printCollection(idMappings));
+        for (Map<TupleOID, TupleOID> idMapping : idMappings) {
             CellGroup canonicalWithMapping = generateCanonicalUpdateWithMapping(canonicalCellGroup, existingCellGroup, newCells, idMapping);
+            if (logger.isDebugEnabled()) logger.debug("Canonical cell group after id mapping: " + canonicalWithMapping);
             if (canonicalWithMapping == null) {
+                if (logger.isDebugEnabled()) logger.debug("Canonical is null, continuing...");
                 continue;
             }
             List<CellGroup> cellGroupsToCheck = Arrays.asList(new CellGroup[]{canonicalWithMapping, existingCellGroup});
             boolean lubIsIdempotent = CellGroupUtility.checkContainment(cellGroupsToCheck);
+            if (logger.isDebugEnabled()) logger.debug("LUB is idempotent? " + lubIsIdempotent);
             if (lubIsIdempotent) {
                 if (logger.isDebugEnabled()) logger.debug("Found idempotent cell groups with mapping:\n" + LunaticUtility.printMap(idMapping) + "\n" + canonicalWithMapping + "\n" + existingCellGroup);
                 return true;
@@ -71,11 +77,13 @@ public class CheckSatisfactionAfterUpgradesTGD {
 
     @SuppressWarnings("unchecked")
     private List<Map<TupleOID, TupleOID>> generateIdMapping(Map<String, Set<TupleOID>> oidMapForNewCells, Map<String, Set<TupleOID>> oidMapForExisting) {
+        if (logger.isDebugEnabled()) logger.debug("Generating id mapping for\nOid map for new cells " + SpeedyUtility.printMap(oidMapForNewCells) + "\nOid map for existings cells " + SpeedyUtility.printMap(oidMapForExisting));
         List<MatchingOidsForTable> listOfMatchingOids = new ArrayList<MatchingOidsForTable>();
         for (String tableName : oidMapForNewCells.keySet()) { 
             Set<TupleOID> oidsInNewCells = oidMapForNewCells.get(tableName);
             Set<TupleOID> oidsInExisting = oidMapForExisting.get(tableName);
             if (oidsInExisting == null || oidsInExisting.isEmpty()) {
+                if (logger.isDebugEnabled()) logger.debug("Table " + tableName + " is not mapped");
                 return Collections.EMPTY_LIST;
             }
             listOfMatchingOids.add(new MatchingOidsForTable(tableName, oidsInNewCells, oidsInExisting));
