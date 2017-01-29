@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import speedy.model.algebra.IAlgebraOperator;
 import speedy.model.database.IDatabase;
+import speedy.model.database.operators.IOIDGenerator;
 import speedy.model.database.operators.IRunQuery;
 
 public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
@@ -136,6 +137,6 @@ public class ChaseDeltaExtTGDs implements IChaseDeltaExtTGDs {
 
     @Override
     public void initializeOIDs(IDatabase targetDB, Scenario scenario) {
-        this.oidGenerator.initializeOIDs(targetDB, scenario);
+        this.oidGenerator.initializeOIDs(targetDB);
     }
 }

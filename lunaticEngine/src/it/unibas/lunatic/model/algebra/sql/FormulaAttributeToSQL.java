@@ -17,23 +17,29 @@ import it.unibas.lunatic.model.generators.operators.SQLGenerateFreshNullForStand
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import speedy.SpeedyConstants;
+import speedy.model.algebra.operators.sql.ExpressionToSQL;
 import speedy.model.database.Attribute;
 import speedy.model.database.AttributeRef;
+import speedy.model.expressions.Expression;
 import speedy.utility.DBMSUtility;
 import speedy.utility.SpeedyUtility;
 
 public class FormulaAttributeToSQL {
 
+    private final static Logger logger = LoggerFactory.getLogger(FormulaAttributeToSQL.class);
     private MainMemoryGenerateFreshNullsForStandardChase mmGenerator = new MainMemoryGenerateFreshNullsForStandardChase();
     private SQLGenerateFreshNullForStandardChase sqlGenerator = new SQLGenerateFreshNullForStandardChase();
+    private ExpressionToSQL sqlExpressionGenerator = new ExpressionToSQL();
 
     public FormulaAttributeToSQL() {
     }
 
     public String generateSQL(FormulaAttribute attribute, Dependency dependency, Map<FormulaVariable, IValueGenerator> generatorMap, Scenario scenario) {
         if (attribute.getValue() instanceof FormulaExpression) {
-            throw new UnsupportedOperationException("Target expressions are not supported yet in SQL script");
+            return generateSQLFromExpression((FormulaExpression) attribute.getValue(), scenario);
         } else if (attribute.getValue() instanceof FormulaConstant) {
             FormulaConstant constant = (FormulaConstant) attribute.getValue();
             return "'" + constant.toString() + "'";
@@ -136,6 +142,11 @@ public class FormulaAttributeToSQL {
             }
         }
         return result;
+    }
+
+    private String generateSQLFromExpression(FormulaExpression formulaExpression, Scenario scenario) {
+        Expression expression = formulaExpression.getExpression();
+        return sqlExpressionGenerator.expressionToSQL(expression, false, scenario.getSource(), scenario.getTarget());
     }
 
 }

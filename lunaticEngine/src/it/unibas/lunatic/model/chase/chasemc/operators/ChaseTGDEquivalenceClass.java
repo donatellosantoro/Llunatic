@@ -38,6 +38,7 @@ import speedy.model.database.NullValue;
 import speedy.model.database.TableAlias;
 import speedy.model.database.Tuple;
 import speedy.model.database.TupleOID;
+import speedy.model.database.operators.IOIDGenerator;
 import speedy.model.database.operators.IRunQuery;
 import speedy.utility.SpeedyUtility;
 

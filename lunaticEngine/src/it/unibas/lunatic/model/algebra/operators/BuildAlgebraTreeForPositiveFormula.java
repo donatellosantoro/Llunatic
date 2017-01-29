@@ -4,6 +4,7 @@ import it.unibas.lunatic.model.dependency.BuiltInAtom;
 import it.unibas.lunatic.model.dependency.ComparisonAtom;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaAttribute;
+import it.unibas.lunatic.model.dependency.FormulaExpression;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
@@ -166,7 +167,18 @@ public class BuildAlgebraTreeForPositiveFormula {
             }
             AttributeRef attributeRef = new AttributeRef(relationalAtom.getTableAlias(), attribute.getAttributeName());
             Expression selection;
-            if (attribute.getValue().isNull()) {
+            if (attribute.getValue() instanceof FormulaExpression) {
+                //TODO: Skipping selection?
+                continue;
+//                FormulaExpression formulaExpression = (FormulaExpression) attribute.getValue();
+//                Expression expression = formulaExpression.getExpression();
+//                selection = new Expression(attribute.getAttributeName() + "==" + expression.toString());
+//                for (String variable : expression.getVariables()) {
+//                    Variable var = expression.getJepExpression().getVar(variable);
+//                    Object description = var.getDescription();
+//                    selection.changeVariableDescription(var.getName(), description);
+//                }
+            } else if (attribute.getValue().isNull()) {
                 selection = new Expression("isNull(" + attribute.getAttributeName() + ")");
             } else {
                 selection = new Expression(attribute.getAttributeName() + "==" + attribute.getValue());

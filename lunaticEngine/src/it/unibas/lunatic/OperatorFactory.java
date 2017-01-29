@@ -23,18 +23,17 @@ import it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependenc
 import it.unibas.lunatic.model.chase.commons.operators.IBuildDeltaDB;
 import it.unibas.lunatic.model.chase.chasemc.operators.IChaseDeltaExtTGDs;
 import it.unibas.lunatic.model.chase.chasemc.operators.IExportSolution;
-import it.unibas.lunatic.model.chase.chasemc.operators.IOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.OccurrenceHandlerMC;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.BuildSQLDeltaDB;
-import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLOIDGenerator;
+import speedy.model.database.operators.dbms.SQLOIDGenerator;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedyMultiStepJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedySingleStepJCSCacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.ICacheManager;
 import it.unibas.lunatic.model.chase.chasemc.operators.dbms.SQLExportSolution;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDBForChaseStep;
 import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.BuildMainMemoryDeltaDB;
-import it.unibas.lunatic.model.chase.chasemc.operators.mainmemory.MainMemoryOIDGenerator;
+import speedy.model.database.operators.mainmemory.MainMemoryOIDGenerator;
 import it.unibas.lunatic.model.similarity.SimilarityFactory;
 import it.unibas.lunatic.persistence.relational.GenerateModifiedCells;
 import java.util.HashMap;
@@ -76,6 +75,7 @@ import it.unibas.lunatic.model.chase.chasede.operators.mainmemory.MainMemoryRepl
 import it.unibas.lunatic.model.chase.chasemc.operators.IBuildDatabaseForChaseStepMC;
 import it.unibas.lunatic.model.chase.chasemc.operators.cache.GreedyDEJCSCacheManager;
 import speedy.model.database.operators.IAnalyzeDatabase;
+import speedy.model.database.operators.IOIDGenerator;
 import speedy.model.database.operators.dbms.SQLAnalyzeDatabase;
 import speedy.model.database.operators.mainmemory.MainMemoryAnalyzeDatabase;
 

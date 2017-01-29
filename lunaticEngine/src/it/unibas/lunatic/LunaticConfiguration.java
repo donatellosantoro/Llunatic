@@ -70,7 +70,7 @@ public class LunaticConfiguration {
 
     public LunaticConfiguration() {
         this(LunaticConstants.CHASE_PARALLEL_RESTRICTED_SKOLEM);
-//        this(LunaticConstants.CHASE_UNRESTRICTED_SKOLEM);
+//        this(LunaticConstants.CHASE_UNRESTRICTED_SKOLEM); //Requires Postgres >= 9.5
 //        this(LunaticConstants.CHASE_RESTRICTED_FRESH_NULL);
 //        this(LunaticConstants.CHASE_RESTRICTED_SKOLEM);
     }

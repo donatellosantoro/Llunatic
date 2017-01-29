@@ -42,8 +42,8 @@ public class RewriteSTTGDs {
             long end = new Date().getTime();
             ChaseStats.getInstance().addStat(ChaseStats.STTGD_REWRITING, end-start);
         } catch (DAOException ex) {
-            logger.error("Unable to rewrite ST-TGDs: " + ex.getLocalizedMessage());
-            throw new it.unibas.lunatic.exceptions.DAOException("Unable to rewrite ST-TGDs: " + ex.getLocalizedMessage());
+//            logger.warn("Unable to rewrite ST-TGDs: " + ex.getLocalizedMessage());
+//            throw new it.unibas.lunatic.exceptions.DAOException("Unable to rewrite ST-TGDs: " + ex.getLocalizedMessage());
         }
     }
 

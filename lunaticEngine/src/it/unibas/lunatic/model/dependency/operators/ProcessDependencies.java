@@ -294,7 +294,7 @@ public class ProcessDependencies {
         recursionChecker.checkRecursion(dependency);
         aliasAssigner.assignAliases(dependency);
         variableFinder.findVariables(dependency, scenario.getSource().getTableNames(), scenario.getAuthoritativeSources());
-        checker.checkVariables(dependency);
+        checker.checkVariables(dependency, scenario);
         equivalenceClassFinder.findVariableEquivalenceClasses(dependency);
     }
 
