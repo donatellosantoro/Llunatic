@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+  <source>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:bookpublisher_sk</uri>
+      <schema>source</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema source;
+SET search_path = source, pg_catalog;
+
+create table ibdbookset (
+    oid serial,
+  title varchar(50)
+) ;
+
+create table locset (
+    oid serial,
+  title varchar(50),
+  publisher varchar(50)
+) ;
+
+create table iblbookset (
+    oid serial,
+  title varchar(50),
+  pubid varchar(50)
+) ;
+
+create table iblpublisherset (
+    oid serial,
+  id varchar(50),
+  name varchar(50)
+) ;
+
+insert into ibdbookset values (1, 'The Hobbit');
+insert into ibdbookset values (2, 'The Da Vinci Code');
+insert into ibdbookset values (3, 'The Lord of the Rings');
+
+insert into locset values (4, 'The Lord of the Rings', 'Houghton');
+insert into locset values (5, 'The Catcher in the Rye', 'Lb Books');
+
+insert into iblbookset values (6, 'The Hobbit', '245');
+insert into iblbookset values (7, 'The Catcher in the Rye', '901');
+
+insert into iblpublisherset values (8, '245', 'Ballantine');
+insert into iblpublisherset values (9, '901', 'Lb Books');
+]]>
+    </init-db>
+  </source>
+  <target>
+    <type>DBMS</type>
+    <access-configuration>
+      <driver>org.postgresql.Driver</driver>
+      <uri>jdbc:postgresql:bookpublisher_sk</uri>
+      <schema>target</schema>
+      <login>pguser</login>
+      <password>pguser</password>
+    </access-configuration>
+    <init-db>
+<![CDATA[
+create schema target;
+SET search_path = target, pg_catalog;
+
+create table bookset (
+    oid serial,
+    title varchar(255),
+    pubid varchar(255)
+) ;
+
+create table publisherset (
+    oid serial,
+    id varchar(255),
+    name varchar(255)
+) ;
+
+create table publishersetcopy (
+    oid serial,
+    id varchar(255),
+    name varchar(255)
+) ;
+]]>
+    </init-db>
+  </target>
+  <dependencies>
+<![CDATA[
+STTGDs:
+ibdbookset(title: $t) -> bookset(title: $t, pubid: {append("_SK",$t)}).
+iblbookset(title: $t, pubid: $i) -> bookset(title: $t, pubid: $i).
+iblpublisherset(id: $i, name: $n) -> publisherset(id: $i, name: $n).
+locset(title: $t, publisher: $p) -> publisherset(id: {append("_SK",$p, $t)}, name: $p), bookset(title: $t, pubid: {append("_SK",$p, $t)}).
+ExtTGDs:
+publisherset(id: $i, name: $n) -> publishersetcopy(id: {append("_SK",$n)}, name: $n).
+EGDs:
+bookset(title: $t, pubid: $i1), bookset(title: $t, pubid: $i2) -> $i1 == $i2.
+publisherset(id: $id1, name: $name), publisherset(id: $id2, name: $name) -> $id1 == $id2.
+]]>
+  </dependencies>
+  <partialOrder/>
+</scenario>
+

@@ -1,0 +1,16 @@
+treatment(?id,?patient,?hospital,?npi,?conf1),
+physician(?npi,?name,?spec,?conf2) ->
+    prescription(?id,?patient,?npi,{append("F_",$id,$patient,$npi)}) .
+
+treatment(?id,?patient,?hospital,?npi,?conf1),
+physician(?npi,?name,?spec,?conf2) ->
+    doctor(?npi,?name,?spec,?hospital,{append("F_",$npi,$name,$spec,$hospital)}) .
+
+medprescription(?id,?patient,?npi,?doctor,?spec,?conf) ->
+    prescription(?id,?patient,?npi,{append("F_",$id,$patient,$npi)}) .
+
+medprescription(?id,?patient,?npi,?doctor,?spec,?conf) ->
+    doctor(?npi,?doctor,?spec,{append("FHosp_",$npi,$doctor,$spec)},{append("F_",$npi,$doctor,$spec)}) .
+
+hospital(?doctor,?spec,?hospital1,?npi1,?hconf1) ->
+    targethospital(?doctor,?spec,?hospital1,?npi1,?hconf1) .

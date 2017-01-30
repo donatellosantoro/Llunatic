@@ -12,7 +12,7 @@ import speedy.model.database.AttributeRef;
 import speedy.model.expressions.Expression;
 
 public class CheckVariablesInExpressions {
-
+    
     public void checkVariables(Dependency dependency, Scenario scenario) {
         CheckFormulaVariablesVisitor visitor = new CheckFormulaVariablesVisitor();
         visitor.setScenario(scenario);
@@ -21,26 +21,26 @@ public class CheckVariablesInExpressions {
 }
 
 class CheckFormulaVariablesVisitor implements IFormulaVisitor {
-
+    
     private static Logger logger = LoggerFactory.getLogger(CheckVariablesInExpressions.class);
-
+    
     private Dependency dependency;
     private Scenario scenario;
-
+    
     public void visitDependency(Dependency dependency) {
         this.dependency = dependency;
         dependency.getPremise().accept(this);
         dependency.getConclusion().accept(this);
     }
-
+    
     public Scenario getScenario() {
         return scenario;
     }
-
+    
     public void setScenario(Scenario scenario) {
         this.scenario = scenario;
     }
-
+    
     public void visitPositiveFormula(PositiveFormula formula) {
         for (IFormulaAtom atom : formula.getAtoms()) {
             if ((atom instanceof QueryAtom)) {
@@ -65,7 +65,7 @@ class CheckFormulaVariablesVisitor implements IFormulaVisitor {
         }
         if (logger.isDebugEnabled()) logger.debug("Variables found in dependency: " + dependency.getId() + "\n" + LunaticUtility.printVariablesWithOccurrences(dependency.getPremise().getLocalVariables()) + "\n" + LunaticUtility.printVariablesWithOccurrences(dependency.getConclusion().getLocalVariables()));
     }
-
+    
     private void visitExpressionInRelationalAtom(Expression expression, FormulaAttribute attribute, RelationalAtom atom, PositiveFormula formula) throws ParserException {
         if (logger.isDebugEnabled()) logger.debug("Visiting expression: " + expression);
         List<String> variableIds = expression.getVariables();
@@ -83,7 +83,7 @@ class CheckFormulaVariablesVisitor implements IFormulaVisitor {
             if (logger.isDebugEnabled()) logger.debug("Adding non relational occurrence to variable " + variable + " in atom " + atom);
         }
     }
-
+    
     private void visitExpressionAtom(Expression expression, IFormulaAtom atom, PositiveFormula formula) throws ParserException {
         if (logger.isDebugEnabled()) logger.debug("Visiting expression: " + expression);
         List<String> variableIds = expression.getVariables();
@@ -101,18 +101,18 @@ class CheckFormulaVariablesVisitor implements IFormulaVisitor {
             if (logger.isDebugEnabled()) logger.debug("Adding non relational occurrence to variable " + variable + " in atom " + atom);
         }
     }
-
+    
     public void visitFormulaWithNegations(FormulaWithNegations formula) {
         formula.getPositiveFormula().accept(this);
         for (IFormula negatedFormula : formula.getNegatedSubFormulas()) {
             negatedFormula.accept(this);
         }
     }
-
+    
     public Object getResult() {
         return null;
     }
-
+    
     private FormulaVariable findVariableInList(String variableId, List<FormulaVariable> variables) {
         for (FormulaVariable variable : variables) {
             if (variable.getId().equals(variableId)) {

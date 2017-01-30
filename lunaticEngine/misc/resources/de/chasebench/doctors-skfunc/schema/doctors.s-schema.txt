@@ -1,0 +1,31 @@
+hospital {
+    doctor   : STRING,
+    spec     : STRING,
+    hospital : STRING,
+    npi      : STRING,
+    conf     : STRING
+}
+
+medprescription {
+    id       : STRING,
+    patient  : STRING,
+    npi      : STRING,
+    doctor   : STRING,
+    spec     : STRING,
+    conf     : STRING
+}
+
+physician {
+    npi      : STRING,
+    name     : STRING,
+    spec     : STRING,
+    conf     : STRING
+}
+
+treatment {
+    id       : STRING,
+    patient  : STRING,
+    hospital : STRING,
+    npi      : STRING,
+    conf     : STRING
+}

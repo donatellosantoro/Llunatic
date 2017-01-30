@@ -1,5 +1,6 @@
 package it.unibas.lunatic.test.persistence.dbms;
 
+import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
 import it.unibas.lunatic.model.algebra.operators.BuildAlgebraTreeForCertainAnswerQuery;
 import it.unibas.lunatic.model.chase.chasede.DEChaserFactory;
@@ -27,20 +28,17 @@ public class TestSQLCF extends CheckTest {
         Dependency q9 = scenario.getQueries().get(9);
         if (logger.isDebugEnabled()) logger.debug(q9.toLogicalString());
         IAlgebraOperator operator = treeBuilder.generateOperator(q9, scenario);
-        if (logger.isDebugEnabled()) logger.debug(operator.toString());
-        if (logger.isDebugEnabled()) logger.debug(new AlgebraTreeToSQL().treeToSQL(operator, scenario.getSource(), scenario.getTarget(), ""));
+        if (logger.isTraceEnabled()) logger.trace(operator.toString());
+        if (logger.isTraceEnabled()) logger.trace(new AlgebraTreeToSQL().treeToSQL(operator, scenario.getSource(), scenario.getTarget(), ""));
         IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
         if (logger.isDebugEnabled()) logger.debug(result.toString());
     }
 
-//    public void test() throws Exception {
-//        Scenario scenario = UtilityTest.loadScenarioFromResources("/de/chasebench/doctors/doctors-de-scenario-cf.xml", true);
-//        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
-//        assertEquals(5, scenario.getSTTgds().size());
-//        assertEquals(0, scenario.getExtTGDs().size());
-//        assertEquals(10, scenario.getEGDs().size());
-////        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
-////        if (logger.isDebugEnabled()) logger.debug(result.toString());
-////        checkExpectedInstances(result, scenario);
-//    }
+    public void testSK() throws Exception {
+        String chaseMode = LunaticConstants.CHASE_UNRESTRICTED_SKOLEM;
+        Scenario scenario = UtilityTest.loadScenarioFromResources("/de/chasebench/doctors-skfunc/doctors-de-scenario-cf.xml", true, chaseMode);
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+    }
 }

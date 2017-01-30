@@ -1,0 +1,3 @@
+
+doctor(?npi,?doctor,?spec,?H,?C2)->
+	prescription(?npi,?npi,{append($npi,$npi)},?npi).

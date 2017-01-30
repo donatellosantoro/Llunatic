@@ -1,6 +1,7 @@
 package it.unibas.lunatic.model.dependency.operators;
 
 import it.unibas.lunatic.Scenario;
+import it.unibas.lunatic.exceptions.ChaseException;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.GenerateStatsForScenario;
 import it.unibas.lunatic.model.dependency.AttributesInSameCellGroups;
@@ -9,9 +10,15 @@ import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.ExtendedEGD;
 import it.unibas.lunatic.model.dependency.DependencyStratification;
 import it.unibas.lunatic.model.dependency.EGDStratum;
+import it.unibas.lunatic.model.dependency.FormulaAttribute;
+import it.unibas.lunatic.model.dependency.FormulaExpression;
+import it.unibas.lunatic.model.dependency.IFormulaAtom;
+import it.unibas.lunatic.model.dependency.IFormulaValue;
+import it.unibas.lunatic.model.dependency.RelationalAtom;
 import it.unibas.lunatic.utility.LunaticUtility;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.jgrapht.DirectedGraph;
@@ -21,9 +28,10 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import speedy.model.expressions.Expression;
 
 public class AnalyzeDependencies {
-
+    
     private static final Logger logger = LoggerFactory.getLogger(AnalyzeDependencies.class);
     private final RewriteSTTGDs rewriter = new RewriteSTTGDs();
     private final BuildFaginDependencyGraph faginDependencyGraphBuilder = new BuildFaginDependencyGraph();
@@ -37,7 +45,7 @@ public class AnalyzeDependencies {
     private final FindInclusionDependencies inclusionDependencyFinder = new FindInclusionDependencies();
     private final FindFunctionalDependencies functionalDependencyFinder = new FindFunctionalDependencies();
     private final GenerateStatsForScenario statGenerator = new GenerateStatsForScenario();
-
+    
     public void analyzeDependencies(Scenario scenario) {
         if (scenario.getStratification() != null) {
             return;
@@ -51,6 +59,7 @@ public class AnalyzeDependencies {
         if (logger.isDebugEnabled()) logger.debug("Dependency graph " + dependencyGraph);
         if (scenario.getConfiguration().isDeScenario() && !scenario.getExtEGDs().isEmpty()) {
             Set<AttributeRef> attributesWithLabeledNulls = attributeWithNullsFinder.findAttributes(dependencyGraph, scenario);
+            attributesWithLabeledNulls.addAll(findConclusionAttributesWithFunction(scenario));
             scenario.setAttributesWithLabeledNulls(attributesWithLabeledNulls);
         }
         AttributesInSameCellGroups attributesInSameCellGroups = attributeInSameCellGroupFinder.findAttributes(dependencyGraph);
@@ -77,21 +86,21 @@ public class AnalyzeDependencies {
         long end = new Date().getTime();
         ChaseStats.getInstance().addStat(ChaseStats.ANALYZE_DEPENDENCIES_TIME, end - start);
     }
-
+    
     private void findAllQueriedAttributesForEGDs(List<Dependency> dependencies) {
         for (Dependency dependency : dependencies) {
             List<AttributeRef> queriedAttributes = DependencyUtility.findTargetQueriedAttributesInPremise(dependency);
             dependency.setQueriedAttributes(queriedAttributes);
         }
     }
-
+    
     private void findAllQueriedAttributesForTGDs(List<Dependency> dependencies) {
         for (Dependency dependency : dependencies) {
             List<AttributeRef> queriedAttributes = DependencyUtility.findTargetQueriedAttributesForExtTGD(dependency);
             dependency.setQueriedAttributes(queriedAttributes);
         }
     }
-
+    
     private void findAllAffectedAttributes(List<Dependency> extEGDs) {
         for (Dependency egd : extEGDs) {
             for (ExtendedEGD extendedDependency : egd.getExtendedDependencies()) {
@@ -102,13 +111,13 @@ public class AnalyzeDependencies {
             }
         }
     }
-
+    
     private void assignAdditionalAttributes(List<Dependency> extEGDs, Scenario scenario) {
         for (Dependency egd : extEGDs) {
             additionalAttributesAssigner.assignAttributes(egd, scenario);
         }
     }
-
+    
     private void findDependenciesForAttributes(DependencyStratification stratification, List<Dependency> dependencies) {
         for (Dependency dependency : dependencies) {
             for (AttributeRef attribute : dependency.getQueriedAttributes()) {
@@ -119,7 +128,7 @@ public class AnalyzeDependencies {
             }
         }
     }
-
+    
     private void checkAuthoritativeSources(List<Dependency> extEGDs, Scenario scenario) {
         for (Dependency egd : extEGDs) {
             List<String> sourceAtoms = DependencyUtility.findSourceAtoms(egd, scenario);
@@ -131,7 +140,7 @@ public class AnalyzeDependencies {
             }
         }
     }
-
+    
     private DirectedGraph<AttributeRef, ExtendedEdge> removeSpecialEdges(DirectedGraph<AttributeRef, ExtendedEdge> faginDependencyGraph) {
         DirectedGraph<AttributeRef, ExtendedEdge> dependencyGraph = new DefaultDirectedGraph<AttributeRef, ExtendedEdge>(ExtendedEdge.class);
         if (faginDependencyGraph == null) {
@@ -145,17 +154,47 @@ public class AnalyzeDependencies {
         }
         return dependencyGraph;
     }
-
+    
+    private Set<AttributeRef> findConclusionAttributesWithFunction(Scenario scenario) {
+        Set<AttributeRef> result = new HashSet<AttributeRef>();
+        for (Dependency stTGD : scenario.getSTTgds()) {
+            result.addAll(findConclusionAttributesWithFunction(stTGD));
+        }
+        for (Dependency tTGD : scenario.getExtTGDs()) {
+            result.addAll(findConclusionAttributesWithFunction(tTGD));
+        }
+        return result;
+    }
+    
+    private Set<AttributeRef> findConclusionAttributesWithFunction(Dependency dependency) {
+        Set<AttributeRef> result = new HashSet<AttributeRef>();
+        for (IFormulaAtom atom : dependency.getConclusion().getAtoms()) {
+            if (!(atom instanceof RelationalAtom)) {
+                continue;
+            }
+            RelationalAtom relAtom = (RelationalAtom) atom;
+            for (FormulaAttribute attribute : relAtom.getAttributes()) {
+                IFormulaValue formulaValue = attribute.getValue();
+                if (formulaValue instanceof FormulaExpression) {
+                    AttributeRef attributeRef = new AttributeRef(relAtom.getTableName(), attribute.getAttributeName());
+                    result.add(attributeRef);
+                }
+            }
+            
+        }
+        return result;
+    }
+    
 }
 
 class EGDStratumComparator implements Comparator<EGDStratum> {
-
+    
     private DirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph;
-
+    
     public EGDStratumComparator(DirectedGraph<ExtendedEGD, DefaultEdge> dependencyGraph) {
         this.dependencyGraph = dependencyGraph;
     }
-
+    
     public int compare(EGDStratum t1, EGDStratum t2) {
         if (existsPath(t1, t2)) {
             return -1;
@@ -164,7 +203,7 @@ class EGDStratumComparator implements Comparator<EGDStratum> {
         }
         return 0;
     }
-
+    
     private boolean existsPath(EGDStratum t1, EGDStratum t2) {
         for (ExtendedEGD dependency1 : t1.getExtendedDependencies()) {
             for (ExtendedEGD dependency2 : t2.getExtendedDependencies()) {

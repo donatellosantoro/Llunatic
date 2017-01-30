@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE doc [
+<!ENTITY source_schema SYSTEM "schemas/source_schema.xml">
+<!ENTITY target_schema SYSTEM "schemas/target_schema.xml">
+]>
+<scenario>
+    <source>
+        <type>DBMS</type>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:chasebench_doctors_small_sk_de</uri>
+            <schema>source</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <schemaFile schema="source">schema/doctors.s-schema.txt</schemaFile>
+        <import>
+            <input type="csv" separator="," hasHeader="false" table="treatment">data/treatment.csv</input>
+            <input type="csv" separator="," hasHeader="false" table="physician">data/physician.csv</input>
+            <input type="csv" separator="," hasHeader="false" table="medprescription">data/medprescription.csv</input>
+            <input type="csv" separator="," hasHeader="false" table="hospital">data/hospital.csv</input>
+        </import>
+    </source>
+    <target>
+        <type>DBMS</type>
+        <generateFromDependencies>true</generateFromDependencies>
+        <access-configuration>
+            <driver>org.postgresql.Driver</driver>
+            <uri>jdbc:postgresql:chasebench_doctors_small_sk_de</uri>
+            <schema>target</schema>
+            <login>pguser</login>
+            <password>pguser</password>
+        </access-configuration>
+        <schemaFile schema="target">schema/doctors.t-schema.txt</schemaFile>
+    </target>
+    <configuration>
+        <printSteps>true</printSteps>
+        <recreateDBOnStart>false</recreateDBOnStart>
+    </configuration>
+    <dependencies>
+        <sttgdsFile>dependencies/doctors.st-tgds.txt</sttgdsFile>
+        <egdsFile>dependencies/doctors.t-egds.txt</egdsFile>
+    </dependencies>
+    <queries>
+        <queryFile>queries/queries.txt</queryFile>
+    </queries>
+
+</scenario>

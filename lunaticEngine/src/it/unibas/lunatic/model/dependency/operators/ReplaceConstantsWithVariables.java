@@ -10,6 +10,7 @@ import it.unibas.lunatic.model.dependency.ConstantInFormula;
 import it.unibas.lunatic.model.dependency.AllConstantsInFormula;
 import it.unibas.lunatic.model.dependency.Dependency;
 import it.unibas.lunatic.model.dependency.FormulaAttribute;
+import it.unibas.lunatic.model.dependency.FormulaExpression;
 import it.unibas.lunatic.model.dependency.FormulaVariable;
 import it.unibas.lunatic.model.dependency.FormulaVariableOccurrence;
 import it.unibas.lunatic.model.dependency.IFormulaAtom;
@@ -49,9 +50,11 @@ public class ReplaceConstantsWithVariables {
         if (logger.isDebugEnabled()) logger.debug("Constant Table: " + constantsInFormula.toString());
         if (logger.isDebugEnabled()) logger.debug("After constant removal: " + dependency.toLongString());
         createTable(constantsInFormula, scenario, true);
-//        for (FormulaVariable variable : dependency.getPremise().getLocalVariables()) {
-//            logger.info(variable.toLongString());
-//        }
+        if (logger.isInfoEnabled()) {
+            for (FormulaVariable variable : dependency.getPremise().getLocalVariables()) {
+                logger.info(variable.toLongString());
+            }
+        }
     }
 
     private void findAndReplaceConstantsInPositiveFormula(PositiveFormula positiveFormula, AllConstantsInFormula constantsInFormula, boolean premise) {
@@ -68,7 +71,7 @@ public class ReplaceConstantsWithVariables {
     private void handleRelationalAtom(IFormulaAtom atom, AllConstantsInFormula constantsInFormula, boolean premise) {
         RelationalAtom relationalAtom = (RelationalAtom) atom;
         for (FormulaAttribute attribute : relationalAtom.getAttributes()) {
-            if (attribute.getValue().isVariable() || attribute.getValue().isNull()) {
+            if (attribute.getValue().isVariable() || attribute.getValue().isNull() || (attribute.getValue() instanceof FormulaExpression)) {
                 continue;
             }
             ConstantWithType constant = createConstantValue(attribute.getValue());

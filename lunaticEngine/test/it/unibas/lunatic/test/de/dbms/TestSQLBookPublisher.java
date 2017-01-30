@@ -22,4 +22,14 @@ public class TestSQLBookPublisher extends CheckTest {
         if (logger.isDebugEnabled()) logger.debug(result.toString());
         checkExpectedInstances(result, scenario);
     }
+
+    public void testScenarioSK() throws Exception {
+        String chaseMode = LunaticConstants.CHASE_UNRESTRICTED_SKOLEM;
+        Scenario scenario = UtilityTest.loadScenarioFromResources(References.bookPublisher_sk_dbms, true, chaseMode);
+        scenario.getConfiguration().setDeChaser(LunaticConstants.DE_OPTIMIZED_CHASER);
+        if (logger.isDebugEnabled()) logger.debug(scenario.toString());
+        IDatabase result = DEChaserFactory.getChaser(scenario).doChase(scenario);
+        if (logger.isDebugEnabled()) logger.debug(result.toString());
+        checkExpectedInstances(result, scenario);
+    }
 }

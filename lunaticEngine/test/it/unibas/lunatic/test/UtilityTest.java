@@ -34,20 +34,24 @@ public class UtilityTest {
     }
 
     public static Scenario loadScenarioFromResources(String fileScenario, boolean recreateDB) {
-        return loadScenarioFromResources(fileScenario, null, recreateDB);
+        return loadScenarioFromResources(fileScenario, null, recreateDB, null);
+    }
+
+    public static Scenario loadScenarioFromResources(String fileScenario, boolean recreateDB, String chaseMode) {
+        return loadScenarioFromResources(fileScenario, null, recreateDB, chaseMode);
     }
 
     public static Scenario loadScenarioFromResources(String fileScenario, String suffix) {
-        return loadScenarioFromResources(fileScenario, suffix, false);
+        return loadScenarioFromResources(fileScenario, suffix, false, null);
     }
 
-    public static Scenario loadScenarioFromResources(String fileScenario, String suffix, boolean recreateDB) {
+    private static Scenario loadScenarioFromResources(String fileScenario, String suffix, boolean recreateDB, String chaseMode) {
         try {
             fileScenario = RESOURCES_FOLDER + fileScenario;
             URL scenarioURL = UtilityTest.class.getResource(fileScenario);
             Assert.assertNotNull("Load scenario " + fileScenario, scenarioURL);
             fileScenario = new File(scenarioURL.toURI()).getAbsolutePath();
-            return loadScenario(fileScenario, suffix, recreateDB);
+            return loadScenario(fileScenario, suffix, recreateDB, chaseMode);
         } catch (URISyntaxException ex) {
             ex.printStackTrace();
             Assert.fail(ex.getLocalizedMessage());
@@ -69,10 +73,10 @@ public class UtilityTest {
     }
 
     public static Scenario loadScenarioFromAbsolutePath(String fileScenario, String suffix, boolean recreateDB) {
-        return loadScenario(fileScenario, suffix, recreateDB);
+        return loadScenario(fileScenario, suffix, recreateDB, null);
     }
 
-    private static Scenario loadScenario(String fileScenario, String suffix, boolean recreateDB) {
+    private static Scenario loadScenario(String fileScenario, String suffix, boolean recreateDB, String chaseMode) {
         if (logger.isDebugEnabled()) logger.debug("Loading scenario: " + fileScenario);
         Assert.assertNotNull(fileScenario);
         try {
@@ -87,6 +91,9 @@ public class UtilityTest {
             DAOConfiguration daoConfig = new DAOConfiguration();
             daoConfig.setSuffix(suffix);
             daoConfig.setUseDictionaryEncoding(false);
+            if(chaseMode != null){
+                daoConfig.setChaseMode(chaseMode);
+            }
             Scenario scenario = daoScenario.loadScenario(fileScenario, daoConfig);
             scenario.setAbsolutePath(fileScenario);
             return scenario;
