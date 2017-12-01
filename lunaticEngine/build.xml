@@ -20,7 +20,7 @@
             <include name="slf4j-api-${slf4j.ver}.jar" />
             <include name="logback-core-${logback.ver}.jar" />
             <include name="logback-classic-${logback.ver}.jar" />
-            <include name="postgresql-9.1-903.jdbc3.jar" />
+            <include name="postgresql-${postgresql-jdbc.ver}.jar" />
             <include name="jdom.jar" />
             <include name="xerces-2.8.0.jar" />
             <include name="antlr-runtime-${antlr.ver}.jar" />    

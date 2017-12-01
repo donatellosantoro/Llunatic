@@ -211,7 +211,7 @@
             <classpath refid="compile.classpath" />
             <jvmarg value="-Djava.util.logging.config.class=it.unibas.lunatic.utility.JavaUtilLoggingConfig"/>
             <arg value="${arg0}"/>
-            <arg value="${arg1}"/>
+            <!-- <arg value="${arg1}"/> -->
         </java>
     </target> 
     

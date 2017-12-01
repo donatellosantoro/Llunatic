@@ -22,7 +22,7 @@
     <!--<logger name="it.unibas.lunatic.test.checker.CheckExpectedSolutionsTest" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.commons.ChaseStats" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.relational.QueryStatManager" level="TRACE"/>-->
-    <!--<logger name="speedy.persistence.relational.QueryManager" level="TRACE"/>-->
+    <!--<logger name="speedy.persistence.relational.QueryManager" level="DEBUG"/>-->
     <!--<logger name="speedy.persistence.file.operators.ExportCSVFileWithCopy" level="TRACE"/>-->
 
     <!--     MODEL     -->
@@ -58,6 +58,7 @@
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckSolution" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.chase.chasemc.operators.CheckUnsatisfiedDependencies" level="DEBUG"/>-->
     <!--<logger name="it.unibas.lunatic.model.dependency.operators.RewriteSTTGDs" level="DEBUG"/>-->
+    <!--<logger name="it.unibas.lunatic.model.chase.chasede.operators.ChangeCellDE" level="DEBUG"/>-->
 
     <!--     ALGEBRA     -->
     <!--<logger name="speedy.model.algebra.Difference" level="DEBUG"/>-->
