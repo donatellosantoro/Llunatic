@@ -32,6 +32,7 @@ import speedy.exceptions.DBMSException;
 import speedy.model.database.IDatabase;
 import speedy.model.database.ITable;
 import speedy.persistence.relational.AccessConfiguration;
+import speedy.persistence.relational.QueryManager;
 import speedy.persistence.xml.DAOXmlUtility;
 import speedy.utility.DBMSUtility;
 import speedy.utility.PrintUtility;
@@ -107,6 +108,8 @@ public class Main {
             }
         } catch (DAOException ex) {
             System.out.println("\nUnable to load scenario. \n" + ex.getLocalizedMessage());
+        }finally{
+            QueryManager.close();
         }
     }
 
