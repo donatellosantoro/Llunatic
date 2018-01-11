@@ -2,7 +2,6 @@ package it.unibas.lunatic.model.chase.chasemc.operators.dbms;
 
 import it.unibas.lunatic.LunaticConstants;
 import it.unibas.lunatic.Scenario;
-import it.unibas.lunatic.model.chase.chasede.operators.dbms.BuildSQLDBForChaseStepDE;
 import it.unibas.lunatic.model.chase.chasemc.operators.CheckConsistencyOfDBOIDs;
 import it.unibas.lunatic.model.chase.commons.ChaseStats;
 import it.unibas.lunatic.model.chase.commons.operators.ChaseUtility;

@@ -44,7 +44,7 @@ public class DAOLunaticConfiguration {
     private static final String PARTIAL_ORDER_STANDARD = "Standard";
     private static final String PARTIAL_ORDER_FREQUENCY = "Frequency";
     private static final String PARTIAL_ORDER_GREEDY = "Greedy";
-    private static final String PARTIAL_ORDER_FREQUENCY_FO = "Frequency FO";
+//    private static final String PARTIAL_ORDER_FREQUENCY_FO = "Frequency FO";
     ///////////////////// USER MANAGER
     private static final String USER_MANAGER_STANDARD = "Standard";
     private static final String USER_MANAGER_INTERACTIVE = "Interactive";
@@ -148,7 +148,9 @@ public class DAOLunaticConfiguration {
         }
         Element exportQueryResultsPathElement = configurationElement.getChild("exportQueryResultsPath");
         if (exportQueryResultsPathElement != null) {
-            configuration.setExportQueryResultsPath(exportQueryResultsPathElement.getValue());
+            String relativePath = exportQueryResultsPathElement.getValue();
+            String absolutePath = filePathTransformator.expand(fileScenario, relativePath);
+            configuration.setExportQueryResultsPath(absolutePath);
         }
         Element exportQueryResultsTypeElement = configurationElement.getChild("exportQueryResultsType");
         if (exportQueryResultsTypeElement != null) {
@@ -167,7 +169,9 @@ public class DAOLunaticConfiguration {
         }
         Element exportChangesPathElement = configurationElement.getChild("exportChangesPath");
         if (exportChangesPathElement != null) {
-            configuration.setExportChangesPath(exportChangesPathElement.getValue());
+            String relativePath = exportChangesPathElement.getValue();
+            String absolutePath = filePathTransformator.expand(fileScenario, relativePath);
+            configuration.setExportChangesPath(absolutePath);
         }
         Element autoSelectBestNumberOfThreadsElement = configurationElement.getChild("autoSelectBestNumberOfThreads");
         if (autoSelectBestNumberOfThreadsElement != null) {
@@ -290,10 +294,9 @@ public class DAOLunaticConfiguration {
         if (PARTIAL_ORDER_GREEDY.equals(partialOrderType)) {
             return new GreedyPartialOrder();
         }
-        if (PARTIAL_ORDER_FREQUENCY_FO.equals(partialOrderType)) {
-            return new FrequencyPartialOrder();
+//        if (PARTIAL_ORDER_FREQUENCY_FO.equals(partialOrderType)) {
 //            return new FrequencyPartialOrderFO();
-        }
+//        }
         throw new it.unibas.lunatic.exceptions.DAOException("Unable to load scenario from file " + fileScenario + ". Unknown partial-order type " + partialOrderType);
     }
 
@@ -357,10 +360,10 @@ public class DAOLunaticConfiguration {
         if (doPermutationsElement != null) {
             costManagerConfiguration.setDoPermutations(Boolean.parseBoolean(doPermutationsElement.getValue()));
         }
-//        Element chaseTreeSizeThresholdElement = costManagerElement.getChild("chaseTreeSizeThreshold");
-//        if (chaseTreeSizeThresholdElement != null) {
-//            throw new IllegalArgumentException("Replace chase tree size with leavesThreshold");
-//        }
+        Element chaseTreeSizeThresholdElement = costManagerElement.getChild("chaseTreeSizeThreshold");
+        if (chaseTreeSizeThresholdElement != null) {
+            throw new IllegalArgumentException("Replace chase tree size with chaseBranchingThreshold and potentialSolutionsThreshold");
+        }
         Element chaseBranchingThresholdElement = costManagerElement.getChild("chaseBranchingThreshold");
         if (chaseBranchingThresholdElement != null) {
             costManagerConfiguration.setChaseBranchingThreshold(Integer.parseInt(chaseBranchingThresholdElement.getValue()));

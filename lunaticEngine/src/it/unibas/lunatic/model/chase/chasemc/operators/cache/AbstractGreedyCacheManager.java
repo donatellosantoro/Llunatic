@@ -109,7 +109,7 @@ public abstract class AbstractGreedyCacheManager implements ICacheManager {
 
     private boolean wasGeneratedInThisStep(CellGroup cellGroup) {
         for (CellGroupCell cell : cellGroup.getAllCells()) {
-            if (cell.isToSave()) {
+            if (cell.isToSave() != null && cell.isToSave()) {
                 return true;
             }
         }

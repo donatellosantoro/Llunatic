@@ -104,7 +104,7 @@
         </copy>
     </target>
     
-    <target name="prepare" depends="-create-misc-dir" description="ricrea le cartelle riproducibili">
+    <target name="prepare" depends="-update-dependencies, -create-misc-dir" description="ricrea le cartelle riproducibili">
         <mkdir dir="${build.dir}" />
         <mkdir dir="${test.build.dir}" />
         <mkdir dir="${test.report.dir}" />
@@ -121,6 +121,9 @@
         <copy todir="${test.build.dir}/testdata">
             <fileset dir="${test.data.dir}" />
         </copy>
+    </target>
+    
+    <target name="-update-dependencies">
     </target>
     
     <!-- ***************************************************

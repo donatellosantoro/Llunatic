@@ -70,7 +70,7 @@
         <ant dir="${jep.dir}" inheritAll="false" target="light-deploy" />    
     </target>   
 
-    <target name="build" depends="-light-deploy-speedy, -light-deploy-jep, compile, compile-test" description="compila ed esegue i test">
+    <target name="-update-dependencies" depends="-light-deploy-speedy, -light-deploy-jep" description="compila ed esegue i test">
     </target>
     
     <target name="-create-manifest" depends="init, -init-version">

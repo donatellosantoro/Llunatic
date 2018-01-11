@@ -124,6 +124,15 @@ public class DAODatabaseConfiguration {
                         boolean hasHeader = Boolean.parseBoolean(inputFileElement.getAttribute("hasHeader").getValue());
                         csvFile.setHasHeader(hasHeader);
                     }
+                    if (inputFileElement.getAttribute("recordsToImport") != null) {
+                        String recordsToImportString = inputFileElement.getAttribute("recordsToImport").getValue();
+                        try {
+                            Integer recordsToImport = Integer.parseInt(recordsToImportString);
+                            csvFile.setRecordsToImport(recordsToImport);
+                        } catch (NumberFormatException nfe) {
+                            throw new DAOException("Attribute recordsToImport needs a valid integer");
+                        }
+                    }
                     fileToImport = csvFile;
                 } else {
                     throw new DAOException("Type " + type + " is not supported");

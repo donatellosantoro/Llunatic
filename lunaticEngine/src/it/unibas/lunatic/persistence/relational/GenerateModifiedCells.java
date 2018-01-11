@@ -32,7 +32,8 @@ public class GenerateModifiedCells {
             List<String> results = generate(result);
             saveResults(results, fileName);
         } catch (IOException ex) {
-            throw new DAOException();
+            ex.printStackTrace();
+            throw new DAOException(ex.getLocalizedMessage());
         }
     }
 

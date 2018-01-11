@@ -120,7 +120,7 @@ public class ExportChaseStepResultsCSV {
             if (step.isInvalid() || step.isDuplicate()) {
                 continue;
             }
-            String path = scenario.getConfiguration().getExportSolutionsPath() + "/Changes_" + solutionIndex++ + ".csv";
+            String path = scenario.getConfiguration().getExportChangesPath() + "/changes_" + solutionIndex++ + ".csv";
             System.out.println("Exporting changes " + solutionIndex + " into " + path);
             OperatorFactory.getInstance().getGenerateModifiedCells(scenario).generate(step, path);
         }
