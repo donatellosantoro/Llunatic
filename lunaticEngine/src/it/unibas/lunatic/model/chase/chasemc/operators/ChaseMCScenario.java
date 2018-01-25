@@ -61,7 +61,7 @@ public class ChaseMCScenario {
     }
 
     public ChaseTree doChase(Scenario scenario, IChaseState chaseState) {
-        if(!scenario.getConfiguration().isChaseRestricted()){
+        if (!scenario.getConfiguration().isChaseRestricted()) {
             throw new ChaseException("Unrestricted chase is not supported on MC scenario");
         }
         checkDataSources(scenario);
@@ -91,7 +91,7 @@ public class ChaseMCScenario {
                 resultExporter.exportSolutionsInSeparateFiles(chaseTree, scenario);
             }
             if (scenario.getConfiguration().isExportChanges()) {
-                resultExporter.exportChangesInSeparateFiles(chaseTree, scenario);
+                resultExporter.exportChanges(chaseTree, scenario);
             }
             printResult(chaseTree);
             return chaseTree;

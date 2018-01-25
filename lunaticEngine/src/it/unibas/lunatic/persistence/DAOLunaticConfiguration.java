@@ -133,7 +133,9 @@ public class DAOLunaticConfiguration {
         }
         Element exportSolutionsPathElement = configurationElement.getChild("exportSolutionsPath");
         if (exportSolutionsPathElement != null) {
-            configuration.setExportSolutionsPath(exportSolutionsPathElement.getValue());
+            String relativePath = exportSolutionsPathElement.getValue();
+            String absolutePath = filePathTransformator.expand(fileScenario, relativePath);
+            configuration.setExportSolutionsPath(absolutePath);
         }
         Element exportSolutionsTypeElement = configurationElement.getChild("exportSolutionsType");
         if (exportSolutionsTypeElement != null) {
@@ -166,6 +168,17 @@ public class DAOLunaticConfiguration {
         Element exportChangesElement = configurationElement.getChild("exportChanges");
         if (exportChangesElement != null) {
             configuration.setExportChanges(Boolean.parseBoolean(exportChangesElement.getValue()));
+        }
+        Element exportChangesStrategyElement = configurationElement.getChild("exportChangesStrategy");
+        if (exportChangesStrategyElement != null) {
+            String value = exportChangesStrategyElement.getValue();
+            if (SpeedyConstants.SINGLE_FILE.equalsIgnoreCase(value)) {
+                configuration.setExportChangesStrategy(SpeedyConstants.SINGLE_FILE);
+            } else if (SpeedyConstants.MULTIPLE_FILES.equalsIgnoreCase(value)) {
+                configuration.setExportChangesStrategy(SpeedyConstants.MULTIPLE_FILES);
+            } else {
+                throw new it.unibas.lunatic.exceptions.DAOException("Export changes strategy type not supported");
+            }
         }
         Element exportChangesPathElement = configurationElement.getChild("exportChangesPath");
         if (exportChangesPathElement != null) {

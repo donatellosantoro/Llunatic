@@ -46,6 +46,7 @@ public class LunaticConfiguration {
     private String exportQueryResultsType = SpeedyConstants.CSV;
     private boolean exportQueryResultsWithHeader = false;
     private boolean exportChanges = false;
+    private String exportChangesStrategy = SpeedyConstants.MULTIPLE_FILES;
     private String exportChangesPath;
     private boolean printStatsOnly = false;
 
@@ -414,6 +415,14 @@ public class LunaticConfiguration {
         this.exportChangesPath = exportChangesPath;
     }
 
+    public String getExportChangesStrategy() {
+        return exportChangesStrategy;
+    }
+
+    public void setExportChangesStrategy(String exportChangesStrategy) {
+        this.exportChangesStrategy = exportChangesStrategy;
+    }
+
     public boolean isCleanSchemasOnStartForDEScenarios() {
         return cleanSchemasOnStartForDEScenarios;
     }
@@ -547,6 +556,8 @@ public class LunaticConfiguration {
                 + "\n\t ExportSolutions: " + exportSolutions
                 + "\n\t ExportSolutionsPath: " + exportSolutionsPath
                 + "\n\t ExportSolutionsType: " + exportSolutionsType
+                + "\n\t ExportChanges: " + exportChanges
+                + "\n\t ExportChangesPath: " + exportChangesPath
                 + "\n\t StopOnNotWA: " + stopOnNotWA
                 + "\n\t UseCompactAttributeName: " + useCompactAttributeName
                 + "\n\t Cache type for MC: " + cacheTypeForMC

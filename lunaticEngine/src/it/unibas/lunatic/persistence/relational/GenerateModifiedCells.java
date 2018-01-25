@@ -61,28 +61,23 @@ public class GenerateModifiedCells {
     private String generateModifiedCellsForStep(DeltaChaseStep step) {
         StringBuilder result = new StringBuilder();
         result.append("+++++++++++++++  Solution ").append(++counter).append(" +++++++++++++++\n");
-        List<CellGroupCell> modifiedCells = findModifiedCells(step);
-        for (CellGroupCell modifiedCell : modifiedCells) {
-            TupleOID tupleOID = modifiedCell.getTupleOID();
-            IValue value = modifiedCell.getValue();
-            AttributeRef attribute = modifiedCell.getAttributeRef();
-            result.append(tupleOID.toString()).append(".").append(attribute.getName()).append(",,").append(value).append("\n");
-        }
-        return result.toString();
-    }
-
-    private List<CellGroupCell> findModifiedCells(DeltaChaseStep step) {
+//        List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsInStepForDebugging(step.getDeltaDB(), step.getId(), step.getScenario());
         List<CellGroup> cellGroups = occurrenceHandler.loadAllCellGroupsForDebugging(step.getDeltaDB(), step.getId(), step.getScenario());
-        List<CellGroupCell> result = new ArrayList<CellGroupCell>();
         for (CellGroup cellGroup : cellGroups) {
             for (CellGroupCell occurrence : cellGroup.getOccurrences()) {
                 if (occurrence.getOriginalValue().equals(cellGroup.getValue())) {
                     continue;
                 }
-                result.add(occurrence);
+                if (occurrence.getTupleOID().toString().equals("361") && occurrence.getAttribute().equals("state")) {
+                    System.out.println("Occurrence: " + occurrence.toLongString() + " - Original: " + occurrence.getOriginalValue() + " - Current: " + cellGroup.getValue());
+                }
+                result.append(occurrence.getTupleOID().toString()).append(".");
+                result.append(occurrence.getAttribute()).append(",");
+                result.append(occurrence.getOriginalValue()).append(",");
+                result.append(cellGroup.getValue()).append("\n");
             }
         }
-        return result;
+        return result.toString();
     }
 
     private void saveResults(List<String> results, String fileName) throws IOException {

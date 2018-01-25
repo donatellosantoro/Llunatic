@@ -112,7 +112,17 @@ public class ExportChaseStepResultsCSV {
         }
     }
 
-    public void exportChangesInSeparateFiles(ChaseTree chaseTree, Scenario scenario) {
+    public void exportChanges(ChaseTree chaseTree, Scenario scenario) {
+        if (scenario.getConfiguration().getExportChangesStrategy().equals(SpeedyConstants.MULTIPLE_FILES)) {
+            exportChangesInSeparateFiles(chaseTree, scenario);
+        } else {
+            String path = scenario.getConfiguration().getExportChangesPath() + "/changes.csv";
+            System.out.println("Exporting changes into " + path);
+            OperatorFactory.getInstance().getGenerateModifiedCells(scenario).generate(chaseTree.getRoot(), path);
+        }
+    }
+
+    private void exportChangesInSeparateFiles(ChaseTree chaseTree, Scenario scenario) {
         long start = new Date().getTime();
         List<DeltaChaseStep> leaves = ChaseUtility.getAllLeaves(chaseTree.getRoot());
         int solutionIndex = 0;
@@ -230,24 +240,6 @@ public class ExportChaseStepResultsCSV {
         writer.println();
     }
 
-//    private ITupleIterator getDistinctFromTable(ITable table, IDatabase database) {
-//        Project project = new Project(buildAttributes(table.getAttributes()));
-//        project.addChild(new Scan(new TableAlias(table.getName())));
-//        Distinct distinct = new Distinct();
-//        distinct.addChild(project);
-//        return queryRunner.run(distinct, null, database);
-//    }
-//
-//    private List<AttributeRef> buildAttributes(List<Attribute> attributes) {
-//        List<AttributeRef> result = new ArrayList<AttributeRef>();
-//        for (Attribute attribute : attributes) {
-//            if (excludeAttribute(attribute.getName())) {
-//                continue;
-//            }
-//            result.add(new AttributeRef(attribute.getTableName(), attribute.getName()));
-//        }
-//        return result;
-//    }
     private String cleanAttributeName(String attributeName) {
         if (!attributeName.contains("_")) {
             return attributeName;
